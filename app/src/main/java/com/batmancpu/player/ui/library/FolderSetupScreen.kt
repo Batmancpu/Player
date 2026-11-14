@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +29,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -44,6 +48,14 @@ internal fun FolderSetupScreen(
     val libraryState by model.session.state.collectAsState()
     val visibleState = libraryState.takeIf { it.tree == selection?.tree }
     val discoveredMedia = visibleState?.media.orEmpty()
+    val videosByName = remember(discoveredMedia) {
+        discoveredMedia.filter { it.kind == LocalMediaKind.VIDEO }.map { it to MediaNameParser.parse(it.displayName) }
+    }
+    val movies = remember(videosByName) { videosByName.filter { it.second !is ParsedMediaName.Episode }.map { it.first } }
+    val series = remember(videosByName) {
+        videosByName.filter { it.second is ParsedMediaName.Episode }
+            .groupBy { (it.second as ParsedMediaName.Episode).series }.toSortedMap()
+    }
     val isScanning = visibleState?.isScanning == true
     val isLoadingLibrary = visibleState?.isLoading == true ||
         (selection != null && visibleState == null)
@@ -64,6 +76,7 @@ internal fun FolderSetupScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.safeDrawing)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = PlayerSpacing.screenHorizontal, vertical = 34.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp),
@@ -126,6 +139,16 @@ internal fun FolderSetupScreen(
                             ) {
                                 Text(stringResource(R.string.library_scan_start))
                             }
+                            if (isLoadingLibrary) {
+                                Text(stringResource(R.string.library_cache_loading), color = PlayerPalette.textSecondary)
+                            } else if (visibleState?.wasCancelled == true) {
+                                Text(stringResource(R.string.library_scan_cancelled), color = PlayerPalette.textSecondary)
+                            } else if (!isScanning && discoveredMedia.isEmpty() && scanError == null) {
+                                Text(
+                                    stringResource(if (visibleState?.hasCompletedScan == true) R.string.library_scan_empty else R.string.library_index_empty),
+                                    color = PlayerPalette.textSecondary,
+                                )
+                            }
                             if (isScanning) {
                                 Text(
                                     text = stringResource(R.string.library_scan_progress),
@@ -148,16 +171,13 @@ internal fun FolderSetupScreen(
                                     text = stringResource(R.string.library_scan_found, videos, subtitles),
                                     color = PlayerPalette.textPrimary,
                                 )
-                                val files = discoveredMedia.filter { it.kind == LocalMediaKind.VIDEO }
-                                val movies = files.filter { MediaNameParser.parse(it.displayName) !is ParsedMediaName.Episode }
-                                val episodes = files.filter { MediaNameParser.parse(it.displayName) is ParsedMediaName.Episode }
                                 LazyColumn(
                                     modifier = Modifier.fillMaxWidth().heightIn(max = 420.dp),
                                     verticalArrangement = Arrangement.spacedBy(10.dp),
                                 ) {
                                     if (movies.isNotEmpty()) {
                                         item { Text(stringResource(R.string.library_movies_heading), color = PlayerPalette.textPrimary) }
-                                        items(movies, key = { it.documentId }) { document ->
+                                        items(movies, key = { "file:${it.documentId}" }) { document ->
                                             Text(
                                                 text = mediaDisplayLabel(document),
                                                 color = PlayerPalette.textSecondary,
@@ -165,9 +185,9 @@ internal fun FolderSetupScreen(
                                             )
                                         }
                                     }
-                                    if (episodes.isNotEmpty()) {
-                                        item { Text(stringResource(R.string.library_episodes_heading), color = PlayerPalette.textPrimary) }
-                                        items(episodes.sortedBy { it.displayName }, key = { it.documentId }) { document ->
+                                    for ((name, episodes) in series) {
+                                        item(key = "series:$name") { Text(name, color = PlayerPalette.textPrimary, style = MaterialTheme.typography.titleMedium) }
+                                        items(episodes.sortedWith(compareBy({ (it.second as ParsedMediaName.Episode).season }, { (it.second as ParsedMediaName.Episode).episode })), key = { "file:${it.first.documentId}" }) { (document, _) ->
                                             Text(
                                                 text = mediaDisplayLabel(document),
                                                 color = PlayerPalette.textSecondary,

@@ -19,6 +19,9 @@ internal object MediaNameParser {
     private val oneByTwo = Regex("""(?i)\b(\d{1,2})x(\d{1,3})\b""")
     private val seasonNumber = Regex("""(?i)\bseason[ ._-]*(\d{1,2})[ ._-]+(?:episode[ ._-]*)?(\d{1,3})\b""")
     private val yearPattern = Regex("""\b(19\d{2}|20\d{2})\b""")
+    private val multiEpisode = Regex(
+        """(?i)\b(?:S\d{1,2}[ ._-]*E\d{1,3}[ ._-]*(?:E\d{1,3}|-[ ._-]*E?\d{1,3})|\d{1,2}x\d{1,3}[ ._-]*(?:x\d{1,3}|-[ ._-]*\d{1,3}))\b"""
+    )
     private val releaseNoise = Regex(
         """(?i)\b(?:2160p|1080p|720p|480p|4k|uhd|hdr10\+?|hdr|dv|bluray|brrip|bdrip|web[ ._-]?dl|webrip|dvdrip|remux|x264|x265|h264|h265|hevc|av1|aac|ac3|dts|atmos|proper|repack|extended|yify|rarbg)\b"""
     )
@@ -33,6 +36,7 @@ internal object MediaNameParser {
             .replace(spaces, " ")
             .trim()
 
+        if (multiEpisode.containsMatchIn(cleanStem)) return ParsedMediaName.Unrecognized(fileName)
         val match = sxxExx.find(cleanStem) ?: oneByTwo.find(cleanStem) ?: seasonNumber.find(cleanStem)
         if (match != null) {
             val title = normalizeTitle(cleanStem.substring(0, match.range.first))
@@ -44,7 +48,8 @@ internal object MediaNameParser {
             return ParsedMediaName.Unrecognized(fileName)
         }
 
-        val year = yearPattern.find(cleanStem)
+        // A leading number may be part of the title (e.g. a numeric movie title).
+        val year = yearPattern.findAll(cleanStem).lastOrNull { it.range.first > 0 }
         val titlePart = if (year == null) cleanStem else cleanStem.substring(0, year.range.first)
         val title = normalizeTitle(titlePart)
         if (title.isBlank()) return ParsedMediaName.Unrecognized(fileName)
@@ -58,3 +63,4 @@ internal object MediaNameParser {
             .trim(' ', '-', '.', '[', ']', '(', ')')
     }
 }
+

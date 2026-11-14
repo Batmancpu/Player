@@ -40,4 +40,17 @@ class MediaNameParserTest {
     @Test fun neverMakesUpAnEpisodeWithoutSeries() {
         assertTrue(MediaNameParser.parse("S01E03.mkv") is ParsedMediaName.Unrecognized)
     }
+
+    @Test fun preservesLeadingNumericTitlesAndUsesTrailingReleaseYear() {
+        assertEquals(ParsedMediaName.Movie("2001 A Space Odyssey", 1968), MediaNameParser.parse("2001.A.Space.Odyssey.1968.mkv"))
+        assertEquals(ParsedMediaName.Movie("1917", null), MediaNameParser.parse("1917.mkv"))
+        assertEquals(ParsedMediaName.Movie("Blade Runner 2049", 2017), MediaNameParser.parse("Blade.Runner.2049.2017.mp4"))
+    }
+
+    @Test fun leavesMultiEpisodeAmbiguityUnderOriginalName() {
+        for (name in listOf("Show.S01E01E02.mkv", "Show.S01E01-E02.mp4", "Show.S01E01-02.mkv", "Show.1x01-02.mkv")) {
+            assertEquals(ParsedMediaName.Unrecognized(name), MediaNameParser.parse(name))
+        }
+    }
 }
+
