@@ -20,7 +20,7 @@ A phase is not complete merely because code builds. Before advancing:
 
 Implementation steps in small commits:
 1. [x] Android shell and system OpenDocumentTree selector; allowlist local external-storage DocumentsProvider only; persist **read-only** grant, revalidate on startup, recover from permission loss. Source implemented, device unverified.
-2. [x] Pure cancellable, sequential scanner with video/sidecar classification, duplicate handling, containment callback and JVM tests. GitHub Actions run 36 passed. The real SAF provider is not wired yet.
+2. [x] Pure cancellable, sequential scanner with video/sidecar classification, duplicate handling, containment callback and JVM tests. GitHub Actions run 36 passed. Android SAF adapter is wired; behavior on actual OPPO provider remains unverified.
 3. [partial] SAF provider adapter: enumerate immediate child documents via the single granted tree URI; inspect file metadata without opening video bytes; reject nonlocal authority and out-of-root document IDs. Bound scanning and handle partial/provider errors as errors, not successful empty scans.
 4. [partial] Present simple scan/progress/error/cancel/results screens; show movies/episodes (and optionally sidecar counts) from **real documents**, not mock artwork. Show clear permission recovery.
 5. [partial] Deterministic filename parser for movie title/year and TV S01E02 / 1x02; handle common noise, Unicode and ambiguous matches; group episodes under series. No external matching yet.
@@ -72,8 +72,8 @@ Implementation steps in small commits:
 
 ## Workflow and release blockers
 
-- **Current verified state (2026-11-14):** main code commit d3ecc17; CI #43 succeeded; Android SAF adapter and plain scan UI are integrated, filename parser and Room offline index compile and pass existing JVM tests. No device validation; GitHub Releases is empty; no published signed APK; signed release assembly has been skipped because signing secrets were absent.
-- User must securely back up prior-generated player-release.jks and configure GitHub Actions encrypted repository secrets: PLAYER_RELEASE_KEYSTORE_BASE64, PLAYER_RELEASE_KEYSTORE_PASSWORD, PLAYER_RELEASE_KEY_ALIAS, PLAYER_RELEASE_KEY_PASSWORD. Never ask the user to post these values in a chat, commit or log.
-- docs/ANDROID_SIGNING.md remains authoritative for signing details and public certificate fingerprint. The key was already generated in a previous private chat. Do not regenerate it.
-- CI debug artifact is for build investigation only. A GitHub Release + APK asset is required for Obtainium, which does not track temporary CI artifacts as durable app versions.
-- If a phase is incomplete, report its current substep and do not mislabel a provisional APK as the completed phase.
+- **Current state (2026-11-14):** Signed GitHub test Releases [v0.1.51](https://github.com/Batmancpu/Player/releases/tag/v0.1.51) and [v0.1.53](https://github.com/Batmancpu/Player/releases/tag/v0.1.53) were published by passing workflows #51 and #53; matching permanent signing certificate, applicationId `com.batmancpu.player`, and increasing versionCode were verified. The user **confirmed an in-place update in Obtainium** from v0.1.51 to v0.1.53, without uninstalling.
+- GitHub Actions signing credentials are configured and validated, and no further manual signing setup is needed. NEVER ask for private key or password in a chat, commit or log. `docs/ANDROID_SIGNING.md` contains the CURRENT authoritative public certificate fingerprint after a pre-release reset; earlier keys were superseded.
+- The in-place update test is **passed**, but unattended/silent background auto-install and persistence of a previously populated Room library across an update were not separately tested. Phase 1 local-media functionality and device acceptance remain incomplete.
+- The next owner is Codex: prioritize finishing Phase 1 and releasing a signed APK for phone testing, not broad feature development. Keep commits and verification focused; use `docs/PHASE1_PHONE_TEST.md`.
+- CI debug artifacts are for build investigation only; only signed GitHub Release APKs are part of the Obtainium update channel. Never change package ID/key or decrease versionCode once released.
