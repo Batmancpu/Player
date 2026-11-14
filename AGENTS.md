@@ -39,6 +39,7 @@ This is not an Android Material app with a blur modifier. The complete interface
 - Use real source-backed blur/glass and subtle refraction where supported; include graceful, readable fallbacks.
 - Keep poster artwork and text content crisp. Do not apply glass to the entire content layer.
 - One coherent Apple-inspired symbol vocabulary; no random mixture of icon families or inconsistent weights.
+- Do not bundle Apple SF Symbols glyph artwork or SF fonts into the Android APK without explicit permission. Prefer permissively licensed/original vectors and retain their notices.
 - Consistent system-style typography, optical alignment, spacing, radii, hit targets, easing and spring behaviour.
 - Artwork-derived gradients and scrims must preserve text contrast.
 - Polish every state: loading, empty, error, offline, no permission, ambiguous match, and long titles.

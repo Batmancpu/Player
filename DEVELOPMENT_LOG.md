@@ -133,3 +133,20 @@ Tests: documentation review only. No application build exists yet; no APK or dev
 - Android platform 37.0 installation, JDK 21, Gradle 9.5.1, compile/package and artifact upload all passed.
 - Device installation/launch/visual test: not yet performed by the user on CPH2531.
 - CI maintenance: next commit upgrades actions that emitted Node 20 deprecation warnings to Node 24-compatible current major versions and uses the open-source Gradle basic cache provider.
+
+
+## 2026-11-14 — CI run 3: updated workflow verified
+- Workflow run: https://github.com/Batmancpu/Player/actions/runs/43561164125 — final conclusion: success.
+- Checkout v6, JDK 21, setup-android v4, Android 37.0/build-tools 37.0.0, Gradle setup v6 with basic cache, Gradle compile/test/package, upload-artifact v7 all completed successfully.
+- APK artifact: `Player-debug-aef6cd0a2058d816ba3da83a098a1a21ee7f916f`, 10,371,249 bytes, artifact ID 14100800741, URL https://github.com/Batmancpu/Player/actions/runs/43561164125/artifacts/14100800741, 14-day retention.
+- Artifact archive SHA-256: `3b8efdcb8fcf9842ecb11510b0028a536754897bf0906440f1b3d748c6ceee5e`. This is GitHub's uploaded artifact ZIP digest, not separately calculated raw APK digest.
+- No Node 20 deprecation warning appeared in the final log tail. Basic open-source Gradle cache provider was enabled.
+- The only build-system notice is Gradle 9.5.1 being labelled out of date by the current Gradle action. Keep the verified version pinned until a deliberate upgrade is needed.
+- CI still has no project-authored unit tests; the unit-test task executes successfully with an empty test source set. A real unit-test harness and cases remain open.
+- Device installation/launch/visual validation: not yet performed on CPH2531.
+
+## 2026-11-14 — Icon glyph licensing review
+- Reviewed FC Zenith's SF Symbols Compose library dependency and upstream README/LICENSE.
+- The library's generator/source is MIT-licensed, but the README explicitly says SF glyph artwork and symbol data remain Apple's property and points to Apple's SF Symbols license restricting usage to Apple platforms.
+- Decision D-013: do not ship SF Symbols glyph assets in Player's Android APK without express permission. Preserve Apple-like optical design through original/permissively licensed icons, consistent weight/spacing and animation instead.
+- Next: add design tokens/typography and evaluate a compatible icon library; do not add SF Symbol glyph packs.

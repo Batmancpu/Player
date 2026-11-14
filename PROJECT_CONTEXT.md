@@ -146,3 +146,7 @@ At this document's creation:
 - The user's first acceptance target is not a mockup alone: a working installable app that demonstrates a real Liquid Glass system and then progressively gains local-folder scanning and metadata.
 
 If the source state changes, update this section immediately. Never leave the next agent guessing whether a feature is planned, implemented, built, installed, or tested.
+
+
+## 10. Additional visual-system licensing decision
+The SF Symbols Compose library used by FC Zenith was reviewed. Its source/generator carries an MIT license, but its README says the symbol artwork and data remain Apple's property and points to Apple's SF Symbols license, which restricts use to Apple platforms. Player will not bundle those glyphs in its Android APK without explicit permission. The visual direction remains Apple-inspired: use a consistent, appropriately licensed symbol family or original vectors, then tune optical size, stroke, alignment, labels and animation. Never use Apple logos, SF font files or unlicensed symbol artwork.

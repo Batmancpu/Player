@@ -6,17 +6,22 @@ Sequential plan. Each item is a focused commit, split further if its diff/failur
 
 ## Phase 0 — Durable handoff
 - [x] README, AGENTS.md, PROJECT_CONTEXT.md and initial DEVELOPMENT_LOG.md.
-- [ ] Architecture, decisions, roadmap, device tests and issue register (being committed now).
+- [x] Architecture, decisions, roadmap, device tests and issue register.
+- [x] First clean Android debug APK build and GitHub Actions artifact verified.
+- [x] CI action runtime upgraded to Node 24-compatible releases.
+- [ ] Gradle wrapper/reproducible local build entry point; currently CI installs Gradle 9.5.1 directly.
+- [ ] Real project-authored unit and Compose smoke tests; the current unit-test task has an empty test source set.
+- [ ] CI dependency/license inventory.
 
 ## Phase 1 — Buildable Android foundation
-1. build: add Gradle wrapper and root settings.
-2. build: pin Android/Kotlin plugin versions and version catalog.
-3. build: add minimal Android app module and SDK configuration.
-4. app: add manifest and minimal Compose launcher activity.
-5. ci: add Android unit-test and debug-build workflow; upload APK artifact.
-6. test: add baseline JVM and Compose UI smoke tests.
-7. ci: add dependency/licence inventory check and verify no analytics/crash SDK.
-8. docs: record first verified APK build and artifact.
+1. build: add Gradle wrapper (root settings are already committed); preserve pinned Gradle 9.5.1.
+2. build: pin Android/Kotlin plugin versions and version catalog. **Done:** AGP 9.3.1 and Kotlin Compose plugin 2.4.21; AGP9 built-in Kotlin used.
+3. build: add minimal Android app module and SDK configuration. **Done:** app module, SDK37/minSdk29/targetSdk37.
+4. app: add manifest and minimal Compose launcher activity. **Done:** edge-to-edge dark starter shell.
+5. ci: add Android build workflow and APK artifact. **Done:** run 2 and run 3 passed; run 3 uses Node24-compatible action majors.
+6. test: add baseline JVM and Compose UI smoke tests. **Pending:** current test task has no authored test cases.
+7. ci: add dependency/licence inventory check and verify no analytics/crash SDK. **Pending.**
+8. docs: record first verified APK build and artifact. **Done:** runs and artifact IDs recorded in DEVELOPMENT_LOG.md.
 **Gate:** clean checkout builds and produces installable debug APK.
 
 ## Phase 2 — Design tokens and typography

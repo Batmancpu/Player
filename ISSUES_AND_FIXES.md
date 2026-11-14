@@ -80,3 +80,9 @@ Do not erase a failure after a fix. Mark fixed and link the corrective commit.
 - **Root cause:** CI used the platform package name without the channel's `.0` suffix.
 - **Fix:** use `platforms;android-37.0`; retain `build-tools;37.0.0`.
 - **Regression test:** following CI run must install the platform and proceed to Gradle; record result in DEVELOPMENT_LOG.md.
+
+
+### R-007 — Apple SF Symbols glyph licence
+- **Status:** Closed by design decision.
+- **Finding:** The SF Symbols Compose repository uses MIT for its generator/source, but explicitly says the actual SF glyph artwork/data are Apple's property and subject to Apple's SF Symbols license. That license restricts use to Apple platforms.
+- **Mitigation:** Do not bundle Apple glyph artwork or SF font files in Android. Use an original or permissively licensed icon set with consistent optical sizing, weight, and animation. The app may be Apple-inspired without reproducing proprietary glyphs.
