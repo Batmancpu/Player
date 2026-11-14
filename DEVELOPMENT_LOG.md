@@ -158,3 +158,10 @@ Tests: documentation review only. No application build exists yet; no APK or dev
 - Rewired the launcher surface to use PlayerTheme and shared typography/spacing instead of local hardcoded styling.
 - No Apple font, SF Symbols glyphs, glass engine, network, storage or media features were added.
 - Verification: pending CI run triggered by this commit; no device screenshots/installation yet.
+
+
+## 2026-11-14 — Curated navigation icon assets added
+- Added four selected Lucide 2.2.1 vectors (house, clapperboard, TV, search) with 1.8 stroke width and a single PlayerGlyph registry.
+- Packaged the complete upstream ISC/MIT license notice under app/src/main/assets/licenses/ and added THIRD_PARTY_NOTICES.md.
+- No entire icon pack dependency was added; only the four vector assets required for the initial navigation vocabulary are bundled.
+- CI verification for this commit is pending.
