@@ -144,3 +144,6 @@ This file is the durable, accumulating record of important user requests, produc
 - Implemented H-009 retained session/serialized operations and transactional selected-tree cache activation with deterministic tests. PR CI pending at recording. No new Release; no manual user work needed yet. Next: verify/integrate, then root/grant recovery H-010 and provider cancellation/bounds H-011.
 
 - H-009 outcome: PR #2 merged as 10dab08, six regression cases added and unit/debug CI passed (43613459732). Main signed CI 43613651152 also passed including permanent certificate verification. No new Release or manual work requested. Continue H-010 grant/root recovery; broad product estimate remains rough 10–15%, 0/6 phases phone-accepted.
+
+## 2026-11-14 — Continuous Phase 1 authorization and grant recovery
+User requested sustained work until signed Phase 1 candidate in Releases; actual phone acceptance still requires user report. Two one-time continuations created for five and ten hours later, instructed to resume from live GitHub/pending CI without duplicate work. Implemented H-010 serialized grant/root recovery with nine fake-store cases; PR CI pending. Next H-011 query cancellation/bounds and remaining Phase 1 acceptance coverage.

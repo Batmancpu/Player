@@ -1,9 +1,6 @@
 package com.batmancpu.player.ui.library
 
-import android.content.Context
-import android.content.Intent
 import android.net.Uri
-import android.provider.DocumentsContract
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -28,126 +25,36 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.batmancpu.player.R
 import com.batmancpu.player.ui.theme.PlayerPalette
 import com.batmancpu.player.ui.theme.PlayerSpacing
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-
-private const val PREFERENCES_NAME = "player_library_preferences"
-private const val KEY_TREE_URI = "selected_local_tree_uri"
-private const val LOCAL_STORAGE_AUTHORITY = "com.android.externalstorage.documents"
-
-private data class FolderSelection(
-    val uri: Uri,
-    val displayName: String,
-)
 
 @Composable
 internal fun FolderSetupScreen(
-    session: LibrarySession,
+    model: LibraryViewModel,
     onOpenGlassLab: () -> Unit,
 ) {
-    val context = LocalContext.current
-    val preferences = remember(context) {
-        context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
-    }
-    val scope = rememberCoroutineScope()
-
-    var selection by remember { mutableStateOf<FolderSelection?>(null) }
-    var isRestoring by remember { mutableStateOf(true) }
-    var feedback by remember { mutableStateOf<String?>(null) }
-    val libraryState by session.state.collectAsState()
-    // Selection may change one composition before LaunchedEffect switches the session.
-    val visibleState = libraryState.takeIf { it.tree == selection?.uri?.toString() }
+    val folderState by model.folder.collectAsState()
+    val selection = folderState.folder
+    val isRestoring = folderState.busy
+    val libraryState by model.session.state.collectAsState()
+    val visibleState = libraryState.takeIf { it.tree == selection?.tree }
     val discoveredMedia = visibleState?.media.orEmpty()
     val isScanning = visibleState?.isScanning == true
     val isLoadingLibrary = visibleState?.isLoading == true ||
         (selection != null && visibleState == null)
-    val scanError = if (visibleState?.hasError == true) {
-        stringResource(R.string.library_scan_error)
-    } else null
-
-    LaunchedEffect(selection?.uri, isRestoring) {
-        // Initial restoration temporarily has no selection after recreation.
-        // Do not reset the retained session until restoration has finished.
-        if (!isRestoring) session.select(selection?.uri?.toString())
+    val scanError = if (visibleState?.hasError == true) stringResource(R.string.library_scan_error) else null
+    val feedback = when {
+        folderState.unsupported -> stringResource(R.string.folder_setup_unsupported_provider)
+        folderState.error -> stringResource(R.string.folder_setup_permission_lost)
+        else -> null
     }
-
-    LaunchedEffect(preferences) {
-        val restored = withContext(Dispatchers.IO) {
-            val saved = preferences.getString(KEY_TREE_URI, null) ?: return@withContext null
-            val uri = runCatching { Uri.parse(saved) }.getOrNull()
-                ?: return@withContext null
-            val readGrantExists = context.contentResolver.persistedUriPermissions.any {
-                it.uri == uri && it.isReadPermission
-            }
-            if (!isSupportedLocalTree(uri) || !readGrantExists) {
-                null
-            } else {
-                FolderSelection(uri, resolveFolderDisplayName(context, uri))
-            }
-        }
-        selection = restored
-        isRestoring = false
-        if (restored == null && preferences.contains(KEY_TREE_URI)) {
-            preferences.edit().remove(KEY_TREE_URI).apply()
-            feedback = context.getString(R.string.folder_setup_permission_lost)
-        }
-    }
-
-    val folderPicker = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocumentTree(),
-    ) { uri ->
-        if (uri != null) {
-            if (!isSupportedLocalTree(uri)) {
-                feedback = context.getString(R.string.folder_setup_unsupported_provider)
-            } else {
-                val grantSaved = runCatching {
-                    context.contentResolver.takePersistableUriPermission(
-                        uri,
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION,
-                    )
-                    context.contentResolver.persistedUriPermissions.any {
-                        it.uri == uri && it.isReadPermission
-                    }
-                }.getOrDefault(false)
-
-                if (!grantSaved) {
-                    feedback = context.getString(R.string.folder_setup_permission_failed)
-                } else {
-                    session.cancelScan()
-                    val previous = selection?.uri
-                    if (previous != null && previous != uri) {
-                        runCatching {
-                            context.contentResolver.releasePersistableUriPermission(
-                                previous,
-                                Intent.FLAG_GRANT_READ_URI_PERMISSION,
-                            )
-                        }
-                    }
-                    scope.launch {
-                        val name = withContext(Dispatchers.IO) {
-                            resolveFolderDisplayName(context, uri)
-                        }
-                        preferences.edit().putString(KEY_TREE_URI, uri.toString()).apply()
-                        selection = FolderSelection(uri, name)
-                        feedback = context.getString(R.string.folder_setup_access_saved)
-                    }
-                }
-            }
-        }
+    val folderPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        if (uri != null) model.connectFolder(uri.toString())
     }
 
     Surface(
@@ -203,7 +110,7 @@ internal fun FolderSetupScreen(
                                 style = MaterialTheme.typography.labelMedium,
                             )
                             Text(
-                                text = selection!!.displayName,
+                                text = selection.label,
                                 color = PlayerPalette.textPrimary,
                                 style = MaterialTheme.typography.titleLarge,
                             )
@@ -213,7 +120,7 @@ internal fun FolderSetupScreen(
                                 style = MaterialTheme.typography.bodySmall,
                             )
                             Button(
-                                onClick = { session.startScan() },
+                                onClick = { model.session.startScan() },
                                 enabled = !isScanning && !isLoadingLibrary,
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
@@ -225,7 +132,7 @@ internal fun FolderSetupScreen(
                                     color = PlayerPalette.textSecondary,
                                 )
                                 OutlinedButton(
-                                    onClick = { session.cancelScan() },
+                                    onClick = { model.session.cancelScan() },
                                     modifier = Modifier.fillMaxWidth(),
                                 ) {
                                     Text(stringResource(R.string.library_scan_cancel))
@@ -271,7 +178,7 @@ internal fun FolderSetupScreen(
                                 }
                             }
                             OutlinedButton(
-                                onClick = { folderPicker.launch(selection!!.uri) },
+                                onClick = { folderPicker.launch(Uri.parse(selection.tree)) },
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
                                 Text(stringResource(R.string.folder_setup_change_folder))
@@ -316,29 +223,6 @@ internal fun FolderSetupScreen(
             }
         }
     }
-}
-
-private fun isSupportedLocalTree(uri: Uri): Boolean =
-    DocumentsContract.isTreeUri(uri) && uri.authority == LOCAL_STORAGE_AUTHORITY
-
-private fun resolveFolderDisplayName(context: Context, treeUri: Uri): String {
-    return runCatching {
-        val documentId = DocumentsContract.getTreeDocumentId(treeUri)
-        val documentUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, documentId)
-        context.contentResolver.query(
-            documentUri,
-            arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME),
-            null,
-            null,
-            null,
-        )?.use { cursor ->
-            if (cursor.moveToFirst()) {
-                cursor.getString(0)?.takeIf { it.isNotBlank() }
-            } else {
-                null
-            }
-        }
-    }.getOrNull() ?: context.getString(R.string.folder_setup_fallback_name)
 }
 
 private fun mediaDisplayLabel(document: DiscoveredLocalMedia): String =
