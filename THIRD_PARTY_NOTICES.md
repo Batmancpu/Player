@@ -12,3 +12,7 @@ This file records third-party code/assets shipped in the Player APK. Each includ
 - License: ISC, with MIT terms for portions derived from Feather. The complete notice is packaged at `app/src/main/assets/licenses/LUCIDE_ICONS_LICENSE.md`.
 
 No Apple SF Symbols glyphs, Apple logos or SF font files are bundled.
+
+
+## Runtime libraries
+AndroidX/Jetpack (Android Open Source Project and contributors), Kotlin/kotlinx.coroutines (JetBrains and contributors), and Haze 2.1.0 (Chris Banes and contributors) use Apache-2.0. Packaged license/attribution: `app/src/main/assets/licenses/APACHE_2_0.txt` and `DEPENDENCIES.md`. Haze license verified at tag 2.1.0: https://github.com/chrisbanes/haze/blob/2.1.0/LICENSE. Build tooling and AndroidX Test/JUnit are development/test dependencies, not runtime feature additions. Retain upstream per-file copyright and any applicable NOTICE when adapting code.

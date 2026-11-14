@@ -141,6 +141,10 @@ jobs:
         if: ${{ steps.release_signing.outputs.enabled == 'true' }}
         run: gradle --no-daemon --stacktrace :app:assembleRelease
 
+      - name: Verify production manifest privacy boundary
+        if: ${{ steps.release_signing.outputs.enabled == 'true' }}
+        run: python scripts/verify_release_manifest.py app/build/outputs/apk/release/app-release.apk "$ANDROID_HOME/build-tools/37.0.0/aapt2"
+
       - name: Verify release APK signature and report hashes
         if: ${{ steps.release_signing.outputs.enabled == 'true' }}
         shell: bash
@@ -203,10 +207,14 @@ jobs:
             echo "APK SHA-256: ${hash}"
             echo "Certificate SHA-256: 4D:2F:17:89:ED:27:D3:96:13:35:FE:36:45:64:55:BD:9A:31:0B:0D:CD:F4:1E:8C:CC:92:53:98:33:9E:80:BF"
             echo
-            echo "TEST BUILD: Phase 1 is incomplete and not yet verified on a physical phone. This release is for Obtainium installation/update pipeline testing; follow docs/PHASE1_PHONE_TEST.md."
+            echo "PHASE 1 PHONE-TEST CANDIDATE: one read-only local folder, recursive video/subtitle discovery, offline Room library, grouped episodes, safe rescans/cancellation and permission recovery. Automated verification is separate from real OPPO acceptance."
+            echo
+            echo "Phone test: update without uninstalling; select a nested local test folder; scan; reopen in airplane mode; add/remove a test file and rescan; cancel a scan; switch folders; reconnect after permission loss. Confirm no outside files or source modifications."
+            echo "Full checklist: https://github.com/Batmancpu/Player/blob/main/docs/PHASE1_PHONE_TEST.md"
+            echo "Phase 1 remains unaccepted until the actual OPPO Reno10 CPH2531 report. No handset FPS measurement is claimed."
           } > "$RUNNER_TEMP/release-notes.md"
           gh release create "$tag" "$release_apk" \
-            --title "Player ${tag} — test APK (not accepted)" \
+            --title "Player ${tag} — Phase 1 phone-test candidate" \
             --notes-file "$RUNNER_TEMP/release-notes.md" \
             --latest \
             --target "${GITHUB_SHA}"
