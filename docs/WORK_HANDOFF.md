@@ -17,8 +17,8 @@ User confirmed signed Player v0.1.51 → v0.1.53 **in-place Obtainium update**. 
 
 ## Immediately verified state — Codex audit 2026-11-14
 - Baseline main acb9829; CI 43588156049 succeeded. Signed v0.1.51 and v0.1.53 exist and user confirmed in-place Obtainium update. Signing setup is complete; never request new keys/secrets.
-- SAF scanner/parser/Room prototype is implemented. Current slice rejects incomplete/error cursor listings before reconciliation, with JVM regression tests; PR CI pending. No new Release published; Phase 1/device acceptance pending.
-- Read docs/PHASE1_AUDIT.md for prioritized defects/test gaps, source/research evidence and implementation order. Next: inspect PR CI (`:app:testDebugUnitTest :app:assembleDebug`), merge green fix, then serialize scan/folder lifecycle and grant ownership.
+- SAF scanner/parser/Room prototype is implemented. Current slice rejects incomplete/error cursor listings before reconciliation, with JVM regression tests; PR CI 43612121975 passed, merged as 79ee09d (functional commit 9557723). Main signed CI pending. No new Release published; Phase 1/device acceptance pending.
+- Read docs/PHASE1_AUDIT.md for prioritized defects/test gaps, source/research evidence and implementation order. Next: inspect main signed CI, then serialize scan/folder lifecycle and grant ownership (H-009).
 - The older signing/release diagnostic sections below are historical, superseded by this status and the final user-confirmed update entry.
 
 ## Update discipline

@@ -152,3 +152,18 @@ Do not erase a failure after a fix. Mark fixed and link the corrective commit.
 - Status: implemented, PR CI pending; not device-verified. See docs/PHASE1_AUDIT.md for remaining independent defects.
 
 
+
+### H-009 — Cached load / scan / folder-selection ordering
+- Status: open; source-confirmed at acb9829, affects v0.1.51/v0.1.53. No OPPO reproduction. Old load may replace newer scan display; scan cancellation is not joined during switching. Root-cause confidence high from independent composable jobs/shared state.
+- Fix pending: lifecycle-owned serialized state. Regression needed: delayed load followed by scan; A→B→A; rotation/background. See docs/PHASE1_AUDIT.md item 2.
+
+### H-010 — Grant restoration/replacement recovery gaps
+- Status: open; source-confirmed at acb9829, affects v0.1.51/v0.1.53. No OPPO reproduction. Stored grant is mistaken for accessible root; ignored release failure/process interruption can retain additional grants. Confidence high from source; actual OEM failure behavior unverified.
+- Fix pending: explicit root validation/reconnect and reconcile grant ownership. Regression needed: unavailable/deleted root, revoked grant, failed release, process death between take/persist. See audit item 3.
+
+### H-011 — Unbounded traversal and blocking-provider cancellation
+- Status: open; source-confirmed at acb9829, affects v0.1.51/v0.1.53. No OPPO ANR/OOM report. Entire child cursors and queue are unbounded; query lacks CancellationSignal and row loop lacks cooperative cancellation. Confidence high from source.
+- Fix pending: query cancellation/budgets with explicit incomplete error preserving cached rows. Regression needed: blocked query, huge cursor, cycles/deep/wide trees, cancellation after partial rows. Existing cancellation test only exercises a suspending callback.
+
+### H-008 verification update
+- PR #1 functional commit 9557723 merged as 79ee09d. Unit/debug CI 43612121975 passed. Android cursor/Room integration and handset evidence remain pending; complete-listing guard is source/build/JVM verified only.

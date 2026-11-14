@@ -134,3 +134,5 @@ This file is the durable, accumulating record of important user requests, produc
 - Remaining work: scan/folder lifecycle and grant races, provider cancellation/bounds, Room instrumentation/schema fixtures, conservative parser corpus and meaningful UI states. No device/FPS claims, dependency adoption or release publication.
 
 
+
+- Verification follow-up: storage fix 9557723 merged via PR #1 as 79ee09d after successful CI https://github.com/Batmancpu/Player/actions/runs/43612121975. Upstream root licenses/activity pinned in audit. Main signed build pending; no new release/device acceptance. Next H-009 lifecycle ordering.

@@ -38,3 +38,15 @@ Read on 2026-11-14; findings are design inputs, not newly approved dependencies 
 
 PR gate: `gradle --no-daemon --stacktrace :app:testDebugUnitTest :app:assembleDebug` on GitHub Actions; local cloud workspace lacks Gradle/Android SDK. Inspect logs on any failure, merge only green changes. Then implement item 2 with deterministic coroutine tests. Do not ask user to configure signing again or install a debug build.
 
+## Candidate provenance checked during the audit
+
+| Repository | Inspected revision | Latest default-branch commit date | Root license |
+|---|---|---|---|
+| android/nowinandroid | [2982e63c](https://github.com/android/nowinandroid/commit/2982e63cb691ad49cd009aab43dc206fee6699c2) | 2026-10-20 | [Apache-2.0](https://github.com/android/nowinandroid/blob/2982e63cb691ad49cd009aab43dc206fee6699c2/LICENSE) |
+| androidx/media | [8c6678b6](https://github.com/androidx/media/commit/8c6678b657ede1e7883fc164ef73ed483c7796c3) | 2026-09-08 | [Apache-2.0](https://github.com/androidx/media/blob/8c6678b657ede1e7883fc164ef73ed483c7796c3/LICENSE) |
+| coil-kt/coil | [a6cc8e3e](https://github.com/coil-kt/coil/commit/a6cc8e3e96ec79f71cea1b34c52df140126e067f) | 2026-11-14 | [Apache-2.0](https://github.com/coil-kt/coil/blob/a6cc8e3e96ec79f71cea1b34c52df140126e067f/LICENSE.txt) |
+| chrisbanes/haze | [7b8d8310](https://github.com/chrisbanes/haze/commit/7b8d8310aed65339a43222244afcb60213cd1559) | 2026-11-14 | [Apache-2.0](https://github.com/chrisbanes/haze/blob/7b8d8310aed65339a43222244afcb60213cd1559/LICENSE) |
+
+All four repositories were non-archived at inspection. Dates establish recent default-branch activity, not a security endorsement or release compatibility. Preserve license/attribution and applicable NOTICE on any eventual redistribution; inspect per-file licenses and transitive dependencies first. No candidate was newly integrated. Existing Haze 2.1.0 adoption predates this audit. Module-specific network/permission/security, APK-size and handset performance audits remain required before further adoption; especially do not import upstream apps' networking/configuration wholesale.
+
+

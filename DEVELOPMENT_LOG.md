@@ -514,3 +514,11 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - Next exact gate: PR CI `gradle --no-daemon --stacktrace :app:testDebugUnitTest :app:assembleDebug`; inspect outcome, merge only if green, then test lifecycle/grant races. Commit SHA/evidence to be added in next ledger update.
 
 
+
+## 2026-11-14 — First Phase 1 fix verified and integrated
+- Functional commit: 95577232cbc120f409910ccab4724e2f836e739f; PR https://github.com/Batmancpu/Player/pull/1 merged as 79ee09d7669f90ff14a9592a801a84170006c062.
+- PR CI https://github.com/Batmancpu/Player/actions/runs/43612121975 succeeded. Job 132499215888 logs show testDebugUnitTest and assembleDebug executed; BUILD SUCCESSFUL in 41s. CI-only debug artifact uploaded; no install recommendation. No extracted per-case XML available, so no per-test runtime/count claim.
+- Local source-manifest check confirms no uses-permission and allowBackup=false; adapter has no source-write API. This is source inspection only, not merged-manifest or handset verification.
+- docs/PHASE1_AUDIT.md now includes exact inspected upstream revision, commit date and root Apache-2.0 license for Now in Android, Media3, Coil and Haze. Full dependency/security/permission/NOTICE/APK/performance evaluation remains required before new adoption; no copied code/new library.
+- ISSUES_AND_FIXES.md cross-references H-009/010/011 source-confirmed gaps and next regression scenarios. H-008 JVM gate passed; Android cursor/Room/device reproduction still pending.
+- Main signed CI pending at this documentation commit. No new GitHub Release; latest published version remains v0.1.53. Phase 1 unaccepted and no FPS measurements. Next: verify main CI and implement H-009 with deterministic cached-load/scan/selection ordering tests.

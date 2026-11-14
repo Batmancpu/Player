@@ -153,3 +153,5 @@ If chat context is lost, these repository records are the handoff. Do not invent
 - 2026-11-14 — Phase 1 audit and incomplete-provider fix: SAF cursor loading/error status now travels with directory rows; incomplete scans fail before Room reconciliation; malformed mandatory cursor fields fail closed. Added scanner regression tests and docs/PHASE1_AUDIT.md; corrected stale release handoff. Verification: source reviewed, CI pending; no device measurements. Next: run PR unit/debug gate, merge if green, then address scan/folder lifecycle races.
 
 
+
+- 2026-11-14 — Verified storage fix 9557723 via PR #1 CI (https://github.com/Batmancpu/Player/actions/runs/43612121975): unit tests/debug assembly passed, merged as 79ee09d. Added pinned upstream license/activity provenance and tracked remaining lifecycle/grant/bounds defects. Main signed CI pending at recording; no device test/release. Next: inspect main signing gate, then implement H-009 lifecycle tests/fix.
