@@ -269,37 +269,9 @@ No playback engine or online subtitle provider has been selected or added. Evalu
 The first folder-setup source commit (59216311c92b0619a9550651e9fc1539f749931d) did not pass Kotlin compilation. Workflow run 43569596301 reported only an unresolved import for rememberSaveable in MainActivity.kt. The import was corrected to androidx.compose.runtime.saveable.rememberSaveable in commit e20d8aa6bb193acac41414bd9e1f6b6b034ba13f. The corrected workflow run 43569710969 completed successfully; the subsequent context/roadmap handoff run 43569752178 also completed successfully. The source folder-setup compile gate is green. OPPO CPH2531 provider behaviour and permission-revocation tests remain pending. If successful, proceed to real-device validation of the accepted external-storage provider and folder permission recovery; only then implement the recursive scanner. The failure and correction are preserved in DEVELOPMENT_LOG.md and ISSUES_AND_FIXES.md.
 
 
-## 22. Stable Android release signing — infrastructure prepared (2026-11-14)
+## 22–23. Historical signing setup snapshots — superseded by section 24
 
-The user requested a permanent signing key so future APK builds update the installed app rather than requiring uninstall/reinstall. The following infrastructure is committed:
-
-- app/build.gradle.kts reads release signing values only from environment variables; no keystore or password is in source.
-- .github/workflows/ci.yml keeps unit tests and a CI-only debug artifact, and produces a separately named signed Release APK only when all four repository secrets exist. It validates the keystore alias/password, runs apksigner verify --print-certs, reports the public certificate fingerprint and APK SHA-256, and uploads a 30-day release artifact.
-- versionCode is sourced from GITHUB_RUN_NUMBER so each new workflow run on main has a higher version code.
-- Four expected Actions secrets: PLAYER_RELEASE_KEYSTORE_BASE64, PLAYER_RELEASE_KEYSTORE_PASSWORD, PLAYER_RELEASE_KEY_ALIAS, PLAYER_RELEASE_KEY_PASSWORD.
-- docs/ANDROID_SIGNING.md contains the safe local Termux key-generation steps, GitHub secret setup, backup instructions and the update/migration rules.
-- The GitHub connector used for repository code changes cannot create repository Actions secrets. The user must generate the private keystore on their Android device and add the four secrets in repository Settings. Never ask the user to paste the private keystore/base64 or passwords into chat.
-- Signing status: Gradle/CI scaffolding committed; private keystore not yet generated; GitHub secrets not yet configured; signed release APK not yet produced.
-- Current application ID is com.batmancpu.player. Keep it unchanged after first signed install. Changing only the visible app label later is safe; changing applicationId creates a different app identity.
-- Debug artifacts are CI-only and must not be installed for normal device testing. Install the first stable-key signed release artifact. If a differently signed test build is already installed, one one-time uninstall may be needed for migration; after that all updates use the stable key and increasing versionCode.
-
-
-## 23. Release-signing scaffold verified; private key is still user-side — 2026-11-14
-
-The stable-signing workflow is committed and CI-verified, but **no private keystore has been generated, no Actions secret has been configured, and no signed Release APK exists yet**.
-
-- Current `main` before this handoff: `f11f2a3eb0ce300644baaecffdd760a41e45f298`.
-- Signing scaffold commit `37f84dda2bffb106f50dc7ccc768808cdecb99d8`, workflow run 25 (`43570229274`) succeeded. The signing-preparation step succeeded with all four secrets absent; the release assembly, signature-verification and release-upload steps were deliberately skipped. Only the CI-only debug artifact was produced.
-- Follow-up documentation commit `f11f2a3eb0ce300644baaecffdd760a41e45f298`, workflow run 26 (`43570272899`), succeeded.
-- `app/build.gradle.kts` uses `com.batmancpu.player` as applicationId, and derives versionCode from `GITHUB_RUN_NUMBER`. Do not change applicationId after the first signed install. The app/repository display name remains a working title and can be changed separately.
-- `docs/ANDROID_SIGNING.md` is the canonical user procedure. `scripts/generate-release-keystore.sh` is a public, secret-free helper; it must be run on the user's own Android device in Termux. It creates the JKS and base64 value under `~/player-signing`, outside the cloned repo, uses restricted permissions, prints only the public certificate fingerprint, and reuses an existing JKS rather than rotating it.
-- The GitHub connector available to agents does not expose repository Actions-secret write APIs. Therefore, the user must enter the four values in GitHub Settings → Secrets and variables → Actions. Never ask the user to paste the keystore, base64 value or password into chat.
-- `.gitignore` already ignores `*.jks`, `*.keystore`, `*.p12` and `*.pfx`; the helper also stores generated files outside the repository.
-
-**Next exact action:** the user runs the Termux helper locally, saves the JKS plus password in at least two secure places, records the SHA-256 certificate fingerprint, and adds the four repository Actions secrets. Then trigger Android CI and confirm that the signed Release build, apksigner verification and release artifact all succeed. Only then install the first signed Release APK.
-
-**Important package-identity gate:** creating/backing up the key can happen now, but before installing the first signed APK the user must decide whether `com.batmancpu.player` is the final applicationId. Changing it after installation creates a different Android app and breaks the intended in-place update chain.
-
+These sections recorded the initial signing-scaffold state and a Termux-based key-generation proposal before the user asked the agent to create the key directly. They are retained in the earlier commit history but are no longer the current instructions. The Termux helper has been deleted. The permanent JKS now exists and has been delivered to the user as private files. For current key identity, secure backups, exact Actions secrets and package-ID implications, follow **section 24** and `docs/ANDROID_SIGNING.md`. Do not follow the old Termux steps or regenerate the key.
 
 ## 24. Permanent signing key generated; no Termux required — 2026-11-14
 
