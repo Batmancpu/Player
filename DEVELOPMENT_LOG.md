@@ -165,3 +165,10 @@ Tests: documentation review only. No application build exists yet; no APK or dev
 - Packaged the complete upstream ISC/MIT license notice under app/src/main/assets/licenses/ and added THIRD_PARTY_NOTICES.md.
 - No entire icon pack dependency was added; only the four vector assets required for the initial navigation vocabulary are bundled.
 - CI verification for this commit is pending.
+
+
+## 2026-11-14 — Theme contrast regression tests
+- Added three JVM tests for primary text contrast, secondary/tertiary text contrast, and distinct base/elevated/pressed surface tokens.
+- Tests use the WCAG contrast ratio calculation on the exact PlayerPalette values.
+- Verification: pending CI run.
+- Next: resolve any failing threshold from measured values before integrating the Glass engine.
