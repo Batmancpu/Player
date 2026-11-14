@@ -1,0 +1,148 @@
+# Canonical project context and handoff
+
+Last reviewed: 2026-11-14 (Asia/Kolkata)
+Repository: [Batmancpu/Player](https://github.com/Batmancpu/Player)
+Working title: **Player** (temporary; the user will rename it later)
+Current branch: `main`
+Implementation state at this document's creation: **documentation bootstrap only; no Android source/build has been imported or implemented yet.**
+
+This is the durable handoff for future ChatGPT/Codex/Claude/other AI agents. It summarizes the project origin, requirements, decisions, references, user context relevant to engineering, and current state. Keep it accurate as the project evolves.
+
+## 1. Origin and intended outcome
+
+The user has been experimenting with AfuseKt (the media scraper/player application) and asked whether a drastically simpler application could be built. The desired app is not a streaming service or media server. It is a private, local media-library catalogue.
+
+The original release repository the user had made available is [Batmancpu/InfuseKt-release](https://github.com/Batmancpu/InfuseKt-release). Inspection confirmed that it is a fork of [AttemptD/AfuseKt-release](https://github.com/AttemptD/AfuseKt-release), and its README explicitly says the repository publishes release builds and contains no application code. It must be preserved unchanged; do not attempt to implement the app there.
+
+The user then created [Batmancpu/Player](https://github.com/Batmancpu/Player) as the new source repository. Its initial state contained only a short README. The name is temporary and must not be treated as the final brand or package identity.
+
+The initial exploration identified [the-mskd-dev/Flux](https://github.com/the-mskd-dev/Flux) as a strong architectural/reference project: an Android local media library with Kotlin, Compose, Room, TMDB metadata, SAF folder scanning, artwork caching, and Media3. Flux is GPL-3.0-or-later. Its code has not been imported into Player. Any future copying/forking must respect the GPL and preserve notices. Flux should be audited before reuse; its current source supports broader/multiple sources and has more functionality than this app needs.
+
+## 2. Non-negotiable product contract
+
+**One folder, one local library, automatic matching, beautiful presentation, no media server.**
+
+The user will select exactly one folder through Android's system folder picker. The app may recursively inspect that folder and its descendants only. It should find local movie and TV episode files, normalize filenames, identify content, retrieve posters/backdrops/metadata and show a browsable library.
+
+The app must never:
+- Stream or host media through our infrastructure.
+- Upload video files, video contents, screenshots or complete folder listings.
+- Send local file paths, folder paths, raw SAF URIs or full personal filenames to metadata services.
+- Scan outside the folder the user selected.
+- Modify, move, rename or delete source media.
+- Add user accounts, cloud drives, Emby, Jellyfin, Plex, SMB, WebDAV, ads, subscriptions, analytics, telemetry or a Player backend.
+- Add a playback subsystem in the first release unless the user later approves scope expansion.
+
+Metadata discovery does require an external provider. The initial provider is The Movie Database (TMDB). The app will send normalized search terms such as title, year and media type directly to TMDB over HTTPS and retrieve images from its CDN. This is not media streaming. Downloaded details/artwork are cached locally and remain visible offline. No custom proxy or server is wanted.
+
+When internet is unavailable, existing content remains browsable. New titles can show an unmatched/pending-artwork state until the next online refresh.
+
+## 3. Visual/product ambition
+
+The user clarified that “Apple TV aesthetics” means much more than a dark theme or translucent bottom bar. The desired result is a fully art-directed, Apple-inspired interface:
+
+- Cinematic, dark, content-first home/library with large and carefully composed movie posters and artwork.
+- Artwork-led detail pages, blended hero backdrops, soft gradients/scrims, carefully controlled hierarchy and beautifully typeset metadata.
+- iOS 27-inspired Liquid Glass for functional chrome: navigation, floating buttons, controls, transient menus, sheets and selected interactive elements.
+- Clear and regular glass treatments, source-backed blur, optical refraction, soft highlights, reflective hairlines, subtle shadows, and animated joining/morphing where it makes sense.
+- Coherent Apple-inspired icon family, consistent glyph weights/optical sizes, and native-feeling typography/alignment/motion.
+- Smooth spring transitions, interactive morphing and polished loading/empty/error/offline states.
+- Poster artwork itself remains crisp and is not covered in unnecessary glass.
+
+Apple's own HIG places Liquid Glass in the functional layer (navigation and controls), separate from the content layer. This is important: do not coat every movie card/poster in glass. Use standard material treatment for content surfaces and reserve glass for controls.
+
+“Pixel-perfect” is a quality target, not permission to claim a literal pixel copy of Apple's proprietary implementation. Use publicly available references and original Android implementations; do not copy proprietary source, Apple logos, SF font files, or licensed artwork.
+
+## 4. User's development environment and constraints
+
+The user has no PC and develops using an Android phone and iPad. GitHub and GitHub Actions must be the build/test workstation; provide installable APK artifacts and release links only after verified builds.
+
+Primary handset for real-device validation:
+- OPPO Reno10 5G
+- Device model CPH2531
+- Android 15 / ColorOS 15
+- MediaTek Dimensity 7050
+- User targets stable 60-Hz behaviour and is sensitive to UI stutter, native crashes, battery drain and privacy.
+- Do not presume we can control or inspect the handset directly. CI build success is not proof of device success. Ask the user to install a named artifact and supply logs/screenshots only when a real-device observation is needed.
+
+The user strongly prefers small commits, one main branch, practical verification, no giant patches, no broad refactors, and no moving on while a build is failing. They expect the AI to maintain continuity and act as a technical owner: proactively monitor workflow runs, examine failures, fix root causes, record what happened and verify the fix.
+
+## 5. Relevant existing user repositories inspected
+
+### AfuseKt release fork
+- [Batmancpu/InfuseKt-release](https://github.com/Batmancpu/InfuseKt-release)
+- Parent: [AttemptD/AfuseKt-release](https://github.com/AttemptD/AfuseKt-release)
+- Release-only repository; README says it does not contain application code.
+- Preserve it. Player is the source project.
+
+### FC Zenith
+- [Batmancpu/FCZenith](https://github.com/Batmancpu/FCZenith)
+- Kotlin/Compose music-player fork with a sophisticated Liquid Glass implementation and a performance-focused mobile UI.
+- Inspected `app/src/main/java/com/music/zenith/ui/components/LiquidGlass.kt`, `LiquidGlassThumb.kt`, `GlassNavBar.kt`, `GlassSegmentedControl.kt`, `FrostedTopBar.kt`, the vendored `backdrop/` package, `SfIcons.kt`, and `GUIDELINES.md`.
+- Its custom glass integration is tied to Zenith-specific application settings, backdrop locals, player/navigation state and vendored rendering code. Do not copy it wholesale.
+- Useful observations: 0.33 backdrop resolution in the main glass modifier; full glass gated by platform support; lens path gated to API 33+; fallback paths for reduced dynamic blur/unsupported devices; reduced recomposition by reading animation state at draw time; no expensive per-frame state reads; component reuse; resource-backed UI strings; one icon registry; reduced-blur/reduced-animation/high-performance/low-RAM fallbacks.
+- FC Zenith is the visual target/reference for material quality, not the media app source.
+
+### CurrentLens / brrrNews
+- [Batmancpu/CurrentLens](https://github.com/Batmancpu/CurrentLens)
+- Inspected its README, current source tree, `LaunchCrashDiagnostics.kt`, startup path in `MainActivity.kt`, build workflow and commit `2475970123a2a2fb0e05be25d1d9a45061186c73` (“fix: harden launch, reduce feed jank and finish glass polish”).
+- That hardening commit introduced on-device crash diagnostics and a recovery screen, added defensive reads around local preference/cache state, and removed recurring full-screen/bottom-band GPU luminance sampling that could synchronise GPU work during scrolling. Later small commits corrected product-name spelling. These are repository-verified changes.
+- Separate historical user-reported incident: the user previously reported a native `SIGSEGV` on OPPO CPH2531 / Android 15, package `com.mangoloads.currentlens.stability`, version `0.2.2-stability`, after the log line “BrrrNewsApp composition started”. The complete native tombstone/root cause is not present in the current repository review. Treat it as a warning and an unverified incident, not as proof that one specific Compose or glass component caused it.
+- Important technical distinction: a Kotlin uncaught-exception handler can persist ordinary Java/Kotlin crashes, but it cannot reliably catch a native SIGSEGV that terminates the process. Native crashes need tombstones/logcat/native crash evidence. Therefore Player should avoid JNI/NDK/native graphics in its initial implementation and prove GPU effects independently on the physical handset.
+
+### brrrBoard / FrostKeys
+- [Batmancpu/brrrBoard](https://github.com/Batmancpu/brrrBoard)
+- Its README documents OEM-specific live-blur limitations, particularly on lower/mid-range Android devices and older APIs. It recommends fallback behaviour when blur is unsupported and warns that some devices may crash or render incorrectly.
+- Reuse that lesson: no mandatory live blur, no hard dependency on native window blur, and no glass effect may block basic app use.
+
+## 6. Candidate technical foundation
+
+Flux is an architectural reference, not yet an imported codebase. The simpler Player application can use a conventional native Android app rather than inheriting Flux's KMP and multiple-source complexity.
+
+Candidate components (versions must be pinned and verified in CI before adoption):
+- Kotlin + Android Gradle Plugin + Jetpack Compose.
+- Haze 2.1.0 as the preferred Glass proof of concept. Its official release (2 November 2026) stabilizes Glass, introduces `hazeGlassContainer` for morphing/joining nearby surfaces, improves fallback/accessibility and reduces some rendering overhead. It updates Kotlin to 2.4.21 and Compose Multiplatform to 1.12.2. Upgrade toolchain components in isolated commits.
+- Coil 3 or equivalent for poster/backdrop loading and cache.
+- Room for local media/metadata index; app-private storage for artwork cache.
+- Android SAF / `ACTION_OPEN_DOCUMENT_TREE` with persisted read permission.
+- Direct HTTPS TMDB API client; no proxy/server.
+- Coroutines/Flow and WorkManager only where justified for incremental scanning. Do not introduce permanent background services.
+- Media3 is a later optional playback candidate, not a v1 dependency.
+
+Exact dependency versions, minSdk/targetSdk, Gradle/JDK versions, package ID, app branding, signing strategy and final licence must be confirmed in dedicated, build-tested commits. Do not guess these into a giant initial patch.
+
+## 7. Metadata matching contract
+
+For movies, normalize title and year from filenames; remove release-group, resolution, codec and container noise. For series, parse series title, season and episode from common patterns such as `S01E02`, `S01.E02`, `1x02`, `Season 1/02`.
+
+Identify a series once and group episodes beneath the series/seasons. Do not issue a separate series search for every episode. Retrieve episode-specific details only after matching the parent series.
+
+Use result confidence and allow manual correction. Store the user's chosen TMDB identity so later scans do not overwrite it with a different guess. Be conservative with ambiguous titles and duplicate remakes. Use bounded concurrency, rate limits, cancellation, retry/backoff and incremental reconciliation.
+
+Only normalized title/year/content-type search information may be sent to TMDB. Never transmit full storage paths, URIs, directory names or media content.
+
+TMDB's free developer API is for non-commercial use with required attribution; commercial use requires a separate licence. The app must include the required notice and approved TMDB logo within an About/Credits section, subject to current TMDB terms.
+
+## 8. Roadmap and commit discipline
+
+The detailed roadmap lives in `docs/ROADMAP.md`. Work in small, sequential commits on `main`. Each commit must be independently understood and verified. Keep changes narrow, with a target of 1–3 related files per functional commit. A dependency upgrade is its own commit. A test or docs change may be separate if the code change would otherwise become too large.
+
+Do not report that a stage is done until:
+- Its relevant unit/instrumentation tests pass.
+- GitHub Actions completes successfully.
+- The build artifact exists when the stage produces an APK.
+- Real-device behaviour is marked separately and not inferred from CI.
+
+The agent must update the canonical log and issue register as work proceeds. Preserve all failed builds and lessons; do not erase history after a fix.
+
+## 9. Current implementation state and next action
+
+At this document's creation:
+- `Player` is the new source repository.
+- The only initial project content was `README.md`.
+- No Gradle project, Android source, dependency configuration, workflow, APK or app implementation has been committed.
+- No code has been copied from Flux or FC Zenith.
+- The next step is the repository bootstrap commit set, followed by a minimal Android/Compose build workflow. Establish a passing empty-shell APK before storage, metadata, or Glass work begins.
+- The user's first acceptance target is not a mockup alone: a working installable app that demonstrates a real Liquid Glass system and then progressively gains local-folder scanning and metadata.
+
+If the source state changes, update this section immediately. Never leave the next agent guessing whether a feature is planned, implemented, built, installed, or tested.

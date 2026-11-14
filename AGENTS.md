@@ -1,0 +1,117 @@
+# Instructions for every AI agent working in this repository
+
+This file is binding project guidance. Read it before making changes. Do not rely on chat history as the source of truth.
+
+## Mandatory reading order
+
+1. `PROJECT_CONTEXT.md` — product intent, origin, constraints, previous discussions, known repository facts.
+2. `docs/ARCHITECTURE.md` — intended system boundaries and data flow.
+3. `docs/DECISIONS.md` — decisions already made and decisions still open.
+4. `docs/ROADMAP.md` — approved implementation sequence and commit-sized work.
+5. `docs/DEVICE_TESTING.md` and `ISSUES_AND_FIXES.md` — device history, crash lessons, reproduction and recovery.
+6. `DEVELOPMENT_LOG.md` — current implementation state and completed work.
+
+If a file is missing, create it in the appropriate documentation commit before relying on undocumented assumptions.
+
+## Product goal: do not drift
+
+Build a beautiful, stable, local-first Android media-library application with the cinematic content presentation of Apple TV and an iOS 27-inspired Liquid Glass control layer.
+
+The user selects **exactly one local folder**. The app recursively discovers video files within that folder and its descendants, matches movies and TV episodes, retrieves posters/backdrops/descriptions/metadata from TMDB, stores the library locally, and presents it in a polished interface.
+
+Hard boundaries:
+
+- Never upload, proxy, stream, relay, or otherwise transmit video files or video contents.
+- Never build a Player-operated media server or account system.
+- Never scan outside the single folder explicitly selected by the user.
+- Never write to, rename, move, or delete source media.
+- Never add advertising, analytics, telemetry, cloud AI, crash-upload services, subscriptions, or unnecessary permissions.
+- Network access is limited to the metadata provider and its artwork CDN. Send only normalized title/year/type search data; never send file paths, folder names, SAF URIs, complete filenames containing personal directory data, or file contents.
+- Previously indexed metadata and downloaded artwork must remain available offline.
+- Playback is not part of the first release unless the user explicitly expands scope.
+
+## Visual quality bar
+
+This is not an Android Material app with a blur modifier. The complete interface must be consistently art-directed:
+
+- Apple TV-like cinematic media shelves, large artwork, deep dark backgrounds and well-composed title/detail pages.
+- iOS 27-inspired Liquid Glass for functional chrome: floating navigation, buttons, transient menus, sheets and selected interactive controls.
+- Use real source-backed blur/glass and subtle refraction where supported; include graceful, readable fallbacks.
+- Keep poster artwork and text content crisp. Do not apply glass to the entire content layer.
+- One coherent Apple-inspired symbol vocabulary; no random mixture of icon families or inconsistent weights.
+- Consistent system-style typography, optical alignment, spacing, radii, hit targets, easing and spring behaviour.
+- Artwork-derived gradients and scrims must preserve text contrast.
+- Polish every state: loading, empty, error, offline, no permission, ambiguous match, and long titles.
+
+Use Apple's public Human Interface Guidelines as design guidance; do not copy proprietary Apple source code, fonts, logos, or assets.
+
+## Engineering baseline
+
+- Prefer Kotlin + native Android + Jetpack Compose. Do not introduce Kotlin Multiplatform unless a real requirement justifies it.
+- Prefer small, well-separated layers: UI/presentation, domain/use cases, data sources/repositories, persistence, and platform storage.
+- Use Android's Storage Access Framework (SAF) for the folder grant. Persist the read grant. Treat the selected URI and document IDs as identities; do not assume raw filesystem paths.
+- Start with a local-provider allowlist and explicit provider validation. Never silently accept cloud/network document providers.
+- Use Room for indexed media and metadata persistence; use app-private storage for poster/backdrop cache.
+- Use coroutines/Flow for background scanning and network work. Never scan directories or perform API calls on the main thread.
+- Use a maintained image-loading library with memory and disk caching.
+- Keep network provider and image CDN boundaries explicit and testable.
+- No JNI, NDK, custom native rendering, or experimental native RenderEffect backend in the first implementation. Add platform-specific rendering only after isolated proof on the target handset.
+- Pin dependency versions. Upgrade Kotlin, Compose, AGP, Gradle, and glass libraries in isolated commits, not as a single dependency bundle.
+- Never copy an entire upstream application blindly. Audit its architecture, license, dependencies, permissions, telemetry, storage model, and build pipeline first.
+
+## Liquid Glass policy
+
+Haze 2.1.0 is the preferred candidate for a proof of concept, not yet an approved production dependency. Its Glass API became stable in 2.1.0; that release updates Kotlin to 2.4.21 and Compose Multiplatform to 1.12.2. Verify the exact Android build/toolchain compatibility before adopting it.
+
+Compare the Haze implementation with the user's FC Zenith implementation and the vendored Kyant0 Backdrop engine. FC Zenith is a visual/performance reference, not a source file bundle to copy wholesale. Its glass integration depends on Zenith-specific composition locals, settings, player/navigation state, and vendored code.
+
+Keep expensive effects to a small number of important controls. Do not put a glass effect on every poster card. Do not use continuous per-frame pixel readback to compute contrast. Use deterministic scrims/tints or bounded, throttled sampling if necessary. Always provide an opaque/frosted fallback and accessibility controls for reduced transparency and reduced motion.
+
+## Small-commit discipline
+
+- Work only on `main`; do not create long-lived integration branches.
+- One commit = one independently understandable, testable change.
+- Prefer 1–3 related files and a small diff per functional commit. Split larger work.
+- Do not bundle dependency upgrades, UI changes, storage changes, and metadata changes in one commit.
+- Inspect the current source and the latest main-branch commit before editing.
+- Run the narrowest relevant tests first, then the full unit-test and debug-build workflow.
+- Never build new work on top of a failing main branch.
+- Never force-push, rewrite history, replace signing keys, or change application identity casually.
+- Use conventional, specific commit messages.
+- Every functional commit must update `DEVELOPMENT_LOG.md` in the same commit with the change, reason, tests, results, and commit SHA (fill the SHA after commit in the next documentation update if required).
+- Every newly discovered defect must be recorded in `ISSUES_AND_FIXES.md` with symptoms, affected versions/devices, reproduction status, root-cause confidence, fix, and regression test.
+- A failed workflow is not “fixed” by rerunning blindly. Inspect its failing step and logs; explain whether it is transient infrastructure, dependency/build configuration, code, or device-only.
+- If a commit breaks the build, make a narrowly scoped corrective commit immediately, update the log, then rerun the full gate.
+
+## Verification and evidence
+
+- CI proves compilation and automated tests only; it does not prove GPU smoothness or device compatibility.
+- Target handset for early validation: OPPO Reno10 5G (CPH2531), Android 15, Dimensity 7050, normal 60-Hz mode.
+- Test cold start, warm start, folder selection, recursive scanning, permission revocation/regrant, offline mode, large poster grids, glass interactions, memory pressure, and repeated app launches.
+- Record actual workflow run URLs, artifact names, device build/version, test results, and any user-supplied logcat/tombstone in the project records.
+- Never claim a device test happened unless the user or a real connected device supplied evidence.
+
+## Privacy, API and credentials
+
+- Use HTTPS only.
+- TMDB API credentials must not be committed, printed in CI logs, or embedded as a long-lived shared secret in a public APK. Prefer user-provided credentials stored locally with Android Keystore-backed encryption.
+- Do not add a proxy/backend merely to hide an API key. Explain the trade-off honestly.
+- Do not silently add any other host, SDK, API, crash-report endpoint, or permission. Document and justify it first.
+- Include required TMDB attribution and approved logo treatment in the About/Credits area before release.
+- Preserve all third-party notices and copyleft obligations.
+
+## Session handoff protocol
+
+At the start of every AI session:
+1. Read this file and all canonical records above.
+2. Inspect `main`, the latest commit, open issues, recent workflow runs and artifacts.
+3. Compare actual repository state with the roadmap; do not assume old chat statements are current.
+4. Update the docs if reality differs from the recorded state.
+
+Before ending a session:
+1. Ensure every completed change is committed.
+2. Update `DEVELOPMENT_LOG.md` and `ISSUES_AND_FIXES.md`.
+3. Record the exact next action and the first command/test to run.
+4. State clearly what is implemented, what is only planned, and what remains unverified.
+
+If chat context is lost, these repository records are the handoff. Do not invent missing history; label user-reported history separately from source-verified facts.
