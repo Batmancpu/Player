@@ -61,3 +61,14 @@ Documentation commits:
 - 340b9d5 — root project handoff and agent instructions established.
 
 Tests: documentation review only. No application build exists yet; no APK or device test. Next: create a minimal Android/Compose project in small commits, then add GitHub Actions and obtain the first passing debug APK.
+
+
+## 2026-11-14 — Architecture and device records completed
+
+- 2b3a44b: added docs/ARCHITECTURE.md.
+- 51019ab: added docs/DECISIONS.md.
+- 5a0ec0e: added docs/ROADMAP.md (73 planned commit-sized tasks; not completion claims).
+- ef43767: added docs/DEVICE_TESTING.md.
+- 3990cd4: added ISSUES_AND_FIXES.md.
+- These are documentation-only commits. No app build, APK, install or device test exists yet.
+- Next: create the minimal Android/Compose build on main, then add a CI workflow that verifies clean builds and unit tests.
