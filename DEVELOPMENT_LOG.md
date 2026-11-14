@@ -85,3 +85,9 @@ Tests: documentation review only. No application build exists yet; no APK or dev
 - Gradle distribution target for CI: 9.5.1; CI JDK target: 21.
 - Compatibility basis: Kotlin 2.4.21 supports AGP up to 9.3.1 and Gradle up to 9.7.0. Haze 2.1.0 also expects Kotlin 2.4.21 / Compose Multiplatform 1.12.2.
 - No app module has been added yet; this commit cannot produce an APK.
+
+
+## 2026-11-14 — AGP 9 built-in Kotlin correction
+- Removed the redundant org.jetbrains.kotlin.android root plugin declaration. AGP 9.x provides built-in Kotlin support; the Compose compiler plugin remains version-matched to Kotlin 2.4.21.
+- This is a pre-module compatibility correction, made before any app code was added.
+- Verification: documentation/toolchain compatibility check only; no app build exists yet.
