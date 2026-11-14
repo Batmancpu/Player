@@ -5,6 +5,7 @@ Status: approved user workflow, 2026-11-14. This document supersedes the older t
 ## Definition of done for EVERY phase
 
 A phase is not complete merely because code builds. Before advancing:
+0. Apply the original premium UI/performance specification in `docs/DESIGN_SYSTEM_AND_PERFORMANCE.md` and upstream-reuse/privacy specification in `docs/UPSTREAM_AND_PRIVACY.md` to each applicable slice. Every small/large change refreshes AGENTS.md recent ledger AND DEVELOPMENT_LOG.md; preserve the working signed Obtainium update chain.
 1. Commit small, testable changes directly to main, each with a dated DEVELOPMENT_LOG.md entry; do not proceed on a failing main.
 2. Automated tests pass; GitHub Actions builds and verifies the signed Release APK with the **existing** permanent signing certificate; no debug APK is recommended for installing/updating.
 3. Publish ONE named GitHub Release with the signed APK and human-readable changes/testing instructions; this release is the Obtainium update source.
@@ -41,6 +42,8 @@ Implementation steps in small commits:
 
 ## Phase 3 — Cinematic catalogue and navigation
 
+The Apple-inspired original design system, quality states and high-contrast/fallback screen layouts begin here **without** production Glass. Performance profile on the real OPPO at 60 Hz. Later Phase 6 adds bounded live Glass only after features work.
+
 **User-visible outcome:** complete real home/library with poster shelves, films/series, details, seasons/episodes, local search, empty/offline states and settings.
 - Reuse Room state, accessible Compose navigation and image loading. Keep content crisp and functional without Glass.
 - Stress with 100/500/1000 files, long titles, no artwork, large text, TalkBack and scroll restore.
@@ -63,6 +66,8 @@ Implementation steps in small commits:
 **Phone gate:** switch embedded tracks, load sidecar, adjust/reset subtitle delay, and test online retrieval only if approved provider exists.
 
 ## Phase 6 — Liquid Glass, accessibility, performance and launch
+
+Apply the exact screen-by-screen Glass surfaces and interactive seek/volume/subtitle slider thumb spec in `docs/DESIGN_SYSTEM_AND_PERFORMANCE.md`. Benchmark Haze source-backed chrome against fallback on CPH2531, including frame overruns and thermal behavior. Do not promise 60/120 FPS until physically measured.
 
 **User-visible outcome:** polished Apple TV-inspired cinematic presentation with restrained iOS-inspired Liquid Glass on functional controls; reliable fallbacks and verified stable release.
 - Validate isolated Haze 2.1.0 Glass Lab first; no experimental native window backdrop on Android 15.

@@ -1,6 +1,6 @@
 # Architecture
 
-Status: partial implementation. The Android/Compose shell, theme, icon registry, Haze dependency/helper and isolated Glass Lab exist. A plain folder-setup screen with one-tree SAF selection and persisted read grant is implemented in source; recursive scanning, media indexing, metadata, artwork, catalogue and playback layers are not implemented.
+Status (2026-11-14): Android/Compose shell, one local-tree SAF picker, recursive SAF adapter, parser, basic grouped list and offline Room index are implemented and passed CI. Actual OPPO media discovery/permission behavior remains unverified. Production TMDB catalogue, player and Glass still missing. Signed v0.1.51 and v0.1.53 exist; user verified Obtainium update over existing app.
 
 ## Product boundary
 One Android application, one user-selected local folder, recursive read-only scan, TMDB metadata/artwork, offline local library. No media server, upload, streaming, account, cloud drive, ads, telemetry or analytics.
@@ -68,3 +68,7 @@ Start with a plain Compose build. Upgrade toolchain and add Haze 2.1.0 in isolat
 
 ## Quality gates
 Unit tests and FOSS/debug CI build are required at each milestone. Real-device validation is separate. CI does not prove OPPO GPU stability or 60-Hz smoothness.
+## Binding premium design and privacy details (2026-11-14)
+- `docs/DESIGN_SYSTEM_AND_PERFORMANCE.md`: official OPPO hardware, cinematic design tokens, per-screen functional Glass surfaces, true accessible slider semantics, 60-Hz/optional-120-Hz benchmarks and opaque/reduced-motion fallbacks.
+- `docs/UPSTREAM_AND_PRIVACY.md`: vetted GitHub repository/source reuse/licence obligations, malicious upstream instruction protections and minimum external network/data-egress policy.
+- Current `app/src/main/AndroidManifest.xml` has `android:allowBackup="false"`; preserve it and require no INTERNET permission for Phase 1. Network features later require opt-in and data minimization.
