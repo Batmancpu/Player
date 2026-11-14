@@ -130,3 +130,14 @@ Do not erase a failure after a fix. Mark fixed and link the corrective commit.
 - **Exposure:** The helper was not run on a device; no keystore was generated and no secret was exposed. The defect was caught before use.
 - **Fix:** Replace the script with correctly escaped shell source, add a CI `bash -n` step, and run `bash -n` against the exact corrected file.
 - **Regression verification:** local `bash -n` and GitHub Actions run 27 (`43573474031`) passed. Helper was not run on the user's phone and is no longer part of the project.
+
+
+### H-007 — CI referenced Termux helper after its deletion
+- **Status:** Fixed and regression verified.
+- **First observed:** 2026-11-14, workflow run 28, ID `43574064538`.
+- **Affected file:** `.github/workflows/ci.yml` during the intermediate commit where `scripts/generate-release-keystore.sh` had already been deleted.
+- **Expected:** Removing the unused Termux helper should leave CI independent of that script.
+- **Actual:** Workflow still invoked `bash -n scripts/generate-release-keystore.sh`; GitHub Actions reported `No such file or directory` and exited 127 before Gradle setup.
+- **Root cause confidence:** high; job log confirms the missing path.
+- **Fix:** Remove the obsolete syntax-validation step from the workflow in the next commit.
+- **Regression verification:** workflow run 29 (`43574233803`) passed unit tests, debug APK assembly and artifact upload. Release signing remained skipped because secrets were absent.

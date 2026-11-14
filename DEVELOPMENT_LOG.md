@@ -346,3 +346,11 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - Removed the no-longer-needed Termux script and its CI syntax step from the repository. Earlier helper CI workflow run 27 (`43573474031`) passed; that check was for the now-retired script. The cleanup commit must be CI-verified independently.
 - Next: user downloads/backups the key, stores password in Proton Pass and creates the four GitHub repository secrets. Then trigger Android CI to verify Release APK signature. Continue the functional foundation; do not wait on branding or app-ID finalization.
 
+
+
+## 2026-11-14 — CI handoff after Termux removal
+- The first cleanup commit removed `scripts/generate-release-keystore.sh` before removing the workflow's syntax-check step. Its run (workflow run 28, ID `43574064538`) failed exactly at `bash -n scripts/generate-release-keystore.sh`: file not found. This was a sequencing error, not an Android/Kotlin failure.
+- The following focused workflow update removed the obsolete syntax-check step and completed successfully: run 29, ID `43574233803`, https://github.com/Batmancpu/Player/actions/runs/43574233803. Unit tests and CI-only debug APK assembly/artifact upload passed; Release signing was correctly skipped because repository secrets are not configured.
+- The later chat-history/handoff commit triggered run 30, ID `43574286284`; its status must be checked before proceeding.
+- The helper and Termux flow are fully removed. Do not reintroduce them.
+- Added `CHAT_HISTORY.md` as the cumulative chronological session record. Future agents must read and append to it, while keeping all credentials out of the log.

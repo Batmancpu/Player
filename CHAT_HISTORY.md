@@ -51,3 +51,8 @@ This file is the durable, accumulating record of important user requests, produc
 3. Do not recommend CI-only debug APKs as the update channel. A one-time uninstall may be needed if a previously installed build uses a different debug certificate.
 4. Continue the functional roadmap: validate folder picker/provider behaviour on CPH2531, then implement a cancellable read-only recursive scanner bounded to the saved SAF tree. Add tests for tree boundaries, nested folders, cancellation, duplicates and permission loss. Do not jump directly to TMDB/player before scanner correctness.
 5. Keep the user informed about real blockers only; the user expects the AI agent to handle implementation and avoid unnecessary setup/cosmetic decisions.
+
+
+### CI sequencing note — signing helper removal
+- The helper-deletion commit temporarily left its Bash syntax-check step in the workflow; run 28 (`43574064538`) failed with file-not-found. The next workflow commit removed that stale step; run 29 (`43574233803`) passed tests, debug build and artifact upload. This was a transient workflow cleanup failure, not an application-code defect.
+- The cumulative log is now part of the mandatory reading order and must be appended at each future session end. Keep all secrets out of it.
