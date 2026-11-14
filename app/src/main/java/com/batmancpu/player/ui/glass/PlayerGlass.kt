@@ -10,7 +10,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.interaction.InteractionSource
 import dev.chrisbanes.haze.HazeInput
 import dev.chrisbanes.haze.HazePerformanceMode
@@ -34,7 +33,7 @@ internal fun Modifier.playerGlassSurface(
     hazeState: HazeState,
     enabled: Boolean,
     interactionSource: InteractionSource? = null,
-    shape: CornerBasedShape = RoundedCornerShape(28.dp),
+    shape: RoundedCornerShape = RoundedCornerShape(28.dp),
 ): Modifier {
     if (!enabled) {
         return clip(shape)

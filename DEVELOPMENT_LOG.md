@@ -216,3 +216,12 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - When the caller disables Glass, the modifier returns a consistent tinted/outlined fallback. Haze's own fallback remains available when its full renderer is unsupported.
 - Explicitly does not use HazeInput.Backdrop, HazeFeatureFlags.isPlatformBackdropEnabled, Android window blur or JNI/NDK.
 - Verification: pending CI. The helper is not wired into any screen yet.
+
+
+## 2026-11-14 — CI run 12: Glass shape parameter mismatch
+- Workflow: https://github.com/Batmancpu/Player/actions/runs/43563048500 — failed during Kotlin compilation; no APK artifact was produced.
+- Exact compiler error: PlayerGlass.kt:47:19 — actual type CornerBasedShape, but Haze GlassStyle.shape expected RoundedCornerShape.
+- Root cause confidence: high; the Haze 2.1.0 generated API's GlassStyle shape writer is typed to RoundedCornerShape, while the helper accepted the broader CornerBasedShape.
+- Correction: narrow the shared helper's shape parameter to RoundedCornerShape; keep the same default silhouette and fallback behavior.
+- This is a type-surface correction only; no rendering behavior or dependency changes.
+- Regression verification: new CI run will check compilation and package.

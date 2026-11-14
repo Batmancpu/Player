@@ -86,3 +86,14 @@ Do not erase a failure after a fix. Mark fixed and link the corrective commit.
 - **Status:** Closed by design decision.
 - **Finding:** The SF Symbols Compose repository uses MIT for its generator/source, but explicitly says the actual SF glyph artwork/data are Apple's property and subject to Apple's SF Symbols license. That license restricts use to Apple platforms.
 - **Mitigation:** Do not bundle Apple glyph artwork or SF font files in Android. Use an original or permissively licensed icon set with consistent optical sizing, weight, and animation. The app may be Apple-inspired without reproducing proprietary glyphs.
+
+
+### H-004 — Haze Glass shape API requires RoundedCornerShape
+- **Status:** Fix committed; regression check pending.
+- **First observed:** 2026-11-14, CI run 12 (https://github.com/Batmancpu/Player/actions/runs/43563048500).
+- **Affected file:** app/src/main/java/com/batmancpu/player/ui/glass/PlayerGlass.kt.
+- **Expected:** shared helper accepts a compatible shape and compiles.
+- **Actual:** Kotlin error at line 47: Haze GlassStyle.shape expected RoundedCornerShape, but helper parameter was CornerBasedShape.
+- **Root cause confidence:** high; compiler output explicitly reports the type mismatch.
+- **Fix:** narrow the helper argument to RoundedCornerShape. More complex/custom shapes can be added only if the Haze public API supports them.
+- **Regression test:** next CI run must compile PlayerGlass and complete the debug APK task.
