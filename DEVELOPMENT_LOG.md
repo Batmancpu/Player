@@ -225,3 +225,13 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - Correction: narrow the shared helper's shape parameter to RoundedCornerShape; keep the same default silhouette and fallback behavior.
 - This is a type-surface correction only; no rendering behavior or dependency changes.
 - Regression verification: new CI run will check compilation and package.
+
+
+## 2026-11-14 — CI run 13: Haze Glass helper type fix verified
+- Workflow: https://github.com/Batmancpu/Player/actions/runs/43563224306 — success.
+- The helper's shape argument was narrowed from CornerBasedShape to RoundedCornerShape to match Haze 2.1.0's GlassStyle.shape API.
+- Gradle output confirmed BUILD SUCCESSFUL in 18s; testDebugUnitTest and assembleDebug passed, followed by artifact upload.
+- APK artifact: Player-debug-9e56e60126f71eb5d890463229d322bb5f0e604b, artifact ID 14101425761, size 10,994,499 bytes, URL https://github.com/Batmancpu/Player/actions/runs/43563224306/artifacts/14101425761, expiry 2026-11-28.
+- Artifact ZIP SHA-256: c4ac0ef666b25460762b9b771041ccc20d7270a2d8b2e0176ed610b3551ab242 (not raw APK digest).
+- The shared Glass helper compiles but is not yet connected to any screen. Real-device visual/GPU validation is still pending.
+- Next: add a single local-source Glass laboratory screen and wire it to the launcher in a separate commit; keep the lab clearly marked as a development test surface.

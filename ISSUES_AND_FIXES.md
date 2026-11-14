@@ -89,8 +89,9 @@ Do not erase a failure after a fix. Mark fixed and link the corrective commit.
 
 
 ### H-004 — Haze Glass shape API requires RoundedCornerShape
-- **Status:** Fix committed; regression check pending.
+- **Status:** Fixed and regression verified.
 - **First observed:** 2026-11-14, CI run 12 (https://github.com/Batmancpu/Player/actions/runs/43563048500).
+- **Regression verification:** CI run 13 succeeded (https://github.com/Batmancpu/Player/actions/runs/43563224306); Haze helper compiled and APK upload passed.
 - **Affected file:** app/src/main/java/com/batmancpu/player/ui/glass/PlayerGlass.kt.
 - **Expected:** shared helper accepts a compatible shape and compiles.
 - **Actual:** Kotlin error at line 47: Haze GlassStyle.shape expected RoundedCornerShape, but helper parameter was CornerBasedShape.
