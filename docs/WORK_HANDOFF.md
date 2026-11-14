@@ -47,3 +47,8 @@ At end of every Work session write: current SHA, relevant workflows/artifacts, w
 ## 2026-11-14 — Alias fix after run #49
 - CI #49 identified a wrong GitHub alias secret. The JKS byte hash and store password both matched the private original. The alias is public and fixed, so workflow now passes 'player-release' directly rather than reading a potentially wrong GitHub alias secret.
 - User should not be asked to re-enter any more secrets unless signed assembly reveals a new actual problem. Do not claim Release published until GitHub Releases reports an APK asset.
+
+## 2026-11-14 — First test release trigger after proven signing
+- CI #50 succeeded in actual signed APK assembly and apksigner verification. Its final duplicate fingerprint check failed only due to hardcoded apksigner output label: current tool prints "V2 Signer: certificate SHA-256 digest". The certificate digest in CI matched the permanent key. This is a known parsing defect, not evidence of wrong signing.
+- The script now reads any "certificate SHA-256 digest:" line and compares it to the pinned exact certificate, then publishes only when CI passes and the main-branch commit subject starts with release(test):.
+- This session's next push is specifically the user-requested FIRST signed Obtainium testing release. Verify real GitHub Release and APK asset before claiming publication.

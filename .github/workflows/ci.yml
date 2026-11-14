@@ -172,7 +172,7 @@ jobs:
         shell: bash
         run: |
           apk="app/build/outputs/apk/release/app-release.apk"
-          fingerprint="$("$ANDROID_HOME/build-tools/37.0.0/apksigner" verify --print-certs "$apk" | awk '/Signer #1 certificate SHA-256 digest:/ {print $NF; exit}')"
+          fingerprint="$("$ANDROID_HOME/build-tools/37.0.0/apksigner" verify --print-certs "$apk" | awk '/certificate SHA-256 digest:/ {print $NF; exit}')"
           expected="4d2f1789ed27d3961335fe36456455bd9a310b0dcdf41e8ccc925398339e80bf"
           if [[ -z "$fingerprint" || "${fingerprint,,}" != "$expected" ]]; then
             echo "Signed APK certificate does not match the permanent Player release key." >&2
