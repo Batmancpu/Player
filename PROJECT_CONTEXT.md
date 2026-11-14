@@ -31,7 +31,7 @@ The app must never:
 - Scan outside the folder the user selected.
 - Modify, move, rename or delete source media.
 - Add user accounts, cloud drives, Emby, Jellyfin, Plex, SMB, WebDAV, ads, subscriptions, analytics, telemetry or a Player backend.
-- Add a playback subsystem in the first release unless the user later approves scope expansion.
+- Local playback is now explicitly approved by the user (2026-11-14). It must use files inside the selected local folder and must not turn Player into a streaming service or server.
 
 Metadata discovery does require an external provider. The initial provider is The Movie Database (TMDB). The app will send normalized search terms such as title, year and media type directly to TMDB over HTTPS and retrieve images from its CDN. This is not media streaming. Downloaded details/artwork are cached locally and remain visible offline. No custom proxy or server is wanted.
 
@@ -43,7 +43,7 @@ The user clarified that “Apple TV aesthetics” means much more than a dark th
 
 - Cinematic, dark, content-first home/library with large and carefully composed movie posters and artwork.
 - Artwork-led detail pages, blended hero backdrops, soft gradients/scrims, carefully controlled hierarchy and beautifully typeset metadata.
-- iOS 27-inspired Liquid Glass for functional chrome: navigation, floating buttons, controls, transient menus, sheets and selected interactive elements.
+- iOS 27-inspired Liquid Glass for functional chrome: navigation, floating buttons, controls, transient menus, sheets and selected interactive elements. The video player's audio/subtitle selectors and subtitle-delay controls should use restrained Glass later, with a clean, uncluttered layout.
 - Clear and regular glass treatments, source-backed blur, optical refraction, soft highlights, reflective hairlines, subtle shadows, and animated joining/morphing where it makes sense.
 - Coherent Apple-inspired icon family, consistent glyph weights/optical sizes, and native-feeling typography/alignment/motion.
 - Smooth spring transitions, interactive morphing and polished loading/empty/error/offline states.
@@ -107,7 +107,7 @@ Candidate components (versions must be pinned and verified in CI before adoption
 - Android SAF / `ACTION_OPEN_DOCUMENT_TREE` with persisted read permission.
 - Direct HTTPS TMDB API client; no proxy/server.
 - Coroutines/Flow and WorkManager only where justified for incremental scanning. Do not introduce permanent background services.
-- Media3 is a later optional playback candidate, not a v1 dependency.
+- AndroidX Media3 is the first playback-engine candidate to evaluate; LibVLC is a fallback candidate if practical format coverage is insufficient and its native-library/licensing costs are acceptable. No engine has been selected or added yet.
 
 Exact dependency versions, minSdk/targetSdk, Gradle/JDK versions, package ID, app branding, signing strategy and final licence must be confirmed in dedicated, build-tested commits. Do not guess these into a giant initial patch.
 
@@ -198,4 +198,56 @@ The shared PlayerGlass.kt helper now compiles against Haze 2.1.0; CI run 13 pass
 
 CI run 16 passed: https://github.com/Batmancpu/Player/actions/runs/43563620311. The app's MainActivity now launches GlassLabScreen rather than the introductory placeholder. APK artifact ID 14101590882 (11,025,438 bytes), download: https://github.com/Batmancpu/Player/actions/runs/43563620311/artifacts/14101590882. Artifact ZIP digest is in DEVELOPMENT_LOG.md.
 
-The lab is development-only. It uses a local generated gradient backdrop and no user media, permissions or network. It has a 4-item glass navigation group, selected-state feedback and a glass enabled/disabled switch. The app has not been installed or visually validated on the user's OPPO Reno10 CPH2531. The next action is to ask the user to install this APK and provide a screenshot or clear rendering/performance observations; then fix actual device issues before implementing the real media library screens.
+The lab is development-only. It uses a local generated gradient backdrop and no user media, permissions or network. It has a 4-item glass navigation group, selected-state feedback and a glass enabled/disabled switch. The app has not been installed or visually validated on the user's OPPO Reno10 CPH2531. Physical-device Glass validation remains required before shipping or tuning production effects, but it no longer blocks the user-approved catalogue implementation. The immediate product work is now the plain, functional library foundation described in section 18.
+
+
+## 18. User-approved scope expansion — local playback and subtitles (2026-11-14)
+
+This section supersedes the earlier playback-deferred decision (D-010), the original catalogue-only product boundary and the previous immediate Glass-Lab-first next step.
+
+### Product outcome
+
+Player remains a local-first catalogue, but now also includes a built-in player. The intended flow is: select one local folder → scan its descendants → identify movies and TV episodes → fetch high-quality TMDB posters/backdrops/details → browse a polished Apple TV-like library → tap Play → play that same local file.
+
+The player must aim for broad practical format compatibility similar to a VLC-class local player. “Every format” is not a testable or universally guaranteeable promise: container, codec/profile, subtitles, decoder installation and handset hardware all affect compatibility. A documented test matrix on the OPPO CPH2531 is required.
+
+### Player requirements
+
+- Local-file playback only, using the selected SAF tree. No media server, streaming, upload, remote protocol or cloud playback.
+- Basic reliable play/pause, seek/progress, full-screen/orientation handling, audio focus and remembered playback position.
+- Discover and select embedded audio tracks and embedded subtitle tracks.
+- Load a local external subtitle sidecar/file.
+- Search for and download an external subtitle from a provider while playback is open; provider selection and API/terms/privacy audit remain open.
+- Adjust subtitle delay/synchronization in small and larger increments, show the current offset and reset to zero.
+- Store downloaded subtitle files in app-private storage by default; do not write to or alter the selected media folder.
+- Keep player chrome minimal. Audio/subtitle choices and delay controls should be compact sheets/menus; production Liquid Glass is applied later to functional controls only, never over the actual video or posters.
+
+### Metadata and artwork requirements
+
+The catalogue must use normalized filename parsing and direct TMDB lookup for title, year, media type, series/season/episode identity, posters, backdrops, synopsis and relevant metadata. It must cache results/artwork locally and remain browsable offline. TMDB credentials must not be hardcoded into a public APK; the credential UX remains an open decision. No file paths, full filenames, folder labels, SAF URIs or media bytes go to TMDB.
+
+### Engine and subtitle-provider decisions
+
+No playback engine or online subtitle provider has been selected or added. Evaluate AndroidX Media3 first against real local files and SAF URIs. Official Media3 documentation lists supported containers and standalone subtitle types, but sample-format support and actual decoding depend on the device/decoder. Evaluate LibVLC only if necessary and after native ABI/APK-size, stability and GPL/LGPL review. Do not claim universal format support.
+
+### Reprioritized implementation sequence
+
+1. Replace the Glass Lab as the default launcher with a plain functional app shell; preserve the lab as a development experiment.
+2. Implement one-folder SAF selection, local-provider validation, persisted read permission and recursive read-only media/sidecar discovery.
+3. Implement filename normalization/parsing and series/episode grouping.
+4. Add Room persistence and the direct TMDB metadata/artwork pipeline with manual matching and offline cache.
+5. Build the real poster library, detail pages, shelves and search.
+6. Add a broad-format local playback engine and connect Play.
+7. Add embedded/external subtitle and audio selection, on-demand subtitle download and subtitle-delay controls.
+8. Integrate production Liquid Glass into navigation and player controls after functional and device gates pass.
+
+**Immediate next implementation:** a plain, non-Glass onboarding/library shell that starts the single-folder SAF flow, persists the user's read grant and displays the selected folder/recovery state. Then add recursive scanning in a separate focused commit. The current GlassLabScreen remains available for later isolated testing but must not be treated as the catalogue.
+
+## 19. Current source-verified state after the scope decision
+
+- Repository: Batmancpu/Player, branch main; no open PRs or issues were returned during this review.
+- Latest source implementation commit: 20e13b928b9c5ce75b64ecb219f795f7dd8bc67f (Glass Lab is wired to MainActivity). The latest repository commit at review time is the documentation-only state record 6a6875f333465daa9bd276e6fc9c6e9f621a5097.
+- Latest source CI run 16 passed: https://github.com/Batmancpu/Player/actions/runs/43563620311; APK artifact ID 14101590882. The subsequent docs-only run 17 also passed: https://github.com/Batmancpu/Player/actions/runs/43563846274.
+- The manifest currently has no Internet, media or broad-storage permission. MainActivity opens GlassLabScreen. App code contains no folder picker, scanner, TMDB client, Room database, poster loader, library/detail screen, Media3/LibVLC dependency or playback flow.
+- The existing Haze 2.1.0 dependency and PlayerGlass helper are present; the isolated lab compiles. No physical-device installation, Glass performance or playback-format test is recorded.
+- The user's prompt on 2026-11-14 is the authoritative approval to add local playback and subtitle/audio features. No online subtitle provider is yet approved.

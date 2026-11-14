@@ -15,20 +15,20 @@ If a file is missing, create it in the appropriate documentation commit before r
 
 ## Product goal: do not drift
 
-Build a beautiful, stable, local-first Android media-library application with the cinematic content presentation of Apple TV and an iOS 27-inspired Liquid Glass control layer.
+Build a beautiful, stable, local-first Android media-library application with Apple TV-like cinematic catalogue presentation, a capable local video player, and an iOS 27-inspired Liquid Glass control layer. Build and verify the catalogue and playback foundations before applying production Glass polish.
 
-The user selects **exactly one local folder**. The app recursively discovers video files within that folder and its descendants, matches movies and TV episodes, retrieves posters/backdrops/descriptions/metadata from TMDB, stores the library locally, and presents it in a polished interface.
+The user selects **exactly one local folder**. The app recursively discovers video and relevant sidecar subtitle files within that folder and its descendants, matches movies and TV episodes, retrieves posters/backdrops/descriptions/metadata from TMDB, stores the library locally, and presents it in a polished interface. Tapping a matched local title opens the built-in player using that local document; the player aims for broad practical container/codec support and exposes audio/subtitle selection, external subtitle loading/download, and subtitle delay.
 
 Hard boundaries:
 
-- Never upload, proxy, stream, relay, or otherwise transmit video files or video contents.
+- Never upload, proxy, stream, relay, or otherwise transmit video files or video contents. Playback is local-only from the selected SAF tree; do not add remote/network streaming protocols or a Player media server.
 - Never build a Player-operated media server or account system.
 - Never scan outside the single folder explicitly selected by the user.
 - Never write to, rename, move, or delete source media.
 - Never add advertising, analytics, telemetry, cloud AI, crash-upload services, subscriptions, or unnecessary permissions.
-- Network access is limited to the metadata provider and its artwork CDN. Send only normalized title/year/type search data; never send file paths, folder names, SAF URIs, complete filenames containing personal directory data, or file contents.
+- Network access is limited to TMDB metadata/artwork and, after a separately reviewed provider decision, online subtitle search/download. Send only normalized title/year/type data to TMDB and the minimum normalized title/year/media/season/episode identifiers needed for subtitle lookup. Never send file paths, folder names, SAF URIs, complete filenames, directory listings, subtitle contents, or video contents.
 - Previously indexed metadata and downloaded artwork must remain available offline.
-- Playback is not part of the first release unless the user explicitly expands scope.
+- Local playback is now explicitly approved product scope (2026-11-14; see D-017). Keep it strictly local; external subtitle lookup is the only newly approved media-adjacent network feature and must use a reviewed provider.
 
 ## Visual quality bar
 
@@ -37,7 +37,7 @@ This is not an Android Material app with a blur modifier. The complete interface
 - Apple TV-like cinematic media shelves, large artwork, deep dark backgrounds and well-composed title/detail pages.
 - iOS 27-inspired Liquid Glass for functional chrome: floating navigation, buttons, transient menus, sheets and selected interactive controls.
 - Use real source-backed blur/glass and subtle refraction where supported; include graceful, readable fallbacks.
-- Keep poster artwork and text content crisp. Do not apply glass to the entire content layer.
+- Keep poster artwork and text content crisp. Do not apply glass to the entire content layer. Player chrome, audio/subtitle selectors, subtitle-delay controls and transient menus may receive restrained Glass after the functional player is stable; keep controls minimal and uncluttered.
 - One coherent Apple-inspired symbol vocabulary; no random mixture of icon families or inconsistent weights.
 - Do not bundle Apple SF Symbols glyph artwork or SF fonts into the Android APK without explicit permission. Prefer permissively licensed/original vectors and retain their notices.
 - Consistent system-style typography, optical alignment, spacing, radii, hit targets, easing and spring behaviour.
@@ -52,11 +52,11 @@ Use Apple's public Human Interface Guidelines as design guidance; do not copy pr
 - Prefer small, well-separated layers: UI/presentation, domain/use cases, data sources/repositories, persistence, and platform storage.
 - Use Android's Storage Access Framework (SAF) for the folder grant. Persist the read grant. Treat the selected URI and document IDs as identities; do not assume raw filesystem paths.
 - Start with a local-provider allowlist and explicit provider validation. Never silently accept cloud/network document providers.
-- Use Room for indexed media and metadata persistence; use app-private storage for poster/backdrop cache.
+- Use Room for indexed media and metadata persistence; use app-private storage for poster/backdrop cache and downloaded subtitle files. Do not write subtitles into or otherwise modify the user's media folder by default.
 - Use coroutines/Flow for background scanning and network work. Never scan directories or perform API calls on the main thread.
 - Use a maintained image-loading library with memory and disk caching.
 - Keep network provider and image CDN boundaries explicit and testable.
-- No JNI, NDK, custom native rendering, or experimental native RenderEffect backend in the first implementation. Add platform-specific rendering only after isolated proof on the target handset.
+- Do not write custom JNI/NDK code, custom native UI renderers, shaders, or experimental native window-backdrop/RenderEffect paths in the first implementation. A third-party playback engine may bundle native decoder components only after a separate Media3-versus-LibVLC evaluation covering licensing, ABI/APK size, hardware decoding, device stability and format coverage. Do not confuse native media decoding with a custom native Glass renderer.
 - Pin dependency versions. Upgrade Kotlin, Compose, AGP, Gradle, and glass libraries in isolated commits, not as a single dependency bundle.
 - Never copy an entire upstream application blindly. Audit its architecture, license, dependencies, permissions, telemetry, storage model, and build pipeline first.
 

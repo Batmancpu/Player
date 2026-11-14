@@ -25,14 +25,14 @@ Use FC Zenith as a visual/engineering reference. Its implementation depends on Z
 ### D-007 — Haze 2.1.0 is the first Glass proof-of-concept candidate
 Proposed pending build/device validation. Its stable Glass API requires matching Kotlin 2.4.21 and Compose Multiplatform 1.12.2; upgrade in isolated commits. The library release is not proof of OPPO compatibility.
 
-### D-008 — Avoid native/JNI rendering in v1
-No custom C/C++, NDK, JNI, native shader library or experimental native backdrop path. The user's CurrentLens history includes an OPPO CPH2531 Android 15 native SIGSEGV, although the exact root cause is unverified.
+### D-008 — No custom native UI/rendering path in v1
+Do not add custom C/C++, NDK, JNI, native shader libraries, experimental native window-backdrop or custom RenderEffect rendering for the UI. The user's CurrentLens history includes an OPPO CPH2531 Android 15 native SIGSEGV, although the exact root cause is unverified. This decision does not automatically prohibit a third-party native media decoder; that requires the separate playback-engine and licensing review in O-006.
 
 ### D-009 — Native Android, not KMP, for v1
 Prefer one Android app module using Kotlin and Jetpack Compose. Reuse libraries and patterns, not unnecessary multiplatform complexity.
 
-### D-010 — Playback deferred
-First release is a catalogue/scraper, not a player. Keep file records compatible with later Media3 playback but do not implement it in v1.
+### D-010 — Playback deferred (original decision; superseded by D-017)
+At the original project definition, the first release was a catalogue/scraper rather than a player. On 2026-11-14 the user explicitly expanded the product scope to include local playback, audio/subtitle track selection, on-demand external subtitle retrieval and subtitle-delay controls. D-017 is now authoritative; this entry is retained only to explain the historical roadmap.
 
 ### D-011 — Small commits and main-only workflow
 One main branch, focused commits, CI gate after meaningful changes, corrective commits for failures, durable records.
@@ -46,6 +46,8 @@ CI build/test success and OPPO handset validation must be reported separately.
 - **O-003 SDK floor:** choose minSdk/targetSdk after the project skeleton and SAF capability check; do not inherit Flux's values blindly.
 - **O-004 Brand/package/signing:** Player is temporary. Do not change package identity or signing after release without a migration plan.
 - **O-005 Glass engine:** compare Haze 2.1.0 against the FC Zenith Backdrop reference on CPH2531 before final adoption.
+- **O-006 Playback engine:** compare current AndroidX Media3 with LibVLC for local SAF URIs, real container/codec coverage, embedded track selection, external subtitles, hardware decoding, smoothness on CPH2531, APK/ABI footprint and full licence obligations. Media3 is the first candidate, not a final selection. Reassess the current stable release at implementation time; 1.11.1 was the official stable release shown on 2026-11-14.
+- **O-007 Subtitle search/download provider:** evaluate provider API terms, supported languages/releases, account/key requirements, rate limits, privacy, availability and file licensing before selecting one. Send only normalized media identifiers; never send local paths, full filenames, SAF URIs or video/subtitle contents.
 
 ## Rejected
 - Implementing inside the release-only InfuseKt-release repository.
@@ -79,3 +81,14 @@ CI build/test success and OPPO handset validation must be reported separately.
 **Status:** Accepted  
 **Decision:** Implement an isolated Glass lab with a fixed local artwork/gradient source, one small four-control morphing cluster and explicit disabled/fallback path. Use Haze 2.1.0 stable API, HazeInput.Sources, hazeSource and Default/Balanced performance.  
 **Reason:** Proves the visual engine on the target Android codebase without mixing it with media scanning, TMDB or main library UI. Avoids the experimental native Android window-backdrop path.
+
+### D-017 — Local playback and subtitle controls are approved product scope
+**Status:** Accepted (user instruction, 2026-11-14)  
+**Decision:** Tapping a movie or episode in the catalogue opens a built-in player for the local media document. Aim for broad practical format compatibility, but never promise literal “every format”: container support, codecs, decoder availability and hardware capability all matter. Include basic playback, embedded audio/subtitle track selection, external subtitle loading, online subtitle search/download from a provider selected after review, and adjustable subtitle delay. Downloaded subtitles stay in app-private storage by default; never modify source media. The player UI must remain minimal and uncluttered. Audio/subtitle sheets and delay controls may use restrained iOS-inspired Liquid Glass after the functional player is stable.  
+**Boundaries:** No media upload, remote playback, streaming service, server, account system or transmission of local file identifiers/content. Subtitle lookup may send only normalized media identifiers to a separately reviewed provider.  
+**Reason:** The user explicitly expanded the original catalogue-only scope. This entry supersedes D-010 and the earlier playback-deferred roadmap.
+
+### D-018 — Functional catalogue precedes production Glass integration
+**Status:** Accepted  
+**Decision:** The existing Glass Lab remains an isolated experiment, not the production home screen. Build a plain, stable catalogue flow first: one-folder setup, media discovery, filename matching, TMDB metadata/artwork, local persistence and library/detail screens. Add local playback and subtitle/audio features next. Integrate and tune Liquid Glass only on functional navigation/player controls after these foundations work; keep posters and video unobscured.  
+**Reason:** The user explicitly prioritised a useful working product over further visual experiments. Haze dependencies and lab work are retained but must not dictate the functional architecture.
