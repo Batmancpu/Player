@@ -10,7 +10,7 @@ Sequential plan. Each item is a focused commit, split further if its diff/failur
 - [x] First clean Android debug APK build and GitHub Actions artifact verified.
 - [x] CI action runtime upgraded to Node 24-compatible releases.
 - [ ] Gradle wrapper/reproducible local build entry point; currently CI installs Gradle 9.5.1 directly.
-- [ ] Real project-authored unit and Compose smoke tests; the current unit-test task has an empty test source set.
+- [x] Three authored JVM theme contrast/palette tests; CI run 8 passed. Compose UI smoke tests remain pending.
 - [ ] CI dependency/license inventory.
 
 ## Phase 1 — Buildable Android foundation
@@ -19,7 +19,7 @@ Sequential plan. Each item is a focused commit, split further if its diff/failur
 3. build: add minimal Android app module and SDK configuration. **Done:** app module, SDK37/minSdk29/targetSdk37.
 4. app: add manifest and minimal Compose launcher activity. **Done:** edge-to-edge dark starter shell.
 5. ci: add Android build workflow and APK artifact. **Done:** run 2 and run 3 passed; run 3 uses Node24-compatible action majors.
-6. test: add baseline JVM and Compose UI smoke tests. **Pending:** current test task has no authored test cases.
+6. test: add baseline JVM and Compose UI smoke tests. **Partial done:** three JVM theme contrast/palette tests pass CI; Compose UI smoke test remains pending.
 7. ci: add dependency/licence inventory check and verify no analytics/crash SDK. **Pending.**
 8. docs: record first verified APK build and artifact. **Done:** runs and artifact IDs recorded in DEVELOPMENT_LOG.md.
 **Gate:** clean checkout builds and produces installable debug APK.
@@ -31,11 +31,11 @@ Sequential plan. Each item is a focused commit, split further if its diff/failur
 12. ui: add one symbol registry and semantic icon descriptions. **Done:** four-icon PlayerGlyph registry with localized content-description parameter; Lucide notice packaged.
 13. ui: establish edge-to-edge and window inset handling. **Partial:** transparent system bars and edge-to-edge enabled; screen-specific safe-area/inset handling remains.
 14. ui: add reusable artwork/loading placeholders with fixed aspect ratio.
-15. test(ui): add dark/light contrast and layout previews.
+15. test(ui): add dark/light contrast and layout previews. **Partial done:** three dark-theme palette/contrast tests pass; previews/light-mode layout validation remain pending.
 
 ## Phase 3 — Glass proof of concept
-16. build: verify Kotlin 2.4.21 compatibility in isolation.
-17. build: align Compose with Haze 2.1 requirements in isolation.
+16. build: verify Kotlin 2.4.21 compatibility in isolation. **Done:** app compiles on AGP 9.3.1 / Kotlin 2.4.21.
+17. build: align Compose with Haze 2.1 requirements in isolation. **Pending verification:** current native Jetpack Compose BOM 2026.09.00 must be checked against Haze's Android artifact; do not add a Compose Multiplatform plugin unless required.
 18. deps: add Haze 2.1.0 core and Glass artifacts only.
 19. ui(glass): add bounded backdrop source layer.
 20. ui(glass): implement RegularGlassSurface.

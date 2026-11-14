@@ -17,7 +17,7 @@ Choose **one local folder**. Player scans only that folder and its descendants, 
 
 ## Current status
 
-This repository now contains a **buildable Android/Compose foundation** with a shared cinematic theme, a small licensed icon registry, and a verified GitHub Actions APK pipeline. Local-folder scanning, TMDB metadata, offline library persistence and Liquid Glass remain planned implementation work. Read [AGENTS.md](AGENTS.md) and [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) before changing anything.
+This repository now contains a **buildable Android/Compose foundation** with a shared cinematic theme, a small licensed icon registry, three passing theme regression tests, and a verified GitHub Actions APK pipeline. The Liquid Glass laboratory, local-folder scanning, TMDB metadata and offline media library remain active development work. Read [AGENTS.md](AGENTS.md) and [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) before changing anything.
 
 ## Canonical project records
 

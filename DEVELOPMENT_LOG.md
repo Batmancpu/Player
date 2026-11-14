@@ -172,3 +172,20 @@ Tests: documentation review only. No application build exists yet; no APK or dev
 - Tests use the WCAG contrast ratio calculation on the exact PlayerPalette values.
 - Verification: pending CI run.
 - Next: resolve any failing threshold from measured values before integrating the Glass engine.
+
+## 2026-11-14 — CI run 8: theme regression tests passed
+- Workflow run: https://github.com/Batmancpu/Player/actions/runs/43562170409 — final conclusion: success.
+- The job completed :app:testDebugUnitTest, :app:assembleDebug, and APK artifact upload successfully.
+- Added PlayerThemeTest with three JVM checks: primary text contrast on background/elevated surface, secondary/tertiary text contrast on dark surfaces, and visible separation among background/surface/elevated/pressed tokens.
+- All test/build tasks passed. GitHub job output confirmed BUILD SUCCESSFUL in 30s; this workflow does not yet upload JUnit XML, so an extracted per-test report is not available.
+- APK artifact: Player-debug-4d544d5886146188e65cb48fd9a99bf7c8786b57, artifact ID 14100846293, size 10,386,150 bytes, URL https://github.com/Batmancpu/Player/actions/runs/43562170409/artifacts/14100846293, expiration 2026-11-28.
+- Artifact ZIP SHA-256: d5346bd4060975b0d2bf5133ce04f388ccfc7f77ec9a5c4fe3831cb1aa98ba44 (not raw APK digest).
+- Device install and screenshot validation on CPH2531: not yet performed.
+
+## Current state after CI run 8
+- Buildable Android/Compose shell and CI are established.
+- Shared cinematic dark theme, semantic palette, system sans-serif typography, spacing and corner tokens are implemented.
+- Four licensed Lucide navigation vectors are packaged with their ISC/MIT notice and exposed through PlayerGlyph.
+- Three theme contrast/palette JVM tests are now active and pass CI.
+- Glass engine, media-folder access/scanning, TMDB, Room, image cache and library screens remain unimplemented.
+- Next: commit Haze 2.1.0 dependencies only, then build an isolated source-backed Glass laboratory. Do not enable Haze's experimental Android native window-backdrop flag.

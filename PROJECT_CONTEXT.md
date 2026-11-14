@@ -150,3 +150,26 @@ If the source state changes, update this section immediately. Never leave the ne
 
 ## 10. Additional visual-system licensing decision
 The SF Symbols Compose library used by FC Zenith was reviewed. Its source/generator carries an MIT license, but its README says the symbol artwork and data remain Apple's property and points to Apple's SF Symbols license, which restricts use to Apple platforms. Player will not bundle those glyphs in its Android APK without explicit permission. The visual direction remains Apple-inspired: use a consistent, appropriately licensed symbol family or original vectors, then tune optical size, stroke, alignment, labels and animation. Never use Apple logos, SF font files or unlicensed symbol artwork.
+
+## 12. Current verified implementation state — 2026-11-14
+
+This section supersedes the original repository-bootstrap status above.
+
+### Implemented in main
+- Android Gradle app module: namespace/application ID com.batmancpu.player (provisional), compile/target SDK 37, min SDK 29, AGP 9.3.1 built-in Kotlin, Compose compiler plugin 2.4.21, Jetpack Compose BOM 2026.09.00.
+- Edge-to-edge Compose launcher with transparent system bars.
+- PlayerTheme.kt: dark cinematic palette, semantic text/surface tokens, system sans-serif type scale, spacing and corner tokens.
+- PlayerGlyphs.kt plus four curated Lucide vector assets (home, clapperboard/movies, TV/shows, search). License is ISC with MIT-origin portions; complete notice is included in app assets and THIRD_PARTY_NOTICES.md. No Apple SF Symbols/SF fonts/logos shipped.
+- Three JVM palette/contrast tests in PlayerThemeTest.kt.
+- CI uses Node24-compatible action majors, JDK21, Android SDK 37.0, Gradle9.5.1, testDebugUnitTest, assembleDebug and APK upload.
+
+### Verified CI
+- Runs 2, 3, 5, 6, 7 and 8 passed. Run1 failed from the incorrect SDK package name and was corrected; see ISSUES_AND_FIXES.md.
+- Run8: https://github.com/Batmancpu/Player/actions/runs/43562170409. It passed the theme tests, APK assembly and artifact upload. APK artifact ID 14100846293, size 10,386,150 bytes, download URL https://github.com/Batmancpu/Player/actions/runs/43562170409/artifacts/14100846293. ZIP digest is recorded in DEVELOPMENT_LOG.md.
+- No APK has yet been installed/visually tested on the user's OPPO CPH2531. CI success is not device validation.
+
+### Not implemented
+Haze/Glass, folder selection, SAF scanning, filename parser, TMDB client/credential UI, Room database, image cache, library/detail/seasons screens, offline cache behavior and release signing are all planned, not implemented.
+
+### Next agent action
+Read AGENTS.md, inspect latest main and workflow runs, then add Haze 2.1.0 dependencies only (core, Glass and optional Material3 integration) in one focused commit. Run CI. Only then implement an isolated source-backed Glass lab using HazeInput.Sources and hazeSource. Do not enable HazeFeatureFlags.isPlatformBackdropEnabled; native window-backdrop rendering is experimental and not required for v1.
