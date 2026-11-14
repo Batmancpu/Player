@@ -72,3 +72,8 @@ Tests: documentation review only. No application build exists yet; no APK or dev
 - 3990cd4: added ISSUES_AND_FIXES.md.
 - These are documentation-only commits. No app build, APK, install or device test exists yet.
 - Next: create the minimal Android/Compose build on main, then add a CI workflow that verifies clean builds and unit tests.
+
+## 2026-11-14 — Build foundation begins
+- Added the root Gradle settings file and app module include.
+- No Android application source or CI workflow exists yet.
+- No build/APK/device validation has been run at this step.
