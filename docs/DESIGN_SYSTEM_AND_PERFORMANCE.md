@@ -1,0 +1,42 @@
+# Player — Visual design, Glass and performance contract
+**2026-11-14 | Binding design direction; not a claim of implemented effects/performance.** Read alongside AGENTS.md, docs/ROADMAP.md, docs/DEVICE_TESTING.md.
+
+## Target device and frame deadlines
+Primary validation phone: **OPPO Reno10 5G CPH2531**, Android 15, MediaTek Dimensity 7050 (octa-core), ARM **Mali-G68 MC4**, 8 GB RAM, 2412 × 1080 AMOLED, maximum **120 Hz** (not a promise it always uses 120 Hz). Official: https://www.oppo.com/in/smartphones/series-reno/reno10/specs/
+- **Baseline: smooth 60 Hz, approximately 16.67 ms/frame** for scrolling, interaction, navigation, scrubbing. At a forced 60-Hz refresh, aim for `FrameTimingMetric.frameOverrunMs` P95 ≤ 0 ms on real CPH2531 and inspect P99 spikes. Do not assert "constant 60 FPS" based on compilation or visual guesswork. Record missed targets and tradeoffs honestly.
+- **Stretch: 120 Hz, approximately 8.33 ms/frame** only where display/thermal mode permits. Respect vsync and refresh-rate state. Media content may independently play at native 24/25/30/60 FPS.
+- Measure optimized release-like/profileable builds with AndroidX **Macrobenchmark FrameTimingMetric**, Perfetto traces, startup timing, memory/thermal observations; not debug mode as proof. Compare Glass on/off and 60/120-Hz screen settings. Keep benchmark datasets reproducible with 100/500/1000 synthetic library entries, cold/warm start, repeated scroll, search, details transition, player seeking, subtitle sheets, 10-minute warm usage, rotation and background/foreground.
+- Report benchmark setup, APK version, Git SHA, handset firmware, battery saver, thermal state, screen refresh, P50/P90/P95/P99 frame duration and overrun; no claims of phone results from CI/emulators. Diagnose UI thread, RenderThread, GPU, frame hitch on initial Glass attachment and overdraw separately.
+- Optimize with lazy Compose lists, stable item keys, immutable UI state, limited recomposition, background database/SAF/decode/network, bounded and correctly sized artwork caches, no per-frame polling or allocations. Evaluate Baseline Profiles and R8 on release builds, verify results rather than trusting a library label.
+Sources: https://developer.android.com/topic/performance/benchmarking/macrobenchmark-overview ; https://developer.android.com/topic/performance/benchmarking/macrobenchmark-metrics ; https://developer.android.com/develop/ui/compose/performance ; https://developer.android.com/develop/ui/compose/performance/baseline-profiles
+
+## Premium original visual language
+Use Apple's public Liquid Glass Human Interface Guidelines as design **research**, not a licence to ship Apple code, fonts, SF Symbols, logos or copyrighted assets. Original Jetpack Compose implementation. Content-first movie-theater aesthetic: crisp artwork, dark cinematic hero gradients, purposeful typography/whitespace, precise icons, quiet motion and clear visual hierarchy. Create and maintain reusable design tokens for colors, type scales, optical spacing, corner radii, scrims, elevation, motion and shapes. Avoid random Material styling or full-screen frosted haze. Support long text, loading, empty/error, offline, permission revoked, no posters, unmatched titles, no TMDB credentials, accessibility, dark/contrast modes, landscape and system insets. Provide at least ~48dp functional tap targets, TalkBack semantics, focus/keyboard controls, scalable text, reduced-motion and reduced-transparency fallback.
+Apple: https://developer.apple.com/documentation/technologyoverviews/liquid-glass ; https://developer.apple.com/documentation/TechnologyOverviews/adopting-liquid-glass ; https://developer.apple.com/design/human-interface-guidelines/materials ; https://developer.apple.com/videos/play/wwdc2025/219/
+**Core principle:** Liquid Glass belongs to a floating **functional chrome** layer—navigation, controls, active sliders, menus—not posters, titles, image grids or full-screen content.
+
+## Where Glass goes (by planned phase)
+| Surface | Intended treatment | Functional requirement / fallback | Phase |
+|---|---|---|---|
+| Hero and movie/TV poster shelves | **No Glass** over poster/backdrop images; crisp artwork and restrained gradient | Stable lazy scrolling; image quality and text contrast | 3 |
+| Floating bottom navigation | Small bounded source-backed Glass groups with selected state | Press, focus, active indicator, possible hide-on-scroll only if performant; opaque fallback | 3 plain → 6 Glass |
+| Search pill / sort / filter | One compact Glass functional bar/sheet | Real accessible editing, keyboard and IME-safe layout; no blur on results | 3 plain → 6 Glass |
+| Movie/show details | Glass Play, More, season/filter controls only | Non-glass artwork; accessibility; no stacked glass layers | 3 plain → 6 Glass |
+| Mini-player and transport chrome | Glass only on bounded toolbar/controls if video composition supports it | Auto-hide, captions remain readable, solid fallback over `SurfaceView` | 4 plain → 6 Glass |
+| Seek slider | Refined track and buffered progress, **Glass thumb only when pressed/focused/dragged** | Real continuous value, times, thumbnail only if feasible, exact seek release, large drag target, TalkBack; fallback opaque | 4 plain → 6 Glass |
+| Volume and subtitle delay slider | Same interactive thumb material, crisp track | Fine control, reset/default, numeric/accessible values | 5 plain → 6 Glass |
+| Audio/subtitle sheets and transient menus | Bounded floating Glass surface | Readable scrim, no nested glass-on-glass; clear close and action semantics | 5 plain → 6 Glass |
+| Settings toggles and segments | Selective transient interaction Glass | No idle rendering cost when equivalent static surface suffices | 6 |
+| Folder setup, scan errors and permissions | **Plain, polished, solid Compose** | Must work without Glass or network | 1 |
+
+## Implementation: Haze 2.1.0 and render rules
+- Existing `PlayerGlass.kt` and `GlassLabScreen.kt` are **experiments**, not production acceptance. Begin with source-backed `hazeSource` + `HazeInput.Sources`, `GlassStyle.regular` or existing Clear option and `HazePerformanceMode.Default` (Balanced). Profile before tuning to Quality/Performance; preserve user-selectable effects-off mode.
+- **Do not activate experimental native Android 17 window-backdrop rendering** on Android 15. Avoid custom shaders/JNI/pixel-readback. Use a bounded source and retain clear or opaque fallback, reduced motion/transparency behavior. Evaluate `HazeSourceRetention.ClearWhenUnavailable` for transient sensitive content.
+- `hazeGlassContainer` is only for a few closely related morphing controls. Haze's published benchmarks found large performance costs for merged dense scrolling grids. Never place glass behind every list/card; limit geometry/captures.
+- **Slider implementation:** real Compose semantics, keyboard/touch gestures and state. During drag/focus, increase Glass illumination/refraction on the thumb only; on release settle and return to subtle material. Track updates promptly; avoid invoking expensive player seeks on every recomposition. Full opaque fallback with identical behavior.
+- Playback video may use `SurfaceView`, not sampled into `hazeSource`: do NOT promise live video-backed refraction unless measured end-to-end. Prefer static/tinted overlay controls that never obstruct subtitles or break video decoding.
+- Measure first appearance, scroll crossing backgrounds, slider drag and repeated sheet animation separately; adjust one rendering parameter per benchmark. Degrade gracefully before missing deadlines.
+Haze docs: https://chrisbanes.github.io/haze/2.1.0/effects/glass/ ; https://chrisbanes.github.io/haze/2.1.0/performance/ ; https://github.com/chrisbanes/haze/blob/main/CHANGELOG.md
+
+## Acceptance
+Every UI slice: design tokens/screen states, screenshot or reproducible description, automated tests, optimized build + measured performance where possible, accessibility/fallback checks and actual CPH2531 test report. Zero device evidence = unverified. **Phase 1 must remain functional with Glass disabled; full production Glass arrives in Phase 6.**
