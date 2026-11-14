@@ -567,3 +567,16 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - Add only androidTestImplementation runner 1.7.0 and existing JUnit 4.13.2; add assembleDebugAndroidTest to verification command. Dependency-only gate before writing Android test sources. No new production SDK/permission/network/size impact expected; merged production manifest still needs assertion.
 - Official stable version verified from https://developer.android.com/jetpack/androidx/releases/test (runner stable 1.7.0); https://github.com/android/android-test/blob/main/LICENSE is Apache-2.0. Retain applicable notices for redistributed test binaries; no upstream source copied.
 - CI pending. Next: real Room reconciliation/reopen/tree-isolation/rollback and synthetic cursor/cancellation tests on Android 15 emulator. Emulator results are not OPPO acceptance or measured FPS.
+
+## 2026-11-14 — Android Room/cursor integration coverage
+- Added OfflineLibraryAndroidTest for complete/empty reconciliation, disk reopen, tree isolation/activation, incomplete provider snapshot preservation, Room cancellation rollback and merged debug-manifest privacy. Allows only AndroidX internal DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION, forbids network/storage/other permissions; backup must be disabled.
+- Added synthetic nonexported debug-only provider plus SafQueryAndroidTest for cursor closure on success/failure and cancellation reaching a blocked provider. No real filenames/media, URI grants or uploads. Debug provider is excluded from release source set.
+- CI gains separate read-only-permission Android 15/API35 emulator job using standard SDK tools (compileSDK37 unchanged); no signing credentials in that job. Existing verification/signing job needs instrumentation success, so publication is gated. Reports uploaded with synthetic data only. Emulator tests are not OPPO or GPU measurements.
+- No production dependency/permission/schema change. Test harness dependency gate/compilation and emulator execution pending; inspect failures before continuing to publication.
+
+## 2026-11-14 — Conservative filename parser edge cases
+- MediaNameParser/MediaNameParserTest: leading year-like numbers no longer erase numeric titles; select final nonleading year token. Multi-episode SxxExxExx/range and 1xNN ranges remain Unrecognized rather than claiming one episode/movie. Added synthetic fixtures; no online matching, paths, dependency or schema change. Verification pending parser PR; not a promise of universal filename interpretation.
+
+## 2026-11-14 — Plain offline library states and series grouping
+- LibrarySession adds explicit completed-scan/cancelled flags; cache restoration alone does not claim a completed empty scan. FolderSetupScreen adds saved-cache loading and empty/cancel status text, groups episodes by parsed series then season/episode, memoizes parsing/grouping, and respects safe system insets. Strings are resource-backed; no Glass or network.
+- This slice remains unverified until its own PR gate; actual TalkBack/large-font/OPPO rendering checks belong to the phone checklist. No phase acceptance/FPS claim.
