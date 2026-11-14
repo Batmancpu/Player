@@ -63,3 +63,13 @@ This file is the durable, accumulating record of important user requests, produc
 - Historical signing snapshots 22–23 in `PROJECT_CONTEXT.md` are explicitly marked superseded by the current generated-key status in section 24; the obsolete Termux instructions are not current.
 - Verified Android CI run 34 (`43574546390`) passed tests, debug APK assembly and artifact upload. Release signing remains skipped until the user configures the four exact repository Actions secrets.
 - Corrected run numbering in this record: run 29 (`43574064538`) was the temporary missing-helper failure; run 30 (`43574233803`) was the successful workflow correction; runs 31–34 all passed.
+
+## 2026-11-14 — User-approved six phone-verified phases and Obtainium release handoff
+
+- User requested that one-folder access and offline file discovery/filename parsing/Room persistence be merged into Phase 1 rather than separate milestones.
+- Adopted six deliverable phases recorded in docs/ROADMAP.md: (1) one-folder offline library; (2) TMDB identification and cached artwork; (3) cinematic real catalogue; (4) local video playback; (5) audio and subtitles; (6) polished Glass, QA and launch.
+- At the end of each phase: pass CI and signing checks; publish a distinct Release APK on GitHub Releases with changelog; user tests on OPPO CPH2531; record evidence and gate acceptance before next phase.
+- User intends to track released APK updates through Obtainium. Preserve existing permanent signing key and stable package identity and monotonically increase versionCode. Never use a debug APK as install/update channel.
+- The canonical instructions for a future ChatGPT Work agent are docs/WORK_HANDOFF.md and AGENTS.md; all product history remains in existing repo Markdown.
+- Checked main 95881e4 and CI #36 passed. GitHub Releases was empty; signed release steps were skipped because Actions signing secrets were not configured. No signed installable APK can be claimed now.
+- Next: implement Android SAF adapter + scanner list UI and build gate, then parser, Room, incremental reconciler. Add manual signed release publication workflow; user must configure four signing secrets before publishing.

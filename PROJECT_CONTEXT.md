@@ -292,3 +292,13 @@ This section supersedes the earlier Termux-based proposal in sections 22–23 an
 The user wants the AI to act as the sole implementation worker where connected tools allow, and explicitly prefers a direct, low-friction process over unnecessary setup scripts, Termux steps, device-side terminal work or over-engineered procedures. The user uses an iPad/Android setup and Proton Pass for password storage. Ask for user action only where account permissions or physical-device access actually require it (for example, entering GitHub Actions secrets).
 
 The user also explicitly asked that the project retain a chronological Markdown conversation/handoff record so a new AI agent can resume with the decision history. `CHAT_HISTORY.md` is the accumulating project session log. Keep it updated at every session end, alongside `PROJECT_CONTEXT.md`, `DEVELOPMENT_LOG.md` and `ISSUES_AND_FIXES.md`. Record decisions and actions, never secrets.
+
+## 2026-11-14 — User-approved six phone-verified phases and Obtainium release handoff
+
+- User requested that one-folder access and offline file discovery/filename parsing/Room persistence be merged into Phase 1 rather than separate milestones.
+- Adopted six deliverable phases recorded in docs/ROADMAP.md: (1) one-folder offline library; (2) TMDB identification and cached artwork; (3) cinematic real catalogue; (4) local video playback; (5) audio and subtitles; (6) polished Glass, QA and launch.
+- At the end of each phase: pass CI and signing checks; publish a distinct Release APK on GitHub Releases with changelog; user tests on OPPO CPH2531; record evidence and gate acceptance before next phase.
+- User intends to track released APK updates through Obtainium. Preserve existing permanent signing key and stable package identity and monotonically increase versionCode. Never use a debug APK as install/update channel.
+- The canonical instructions for a future ChatGPT Work agent are docs/WORK_HANDOFF.md and AGENTS.md; all product history remains in existing repo Markdown.
+- Checked main 95881e4 and CI #36 passed. GitHub Releases was empty; signed release steps were skipped because Actions signing secrets were not configured. No signed installable APK can be claimed now.
+- Next: implement Android SAF adapter + scanner list UI and build gate, then parser, Room, incremental reconciler. Add manual signed release publication workflow; user must configure four signing secrets before publishing.

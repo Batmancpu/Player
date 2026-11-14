@@ -1,99 +1,79 @@
-# Commit-sized implementation roadmap
+# Player — six phone-testable release phases
 
-This roadmap reflects the user's latest approved scope (2026-11-14). Build the functional catalogue and local player first; treat the current Glass Lab as an isolated experiment, not the product UI. Every implementation commit must update DEVELOPMENT_LOG.md. Work only on main, use small commits, and stop when a verification gate fails.
+Status: approved user workflow, 2026-11-14. This document supersedes the older ten-phase breakdown and is the **active implementation plan**. Historical details and technical rationale remain in PROJECT_CONTEXT.md, CHAT_HISTORY.md, docs/ARCHITECTURE.md and docs/DECISIONS.md.
 
-**Current state:** the Android/Compose shell, theme/tokens, icon registry, three JVM theme tests, Haze 2.1.0 helper and isolated Glass Lab exist. The default screen is now the plain folder-setup screen. SAF selection, one-provider allowlist, persisted read grant and startup permission recovery are implemented. The first CI run exposed an incorrect rememberSaveable import; it was fixed in e20d8aa. Corrected workflow 43569710969 passed; handoff workflow 43569752178 also passed. Recursive scanning, filename parsing, database, TMDB, artwork, catalogue and playback are not implemented. Physical-device validation has not occurred. Stable signing scaffolding passed CI runs 25 and 26. A permanent JKS key has now been generated and verified, with private files delivered to the user; the user must back it up and configure the four Actions secrets. Run 25 deliberately skipped signed release creation because no secrets were present. The Termux helper has been removed.
+## Definition of done for EVERY phase
 
-## Phase 0 — Repository and build foundation
-- [x] Canonical handoff, operating rules, architecture, decisions, roadmap, device playbook, development log and issue register.
-- [x] Android app module, SDK configuration, Compose launcher and dark starter theme.
-- [x] Node 24-compatible CI workflow; unit tests, debug APK assembly and artifact upload.
-- [x] Three JVM theme/contrast regression tests.
-- [ ] Add Gradle wrapper and reproducible local build entry point; CI currently installs Gradle 9.5.1 directly.
-- [x] Stable release-signing Gradle/CI scaffold, monotonic versionCode, conditional release assembly and apksigner verification are implemented; signing scaffold CI passed (run 25).
-- [x] Permanent JKS release key generated and verified; private JKS, base64 secret text and credential note delivered as private files in the current conversation.
-- [ ] User backs up the JKS, stores its password in Proton Pass, and manually configures all four repository Actions secrets. No signed APK exists yet.
-- [ ] Add dependency/licence inventory and Compose UI smoke test.
-**Gate:** clean main build, tests and APK artifact all pass.
+A phase is not complete merely because code builds. Before advancing:
+1. Commit small, testable changes directly to main, each with a dated DEVELOPMENT_LOG.md entry; do not proceed on a failing main.
+2. Automated tests pass; GitHub Actions builds and verifies the signed Release APK with the **existing** permanent signing certificate; no debug APK is recommended for installing/updating.
+3. Publish ONE named GitHub Release with the signed APK and human-readable changes/testing instructions; this release is the Obtainium update source.
+4. User installs/updates on OPPO Reno10 5G CPH2531 (Android 15), tests phase acceptance checklist and reports findings (including crash/log evidence if necessary). Record verified device results separately from CI.
+5. Fix critical failures in focused commits and publish a higher-version signed APK; only mark acceptance complete when user confirms real-device behavior. Do not claim acceptance without evidence.
+6. Update docs/WORK_HANDOFF.md, CHAT_HISTORY.md, PROJECT_CONTEXT.md and the issue register appropriately. Record exact commit, CI run, Release URL/tag, SHA-256, signing certificate fingerprint, app versionCode and next step.
 
-## Phase 1 — Plain functional app shell and one-folder access
-1. [x] Replace the Glass Lab as the default launcher with a plain, content-first setup screen. Keep the Glass Lab isolated behind a developer-preview entry.
-2. [x] Add one-folder onboarding using the Android system OpenDocumentTree picker.
-3. [partial] Allow only Android external-storage DocumentsProvider; unknown/cloud/network providers are rejected. Confirm actual OPPO provider behaviour on device before expanding the allowlist.
-4. [x] Persist only the read grant and selected tree URI in app-private preferences; restore it on startup and recover when the grant is missing. Do not request MANAGE_EXTERNAL_STORAGE.
-5. **NEXT:** Add a cancellable recursive scanner restricted to the chosen tree and descendants. Whitelist video MIME types/extensions, skip unsupported/system entries, deduplicate by provider authority + document ID, bound concurrency, and never modify source files.
-6. Recognize sidecar subtitle files for later pairing, but never include subtitle contents in metadata requests.
-7. Add tests for root-boundary enforcement, nested folders, cancellation, duplicates, inaccessible providers and permission loss.
-**Gate:** the app remembers exactly one local folder, discovers only its descendants, and leaves source files untouched. No TMDB or player dependency is added in this phase.
+**Release rule:** Use existing keystore, alias and app identity for every APK. Keep applicationId com.batmancpu.player stable for updates until a user-approved migration plan. Never generate or rotate another release key. Increment versionCode on every new installable APK. Never publish unsigned/debug APKs as an Obtainium update. Manual milestone publishing is preferred to publishing every small commit.
 
-## Phase 2 — Filename parsing and content identity
-8. Normalize movie filenames into title/year while removing release-group, resolution, codec and container noise.
-9. Parse series title, season and episode from common S01E02, S01.E02, 1x02 and Season 1/02 patterns.
-10. Match a series once and bind episodes to the parent series; do not search TMDB separately for every episode.
-11. Add test corpus for remakes, duplicate titles, punctuation, Unicode, anime, multi-episode names, year ambiguity and noisy release strings.
-**Gate:** parser outputs are deterministic and ambiguous matches are flagged, never silently accepted.
+## Phase 1 — Offline media library and one-folder privacy (ACTIVE)
 
-## Phase 3 — Local database and offline persistence
-12. Add Room entities, DAOs, repositories and explicit migrations for folder, media document identity, parsed title, movie/series/season/episode, metadata match and user override.
-13. Use DataStore for non-secret preferences; keep credentials in Android Keystore-backed storage.
-14. Implement incremental scan reconciliation. Do not mark files missing after an incomplete or failed scan.
-15. Add persistent app-private artwork/subtitle cache boundaries; never cache video files.
-**Gate:** indexed items and manual overrides survive process death, restart and offline use without destructive migrations.
+**User-visible outcome:** choose one Android local folder; Player recursively finds movies/episodes/subtitle sidecars in that folder and subfolders; shows a plain, navigable offline list and remembers it after restart. No TMDB/API requirement, metadata/network request, Glass dependency in production, or playback needed.
 
-## Phase 4 — TMDB metadata and high-quality artwork
-16. Resolve the TMDB credential model before network implementation: user-provided credential or optional metadata. Never commit a shared key or add a proxy/backend merely to hide it.
-17. Add a typed direct HTTPS TMDB client with timeout, bounded concurrency, rate-limit handling, cancellation, retries and log redaction.
-18. Send only normalized title, optional year, media type and language. Never send full filename, local path, folder name, SAF URI or media bytes.
-19. Rank candidates conservatively; handle remakes/languages and allow manual search, confirmation and persistent overrides.
-20. Fetch detailed movie/series/season/episode metadata and TMDB poster/backdrop artwork; use a maintained image loader, stable aspect ratios, memory/disk caching and progressive placeholders.
-21. Add required TMDB attribution and approved logo treatment in About/Credits.
-**Gate:** test movies and series display correct titles, posters, backdrops and detail metadata; corrected matches survive rescans; cached catalogue works offline.
+Implementation steps in small commits:
+1. [x] Android shell and system OpenDocumentTree selector; allowlist local external-storage DocumentsProvider only; persist **read-only** grant, revalidate on startup, recover from permission loss. Source implemented, device unverified.
+2. [x] Pure cancellable, sequential scanner with video/sidecar classification, duplicate handling, containment callback and JVM tests. GitHub Actions run 36 passed. The real SAF provider is not wired yet.
+3. [ ] SAF provider adapter: enumerate immediate child documents via the single granted tree URI; inspect file metadata without opening video bytes; reject nonlocal authority and out-of-root document IDs. Bound scanning and handle partial/provider errors as errors, not successful empty scans.
+4. [ ] Present simple scan/progress/error/cancel/results screens; show movies/episodes (and optionally sidecar counts) from **real documents**, not mock artwork. Show clear permission recovery.
+5. [ ] Deterministic filename parser for movie title/year and TV S01E02 / 1x02; handle common noise, Unicode and ambiguous matches; group episodes under series. No external matching yet.
+6. [ ] Room persistence of selected-folder document identities, media metadata, parsed titles and scan status. Persist results offline; rescans update changed files and remove stale entries **only after a fully successful scan**; switching the selected folder must not mix libraries. Keep manual corrections prepared for later metadata stage; avoid destructive migrations.
+7. [ ] Unit tests and instrumentation/device checks for nested folders, sibling folder exclusion, duplicates, permission revoked/regranted, cancellation, partial scan, reboots, empty folder, unsupported media, incremental rescan and source-file immutability. No MANAGE_EXTERNAL_STORAGE/READ_MEDIA_VIDEO permission.
 
-## Phase 5 — Real catalogue and detail screens
-22. Build plain Compose navigation and the actual home/library experience before production Glass.
-23. Display crisp poster grids and curated shelves with efficient image loading; avoid layout shifts while artwork loads.
-24. Add movie detail pages and series → season → episode navigation with backdrops, synopsis and relevant metadata.
-25. Add local-library search and unmatched/pending/offline/error/empty/loading states.
-26. Add settings for selected folder, rescan, matching corrections, metadata credential, artwork cache and credits.
-27. Add UI tests for navigation/state restoration, accessibility, long titles, no artwork, no internet and large libraries.
-**Gate:** the user can open Player, browse a real locally indexed catalogue, view TMDB artwork/details and recover from offline/permission states. This is the first complete product milestone.
+**Phone test gate:** choose one local Movies folder with nested show folders; scan shows only selected descendants; close/reopen app offline and still see library; rescan reflects additions/removals after success; permission loss recovers; switching folders replaces library without scanning the old tree. Install signed APK from GitHub Release; track subsequent releases in Obtainium. Until the user confirms, phase 1 remains in progress.
 
-## Phase 6 — Local playback engine and basic player
-28. Spike AndroidX Media3 against the local test corpus using SAF content URIs; test container parsing, codec/decoder availability, audio/video sync, seekability, multi-track discovery, hardware decoding and playback stability.
-29. Compare LibVLC only if Media3 gaps are material; audit native ABIs/APK size, hardware/software decoding, battery/thermal impact, crash surface and GPL/LGPL obligations before selection.
-30. Put the selected engine behind a small playback interface; keep catalogue identity and UI independent from engine-specific types.
-31. Connect the catalogue's Play action to the local document URI. Add basic play/pause, seek, progress, full-screen/orientation handling, audio focus and remembered playback position.
-32. Provide clear unsupported-format/decoder errors and never crash the whole app on an unsupported file.
-33. Add JVM/instrumentation tests where possible, then perform the full CPH2531 format corpus test.
-**Gate:** representative local files play reliably with a documented compatibility matrix. “Every format” is an aspiration, not a guarantee.
+## Phase 2 — TMDB identification, artwork and offline metadata
 
-## Phase 7 — Audio, subtitles and sync controls
-34. Expose embedded audio-track discovery and selection with language/codec/channel labels where available.
-35. Expose embedded subtitle-track selection, visibility and language labels.
-36. Allow the user to select local external subtitle files through SAF; support formats the chosen engine actually supports (candidate formats: SRT, WebVTT, TTML, SSA/ASS).
-37. Select and integrate an online subtitle provider only after reviewing terms, API/auth, availability, language coverage, rate limits and privacy.
-38. Search and download a subtitle from the player without interrupting playback; associate it with the local media item and store it in app-private storage by default.
-39. Add subtitle delay adjustment in small increments, a larger adjustment step, visible offset feedback and reset-to-zero.
-40. Keep all track/subtitle controls in a compact, uncluttered sheet/menu; video remains visible and controls disappear naturally.
-**Gate:** embedded, local sidecar and downloaded subtitles can be selected; sync can be adjusted and reset; no source media is changed and no private local identifiers are sent.
+**User-visible outcome:** recognizable posters/backdrops/details for local titles; pending/ambiguous matching states and manual correction; previously indexed media/metadata/artwork browsable offline.
+- Confirm privacy-safe direct TMDB API credential model. No shared extractable APK secret, Player server or proxy. Credential optional; no metadata when absent.
+- Match normalized titles/year/type, never local path, document URI, raw filename or video bytes. Match series once; resolve season/episode identity separately.
+- Rate limits, timeouts, conservative candidate ranking, retries/cancellation, no ambiguous automatic overwrite, persistent user overrides.
+- Download validated TMDB image URLs to bounded app-private cache, use maintained image loader and preserve downloaded offline metadata.
+- Verify TMDB credits/approved logo, privacy requests and all failure/offline modes.
+**Phone gate:** correct 10 mixed movies/series including remakes and Unicode; wrong matches manually fixed and retained; offline detail/posters remain.
 
-## Phase 8 — Production Liquid Glass integration
-41. Keep the current Haze Glass Lab as a test harness; do not use its generated artwork as the catalogue.
-42. Validate the Glass Lab on CPH2531/Android 15 with full/disabled fallback before promoting any material to production.
-43. Build reusable regular/clear Glass surfaces, icon buttons, compact pills and sheets around the verified Haze source-backed path.
-44. Apply Glass only to functional chrome: navigation, playback controls, track/subtitle sheet and transient menus. Keep posters and video crisp.
-45. Add reduced-transparency/reduced-motion/unsupported-device fallbacks; keep expensive surfaces few and grouped.
-46. Verify readability over bright/dark artwork and video, gesture hit targets, animation performance, memory, thermal and 60-Hz stability.
-**Gate:** every core journey works with Glass disabled; production Glass improves controls without blocking the product or causing jank.
+## Phase 3 — Cinematic catalogue and navigation
 
-## Phase 9 — Hardening and release
-47. Validate TalkBack, text scaling, contrast, landscape, orientation, audio focus and lifecycle recovery.
-48. Benchmark scanning and poster loading at 100/500/1000 files.
-49. Test offline, slow network, API errors, permission revocation, provider failures, corrupt cache and unsupported codecs.
-50. Inspect dependencies, licenses, manifest permissions and network hosts; verify no analytics, telemetry, media upload or hidden backend.
-51. Document all third-party licenses, TMDB attribution and any playback-engine copyleft obligations.
-52. Generate and securely back up the permanent signing key before release; configure the four repository secrets. Freeze applicationId before the first signed install, then verify the signed APK fingerprint and monotonic versionCode.
-53. Publish the first release only after clean CI, APK verification, documented format matrix and separate physical-device validation.
-**Gate:** reproducible signed APK, passed tests, privacy audit and target-device acceptance.
+**User-visible outcome:** complete real home/library with poster shelves, films/series, details, seasons/episodes, local search, empty/offline states and settings.
+- Reuse Room state, accessible Compose navigation and image loading. Keep content crisp and functional without Glass.
+- Stress with 100/500/1000 files, long titles, no artwork, large text, TalkBack and scroll restore.
+**Phone gate:** browse a real mixed library end-to-end, search, open details, switch offline and rotate without lost selection or crashes.
 
-Never mark an item complete from a plan or compilation alone. CI does not prove Glass rendering, codec compatibility, battery use or device stability.
+## Phase 4 — Built-in local playback
+
+**User-visible outcome:** open a video from the catalogue, play/pause/seek, resume position, full-screen/orientation and audio focus without uploading/streaming any media.
+- Evaluate AndroidX Media3 first on SAF content URI and real device format corpus; choose LibVLC only if measured gaps justify licence/ABI/thermal costs.
+- Keep engine behind an interface; handle unsupported containers, codecs or permission failures safely.
+- Persist resume points in local app data. No source media edits.
+**Phone gate:** test mixed MP4/MKV/WebM assets on CPH2531 with real decoder, performance and failure evidence.
+
+## Phase 5 — Audio and subtitle tools
+
+**User-visible outcome:** embedded audio/subtitle selection, sidecar/local subtitle import, adjustable subtitle delay/reset, reviewed optional online subtitle search/download.
+- Surface language/codec/channel labels as available; compact, uncluttered controls.
+- Review provider API, terms, privacy, credentials and attribution **before** networking; send only normalized identifiers, not local paths, subtitle/media bytes.
+- Downloaded subtitles stored in app-private cache; original media/subtitles untouched.
+**Phone gate:** switch embedded tracks, load sidecar, adjust/reset subtitle delay, and test online retrieval only if approved provider exists.
+
+## Phase 6 — Liquid Glass, accessibility, performance and launch
+
+**User-visible outcome:** polished Apple TV-inspired cinematic presentation with restrained iOS-inspired Liquid Glass on functional controls; reliable fallbacks and verified stable release.
+- Validate isolated Haze 2.1.0 Glass Lab first; no experimental native window backdrop on Android 15.
+- Glass limited to navigation, sheets and controls, not posters/video; reduced-motion/transparency and unsupported GPU fallbacks.
+- Accessibility, battery, cold start, scrolling, offline, caches, source privacy and licences verified on handset.
+**Phone gate:** all earlier journeys function with Glass on/off; 60-Hz target and no confirmed instability; final signed APK update and licence/privacy checks pass.
+
+## Workflow and release blockers
+
+- **Current verified state (2026-11-14):** main commit 95881e4; CI #36 succeeded; GitHub Releases is empty; no published signed APK; release assembly was skipped because signing secrets had not been configured at that run.
+- User must securely back up prior-generated player-release.jks and configure GitHub Actions encrypted repository secrets: PLAYER_RELEASE_KEYSTORE_BASE64, PLAYER_RELEASE_KEYSTORE_PASSWORD, PLAYER_RELEASE_KEY_ALIAS, PLAYER_RELEASE_KEY_PASSWORD. Never ask the user to post these values in a chat, commit or log.
+- docs/ANDROID_SIGNING.md remains authoritative for signing details and public certificate fingerprint. The key was already generated in a previous private chat. Do not regenerate it.
+- CI debug artifact is for build investigation only. A GitHub Release + APK asset is required for Obtainium, which does not track temporary CI artifacts as durable app versions.
+- If a phase is incomplete, report its current substep and do not mislabel a provisional APK as the completed phase.

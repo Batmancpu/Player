@@ -2,7 +2,7 @@
 
 This file is binding project guidance. Read it before making changes. Do not rely on chat history as the source of truth.
 
-## Mandatory reading order
+## Active development protocol\n\nThe active six phone-testable phases and release criteria are in docs/ROADMAP.md. A concise Work-mode operational handoff is in docs/WORK_HANDOFF.md. Follow both; historical roadmap snapshots are superseded. Every phase must deliver a verified signed APK in GitHub Releases, then be tested on the actual OPPO handset before acceptance. Do not claim a signed release when Actions secrets are absent.\n\n## Mandatory reading order
 
 1. `PROJECT_CONTEXT.md` — product intent, origin, constraints, previous discussions and current facts.
 2. `CHAT_HISTORY.md` — chronological session summaries of user requests, decisions, work and unresolved actions.

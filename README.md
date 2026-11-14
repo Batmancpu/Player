@@ -19,7 +19,7 @@ Choose **one local folder**. Player scans only that folder and its descendants, 
 
 This repository contains a **buildable Android/Compose foundation** with a shared cinematic theme, licensed icon registry, three theme regression tests, and a GitHub Actions build pipeline. The current launcher is the plain one-folder setup screen; the Liquid Glass Lab remains a developer preview. Folder selection and persisted read-grant recovery compile and pass CI, but the recursive scanner, TMDB metadata, offline catalogue, and playback are not implemented yet. The release-signing workflow is prepared, but the private keystore and four GitHub Actions secrets are not yet configured, so no signed Release APK exists. See [Android signing](docs/ANDROID_SIGNING.md), [AGENTS.md](AGENTS.md), and [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) before changing anything.
 
-## Canonical project records
+The active delivery plan consists of six phone-testable phases and a signed GitHub Release at each accepted milestone. The one-folder offline library, scanner, parser and Room index are combined in Phase 1. The current scanner engine passes CI but is not yet connected to the device's SAF provider. GitHub Releases is currently empty; permanent signing secrets must be added before an installable update APK can be published. See [phase roadmap](docs/ROADMAP.md) and [Work agent handoff](docs/WORK_HANDOFF.md).\n\n## Canonical project records
 
 - [AI agent operating rules](AGENTS.md)
 - [Full product and conversation handoff](PROJECT_CONTEXT.md)

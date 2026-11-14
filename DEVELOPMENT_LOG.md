@@ -371,3 +371,13 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - Added JVM tests for nested discovery, duplicates, root containment, provider failure and cancellation.
 - This commit does not access Android storage yet; the next focused step is to wire a SAF DocumentsContract adapter and then expose scan results on the setup screen. No TMDB, playback engine or additional permission is introduced.
 - Verification: GitHub Actions CI is pending for this commit; target OPPO device testing has not occurred.
+
+## 2026-11-14 — User-approved six phone-verified phases and Obtainium release handoff
+
+- User requested that one-folder access and offline file discovery/filename parsing/Room persistence be merged into Phase 1 rather than separate milestones.
+- Adopted six deliverable phases recorded in docs/ROADMAP.md: (1) one-folder offline library; (2) TMDB identification and cached artwork; (3) cinematic real catalogue; (4) local video playback; (5) audio and subtitles; (6) polished Glass, QA and launch.
+- At the end of each phase: pass CI and signing checks; publish a distinct Release APK on GitHub Releases with changelog; user tests on OPPO CPH2531; record evidence and gate acceptance before next phase.
+- User intends to track released APK updates through Obtainium. Preserve existing permanent signing key and stable package identity and monotonically increase versionCode. Never use a debug APK as install/update channel.
+- The canonical instructions for a future ChatGPT Work agent are docs/WORK_HANDOFF.md and AGENTS.md; all product history remains in existing repo Markdown.
+- Checked main 95881e4 and CI #36 passed. GitHub Releases was empty; signed release steps were skipped because Actions signing secrets were not configured. No signed installable APK can be claimed now.
+- Next: implement Android SAF adapter + scanner list UI and build gate, then parser, Room, incremental reconciler. Add manual signed release publication workflow; user must configure four signing secrets before publishing.
