@@ -299,3 +299,24 @@ The stable-signing workflow is committed and CI-verified, but **no private keyst
 **Next exact action:** the user runs the Termux helper locally, saves the JKS plus password in at least two secure places, records the SHA-256 certificate fingerprint, and adds the four repository Actions secrets. Then trigger Android CI and confirm that the signed Release build, apksigner verification and release artifact all succeed. Only then install the first signed Release APK.
 
 **Important package-identity gate:** creating/backing up the key can happen now, but before installing the first signed APK the user must decide whether `com.batmancpu.player` is the final applicationId. Changing it after installation creates a different Android app and breaks the intended in-place update chain.
+
+
+## 24. Permanent signing key generated; no Termux required — 2026-11-14
+
+This section supersedes the earlier Termux-based proposal in sections 22–23 and in the first version of `docs/ANDROID_SIGNING.md`.
+
+- The user rejected a Termux workflow and asked the AI agent to create the permanent signing key directly. This was explicitly done in the current ChatGPT session.
+- A JKS keystore was generated with `keytool` in the session's file workspace, reopened and verified. It was delivered as a private downloadable file, with a separate base64 secret file, credentials note and public fingerprint file. None of those private files or password values are stored in this GitHub repository.
+- Key alias: `player-release`; RSA-2048 / SHA256withRSA; 10,000-day validity. Public SHA-256 fingerprint: `62:A0:97:B7:BE:7D:22:A9:88:3D:9E:09:01:5C:04:17:72:72:16:D7:3E:25:06:ED:F4:70:B2:4A:61:CD:AD:C0`.
+- User action still required: download and securely back up `player-release.jks`; save the password from `PLAYER_RELEASE_CREDENTIALS.txt` in Proton Pass; create the four Actions secrets documented in `docs/ANDROID_SIGNING.md`. The GitHub connector cannot write repository secrets. No signed Release APK exists until those secrets are configured and CI verifies the signature.
+- Actions secrets: `PLAYER_RELEASE_KEYSTORE_BASE64`, `PLAYER_RELEASE_KEYSTORE_PASSWORD`, `PLAYER_RELEASE_KEY_ALIAS`, `PLAYER_RELEASE_KEY_PASSWORD`.
+- The source applicationId remains `com.batmancpu.player`, intentionally provisional. User wants branding/package cleanup deferred until core functionality works. The existing signing key can sign a future applicationId without regeneration; a changed applicationId is a new Android package and will not update the old package in place.
+- The initial Termux helper was deleted from the repository and its CI syntax step removed. Do not ask the user to install Termux or regenerate this key. Do not create a replacement. Refer to the already-delivered files and the user's Proton Pass/secure backup.
+- Signing CI: scaffold run 25 (`43570229274`) passed while correctly skipping signed Release because secrets were absent. Run 27 (`43573474031`) passed after the helper-shell syntax fix. A later cleanup commit removes the obsolete helper/check; verify that cleanup's CI separately.
+- Current exact next step: user saves the delivered files/credential securely, adds the four GitHub repository secrets, then trigger Android CI. On success, verify the CI-reported certificate fingerprint equals the fingerprint above. Continue functional development; do not block scanner implementation on a final brand or package-name choice.
+
+## 25. User workflow and continuity preference — 2026-11-14
+
+The user wants the AI to act as the sole implementation worker where connected tools allow, and explicitly prefers a direct, low-friction process over unnecessary setup scripts, Termux steps, device-side terminal work or over-engineered procedures. The user uses an iPad/Android setup and Proton Pass for password storage. Ask for user action only where account permissions or physical-device access actually require it (for example, entering GitHub Actions secrets).
+
+The user also explicitly asked that the project retain a chronological Markdown conversation/handoff record so a new AI agent can resume with the decision history. `CHAT_HISTORY.md` is the accumulating project session log. Keep it updated at every session end, alongside `PROJECT_CONTEXT.md`, `DEVELOPMENT_LOG.md` and `ISSUES_AND_FIXES.md`. Record decisions and actions, never secrets.

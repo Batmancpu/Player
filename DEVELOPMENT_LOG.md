@@ -334,3 +334,15 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - Added a CI step to run `bash -n scripts/generate-release-keystore.sh` on every build.
 - Validation: `bash -n` on the exact corrected source passed locally. GitHub Actions regression run pending.
 - The key remains a user-side operation on the OPPO phone through Termux; do not use the earlier script revision.
+
+
+## 2026-11-14 — Permanent signing key generated directly; Termux approach retired
+- The user rejected a Termux-based setup and explicitly asked the agent to create the key directly. A permanent JKS keystore was generated using `keytool` in the current session workspace.
+- Verified by reopening the JKS with `keytool -list -v`, confirming alias `player-release`, password, certificate and SHA-256 fingerprint.
+- Key parameters: RSA-2048, SHA256withRSA, 10,000-day validity. Public certificate SHA-256 fingerprint: `62:A0:97:B7:BE:7D:22:A9:88:3D:9E:09:01:5C:04:17:72:72:16:D7:3E:25:06:ED:F4:70:B2:4A:61:CD:AD:C0`.
+- Delivered private files separately in this conversation: `player-release.jks`, `PLAYER_RELEASE_KEYSTORE_BASE64.txt`, `PLAYER_RELEASE_CREDENTIALS.txt`, and the public `PLAYER_RELEASE_CERTIFICATE_FINGERPRINT.txt`. No keystore bytes, base64 or password were committed to GitHub.
+- User should save the JKS in at least two secure locations and store the password in Proton Pass. The four repository Actions secrets remain to be created manually because the GitHub connector has no repository-secret write action.
+- Explained that changing the Android applicationId later does not require a new signing key; it creates a distinct installed app. User wants branding/package cleanup deferred while the app's core functionality is built.
+- Removed the no-longer-needed Termux script and its CI syntax step from the repository. Earlier helper CI workflow run 27 (`43573474031`) passed; that check was for the now-retired script. The cleanup commit must be CI-verified independently.
+- Next: user downloads/backups the key, stores password in Proton Pass and creates the four GitHub repository secrets. Then trigger Android CI to verify Release APK signature. Continue the functional foundation; do not wait on branding or app-ID finalization.
+
