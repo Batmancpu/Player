@@ -173,3 +173,6 @@ Haze/Glass, folder selection, SAF scanning, filename parser, TMDB client/credent
 
 ### Next agent action
 Read AGENTS.md, inspect latest main and workflow runs, then add Haze 2.1.0 dependencies only (core, Glass and optional Material3 integration) in one focused commit. Run CI. Only then implement an isolated source-backed Glass lab using HazeInput.Sources and hazeSource. Do not enable HazeFeatureFlags.isPlatformBackdropEnabled; native window-backdrop rendering is experimental and not required for v1.
+
+## 13. Haze integration decision
+Haze 2.1.0 is now included as dependencies only (core, Glass, optional Material 3 integration). No Glass modifier or backdrop source has yet been implemented. Use the same version across all three artifacts. The first proof must use explicit HazeInput.Sources and hazeSource. Never enable the experimental native Android window-backdrop feature on the target Android 15 device. Haze docs specify that native backdrop is only eligible on Android 17/API 37.2+ and is experimental; source-backed rendering remains the selected route.

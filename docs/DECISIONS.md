@@ -67,3 +67,9 @@ CI build/test success and OPPO handset validation must be reported separately.
 **Status:** Accepted  
 **Decision:** Use a small set of adapted Lucide outline vector assets behind a single PlayerGlyph registry. Preserve the upstream ISC/MIT license text. Add new icons only when product screens need them.  
 **Reason:** Lucide is a consistent, permissively licensed line-icon family; selective vectors reduce the asset footprint and avoid bundling the full library or Apple-owned SF glyph artwork.
+
+
+### D-015 — Use Haze source-backed rendering; keep experimental native window backdrop disabled
+**Status:** Accepted  
+**Decision:** The Glass lab and initial implementation use explicit HazeInput.Sources and hazeSource. Do not enable HazeFeatureFlags.isPlatformBackdropEnabled or use the experimental native Android window-backdrop path in v1.  
+**Reason:** Native Android window-backdrop rendering is experimental, eligible only on Android 17/API 37.2+ and can draw a frame without source input when unavailable. The target device is Android 15. Haze source-backed rendering is the controllable cross-version path and must be benchmarked on the actual handset.

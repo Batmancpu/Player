@@ -189,3 +189,10 @@ Tests: documentation review only. No application build exists yet; no APK or dev
 - Three theme contrast/palette JVM tests are now active and pass CI.
 - Glass engine, media-folder access/scanning, TMDB, Room, image cache and library screens remain unimplemented.
 - Next: commit Haze 2.1.0 dependencies only, then build an isolated source-backed Glass laboratory. Do not enable Haze's experimental Android native window-backdrop flag.
+
+## 2026-11-14 — Haze 2.1.0 dependencies added (no UI integration)
+- Added core Haze, Glass and optional Material 3 integration artifacts, all pinned to 2.1.0, in app/build.gradle.kts.
+- This is a dependency-only commit. No Haze APIs, backdrop source, native renderer flag, screen, permission or runtime behavior is changed.
+- Rationale: the official Haze docs require the same version across core and Glass artifacts; Material 3 integration is optional and included because Player uses Material 3 colors.
+- Device safety: Haze's native Android window-backdrop path is experimental and intended for Android 17/API 37.2+; Player will not enable it on its Android 15 target. The Glass lab will use HazeInput.Sources + hazeSource.
+- Verification: pending CI dependency resolution and debug build.

@@ -37,6 +37,12 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui-tooling-preview")
 
+    // Haze 2.1.0: keep the core, Glass and Material 3 artifacts on one version.
+    // Rendering integration is introduced in a later isolated commit.
+    implementation("dev.chrisbanes.haze:haze:2.1.0")
+    implementation("dev.chrisbanes.haze:haze-glass:2.1.0")
+    implementation("dev.chrisbanes.haze:haze-glass-material3:2.1.0")
+
     debugImplementation("androidx.compose.ui:ui-tooling")
 
     testImplementation("junit:junit:4.13.2")
