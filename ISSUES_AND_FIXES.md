@@ -71,8 +71,9 @@ A risk is not a confirmed defect. Record evidence, confidence and status precise
 Do not erase a failure after a fix. Mark fixed and link the corrective commit.
 
 ### H-003 — CI SDK platform package identifier was invalid
-- **Status:** Fix committed; rerun pending.
+- **Status:** Fixed and regression verified.
 - **First observed:** 2026-11-14, CI run 1 (https://github.com/Batmancpu/Player/actions/runs/43560806966).
+- **Regression verification:** CI run 2 succeeded (https://github.com/Batmancpu/Player/actions/runs/43560868703); Android 37.0 SDK installation and Gradle APK assembly both passed.
 - **Affected component:** .github/workflows/ci.yml, Android SDK installation.
 - **Expected:** SDK manager installs Android API 37 platform.
 - **Actual:** sdkmanager failed with "Failed to find package 'platforms;android-37'" before Gradle ran.

@@ -122,3 +122,14 @@ Tests: documentation review only. No application build exists yet; no APK or dev
 - Correction: change only the CI SDK package identifier to `platforms;android-37.0`; keep build-tools 37.0.0.
 - Root-cause confidence: high; the log explicitly identifies the missing package.
 - Regression verification: new push will trigger CI run 2. Do not proceed to design/Glass until the baseline debug build passes.
+
+
+## 2026-11-14 — CI run 2: first successful debug APK
+- Workflow run: https://github.com/Batmancpu/Player/actions/runs/43560868703 — final conclusion: success.
+- Gradle output: `BUILD SUCCESSFUL in 1m 36s`; tasks included `:app:testDebugUnitTest` and `:app:assembleDebug`.
+- Note: there are no project-authored unit-test cases yet; the unit-test task passed with the current empty test source set. This is not evidence of functional parser/storage tests.
+- APK artifact: `Player-debug-6c41cbc8eda342de5f78c888bd717bbc14276b71`, 10,371,251 bytes, artifact ID 14100049909, 14-day retention.
+- Artifact archive SHA-256: `6211bf197a7edc9b529603e70c8eed4c3ddb669bfb86e9acc77b0150cd05f677`. This digest is for GitHub's uploaded artifact archive, not separately computed from the APK binary.
+- Android platform 37.0 installation, JDK 21, Gradle 9.5.1, compile/package and artifact upload all passed.
+- Device installation/launch/visual test: not yet performed by the user on CPH2531.
+- CI maintenance: next commit upgrades actions that emitted Node 20 deprecation warnings to Node 24-compatible current major versions and uses the open-source Gradle basic cache provider.
