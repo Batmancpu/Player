@@ -1,6 +1,6 @@
 # Player
 
-> **Working title only.** The app and repository may be renamed later. The current repository is `Batmancpu/Player`.
+> **Working title only.** The display name may change later; the release application ID and signing identity stay fixed. Repository: `Batmancpu/Player`.
 
 A local-first Android media library inspired by the cinematic presentation of Apple TV and the refined Liquid Glass interface language of iOS 27.
 
@@ -17,9 +17,11 @@ Choose **one local folder**. Player scans only that folder and its descendants, 
 
 ## Current status
 
-Phase 1 is actively under construction. The app includes Android/Compose, a saved one-folder SAF read grant, a cancellable read-only recursive SAF scanner, a simple movies/TV list, a deterministic local filename parser and an app-private Room index that survives restarts and reconciles only completed scans. The code passed GitHub Actions run #43 on 2026-11-14; real-device behavior on OPPO CPH2531 is not yet validated. TMDB, artwork, cinematic screens, local playback and subtitle controls are still unimplemented.
+The signed **[Phase 1 phone-test candidate v0.1.79](https://github.com/Batmancpu/Player/releases/tag/v0.1.79)** is available. Update your existing Player installation through Obtainium without uninstalling.
 
-A **manual signed Release publication** workflow is prepared, but GitHub Actions signing secrets have not yet been configured, so The FIRST signed test APK is now published as [v0.1.51](https://github.com/Batmancpu/Player/releases/tag/v0.1.51). Never use the CI-only debug artifact for update continuity. For the plan, see [six-phase roadmap](docs/ROADMAP.md), [Work agent handoff](docs/WORK_HANDOFF.md), [release signing](docs/ANDROID_SIGNING.md) and [Phase 1 phone test](docs/PHASE1_PHONE_TEST.md).
+Phase 1 includes one local read-only SAF folder, recursive video/subtitle discovery, a persisted offline Room index, conservative filename parsing, grouped series, safe rescans/cancellation and grant recovery. [CI #79](https://github.com/Batmancpu/Player/actions/runs/43618442469) passed unit tests, nine Android 15 emulator integration cases, build, built-APK privacy/identity and permanent signing-certificate checks. Actual OPPO CPH2531 acceptance and frame-time measurements remain pending.
+
+Phase 1 has no network permission or online metadata requirement. TMDB/artwork, cinematic catalogue, local playback, subtitle controls and production Glass are later phases. Follow the [phone checklist](docs/PHASE1_PHONE_TEST.md), [six-phase roadmap](docs/ROADMAP.md) and [handoff](docs/WORK_HANDOFF.md). Never install a CI-only debug APK as an update. Development now uses main only; see [AGENTS.md](AGENTS.md).
 
 ## Canonical project records
 
@@ -31,7 +33,9 @@ A **manual signed Release publication** workflow is prepared, but GitHub Actions
 - [Device test and crash playbook](docs/DEVICE_TESTING.md)
 - [Development log](DEVELOPMENT_LOG.md)
 - [Known issues and fixes](ISSUES_AND_FIXES.md)
-- [Third-party notices](THIRD_PARTY_NOTICES.md)\n- [Android release signing and update continuity](docs/ANDROID_SIGNING.md)\n- [Chronological project conversation/session log](CHAT_HISTORY.md)\n- [Android release signing and update continuity](docs/ANDROID_SIGNING.md)
+- [Third-party notices](THIRD_PARTY_NOTICES.md)
+- [Android release signing and update continuity](docs/ANDROID_SIGNING.md)
+- [Chronological project conversation/session log](CHAT_HISTORY.md)
 
 ## Design references
 
@@ -46,3 +50,4 @@ The implementation licence and all third-party licence obligations must be settl
 
 ## First Obtainium test APK (2026-11-14)
 The signed first test release is [Player v0.1.51](https://github.com/Batmancpu/Player/releases/tag/v0.1.51), from successful CI run #51. Add this repository URL in Obtainium and install release v0.1.51. After successful first install, publish a higher-version signed test update and verify installation over the prior version; do not count Phase 1 complete until device acceptance tests pass.
+

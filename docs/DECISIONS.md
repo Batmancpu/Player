@@ -114,3 +114,5 @@ CI build/test success and OPPO handset validation must be reported separately.
 
 ### D-024 — Main-only development and merged-branch cleanup (2026-11-14)
 **Accepted by latest user instruction:** work directly on main in small tested commits; do not create task branches/PRs. Maximum one additional backup branch only if genuinely needed, not routine task isolation. This supersedes D-023’s task-PR exception while retaining mandatory AGENTS/development logging. All eight previous task branches were fully merged with zero branch-only commits; delete those refs safely, preserving main/history/releases. Temporary cleanup automation must be removed after verification.
+
+D-024 execution verified: cleanup CI 43642157896 deleted all eight fully merged task refs; only main remains. Temporary workflow removed after verification. No optional backup branch was needed.

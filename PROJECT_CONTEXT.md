@@ -357,3 +357,5 @@ H-010 grant/root recovery, H-011 cancellable/bounded scanning and conservative p
 
 ## 2026-11-14 — Published candidate and main-only rule (current)
 Signed Phase 1 candidate v0.1.79 is published at https://github.com/Batmancpu/Player/releases/tag/v0.1.79 (source f1d7f27, versionCode 79); CI 43618442469 passed unit/Android integration/build/privacy/signing/publication. Actual OPPO acceptance remains pending. User explicitly requires main-only normal work (at most one genuinely needed backup), superseding earlier task branches. All eight previous task heads are fully merged; safe deletion via temporary Actions cleanup is pending. Both scheduled continuation prompts updated to main-only; second run remains 02:14 UTC Nov 15. No production Phase 2, actual device test or FPS claim.
+
+Branch cleanup completed: CI 43642157896 succeeded, GitHub API confirms only main. One-time workflow removed. All work/releases preserved; no manual deletion needed. Latest README/handoff now identify v0.1.79 as the signed phone-test candidate; Phase 1 acceptance still awaits actual OPPO report.
