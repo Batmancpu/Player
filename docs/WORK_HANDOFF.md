@@ -1,3 +1,6 @@
+## MOST RECENT CODEX HANDOFF — 2026-11-14
+User confirmed signed Player v0.1.51 → v0.1.53 **in-place Obtainium update**. Before coding, read `AGENTS.md`, `docs/DESIGN_SYSTEM_AND_PERFORMANCE.md` and `docs/UPSTREAM_AND_PRIVACY.md`. Premium visual goal: original cinematic Android UI, carefully bounded Liquid Glass controls and active slider thumbs, **measured** 60-Hz target on OPPO Reno10 CPH2531 Dimensity 7050/Mali-G68 MC4, 120-Hz optional. Research public Apple HIG and maintained GitHub projects via Codex Cloud internet access, obey licences/privacy. One local read-only SAF folder; no network permission needed for Phase 1. **Every single small or large change updates AGENTS.md's recent ledger AND DEVELOPMENT_LOG.md.** Keep main release identity and no extra signing secrets. Phase 1 code/device functionality unfinished; don't jump to TMDB, production player/Glass or claim actual FPS before testing.
+
 # Player — ChatGPT Work / AI agent operational handoff
 
 **Read first:** AGENTS.md, PROJECT_CONTEXT.md, CHAT_HISTORY.md, docs/ROADMAP.md, docs/ARCHITECTURE.md, docs/DECISIONS.md, docs/ANDROID_SIGNING.md, docs/DEVICE_TESTING.md, DEVELOPMENT_LOG.md and ISSUES_AND_FIXES.md. The GitHub repository is the durable source of truth; never treat any stale chat as authoritative.
