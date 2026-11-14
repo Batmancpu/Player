@@ -16,7 +16,7 @@ The active six phone-testable phases and release criteria are in docs/ROADMAP.md
 
 **Current signed install/update chain:** The user verified Obtainium updated `com.batmancpu.player` from signed v0.1.51 to v0.1.53 in place. Keep current **applicationId**, release certificate and strictly increasing `versionCode`; never ask to regenerate keys or move to debug APKs. Do not assume already selected folder/Room data persisted across update; that was not separately tested.
 
-**Codex workflow:** Finish functional Phase 1 first, with one phase per OPPO phone test. Research/design is permitted in parallel, but defer production TMDB/player/Glass implementation until the relevant phase. Codex Cloud may use a **short-lived task branch/PR** and merge tested changes to `main` (the sole release branch); no force-push, long-lived branch or unreviewed secret changes. Ask user for manual steps only when truly unavoidable.
+**Codex workflow:** Finish functional Phase 1 first, with one phase per OPPO phone test. Research/design is permitted in parallel, but defer production TMDB/player/Glass implementation until the relevant phase. **Latest user rule: work directly on `main` only in small tested commits. Do not create task branches or task PRs. At most one additional backup branch is permitted only if genuinely needed; none is needed now.** No force-push, history rewrite or unreviewed secret changes. Ask user for manual steps only when truly unavoidable.
 
 **Mandatory context after EVERY change, small or large:** Include a concise dated entry in **this AGENTS.md** under `Recent agent changes` explaining changed files/behavior, why, CI/test evidence or "unverified", and next exact action. Also add detailed `DEVELOPMENT_LOG.md` entry; refresh `docs/WORK_HANDOFF.md`, `CHAT_HISTORY.md`, `PROJECT_CONTEXT.md`, decisions/notices/issue records when material. No secrets or user's local media info anywhere in repo. Keep the AGENTS ledger short and current; archive old lines into DEVELOPMENT_LOG with a pointer, not silent removal. A commit without its AGENTS + development-log updates is incomplete.
 
@@ -88,7 +88,7 @@ Keep expensive effects to a small number of important controls. Do not put a gla
 
 ## Small-commit discipline
 
-- Keep `main` as the sole integrated/release branch. Codex Cloud may create short-lived isolated task branches or PRs for review/tests, then merge into `main`. Never force-push or use long-lived integration branches.
+- Work directly on `main`; no task branches or task PRs. At most one additional backup branch only if genuinely needed. This latest user instruction supersedes the earlier Codex task-PR exception (D-023). Never force-push or rewrite history.
 - One commit = one independently understandable, testable change.
 - Prefer 1–3 related files and a small diff per functional commit. Split larger work.
 - Do not bundle dependency upgrades, UI changes, storage changes, and metadata changes in one commit.
@@ -147,43 +147,7 @@ Before ending a session:
 If chat context is lost, these repository records are the handoff. Do not invent missing history; label user-reported history separately from source-verified facts.
 
 ## Recent agent changes (every subsequent change adds a short dated entry)
-- 2026-11-14 — Roadmap/architecture/decisions aligned with the binding premium design, phone benchmarks, source-reuse/privacy rules and Codex task-PR workflow (commit 07e1dcc). Docs only; CI status pending. Next: Codex Phase 1 code/tests.
-- 2026-11-14 — Premium Codex handoff: added design/performance spec and upstream/private-data rules; linked binding UI surfaces, measured GPU frame gates, licensed GitHub research, per-change AGENTS ledger and retained Obtainium signing invariants. No GPU/on-device UI benchmark performed; doc-only CI pending. **Next:** Codex finishes Phase 1 with tests and a signed user-tested APK.
-
-- 2026-11-14 — Phase 1 audit and incomplete-provider fix: SAF cursor loading/error status now travels with directory rows; incomplete scans fail before Room reconciliation; malformed mandatory cursor fields fail closed. Added scanner regression tests and docs/PHASE1_AUDIT.md; corrected stale release handoff. Verification: source reviewed, CI pending; no device measurements. Next: run PR unit/debug gate, merge if green, then address scan/folder lifecycle races.
-
-
-
-- 2026-11-14 — Verified storage fix 9557723 via PR #1 CI (https://github.com/Batmancpu/Player/actions/runs/43612121975): unit tests/debug assembly passed, merged as 79ee09d. Added pinned upstream license/activity provenance and tracked remaining lifecycle/grant/bounds defects. Main signed CI pending at recording; no device test/release. Next: inspect main signing gate, then implement H-009 lifecycle tests/fix.
-
-- 2026-11-14 — Main verification for 79ee09d passed (https://github.com/Batmancpu/Player/actions/runs/43612318514): tests/debug and signed release assembly/certificate pin all succeeded; signed CI artifact v61 retained, no Release publication. Updated current audit/handoff evidence. No OPPO functional/performance test. Next: implement H-009 cached-load/scan/selection regression and serialized lifecycle owner.
-
-- 2026-11-14 — H-009 lifecycle fix: LibrarySession serializes cache/scan/save with cancellation generations; retained LibraryViewModel owns the session across rotation/lab routing. Scan waits for cache restore; tree activation retires other cached trees transactionally after obsolete work unwinds, replacing picker-local cleanup races. Six deterministic coroutine tests added. Verification pending PR CI; no phone/performance claim. Next: unit/debug gate, then signed main gate; H-010 grant recovery remains next.
-
-- 2026-11-14 — H-009 verified in PR #2: 17e46a8 passed unit/debug CI 43613459732 and merged as 10dab08. Updated architecture/context/roadmap/phone checklist with retained-session behavior, remaining device gaps and rough progress (10–15% overall, zero accepted phases). Main signing gate pending at authoring. Next: inspect gate, then H-010 grant/root recovery.
-
-- 2026-11-14 — H-009 main verification complete: CI 43613651152 passed unit/debug, signed release assembly and permanent certificate check for 10dab08. Recorded evidence in handoff/audit/issue/history; no new Release or OPPO acceptance. Next coding action: H-010 serialized grant/root recovery tests and implementation.
-
-- 2026-11-14 — H-010: serialized durable folder-grant manager, explicit root probe, read-only/orphan-grant reconciliation and retained ViewModel picker flow replace screen-owned grant races. Nine fake-store regressions added. PR verification pending; no phone acceptance. User authorized continuous Phase 1 work through signed candidate; two finite continuations scheduled for +5h/+10h, respecting real-phone gates. Next: CI then H-011 query cancellation/bounds.
-
-- 2026-11-14 — H-011 pending slice: SAF queries now attach CancellationSignal, close cursors before returning and check cancellation per row; scanner budgets bound entries/directories/depth/per-directory rows, reject invalid/out-of-tree listings and preserve cached rows on failure. Added budget/cycle regressions. Unverified pending separate CI after H-010 merge. Next: verify both slices, then Android persistence/provider tests and candidate UI/parser completion.
-
-- 2026-11-14 — H-010/H-011 PR gates passed (43614796902/43615085618), both merged. Added AndroidX Test runner 1.7.0/JUnit instrumentation-only dependencies and test-APK assembly gate, isolated before Android test source. Official stable/Apache-2.0 reviewed; release dependency graph unchanged. Verification pending CI. Next: Room/cursor emulator tests, then candidate parser/UI completion.
-
-- 2026-11-14 — Android integration slice prepared: Room rescan/empty/reopen/tree activation/rollback tests and synthetic debug-only cursor provider/cancellation tests; CI Android 15 emulator job gates signing. Production permissions/backup asserted, allowing only AndroidX internal signature permission. No release/provider authority changes. Verification pending harness and emulator CI. Next: inspect results, finish parser/UI then publish candidate.
-
-- 2026-11-14 — Parser corpus slice: preserve leading numeric movie titles/use trailing release year and keep multi-episode ambiguity under original filenames. Regression fixtures added; CI pending a focused parser PR after Android harness gate. Next: verify corpus and finish plain library states/grouping before candidate release.
-
-- 2026-11-14 — Plain-library completion slice: cached loading, initial empty, completed-empty and cancelled states; series-grouped episode list with memoized parsing and safe system insets. LibrarySession exposes completion/cancel flags. Unverified pending focused CI; no Glass/network addition. Next: validate Android/filename/UI gates and publish a signed Phase 1 candidate.
-
-- 2026-11-14 — Release-candidate preparation: built-APK manifest gate checks fixed identity/run version, offline permission allowlist, backup disabled and debug-provider exclusion. Release notes now give Phase 1 feature/checklist and retain unaccepted status. Unverified until signed main gate; publication remains explicit release(test) trigger only. Next: finish CI and publish verified candidate.
-
-- 2026-11-14 — Candidate attribution: packaged Apache-2.0 text and runtime-library source/author notices alongside existing Lucide license; no new runtime dependency/source copied. Verified Haze license at shipped tag 2.1.0. Syntax check passed for release-manifest script; signed APK check pending. Next: finish Android suite and manifest gate, publish candidate.
-
-- 2026-11-14 — Android integration PR #6 passed CI 43615935921: all nine Android 15 emulator tests passed (Room/cursor/privacy/launcher recreation). Parser/plain UI PR #7 passed CI 43616107190 and merged. OPPO/actual SAF provider acceptance remains pending. Next: final release manifest gate then explicitly publish signed Phase 1 candidate.
-
-- 2026-11-14 — Candidate handoff reconciliation: architecture/context/roadmap/history/issues/phone checklist now distinguish integrated source and 9 passing Android tests from pending signed-APK/real-OPPO gates. Recorded schema/metadata/corpus follow-ups without claiming phase acceptance. Docs prepared for explicit publication commit after PR #8 signed main gate. Next: inspect CI and publish only green candidate.
-
-- 2026-11-14 — Publication authorized/triggered via explicit release(test) PR #8 merge after CI 43616779144 and combined main CI 43616714927 succeeded. Publication pipeline must pass all tests, signing and actual release-manifest assertions before Release creation; no publication/OPPO claim yet. Next: inspect publication run/release asset then record exact tag/hash/checklist.
-
-- 2026-11-14 — H-013 release-checker correction after failed publication CI 43617409651: backup assertion assumed one aapt2 false format. Accept only semantic false forms (literal false/zero hex/typed zero), still reject true/unknown; log sanitized attribute value. Three full-script regression groups pass locally (false variants, true rejection, permission/provider/version guards); wired into CI. No APK published by failed run, no app/signing change. Next: corrected gated publication.
+Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS ledger archive — 2026-11-14”; historical pending statuses there describe their authoring time.
+- 2026-11-14 — Published signed Phase 1 candidate v0.1.79 (f1d7f27), CI 43618442469 passed Android 15 integration, JVM/debug, release-checker fixtures, actual APK privacy/identity and permanent certificate checks. H-013 confirmed aapt2 renders backup as literal false. Next: actual OPPO checklist; phase acceptance/FPS unverified.
+- 2026-11-14 — Enforced latest user main-only workflow, superseding task-branch exception; both scheduled prompts updated without changing times. All eight task heads verified fully merged, zero branch-only commits/no open PRs. Temporary allowlisted Actions cleanup added because direct tool deletion/CLI auth unavailable; guards changed/unmerged refs. Cleanup execution pending. Next: verify deletion, remove temporary workflow, retain only main.
+- 2026-11-14 — Release handoff/context/roadmap/decisions/issue/device/phone records reconciled; archived old AGENTS ledger rather than discarding it. Docs/source reviewed; no new APK or device test from these docs. Next: record user phone results and fix any Phase 1 defects before gated Phase 2 production work.

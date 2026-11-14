@@ -147,3 +147,12 @@ This file is the durable, accumulating record of important user requests, produc
 
 ## 2026-11-14 — Continuous Phase 1 authorization and grant recovery
 User requested sustained work until signed Phase 1 candidate in Releases; actual phone acceptance still requires user report. Two one-time continuations created for five and ten hours later, instructed to resume from live GitHub/pending CI without duplicate work. Implemented H-010 serialized grant/root recovery with nine fake-store cases; PR CI pending. Next H-011 query cancellation/bounds and remaining Phase 1 acceptance coverage.
+
+## 2026-11-14 — Phase 1 automated candidate gates
+- H-010 PR #3 and H-011 PR #4 passed; test harness PR #5 passed; Android PR #6 passed all 9 Android 15 emulator cases; plain UI/parser PR #7 passed. All integrated. No OPPO test inferred.
+- PR #8 prepares final built-APK privacy/identity gate and packaged runtime attribution; no publication yet. Next merge green prep, verify signed main, publish candidate via explicit release(test): commit, then deliver phone checklist. Future scheduled runs must avoid duplicate changes and respect actual acceptance gate.
+
+## 2026-11-14 — v0.1.79 published; latest main-only branch instruction
+- Signed Phase 1 phone-test candidate v0.1.79 verified live in GitHub Releases; source f1d7f27, CI 43618442469 succeeded. Actual APK backup representation is literal false, confirming H-013 verifier-format fix. User has not yet supplied phone acceptance.
+- User objected to eight task branches and requested main only with maximum one optional backup. All work is already merged into main, no open PRs and zero branch-only commits. Direct connector deletion absent/CLI auth invalid; temporary Actions cleanup uses existing repo token with exact SHA and ancestry guards, then will be removed. Both scheduled prompts updated without rescheduling.
+- First +5h scheduled continuation resumed this work; second +10h remains 02:14 UTC Nov 15. Continue from live main/user report; no branch recreation, signing changes, duplicate candidate or invented handset tests.

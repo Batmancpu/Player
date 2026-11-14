@@ -191,3 +191,6 @@ H-010 fixed at fake/JVM/source level (CI 43614796902); H-011 bounded scan/cursor
 - First observed: publication workflow 43617409651 (#78), script backup assertion. No new APK was published. App source and merged debug-manifest Android test retain backup disabled; production representation is under verification.
 - Root-cause confidence: format mismatch likely from narrow regex, exact attribute value pending corrected gate output. No signing/app identity change.
 - Fix: recognize only known semantic false representations, log sanitized attribute value, reject true/unknown. Three full-script regression groups pass locally including forbidden network/debug-provider/stale-version checks; CI/publication pending.
+
+### H-013 verified resolution and candidate availability — 2026-11-14
+Publication run 43618442469 passed all gates and published v0.1.79. Actual release aapt2 text is `false`; the original typed-hex-only regex caused #78’s failure. Full-script regression fixtures and actual built-APK assertion now pass without weakening rejection of true/unknown backup. No backup-on defect existed in Player. Source/JVM/Android synthetic tests pass; real OPPO provider/phone acceptance remains pending.

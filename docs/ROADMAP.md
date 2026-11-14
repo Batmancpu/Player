@@ -86,3 +86,12 @@ Apply the exact screen-by-screen Glass surfaces and interactive seek/volume/subt
 
 ## Brief progress snapshot — 2026-11-14
 Planning estimate only: **10–15% of the whole product**, roughly **half of Phase 1 implemented**; **0/6 phases accepted on the target phone**. Scope/effort is uneven, so phases are not equal percentages. Implemented foundations and recent fixes still need provider/Room/lifecycle/phone verification. Next: grant/root recovery → query cancellation/bounds → persistence/parser/UI checks → signed Phase 1 candidate and user acceptance. Later: metadata/artwork → cinematic catalogue → playback → audio/subtitles → Glass/accessibility/measured performance.
+
+## Phase 1 candidate readiness — 2026-11-14
+- Source/JVM/build verified: retained library state, grant/root recovery, read-only/orphan reconciliation, bounded/cancellable provider query helper, safe completed-scan reconciliation, grouped series and conservative filename edge cases.
+- Android 15 emulator: 9 integration cases passed (CI 43615935921) for Room reopen/empty/reconcile/isolation/rollback, cursor lifetime/cancellation, merged privacy and launcher recreation. These use synthetic data/provider; real OPPO SAF/provider and update-data persistence still require phone acceptance.
+- Pending before publication: PR #8 final APK manifest/identity/attribution gate on signed main; explicit signed candidate Release. Pending after publication: actual OPPO checklist. Phase 1 remains unaccepted; no later phase started.
+- Known non-blocking follow-ups: export Room v1 schema before any migration; persist scan-history/size/date metadata in a later schema-tested slice; broader filename corpus and handset accessibility/performance evidence. Core Phase 1 goal is offline discovery/list persistence, not playback/metadata/production Glass.
+
+## Current delivery gate — 2026-11-14
+Signed Phase 1 candidate [v0.1.79](https://github.com/Batmancpu/Player/releases/tag/v0.1.79) is published; CI 43618442469 passed automated, built-APK privacy/identity and permanent certificate gates. Next is the actual OPPO phone checklist, not Phase 2 production. Zero phases phone-accepted until user reports. Latest branch rule: direct main-only small tested commits, at most one optional backup if genuinely needed; older task-PR exception superseded.

@@ -110,3 +110,7 @@ CI build/test success and OPPO handset validation must be reported separately.
 
 ### D-023 — Per-change AGENTS context, Codex short-lived PR exception (2026-11-14)
 **Accepted:** Every code/test/docs/config/dependency/workflow change, no matter its size, must add/refresh a dated concise `AGENTS.md` Recent agent changes entry, with full description in `DEVELOPMENT_LOG.md`. Main remains one release branch; Codex Cloud may create short-lived isolated task PRs for safe test/review but not long-lived branches or force pushes.
+
+
+### D-024 — Main-only development and merged-branch cleanup (2026-11-14)
+**Accepted by latest user instruction:** work directly on main in small tested commits; do not create task branches/PRs. Maximum one additional backup branch only if genuinely needed, not routine task isolation. This supersedes D-023’s task-PR exception while retaining mandatory AGENTS/development logging. All eight previous task branches were fully merged with zero branch-only commits; delete those refs safely, preserving main/history/releases. Temporary cleanup automation must be removed after verification.

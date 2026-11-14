@@ -70,3 +70,7 @@ Never claim fixed because the app launched once or CI is green. Sanitize user-su
 - User intends to hand repository implementation to **Codex** now that manual setup works. The project remains in this GitHub repository; Codex should read AGENTS.md, docs/WORK_HANDOFF.md, docs/ROADMAP.md, docs/ARCHITECTURE.md, docs/DECISIONS.md, docs/ANDROID_SIGNING.md and docs/PHASE1_PHONE_TEST.md first.
 - **Next engineering task:** complete and verify Phase 1 only: single local SAF folder read-only; actual recursive folder discovery; filename parser, Room index and rescans; safe cancellation/permission recovery; automated tests. Produce a permanently signed APK to GitHub Releases, then request actual OPPO phone acceptance. Avoid premature TMDB/playback/Glass work.
 - No additional manual GitHub secrets/signing setup should be requested. Preserve `com.batmancpu.player`, the current pinned certificate, and strictly increasing `versionCode`. No debug APKs in the Obtainium release channel.
+
+
+## v0.1.79 candidate — automated evidence only, 2026-11-14
+Published signed APK: https://github.com/Batmancpu/Player/releases/tag/v0.1.79 (source f1d7f27, versionCode 79, unchanged certificate). CI 43618442469 passed nine Android 15 emulator integration cases plus unit/build/privacy/signing gates. This is not an OPPO test, file-provider acceptance or GPU benchmark. Await user update without uninstalling, nested-folder scan, offline reopen, rescan/cancel/switch/reconnect results under docs/PHASE1_PHONE_TEST.md.
