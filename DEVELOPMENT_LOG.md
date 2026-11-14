@@ -105,3 +105,10 @@ Tests: documentation review only. No application build exists yet; no APK or dev
 - Added an edge-to-edge launcher surface with a restrained dark cinematic base and system typography. This is a buildable foundation placeholder, not the final screen design.
 - System bars are transparent with light glyphs; no folder permissions, network, metadata or Glass dependencies are active.
 - Verification: source review only; CI workflow not yet committed.
+
+
+## 2026-11-14 — First Android CI workflow added
+- Added .github/workflows/ci.yml triggered by pushes/PRs to main and manual dispatch.
+- CI uses JDK 21, Gradle 9.5.1, Android SDK platform 37/build tools 37.0.0, runs :app:testDebugUnitTest and :app:assembleDebug, then uploads the APK for 14 days.
+- Workflow intentionally has read-only contents permission and no secrets, release publishing, telemetry or signing configuration.
+- The first run is the initial toolchain proof. Its result must be inspected before proceeding to Glass or storage work.
