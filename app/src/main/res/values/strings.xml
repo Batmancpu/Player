@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Player</string>
+
+    <string name="glass_lab_kicker">VISUAL EXPERIMENT</string>
+    <string name="glass_lab_title">Liquid Glass</string>
+    <string name="glass_lab_toggle">Glass</string>
+    <string name="glass_lab_description">A local rendering test for light, refraction and connected controls.</string>
+    <string name="glass_lab_feature_label">FEATURED COLLECTION</string>
+    <string name="glass_lab_feature_title">A world beyond the ordinary</string>
+    <string name="glass_lab_artwork_heading">Artwork behind the glass</string>
+    <string name="glass_lab_artwork_one">Beyond</string>
+    <string name="glass_lab_artwork_one_subtitle">Adventure</string>
+    <string name="glass_lab_artwork_two">Nocturne</string>
+    <string name="glass_lab_artwork_two_subtitle">Drama</string>
+    <string name="glass_lab_artwork_three">Stillwater</string>
+    <string name="glass_lab_artwork_three_subtitle">Mystery</string>
+    <string name="glass_lab_home_hint">The Home control is selected.</string>
+    <string name="glass_lab_movies_hint">The Movies control is selected.</string>
+    <string name="glass_lab_shows_hint">The Shows control is selected.</string>
+    <string name="glass_lab_search_hint">The Search control is selected.</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_movies">Movies</string>
+    <string name="nav_shows">Shows</string>
+    <string name="nav_search">Search</string>
+
 </resources>

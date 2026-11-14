@@ -235,3 +235,13 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - Artifact ZIP SHA-256: c4ac0ef666b25460762b9b771041ccc20d7270a2d8b2e0176ed610b3551ab242 (not raw APK digest).
 - The shared Glass helper compiles but is not yet connected to any screen. Real-device visual/GPU validation is still pending.
 - Next: add a single local-source Glass laboratory screen and wire it to the launcher in a separate commit; keep the lab clearly marked as a development test surface.
+
+
+## 2026-11-14 — Glass laboratory screen implementation (not yet wired to launcher)
+- Added GlassLabScreen.kt with a locally generated gradient/backdrop, featured content card, three poster-like artwork tiles and a connected four-control navigation group.
+- All visual background content is local; no folder access, metadata request, internet permission or media upload.
+- Added a Glass on/off switch to compare the Haze material against the disabled frosted fallback.
+- Added UI strings to values/strings.xml.
+- The existing shared PlayerGlassSurface/Container helpers provide source-backed effects and the reduced-motion system policy.
+- This screen is intentionally not connected to MainActivity in this commit. Launcher wiring will be a separate commit after this screen compiles.
+- Verification: pending CI.
