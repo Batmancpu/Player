@@ -245,3 +245,13 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - The existing shared PlayerGlassSurface/Container helpers provide source-backed effects and the reduced-motion system policy.
 - This screen is intentionally not connected to MainActivity in this commit. Launcher wiring will be a separate commit after this screen compiles.
 - Verification: pending CI.
+
+
+## 2026-11-14 — CI run 15: isolated Glass laboratory compiled
+- Workflow: https://github.com/Batmancpu/Player/actions/runs/43563459080 — success.
+- GlassLabScreen.kt compiled with local gradient/artwork source, four Glass navigation members, selected-state animation, Glass enable/disable comparison, and resource-backed labels.
+- Gradle output: BUILD SUCCESSFUL in 31s; existing JVM tests, debug APK assembly and artifact upload passed.
+- APK artifact: Player-debug-31d72ec9e48baad1ac87a2c72c5cd300a5e4d62f, artifact ID 14101132751, size 11,028,372 bytes, URL https://github.com/Batmancpu/Player/actions/runs/43563459080/artifacts/14101132751, expiration 2026-11-28.
+- Artifact ZIP SHA-256: 4ef45bf94360ee34c6503a6ab07e98fce97d6c34058e7c9f48beeec2bc9bff13 (not raw APK digest).
+- This lab is compiled but still not visible on app launch until the separate launcher wiring commit.
+- Device visual/GPU validation: pending user installation on CPH2531.

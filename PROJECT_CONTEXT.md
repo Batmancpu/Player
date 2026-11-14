@@ -184,3 +184,11 @@ Keep HazeFeatureFlags.isPlatformBackdropEnabled false. Haze's native Android Bac
 
 ## 15. Shared Glass helper compile gate passed
 The shared PlayerGlass.kt helper now compiles against Haze 2.1.0; CI run 13 passed and uploaded APK artifact 14101425761. The helper uses a RoundedCornerShape-compatible API, explicit HazeInput.Sources, remembered Clear style, Default performance, shared interaction source support and a tinted/outlined disabled fallback. It has not yet been used by a screen. Next is the isolated Glass Lab screen, followed by a separate launcher wiring commit. No phone/device test has occurred.
+
+
+## 16. Glass laboratory created and verified — 2026-11-14
+- Added ui/glass/GlassLabScreen.kt: local gradient hero and poster-like tiles, four connected Glass navigation items, selected state feedback and Glass-on/off fallback switch.
+- Glass background source is local and explicit. No internet, storage permission, folder picker, TMDB or media file access is involved.
+- CI run 15 passed and artifact 14101132751 was uploaded. The lab compiled but was not yet connected to MainActivity at that checkpoint.
+- MainActivity is now being wired to launch this temporary lab. It is a development verification surface, not the final library/home UI.
+- The user must install the next successful APK on OPPO Reno10 CPH2531 and provide screenshots/observations for optical and performance tuning. CI does not prove handset rendering.

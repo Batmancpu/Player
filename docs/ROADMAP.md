@@ -37,11 +37,11 @@ Sequential plan. Each item is a focused commit, split further if its diff/failur
 16. build: verify Kotlin 2.4.21 compatibility in isolation. **Done:** app compiles on AGP 9.3.1 / Kotlin 2.4.21.
 17. build: align Compose with Haze 2.1 requirements in isolation. **Pending verification:** current native Jetpack Compose BOM 2026.09.00 must be checked against Haze's Android artifact; do not add a Compose Multiplatform plugin unless required.
 18. deps: add Haze 2.1.0 core and Glass artifacts only. **Done:** dependency-only commit 12a6329; CI run 10 passed. Material 3 integration artifact also resolves.
-19. ui(glass): add bounded backdrop source layer.
-20. ui(glass): implement RegularGlassSurface.
+19. ui(glass): add bounded backdrop source layer. **Done:** GlassLabScreen registers one explicit local source with hazeSource and uses HazeInput.Sources for controls.
+20. ui(glass): implement RegularGlassSurface. **Partial done:** PlayerGlassSurface and GlassStyle.clear are implemented; regular-vs-clear comparison and lab tuning remain.
 21. ui(glass): implement ClearGlassSurface.
 22. ui(glass): add GlassIconButton and GlassPill.
-23. ui(glass): prototype merging controls with hazeGlassContainer.
+23. ui(glass): prototype merging controls with hazeGlassContainer. **Done in lab:** connected four-control navigation group using playerGlassContainer.
 24. ui(glass): add reduced-transparency and reduced-motion fallbacks.
 25. test(ui): add Glass fallback/animation smoke tests.
 26. perf(ui): measure Glass lab on CPH2531 and disable unstable effects.
