@@ -149,3 +149,7 @@ If chat context is lost, these repository records are the handoff. Do not invent
 ## Recent agent changes (every subsequent change adds a short dated entry)
 - 2026-11-14 — Roadmap/architecture/decisions aligned with the binding premium design, phone benchmarks, source-reuse/privacy rules and Codex task-PR workflow (commit 07e1dcc). Docs only; CI status pending. Next: Codex Phase 1 code/tests.
 - 2026-11-14 — Premium Codex handoff: added design/performance spec and upstream/private-data rules; linked binding UI surfaces, measured GPU frame gates, licensed GitHub research, per-change AGENTS ledger and retained Obtainium signing invariants. No GPU/on-device UI benchmark performed; doc-only CI pending. **Next:** Codex finishes Phase 1 with tests and a signed user-tested APK.
+
+- 2026-11-14 — Phase 1 audit and incomplete-provider fix: SAF cursor loading/error status now travels with directory rows; incomplete scans fail before Room reconciliation; malformed mandatory cursor fields fail closed. Added scanner regression tests and docs/PHASE1_AUDIT.md; corrected stale release handoff. Verification: source reviewed, CI pending; no device measurements. Next: run PR unit/debug gate, merge if green, then address scan/folder lifecycle races.
+
+

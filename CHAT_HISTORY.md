@@ -126,3 +126,11 @@ This file is the durable, accumulating record of important user requests, produc
 - Current app code is unchanged by this documentation handoff; no new performance benchmarks/real device UI tests were run. The confirmed v0.1.51 → v0.1.53 Obtainium update/signing identity remains in place. Finish Phase 1 and phone-test before subsequent features.
 - Research references and implementation requirements are in the two new documents; do not reinvent mature code or blindly copy from unlicensed GitHub repositories. Never add Apple proprietary assets, excessive Glass, secret exposure, outbound media, unreviewed network hosts or broad storage permissions.
 - Docs commits include a4317c8 (new specifications), 3649e7f (agent and Work handoff), 07e1dcc (roadmap, architecture and decisions). CI validation of latest documentation updates pending when recorded. Next engineer action: read docs and implement next focused Phase 1 regression test/change with AGENTS ledger update.
+
+## 2026-11-14 — Codex takeover: Phase 1 audit and first focused fix
+- User delegated implementation/testing/documentation, requested canonical/source/CI/release audit, official Apple/GitHub research, and Phase 1 correctness before visual experiments.
+- Audited baseline acb9829 and successful CI 43588156049; v0.1.53 remains latest published test release. No further signing setup needed; OPPO acceptance remains pending.
+- First focused change rejects incomplete/error SAF directory cursors and invalid mandatory cursor fields before scan reconciliation. Added JVM regression coverage; CI pending at authoring. Detailed audit/order/research in docs/PHASE1_AUDIT.md.
+- Remaining work: scan/folder lifecycle and grant races, provider cancellation/bounds, Room instrumentation/schema fixtures, conservative parser corpus and meaningful UI states. No device/FPS claims, dependency adoption or release publication.
+
+

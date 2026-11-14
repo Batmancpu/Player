@@ -42,7 +42,7 @@ Only `PLAYER_RELEASE_KEYSTORE_BASE64` and `PLAYER_RELEASE_KEYSTORE_PASSWORD` are
 3. Open https://github.com/Batmancpu/Player/releases and download only the signed release APK, not the temporary debug CI artifact.
 4. In Obtainium add `https://github.com/Batmancpu/Player`. Later signed releases (same applicationId + certificate, higher versionCode) update in place.
 
-The manual signed publication path has NOT been exercised yet. CI is not the same as phone acceptance.
+Signed publication passed for v0.1.51 and v0.1.53 via the controlled release(test): trigger. The user confirmed their in-place Obtainium update. No further signing setup is required; Phase 1 functionality acceptance is separate.
 
 ## Preserve update continuity
 
@@ -53,3 +53,4 @@ The manual signed publication path has NOT been exercised yet. CI is not the sam
 - No broad storage access or media files are included in this key workflow.
 
 Android reference: https://developer.android.com/studio/publish/app-signing
+

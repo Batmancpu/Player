@@ -1,6 +1,6 @@
 # Phase 1 — OPPO phone acceptance checklist (not yet performed)
 
-**Target:** OPPO Reno10 5G CPH2531, Android 15. Use a **signed** Player APK from the GitHub Releases page, never the CI-only debug artifact. As of the 2026-11-14 review, a signed Release has not yet been published because GitHub Actions signing secrets were missing.
+**Target:** OPPO Reno10 5G CPH2531, Android 15. Use a **signed** Player APK from the GitHub Releases page, never the CI-only debug artifact. Signed v0.1.51 and v0.1.53 are published and the user confirmed an in-place Obtainium update. Phase 1 functional acceptance remains pending; wait for the Phase 1 candidate release before this full checklist.
 
 ## Preparing a safe test folder
 Use Android's file manager to create a small test folder of media you already own or are permitted to test, including:
@@ -11,7 +11,7 @@ Use Android's file manager to create a small test folder of media you already ow
 Never share private media paths or file contents in GitHub issues or logs.
 
 ## Install / update
-1. After repository owner sets four encrypted signing secrets, open Actions -> Android CI -> Run workflow -> enable "Publish verified signed APK to GitHub Releases for Obtainium". Verify run success.
+1. The agent verifies tests/signing and publishes the Phase 1 candidate. No further signing-secret setup is needed.
 2. Open https://github.com/Batmancpu/Player/releases, select the newly created version and install its single Player-release-*.apk. Record tag, APK SHA-256, build/versionCode and Android installer result.
 3. Add https://github.com/Batmancpu/Player to Obtainium as a GitHub source. Later releases should install over the existing app with no uninstall or data loss, provided the package ID and signing certificate remain unchanged.
 
@@ -27,3 +27,4 @@ Never share private media paths or file contents in GitHub issues or logs.
 
 ## Report
 Please report **pass/fail** for each scenario, the GitHub release tag, the phone OS build and screenshot(s) of any wrong UI. For a crash, share sanitized error/logcat only if available. The AI agent must record findings in docs/DEVICE_TESTING.md, DEVELOPMENT_LOG.md, CHAT_HISTORY.md and ISSUES_AND_FIXES.md. Do not claim this checklist passed until the actual user submits evidence.
+
