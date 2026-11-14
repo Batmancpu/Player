@@ -23,6 +23,15 @@ internal data class TreeListing(
     val hasError: Boolean = false,
 )
 
+internal data class ScanLimits(
+    val entries: Int = 50_000,
+    val directories: Int = 10_000,
+    val depth: Int = 128,
+    val childrenPerDirectory: Int = 10_000,
+) {
+    init { require(entries > 0 && directories > 0 && depth > 0 && childrenPerDirectory > 0) }
+}
+
 internal enum class LocalMediaKind { VIDEO, SUBTITLE }
 
 internal data class DiscoveredLocalMedia(
@@ -42,36 +51,43 @@ internal data class DiscoveredLocalMedia(
 internal class MediaTreeScanner(
     private val listChildren: suspend (parentDocumentId: String) -> TreeListing,
     private val isWithinSelectedTree: suspend (rootDocumentId: String, documentId: String) -> Boolean,
+    private val limits: ScanLimits = ScanLimits(),
 ) {
     suspend fun scan(rootDocumentId: String): List<DiscoveredLocalMedia> {
         require(rootDocumentId.isNotBlank()) { "The selected root must have a document ID" }
 
-        val pendingDirectories = ArrayDeque<String>()
+        val pendingDirectories = ArrayDeque<Pair<String, Int>>()
         val visitedIds = mutableSetOf(rootDocumentId)
         val media = mutableListOf<DiscoveredLocalMedia>()
-        pendingDirectories.add(rootDocumentId)
+        pendingDirectories.add(rootDocumentId to 0)
+        var entriesSeen = 0
+        var directoriesSeen = 1
 
         while (pendingDirectories.isNotEmpty()) {
             currentCoroutineContext().ensureActive()
-            val parentId = pendingDirectories.removeFirst()
+            val (parentId, parentDepth) = pendingDirectories.removeFirst()
             val listing = listChildren(parentId)
-            if (listing.isLoading || listing.hasError) {
+            if (listing.isLoading || listing.hasError || listing.entries.size > limits.childrenPerDirectory) {
                 // Never reconcile cached rows against a partial provider snapshot.
                 throw IOException("Local folder listing is incomplete; retry the scan")
             }
             for (entry in listing.entries) {
                 currentCoroutineContext().ensureActive()
-                if (entry.documentId.isBlank() ||
-                    entry.displayName.isBlank() ||
-                    entry.displayName.startsWith(".")
-                ) {
-                    continue
+                if (++entriesSeen > limits.entries) throw IOException("Local scan entry limit reached")
+                if (entry.documentId.isBlank() || entry.displayName.isBlank()) {
+                    throw IOException("Local provider returned an invalid entry")
                 }
-                if (!isWithinSelectedTree(rootDocumentId, entry.documentId)) continue
+                if (entry.displayName.startsWith(".")) continue
+                if (!isWithinSelectedTree(rootDocumentId, entry.documentId)) {
+                    throw IOException("Local provider returned a document outside the selected tree")
+                }
                 if (!visitedIds.add(entry.documentId)) continue
 
                 if (entry.isDirectory) {
-                    pendingDirectories.addLast(entry.documentId)
+                    if (++directoriesSeen > limits.directories || parentDepth + 1 > limits.depth) {
+                        throw IOException("Local scan directory limit reached")
+                    }
+                    pendingDirectories.addLast(entry.documentId to parentDepth + 1)
                 } else {
                     val kind = classifyMedia(entry) ?: continue
                     media.add(

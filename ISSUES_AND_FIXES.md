@@ -177,3 +177,6 @@ H-009 regression verification: functional commit 17e46a8 merged via PR #2 as 10d
 
 ### H-010 implementation update — 2026-11-14
 Serialized FolderAccessManager/AndroidFolderAccessStore now probe actual root availability, persist selection before release, strip writes, clean abandoned grants and refuse activation after cleanup failure. Retained ViewModel owns picker/restoration with stale-completion guard. Nine fake-store regressions added; PR CI pending, OPPO grant/cursor behavior unverified. Next regression layer is Android cursor/Room instrumentation.
+
+### H-011 implementation update — 2026-11-14
+SAF root/child query CancellationSignal and per-row checks added, cursor lifecycle scoped to helper. Explicit row/directory/depth/width budgets throw before reconciliation. Out-of-tree/invalid rows now fail complete scan instead of producing misleading partial success. Added pure budget/cycle regression tests; CI and Android cursor verification pending. isChildDocument binder calls cannot be forcibly cancelled with this API; actual provider behavior remains device-dependent.

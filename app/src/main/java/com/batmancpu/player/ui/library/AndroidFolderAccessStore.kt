@@ -48,9 +48,9 @@ internal class AndroidFolderAccessStore(context: Context) : FolderAccessStore {
         val uri = Uri.parse(tree)
         val root = DocumentsContract.buildDocumentUriUsingTree(uri, DocumentsContract.getTreeDocumentId(uri))
         val columns = arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME, DocumentsContract.Document.COLUMN_MIME_TYPE)
-        val cursor = resolver.query(root, columns, null, null, null)
-            ?: throw IOException("Local folder provider returned no root cursor")
-        cursor.use {
+        resolver.readSafCursor(root, columns) { cursor, checkActive ->
+            checkActive()
+            val it = cursor
             if (!it.moveToFirst() || it.getString(1) != DocumentsContract.Document.MIME_TYPE_DIR ||
                 it.extras.getBoolean(DocumentsContract.EXTRA_LOADING, false) ||
                 it.extras.containsKey(DocumentsContract.EXTRA_ERROR)
