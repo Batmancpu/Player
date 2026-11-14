@@ -3,17 +3,55 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+val buildNumber = System.getenv("GITHUB_RUN_NUMBER")
+    ?.toIntOrNull()
+    ?.takeIf { it > 0 }
+    ?: 1
+
+// Signing credentials exist only in the CI runtime environment.
+val releaseKeystorePath = System.getenv("PLAYER_RELEASE_KEYSTORE_PATH")
+val releaseKeystorePassword = System.getenv("PLAYER_RELEASE_KEYSTORE_PASSWORD")
+val releaseKeyAlias = System.getenv("PLAYER_RELEASE_KEY_ALIAS")
+val releaseKeyPassword = System.getenv("PLAYER_RELEASE_KEY_PASSWORD")
+val releaseSigningConfigured = listOf(
+    releaseKeystorePath,
+    releaseKeystorePassword,
+    releaseKeyAlias,
+    releaseKeyPassword,
+).all { !it.isNullOrBlank() }
+
 android {
     namespace = "com.batmancpu.player"
     compileSdk = 37
 
     defaultConfig {
+        // Keep applicationId stable after the first signed install.
         applicationId = "com.batmancpu.player"
         minSdk = 29
         targetSdk = 37
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = buildNumber
+        versionName = "0.1.$buildNumber"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        if (releaseSigningConfigured) {
+            create("release") {
+                storeFile = file(requireNotNull(releaseKeystorePath))
+                storePassword = requireNotNull(releaseKeystorePassword)
+                keyAlias = requireNotNull(releaseKeyAlias)
+                keyPassword = requireNotNull(releaseKeyPassword)
+            }
+        }
+    }
+
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false
+            if (releaseSigningConfigured) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+        }
     }
 
     compileOptions {
@@ -37,13 +75,10 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui-tooling-preview")
 
-    // Haze 2.1.0: keep the core, Glass and Material 3 artifacts on one version.
-    // Rendering integration is introduced in a later isolated commit.
     implementation("dev.chrisbanes.haze:haze:2.1.0")
     implementation("dev.chrisbanes.haze:haze-glass:2.1.0")
     implementation("dev.chrisbanes.haze:haze-glass-material3:2.1.0")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
-
     testImplementation("junit:junit:4.13.2")
 }

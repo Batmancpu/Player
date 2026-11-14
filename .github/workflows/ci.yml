@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   verify:
-    name: Verify Android debug build
+    name: Verify Android build and signed release
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -45,13 +45,86 @@ jobs:
           gradle-version: '9.5.1'
           cache-provider: basic
 
-      - name: Run unit tests and assemble debug APK
+      - name: Prepare release-signing credentials
+        id: release_signing
+        if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
+        shell: bash
+        env:
+          PLAYER_RELEASE_KEYSTORE_BASE64: ${{ secrets.PLAYER_RELEASE_KEYSTORE_BASE64 }}
+          PLAYER_RELEASE_KEYSTORE_PASSWORD: ${{ secrets.PLAYER_RELEASE_KEYSTORE_PASSWORD }}
+          PLAYER_RELEASE_KEY_ALIAS: ${{ secrets.PLAYER_RELEASE_KEY_ALIAS }}
+          PLAYER_RELEASE_KEY_PASSWORD: ${{ secrets.PLAYER_RELEASE_KEY_PASSWORD }}
+        run: |
+          set +x
+          if [[ -z "$PLAYER_RELEASE_KEYSTORE_BASE64" &&
+                -z "$PLAYER_RELEASE_KEYSTORE_PASSWORD" &&
+                -z "$PLAYER_RELEASE_KEY_ALIAS" &&
+                -z "$PLAYER_RELEASE_KEY_PASSWORD" ]]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "Signing secrets are not configured yet; signed APK creation is skipped."
+            exit 0
+          fi
+
+          if [[ -z "$PLAYER_RELEASE_KEYSTORE_BASE64" ||
+                -z "$PLAYER_RELEASE_KEYSTORE_PASSWORD" ||
+                -z "$PLAYER_RELEASE_KEY_ALIAS" ||
+                -z "$PLAYER_RELEASE_KEY_PASSWORD" ]]; then
+            echo "Release-signing secrets are only partially configured." >&2
+            exit 1
+          fi
+
+          keystore_path="$RUNNER_TEMP/player-release.jks"
+          printf '%s' "$PLAYER_RELEASE_KEYSTORE_BASE64" | base64 --decode > "$keystore_path"
+          chmod 600 "$keystore_path"
+
+          if [[ ! -s "$keystore_path" ]]; then
+            echo "Decoded release keystore is empty." >&2
+            exit 1
+          fi
+
+          keytool -list -keystore "$keystore_path" \
+            -storepass "$PLAYER_RELEASE_KEYSTORE_PASSWORD" \
+            -alias "$PLAYER_RELEASE_KEY_ALIAS" >/dev/null 2>&1
+
+          {
+            printf 'PLAYER_RELEASE_KEYSTORE_PATH=%s\n' "$keystore_path"
+            printf 'PLAYER_RELEASE_KEYSTORE_PASSWORD=%s\n' "$PLAYER_RELEASE_KEYSTORE_PASSWORD"
+            printf 'PLAYER_RELEASE_KEY_ALIAS=%s\n' "$PLAYER_RELEASE_KEY_ALIAS"
+            printf 'PLAYER_RELEASE_KEY_PASSWORD=%s\n' "$PLAYER_RELEASE_KEY_PASSWORD"
+          } >> "$GITHUB_ENV"
+
+          echo "enabled=true" >> "$GITHUB_OUTPUT"
+          echo "Release-signing credentials loaded; values were not logged."
+
+      - name: Run unit tests and assemble CI-only debug APK
         run: gradle --no-daemon --stacktrace :app:testDebugUnitTest :app:assembleDebug
 
-      - name: Upload debug APK
+      - name: Upload CI-only debug APK
         uses: actions/upload-artifact@v7
         with:
-          name: Player-debug-${{ github.sha }}
+          name: Player-debug-CI-ONLY-${{ github.sha }}
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 7
+
+      - name: Assemble signed release APK
+        if: ${{ steps.release_signing.outputs.enabled == 'true' }}
+        run: gradle --no-daemon --stacktrace :app:assembleRelease
+
+      - name: Verify release APK signature and report hashes
+        if: ${{ steps.release_signing.outputs.enabled == 'true' }}
+        shell: bash
+        run: |
+          apk="app/build/outputs/apk/release/app-release.apk"
+          "$ANDROID_HOME/build-tools/37.0.0/apksigner" verify --verbose --print-certs "$apk"
+          echo
+          sha256sum "$apk"
+
+      - name: Upload signed release APK for installation and updates
+        if: ${{ steps.release_signing.outputs.enabled == 'true' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: Player-release-v${{ github.run_number }}-${{ github.sha }}
+          path: app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
+          retention-days: 30
