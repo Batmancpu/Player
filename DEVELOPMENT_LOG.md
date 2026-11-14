@@ -393,3 +393,9 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - A requested publish without permanent signing secrets fails. Signed APK certificate SHA-256 is checked against the project's public fingerprint.
 - A successful manual publish will create GitHub Release v0.1.<run number> with a single signed APK asset, SHA-256 and package/signature/update instructions. The run number is APK versionCode.
 - Verification via CI pending; no signed APK produced or claimed. User secret setup required.
+
+## 2026-11-14 — Deterministic filename parser for offline Phase 1
+- Base commit 6b77a1b6aafad8ded973fe882dab97ab4b48e728. Added JVM-only MediaNameParser (movies with optional year; SxxExx, 1x02, Season 2/05 episodes; Unicode names; release-tag trimming) and dedicated tests.
+- Parser is local-only and never calls TMDB. Ambiguous cases remain unrecognized instead of inventing identities.
+- This initial corpus is intentionally modest; later phase 1 work must add multi-episode, anime, duplicate remake and alternate naming tests before declaring parsing complete.
+- CI pending. Next persist and present parsed library through Room rather than displaying only raw filenames.
