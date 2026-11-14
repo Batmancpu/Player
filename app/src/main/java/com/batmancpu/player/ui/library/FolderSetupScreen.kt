@@ -26,9 +26,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Job
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,6 +56,7 @@ private data class FolderSelection(
 
 @Composable
 internal fun FolderSetupScreen(
+    session: LibrarySession,
     onOpenGlassLab: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -68,48 +68,22 @@ internal fun FolderSetupScreen(
     var selection by remember { mutableStateOf<FolderSelection?>(null) }
     var isRestoring by remember { mutableStateOf(true) }
     var feedback by remember { mutableStateOf<String?>(null) }
-    var discoveredMedia by remember { mutableStateOf<List<DiscoveredLocalMedia>>(emptyList()) }
-    var scanError by remember { mutableStateOf<String?>(null) }
-    var isScanning by remember { mutableStateOf(false) }
-    var scanJob by remember { mutableStateOf<Job?>(null) }
+    val libraryState by session.state.collectAsState()
+    // Selection may change one composition before LaunchedEffect switches the session.
+    val visibleState = libraryState.takeIf { it.tree == selection?.uri?.toString() }
+    val discoveredMedia = visibleState?.media.orEmpty()
+    val isScanning = visibleState?.isScanning == true
+    val isLoadingLibrary = visibleState?.isLoading == true ||
+        (selection != null && visibleState == null)
+    val scanError = if (visibleState?.hasError == true) {
+        stringResource(R.string.library_scan_error)
+    } else null
 
-    LaunchedEffect(selection?.uri) {
-        scanJob?.cancel()
-        scanJob = null
-        isScanning = false
-        scanError = null
-        discoveredMedia = emptyList()
-        val current = selection?.uri
-        if (current != null) {
-            try {
-                discoveredMedia = OfflineLibraryIndex.load(context, current)
-            } catch (cancelled: CancellationException) {
-                throw cancelled
-            } catch (_: Exception) {
-                scanError = context.getString(R.string.library_scan_error)
-            }
-        }
+    LaunchedEffect(selection?.uri, isRestoring) {
+        // Initial restoration temporarily has no selection after recreation.
+        // Do not reset the retained session until restoration has finished.
+        if (!isRestoring) session.select(selection?.uri?.toString())
     }
-
-    fun startScan(treeUri: Uri) {
-        scanJob?.cancel()
-        scanError = null
-        isScanning = true
-        scanJob = scope.launch {
-            try {
-                val results = SafLocalMediaSource(context, treeUri).scan()
-                OfflineLibraryIndex.saveSuccessfulScan(context, treeUri, results)
-                discoveredMedia = results
-            } catch (cancelled: CancellationException) {
-                throw cancelled
-            } catch (_: Exception) {
-                scanError = context.getString(R.string.library_scan_error)
-            } finally {
-                isScanning = false
-            }
-        }
-    }
-
 
     LaunchedEffect(preferences) {
         val restored = withContext(Dispatchers.IO) {
@@ -153,6 +127,7 @@ internal fun FolderSetupScreen(
                 if (!grantSaved) {
                     feedback = context.getString(R.string.folder_setup_permission_failed)
                 } else {
+                    session.cancelScan()
                     val previous = selection?.uri
                     if (previous != null && previous != uri) {
                         runCatching {
@@ -168,11 +143,6 @@ internal fun FolderSetupScreen(
                         }
                         preferences.edit().putString(KEY_TREE_URI, uri.toString()).apply()
                         selection = FolderSelection(uri, name)
-                        if (previous != null && previous != uri) {
-                            withContext(Dispatchers.IO) {
-                                OfflineLibraryIndex.forgetTree(context, previous)
-                            }
-                        }
                         feedback = context.getString(R.string.folder_setup_access_saved)
                     }
                 }
@@ -243,8 +213,8 @@ internal fun FolderSetupScreen(
                                 style = MaterialTheme.typography.bodySmall,
                             )
                             Button(
-                                onClick = { startScan(selection!!.uri) },
-                                enabled = !isScanning,
+                                onClick = { session.startScan() },
+                                enabled = !isScanning && !isLoadingLibrary,
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
                                 Text(stringResource(R.string.library_scan_start))
@@ -255,7 +225,7 @@ internal fun FolderSetupScreen(
                                     color = PlayerPalette.textSecondary,
                                 )
                                 OutlinedButton(
-                                    onClick = { scanJob?.cancel() },
+                                    onClick = { session.cancelScan() },
                                     modifier = Modifier.fillMaxWidth(),
                                 ) {
                                     Text(stringResource(R.string.library_scan_cancel))
@@ -379,3 +349,4 @@ private fun mediaDisplayLabel(document: DiscoveredLocalMedia): String =
             parsed.episode.toString().padStart(2, '0')
         is ParsedMediaName.Unrecognized -> document.displayName
     }
+

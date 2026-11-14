@@ -87,3 +87,6 @@ At end of every Work session write: current SHA, relevant workflows/artifacts, w
 - **Next engineering task:** complete and verify Phase 1 only: single local SAF folder read-only; actual recursive folder discovery; filename parser, Room index and rescans; safe cancellation/permission recovery; automated tests. Produce a permanently signed APK to GitHub Releases, then request actual OPPO phone acceptance. Avoid premature TMDB/playback/Glass work.
 - No additional manual GitHub secrets/signing setup should be requested. Preserve `com.batmancpu.player`, the current pinned certificate, and strictly increasing `versionCode`. No debug APKs in the Obtainium release channel.
 
+
+## H-009 next-goal update — 2026-11-14
+LibrarySession/LibraryViewModel now own load/scan/save across recreation, serialize obsolete work and reject stale publications. Selected-tree cache activation replaces picker-local cleanup. Six JVM regression cases added; PR gate pending at authoring, actual Room/device lifecycle behavior unverified. After green merge/signing, next coding goal is H-010 root/grant recovery, then H-011 provider cancellation/bounds.

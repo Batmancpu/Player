@@ -138,3 +138,7 @@ This file is the durable, accumulating record of important user requests, produc
 - Verification follow-up: storage fix 9557723 merged via PR #1 as 79ee09d after successful CI https://github.com/Batmancpu/Player/actions/runs/43612121975. Upstream root licenses/activity pinned in audit. Main signed build pending; no new release/device acceptance. Next H-009 lifecycle ordering.
 
 - Main verification completed: https://github.com/Batmancpu/Player/actions/runs/43612318514 (#61) passed tests/debug and signed release/certificate pin at merge 79ee09d. Signed CI artifact retained, publication skipped. No new phone-test request; continue H-009 lifecycle ordering.
+
+## 2026-11-14 — Next goal: lifecycle ordering
+- User requested next goal and very brief whole-plan/progress points. Reported rough planning estimate 10–15% overall, Phase 1 about half implemented; no accepted-phase or on-device claim.
+- Implemented H-009 retained session/serialized operations and transactional selected-tree cache activation with deterministic tests. PR CI pending at recording. No new Release; no manual user work needed yet. Next: verify/integrate, then root/grant recovery H-010 and provider cancellation/bounds H-011.

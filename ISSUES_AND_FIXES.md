@@ -167,3 +167,8 @@ Do not erase a failure after a fix. Mark fixed and link the corrective commit.
 
 ### H-008 verification update
 - PR #1 functional commit 9557723 merged as 79ee09d. Unit/debug CI 43612121975 passed. Android cursor/Room integration and handset evidence remain pending; complete-listing guard is source/build/JVM verified only.
+
+### H-009 implementation update — 2026-11-14
+- Status: implemented, PR CI pending; no OPPO reproduction/acceptance claimed. Retained lifecycle owner plus generation checks and serialized operations prevent old load/scan/finalizer from publishing into new state; cache restoration blocks scan start.
+- A second source-confirmed switching race was found: picker-local forgetTree could run after A→B→A and delete reselected A. Cleanup now belongs to serialized transactional tree activation, not a detached picker coroutine.
+- Regression scenarios implemented in LibrarySessionTest (six cases); Android recreation, Room cancellation/reconciliation and actual grant/provider checks remain pending. H-010 grant acquisition/release/process-death behavior is not resolved by this change.

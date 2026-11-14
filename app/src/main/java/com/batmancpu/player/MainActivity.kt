@@ -11,8 +11,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.ViewModelProvider
 import com.batmancpu.player.ui.glass.GlassLabScreen
 import com.batmancpu.player.ui.library.FolderSetupScreen
+import com.batmancpu.player.ui.library.LibraryViewModel
 import com.batmancpu.player.ui.theme.PlayerTheme
 
 class MainActivity : ComponentActivity() {
@@ -29,6 +31,7 @@ class MainActivity : ComponentActivity() {
             isAppearanceLightNavigationBars = false
         }
 
+        val librarySession = ViewModelProvider(this)[LibraryViewModel::class.java].session
         setContent {
             var showGlassLab by rememberSaveable { mutableStateOf(false) }
             BackHandler(enabled = showGlassLab) { showGlassLab = false }
@@ -37,9 +40,13 @@ class MainActivity : ComponentActivity() {
                 if (showGlassLab) {
                     GlassLabScreen()
                 } else {
-                    FolderSetupScreen(onOpenGlassLab = { showGlassLab = true })
+                    FolderSetupScreen(
+                        session = librarySession,
+                        onOpenGlassLab = { showGlassLab = true },
+                    )
                 }
             }
         }
     }
 }
+
