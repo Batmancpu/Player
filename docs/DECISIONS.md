@@ -73,3 +73,9 @@ CI build/test success and OPPO handset validation must be reported separately.
 **Status:** Accepted  
 **Decision:** The Glass lab and initial implementation use explicit HazeInput.Sources and hazeSource. Do not enable HazeFeatureFlags.isPlatformBackdropEnabled or use the experimental native Android window-backdrop path in v1.  
 **Reason:** Native Android window-backdrop rendering is experimental, eligible only on Android 17/API 37.2+ and can draw a frame without source input when unavailable. The target device is Android 15. Haze source-backed rendering is the controllable cross-version path and must be benchmarked on the actual handset.
+
+ 
+### D-016 — First Glass screen is a source-backed laboratory
+**Status:** Accepted  
+**Decision:** Implement an isolated Glass lab with a fixed local artwork/gradient source, one small four-control morphing cluster and explicit disabled/fallback path. Use Haze 2.1.0 stable API, HazeInput.Sources, hazeSource and Default/Balanced performance.  
+**Reason:** Proves the visual engine on the target Android codebase without mixing it with media scanning, TMDB or main library UI. Avoids the experimental native Android window-backdrop path.

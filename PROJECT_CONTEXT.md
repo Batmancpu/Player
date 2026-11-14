@@ -176,3 +176,8 @@ Read AGENTS.md, inspect latest main and workflow runs, then add Haze 2.1.0 depen
 
 ## 13. Haze integration decision
 Haze 2.1.0 is now included as dependencies only (core, Glass, optional Material 3 integration). No Glass modifier or backdrop source has yet been implemented. Use the same version across all three artifacts. The first proof must use explicit HazeInput.Sources and hazeSource. Never enable the experimental native Android window-backdrop feature on the target Android 15 device. Haze docs specify that native backdrop is only eligible on Android 17/API 37.2+ and is experimental; source-backed rendering remains the selected route.
+
+## 14. Haze dependency baseline verified — 2026-11-14
+The app/build.gradle.kts now includes Haze 2.1.0 core, Glass and Material3 integration. CI run 10 passed with Gradle resolving the dependencies and producing an APK (artifact ID 14101256278). This proves dependency resolution and compilation only; no glass modifiers are yet in app code.
+For the first Glass screen, use the Haze 2.1.0 stable API in package dev.chrisbanes.haze.glass: Modifier.hazeGlass and Modifier.hazeGlassContainer. The background content must register with dev.chrisbanes.haze.hazeSource(state), and Glass controls explicitly use HazeInput.Sources(state). Use GlassStyle.clear or GlassStyle.regular, begin with HazePerformanceMode.Default/Balanced, and remember styles rather than constructing new ones on every recomposition.
+Keep HazeFeatureFlags.isPlatformBackdropEnabled false. Haze's native Android Backdrop renderer is experimental and only eligible on Android 17/API 37.2+, whereas the user's handset is Android 15. Source-backed rendering is the chosen safe path. Keep the first cluster small; do not put Glass on posters.

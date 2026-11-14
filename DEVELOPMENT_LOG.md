@@ -196,3 +196,15 @@ Tests: documentation review only. No application build exists yet; no APK or dev
 - Rationale: the official Haze docs require the same version across core and Glass artifacts; Material 3 integration is optional and included because Player uses Material 3 colors.
 - Device safety: Haze's native Android window-backdrop path is experimental and intended for Android 17/API 37.2+; Player will not enable it on its Android 15 target. The Glass lab will use HazeInput.Sources + hazeSource.
 - Verification: pending CI dependency resolution and debug build.
+
+## 2026-11-14 — Haze 2.1.0 dependency baseline verified
+- Workflow run 9 (handoff/status documentation): https://github.com/Batmancpu/Player/actions/runs/43562507535 — success. Artifact ID 14100791906, size 10,386,150 bytes; archive digest 0c1ae1f2904466183fe6883ba6f7dd759f3127f4dcaf5fba5de731ac46e4d1d2.
+- Workflow run 10 (Haze dependency-only commit): https://github.com/Batmancpu/Player/actions/runs/43562542076 — success. Gradle resolved Haze core 2.1.0, Glass 2.1.0 and Glass Material3 2.1.0; testDebugUnitTest and assembleDebug passed; artifact upload passed.
+- Haze dependency APK artifact: Player-debug-12a6329d48de4edd9f5d1c16f64e1dc6609cb6f9, artifact ID 14101256278, size 10,991,171 bytes, URL https://github.com/Batmancpu/Player/actions/runs/43562542076/artifacts/14101256278, expiration 2026-11-28.
+- Artifact ZIP SHA-256: 1ff98f60760263778f45c453b9b065416077e7b2852c2b6ce7c3921a602929cb (not raw APK digest).
+- No Haze composables, native renderer, permissions or product screen were added. Dependency compatibility only is verified.
+- Haze API decision: source-backed HazeInput.Sources + hazeSource for Player; do not enable experimental HazeInput.Backdrop native Android window-backdrop. The Glass lab will use Default/Balanced performance first and only a small control cluster.
+- Device installation / 60-Hz / GPU validation on CPH2531: not yet performed.
+
+## Current next step
+Implement one isolated Glass laboratory screen with a fixed local gradient/artwork test source and a small four-control morphing Glass group. Keep the existing library/product scope unchanged. Build and CI-check the lab before asking the user to install it on CPH2531.
