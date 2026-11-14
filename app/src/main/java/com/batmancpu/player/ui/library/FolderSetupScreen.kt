@@ -76,6 +76,16 @@ internal fun FolderSetupScreen(
         isScanning = false
         scanError = null
         discoveredMedia = emptyList()
+        val current = selection?.uri
+        if (current != null) {
+            try {
+                discoveredMedia = OfflineLibraryIndex.load(context, current)
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                scanError = context.getString(R.string.library_scan_error)
+            }
+        }
     }
 
     fun startScan(treeUri: Uri) {
@@ -85,6 +95,7 @@ internal fun FolderSetupScreen(
         scanJob = scope.launch {
             try {
                 val results = SafLocalMediaSource(context, treeUri).scan()
+                OfflineLibraryIndex.saveSuccessfulScan(context, treeUri, results)
                 discoveredMedia = results
             } catch (cancelled: CancellationException) {
                 throw cancelled
@@ -154,6 +165,11 @@ internal fun FolderSetupScreen(
                         }
                         preferences.edit().putString(KEY_TREE_URI, uri.toString()).apply()
                         selection = FolderSelection(uri, name)
+                        if (previous != null && previous != uri) {
+                            withContext(Dispatchers.IO) {
+                                OfflineLibraryIndex.forgetTree(context, previous)
+                            }
+                        }
                         feedback = context.getString(R.string.folder_setup_access_saved)
                     }
                 }
@@ -255,7 +271,13 @@ internal fun FolderSetupScreen(
                                 discoveredMedia.filter { it.kind == LocalMediaKind.VIDEO }
                                     .take(100).forEach { document ->
                                         Text(
-                                            text = document.displayName,
+                                            text = when (val parsed = MediaNameParser.parse(document.displayName)) {
+                                                is ParsedMediaName.Movie -> parsed.title + (parsed.year?.let { " ($it)" } ?: "")
+                                                is ParsedMediaName.Episode -> parsed.series + " · S" +
+                                                    parsed.season.toString().padStart(2, '0') + "E" +
+                                                    parsed.episode.toString().padStart(2, '0')
+                                                is ParsedMediaName.Unrecognized -> document.displayName
+                                            },
                                             color = PlayerPalette.textSecondary,
                                             style = MaterialTheme.typography.bodyMedium,
                                         )

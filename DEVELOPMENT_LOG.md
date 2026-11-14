@@ -404,3 +404,10 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - Base commit 79150479be412fb76e1f429dfc3dda6f02eada22. Added KSP Gradle plugin 2.3.12 and AndroidX Room runtime/ktx/compiler 2.8.5 as dependencies only, in an isolated build commit before adding entities/DAOs.
 - Version choice follows current Kotlin KSP quickstart (2.3.12) and AndroidX Room stable documentation (2.8.5) on 2026-11-14.
 - CI pending; no database generated or shipped yet. Do not add database source before this dependency compile gate passes.
+
+## 2026-11-14 — Phase 1 Room offline index and successful-scan reconciliation
+- Base commit 476ac20a2feeea133fafe4df971f2dd5f53d618d. Added initial Room database IndexedMedia with per-tree/document identity, classified media and parsed name fields, plus DAO.
+- Only after SafLocalMediaSource.scan completes, OfflineLibraryIndex atomically upserts discovered entries and removes records missing from the completed scan. Failed/cancelled provider enumerations leave previous Room rows untouched.
+- UI loads the cached index at startup for the selected tree, saves scan results, shows parsed movie/episode labels; switching folders removes cached rows from the old tree. No original media files are written.
+- Initial DB schema version 1; explicit migrations are mandatory before any future schema version change. Exported schema setup and instrumentation migration test still pending.
+- CI verification pending and CPH2531 testing unverified. Do not declare phase 1 complete until the release APK and on-device acceptance gate.
