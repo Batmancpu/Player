@@ -54,3 +54,6 @@ All four repositories were non-archived at inspection. Dates establish recent de
 ## First slice verification
 
 [PR #1](https://github.com/Batmancpu/Player/pull/1) passed unit/debug CI 43612121975 and merged as 79ee09d. [Main CI #61](https://github.com/Batmancpu/Player/actions/runs/43612318514) also passed unit/debug, signed release assembly and permanent certificate validation. No new Release was published; OPPO cursor/Room behavior and performance remain unverified. Next coding task is H-009 lifecycle ordering.
+
+## H-009 slice — 2026-11-14
+Retained LibraryViewModel now owns a pure serialized LibrarySession with stale-operation guards. Scan waits for restoration; changing trees clears visible rows immediately and waits for obsolete work before activating the new Room tree. Picker-local cache deletion was removed to avoid A→B→A deletion races. Six JVM cases cover ordering/cancellation/error/scope ownership. PR CI pending at authoring; actual Android recreation/Room/grant behavior remains unverified. Next: H-010 root/grant recovery.

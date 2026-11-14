@@ -41,6 +41,9 @@ internal interface IndexedMediaDao {
 
     @Query("DELETE FROM indexed_media WHERE treeUri = :tree")
     suspend fun removeTree(tree: String)
+
+    @Query("DELETE FROM indexed_media WHERE treeUri != :selectedTree")
+    suspend fun removeOtherTrees(selectedTree: String)
 }
 
 @Database(entities = [IndexedMedia::class], version = 1, exportSchema = false)
@@ -67,6 +70,15 @@ internal abstract class PlayerLibraryDatabase : RoomDatabase() {
  * The upsert + missing-file deletion are atomic and read-only to the media source.
  */
 internal object OfflineLibraryIndex {
+    /** Serialized by LibrarySession after obsolete work has unwound. */
+    suspend fun activateAndLoad(context: Context, treeUri: Uri): List<DiscoveredLocalMedia> {
+        val db = PlayerLibraryDatabase.get(context)
+        return db.withTransaction {
+            db.mediaDao().removeOtherTrees(treeUri.toString())
+            load(context, treeUri)
+        }
+    }
+
     suspend fun load(context: Context, treeUri: Uri): List<DiscoveredLocalMedia> {
         return PlayerLibraryDatabase.get(context).mediaDao()
             .forTree(treeUri.toString())
@@ -124,3 +136,4 @@ internal object OfflineLibraryIndex {
         PlayerLibraryDatabase.get(context).mediaDao().removeTree(treeUri.toString())
     }
 }
+
