@@ -175,3 +175,9 @@ If chat context is lost, these repository records are the handoff. Do not invent
 - 2026-11-14 — Parser corpus slice: preserve leading numeric movie titles/use trailing release year and keep multi-episode ambiguity under original filenames. Regression fixtures added; CI pending a focused parser PR after Android harness gate. Next: verify corpus and finish plain library states/grouping before candidate release.
 
 - 2026-11-14 — Plain-library completion slice: cached loading, initial empty, completed-empty and cancelled states; series-grouped episode list with memoized parsing and safe system insets. LibrarySession exposes completion/cancel flags. Unverified pending focused CI; no Glass/network addition. Next: validate Android/filename/UI gates and publish a signed Phase 1 candidate.
+
+- 2026-11-14 — Release-candidate preparation: built-APK manifest gate checks fixed identity/run version, offline permission allowlist, backup disabled and debug-provider exclusion. Release notes now give Phase 1 feature/checklist and retain unaccepted status. Unverified until signed main gate; publication remains explicit release(test) trigger only. Next: finish CI and publish verified candidate.
+
+- 2026-11-14 — Candidate attribution: packaged Apache-2.0 text and runtime-library source/author notices alongside existing Lucide license; no new runtime dependency/source copied. Verified Haze license at shipped tag 2.1.0. Syntax check passed for release-manifest script; signed APK check pending. Next: finish Android suite and manifest gate, publish candidate.
+
+- 2026-11-14 — Android integration PR #6 passed CI 43615935921: all nine Android 15 emulator tests passed (Room/cursor/privacy/launcher recreation). Parser/plain UI PR #7 passed CI 43616107190 and merged. OPPO/actual SAF provider acceptance remains pending. Next: final release manifest gate then explicitly publish signed Phase 1 candidate.

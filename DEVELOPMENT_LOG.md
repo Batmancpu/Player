@@ -580,3 +580,14 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 ## 2026-11-14 — Plain offline library states and series grouping
 - LibrarySession adds explicit completed-scan/cancelled flags; cache restoration alone does not claim a completed empty scan. FolderSetupScreen adds saved-cache loading and empty/cancel status text, groups episodes by parsed series then season/episode, memoizes parsing/grouping, and respects safe system insets. Strings are resource-backed; no Glass or network.
 - This slice remains unverified until its own PR gate; actual TalkBack/large-font/OPPO rendering checks belong to the phone checklist. No phase acceptance/FPS claim.
+
+## 2026-11-14 — Phase 1 release boundary and candidate notes
+- scripts/verify_release_manifest.py uses standard aapt2 on the built signed APK: fixed app ID, expected run-number versionCode, only AndroidX internal signature permission, allowBackup=false, no debug synthetic provider. Signing secrets/media contents are never read. CI runs this after release assembly before publication.
+- Release title/notes now describe the functional Phase 1 phone-test candidate and short/full checklist instead of update-pipeline-only testing. Still explicitly unaccepted without OPPO report; no FPS claim. No signature/key/versioning design change; explicit release(test) main push or manual dispatch remains required. Verification pending signed build; no Release published yet.
+
+- Release attribution follow-up: THIRD_PARTY_NOTICES.md plus packaged APACHE_2_0.txt/DEPENDENCIES.md cover existing AndroidX/Kotlin/coroutines/Haze runtime licenses alongside Lucide ISC/MIT. Haze root license read at tag 2.1.0, blob 261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64; no upstream app code/assets copied. `python -m py_compile scripts/verify_release_manifest.py` passed locally; real APK assertion pending signed gate.
+
+## 2026-11-14 — Android and plain-library verification completed
+- Android PR #6 be24e38, CI https://github.com/Batmancpu/Player/actions/runs/43615935921 succeeded. Android job 132510883667 logs: Starting 9 tests on Android 15 AVD; BUILD SUCCESSFUL in 4m 11s, no failed tests. Tests cover Room/SAF helper and launcher recreation; synthetic provider, not actual OPPO external-storage DocumentsProvider or measured frame timing.
+- Parser/UI PR #7 fec88a9 passed unit/debug/test-APK CI 43616107190, merged as 3d5d6f4. No source/automated failures observed in those gates. Main combined test/signing gate plus actual release-manifest assertion still required before publication.
+- Next: merge release notes/manifest/attribution preparation, inspect signed main privacy gate; only then explicit release(test) publication. Phase 1 remains awaiting real-device acceptance.
