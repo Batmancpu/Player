@@ -39,3 +39,7 @@ At end of every Work session write: current SHA, relevant workflows/artifacts, w
 ## 2026-11-14 — Release-signing diagnostic correction
 - GitHub Actions run 47 identified an empty PLAYER_RELEASE_KEY_PASSWORD even though the user said all four secrets had been added. The three other signing secret variables were populated. Run failed at early configuration; no APK published.
 - Current JKS uses identical store/key passwords. The CI source now safely falls back to PLAYER_RELEASE_KEYSTORE_PASSWORD when optional key password is absent. Never expose either password in log/docs. Next gate: successful CI signing/certificate verification, then an explicit release(test): trigger commit to publish for Obtainium.
+
+## Signing diagnostic gate after run 48 (2026-11-14)
+- Workflows #47 and #48 failed at initial signing validation. Run 47: fourth key-pass secret absent; workflow modified to fall back to store pass. Run 48: keytool check failed despite that correction. The locally generated JKS, Base64 and credentials were verified to match by keytool in a private session workspace.
+- CI now includes a non-secret local-JKS file hash checkpoint, followed by separate store-password and alias validation. Use the next CI's precise public diagnostic to ask the user to correct only the necessary GitHub secret. No signed APK has yet been published; never claim one.

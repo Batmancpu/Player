@@ -92,9 +92,27 @@ jobs:
             exit 1
           fi
 
-          keytool -list -keystore "$keystore_path" \
-            -storepass "$PLAYER_RELEASE_KEYSTORE_PASSWORD" \
-            -alias "$PLAYER_RELEASE_KEY_ALIAS" >/dev/null 2>&1
+          # Validate exact key bytes without disclosing the key or its password.
+          # This file SHA-256 identifies the privately generated JKS.
+          expected_jks_sha256="c3f17358492299a4adb169f6b726f8211922c094c8acc2c2161b6c6f66933eb9"
+          actual_jks_sha256="$(sha256sum "$keystore_path" | cut -d ' ' -f1)"
+          if [[ "$actual_jks_sha256" != "$expected_jks_sha256" ]]; then
+            echo "Signing secret contains a different or incomplete JKS. Re-copy the full generated Base64 file." >&2
+            exit 1
+          fi
+
+          if ! keytool -list -keystore "$keystore_path" \
+              -storepass "$PLAYER_RELEASE_KEYSTORE_PASSWORD" >/dev/null 2>&1; then
+            echo "JKS file is correct, but the keystore password secret does not unlock it. Replace PLAYER_RELEASE_KEYSTORE_PASSWORD using only the password in the generated credentials file." >&2
+            exit 1
+          fi
+
+          if ! keytool -list -keystore "$keystore_path" \
+              -storepass "$PLAYER_RELEASE_KEYSTORE_PASSWORD" \
+              -alias "$PLAYER_RELEASE_KEY_ALIAS" >/dev/null 2>&1; then
+            echo "JKS and store password are correct, but PLAYER_RELEASE_KEY_ALIAS is wrong. Expected alias: player-release." >&2
+            exit 1
+          fi
 
           {
             printf 'PLAYER_RELEASE_KEYSTORE_PATH=%s\n' "$keystore_path"

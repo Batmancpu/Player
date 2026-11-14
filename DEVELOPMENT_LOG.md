@@ -444,3 +444,9 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - User reported four secrets configured. Test workflow run 47 (43583692161) failed before Gradle: the Base64 key, store password and alias were present, but GitHub passed an empty PLAYER_RELEASE_KEY_PASSWORD. No private values were printed.
 - The current generated permanent JKS is documented with identical store and key passwords. Updated CI to reuse the store password if the optional separate key password secret is empty. The first three secrets remain mandatory; no key regeneration or manual replacement needed.
 - This does not bypass key verification: keytool, signed Release build, apksigner certificate verification and SHA-256 pin still gate publication. CI re-verification pending. Do not mark an APK released until a real GitHub Release asset exists.
+
+## 2026-11-14 — Signing diagnostics for test-APK pipeline
+- GitHub Actions run 48 (43583815426) failed at the secret-loading step despite three populated variables and an optional empty private-key password; the prior keytool check suppressed its own error output. No APK built.
+- Privately checked the ORIGINAL generated JKS, Base64 file and password in the local session: Base64 decodes byte-for-byte to the JKS and keytool can open the private JKS with the generated credentials.
+- Added safe, distinct diagnostics in CI: JKS SHA-256 match (not secret content), keystore password verification and alias verification. None of these diagnostic steps prints keys or passwords; the exact failed checkpoint can tell user which GitHub value to correct.
+- Next: verify new workflow result; do not publish until all signing and cert checks pass.
