@@ -1,6 +1,7 @@
 package com.batmancpu.player.ui.library
 
 import java.util.ArrayDeque
+import java.io.IOException
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 
@@ -13,6 +14,13 @@ internal data class TreeEntry(
     val displayName: String,
     val mimeType: String?,
     val isDirectory: Boolean,
+)
+
+/** A provider may return rows before its directory listing is complete. */
+internal data class TreeListing(
+    val entries: List<TreeEntry>,
+    val isLoading: Boolean = false,
+    val hasError: Boolean = false,
 )
 
 internal enum class LocalMediaKind { VIDEO, SUBTITLE }
@@ -32,7 +40,7 @@ internal data class DiscoveredLocalMedia(
  * partial result that could later cause an incremental index to delete entries.
  */
 internal class MediaTreeScanner(
-    private val listChildren: suspend (parentDocumentId: String) -> List<TreeEntry>,
+    private val listChildren: suspend (parentDocumentId: String) -> TreeListing,
     private val isWithinSelectedTree: suspend (rootDocumentId: String, documentId: String) -> Boolean,
 ) {
     suspend fun scan(rootDocumentId: String): List<DiscoveredLocalMedia> {
@@ -46,7 +54,12 @@ internal class MediaTreeScanner(
         while (pendingDirectories.isNotEmpty()) {
             currentCoroutineContext().ensureActive()
             val parentId = pendingDirectories.removeFirst()
-            for (entry in listChildren(parentId)) {
+            val listing = listChildren(parentId)
+            if (listing.isLoading || listing.hasError) {
+                // Never reconcile cached rows against a partial provider snapshot.
+                throw IOException("Local folder listing is incomplete; retry the scan")
+            }
+            for (entry in listing.entries) {
                 currentCoroutineContext().ensureActive()
                 if (entry.documentId.isBlank() ||
                     entry.displayName.isBlank() ||
@@ -95,3 +108,4 @@ private fun classifyMedia(entry: TreeEntry): LocalMediaKind? {
         else -> null
     }
 }
+

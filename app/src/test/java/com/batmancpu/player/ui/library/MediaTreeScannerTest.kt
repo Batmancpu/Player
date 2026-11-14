@@ -1,5 +1,6 @@
 package com.batmancpu.player.ui.library
 
+import java.io.IOException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitCancellation
@@ -32,7 +33,7 @@ class MediaTreeScannerTest {
             ),
         )
         val scanner = MediaTreeScanner(
-            listChildren = { children[it].orEmpty() },
+            listChildren = { TreeListing(children[it].orEmpty()) },
             isWithinSelectedTree = { _, _ -> true },
         )
 
@@ -51,11 +52,11 @@ class MediaTreeScannerTest {
         val scanner = MediaTreeScanner(
             listChildren = { parent ->
                 inspected.add(parent)
-                when (parent) {
+                TreeListing(when (parent) {
                     "root" -> listOf(directory("outside"), directory("inside"))
                     "inside" -> listOf(file("safe-video", "ok.webm"))
                     else -> error("Unexpected traversal beyond selected root")
-                }
+                })
             },
             isWithinSelectedTree = { _, candidate -> candidate != "outside" },
         )
@@ -68,7 +69,7 @@ class MediaTreeScannerTest {
     fun propagatesProviderFailureInsteadOfReturningPartialResults() {
         val scanner = MediaTreeScanner(
             listChildren = {
-                if (it == "root") listOf(directory("nested"))
+                if (it == "root") TreeListing(listOf(directory("nested")))
                 else throw SecurityException("Permission revoked")
             },
             isWithinSelectedTree = { _, _ -> true },
@@ -94,4 +95,52 @@ class MediaTreeScannerTest {
         task.join()
         assertTrue(task.isCancelled)
     }
+
+    @Test
+    fun rejectsLoadingListingEvenWhenItContainsValidMedia() {
+        assertIncompleteListingFails(isLoading = true, hasError = false)
+    }
+
+    @Test
+    fun rejectsProviderErrorAfterEarlierDirectoriesWereRead() {
+        assertIncompleteListingFails(isLoading = false, hasError = true)
+    }
+
+    private fun assertIncompleteListingFails(isLoading: Boolean, hasError: Boolean) {
+        val visited = mutableListOf<String>()
+        val scanner = MediaTreeScanner(
+            listChildren = { parent ->
+                visited.add(parent)
+                if (parent == "root") {
+                    TreeListing(listOf(file("earlier", "Earlier.mp4"), directory("nested")))
+                } else {
+                    TreeListing(
+                        listOf(file("partial", "Partial.mkv"), directory("never-visit")),
+                        isLoading = isLoading,
+                        hasError = hasError,
+                    )
+                }
+            },
+            isWithinSelectedTree = { _, _ -> true },
+        )
+        var reconciliationReached = false
+        assertThrows(IOException::class.java) {
+            runBlocking {
+                scanner.scan("root")
+                reconciliationReached = true
+            }
+        }
+        assertEquals(listOf("root", "nested"), visited)
+        assertTrue(!reconciliationReached)
+    }
+
+    @Test
+    fun completedEmptyListingIsSuccessful() = runBlocking {
+        val scanner = MediaTreeScanner(
+            listChildren = { TreeListing(emptyList()) },
+            isWithinSelectedTree = { _, _ -> true },
+        )
+        assertTrue(scanner.scan("root").isEmpty())
+    }
 }
+

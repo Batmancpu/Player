@@ -141,3 +141,14 @@ Do not erase a failure after a fix. Mark fixed and link the corrective commit.
 - **Root cause confidence:** high; job log confirms the missing path.
 - **Fix:** Remove the obsolete syntax-validation step from the workflow in the next commit.
 - **Regression verification:** workflow run 30 (`43574233803`) passed unit tests, debug APK assembly and artifact upload. Release signing remained skipped because secrets were absent.
+
+### H-008 — Incomplete SAF cursor could replace a complete offline library
+- First observed: source audit 2026-11-14 at acb9829; affects signed v0.1.51/v0.1.53 source. No actual OPPO data-loss report.
+- Severity: high cached-library correctness risk; originals are not modified.
+- Reproduction: a child-directory cursor returns some rows plus EXTRA_LOADING=true or EXTRA_ERROR, or omits mandatory ID/name/MIME. Previously scan could return success and Room removeStale could drop omitted records.
+- Root cause confidence: high from source; Android cursor reproduction still requires instrumentation. Existing tests exercised thrown exceptions, not successful partial cursors.
+- Fix: explicit TreeListing completion flags; throw sanitized IOException for incomplete status/invalid mandatory cursor fields. Existing saveSuccessfulScan call remains reachable only on success.
+- Regression: JVM tests reject loading/error listings after earlier valid rows, avoid further descent/reconciliation and accept a genuinely empty complete directory. Adapter cursor/Room integration tests remain pending.
+- Status: implemented, PR CI pending; not device-verified. See docs/PHASE1_AUDIT.md for remaining independent defects.
+
+

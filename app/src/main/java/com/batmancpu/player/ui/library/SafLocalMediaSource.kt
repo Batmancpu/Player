@@ -45,7 +45,7 @@ internal class SafLocalMediaSource(
             DocumentsContract.isChildDocument(resolver, rootDocumentUri, candidate)
         }
 
-    private suspend fun queryImmediateChildren(parentId: String): List<TreeEntry> =
+    private suspend fun queryImmediateChildren(parentId: String): TreeListing =
         withContext(Dispatchers.IO) {
             val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(treeUri, parentId)
             val projection = arrayOf(
@@ -61,9 +61,12 @@ internal class SafLocalMediaSource(
                 val nameColumn = it.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
                 val mimeColumn = it.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_MIME_TYPE)
                 while (it.moveToNext()) {
-                    val documentId = it.getString(idColumn) ?: continue
-                    val name = it.getString(nameColumn) ?: continue
-                    val mime = it.getString(mimeColumn)
+                    val documentId = it.getString(idColumn)?.takeIf(String::isNotBlank)
+                        ?: throw IOException("Local folder returned an invalid document ID")
+                    val name = it.getString(nameColumn)?.takeIf(String::isNotBlank)
+                        ?: throw IOException("Local folder returned an invalid document name")
+                    val mime = it.getString(mimeColumn)?.takeIf(String::isNotBlank)
+                        ?: throw IOException("Local folder returned an invalid document type")
                     results.add(
                         TreeEntry(
                             documentId = documentId,
@@ -73,7 +76,14 @@ internal class SafLocalMediaSource(
                         ),
                     )
                 }
+                // Read status after consuming rows, while the cursor remains open.
+                // Never expose provider error text: it may contain private paths.
+                TreeListing(
+                    entries = results,
+                    isLoading = it.extras.getBoolean(DocumentsContract.EXTRA_LOADING, false),
+                    hasError = it.extras.containsKey(DocumentsContract.EXTRA_ERROR),
+                )
             }
-            results
         }
 }
+
