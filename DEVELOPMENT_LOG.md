@@ -77,3 +77,11 @@ Tests: documentation review only. No application build exists yet; no APK or dev
 - Added the root Gradle settings file and app module include.
 - No Android application source or CI workflow exists yet.
 - No build/APK/device validation has been run at this step.
+
+
+## 2026-11-14 — Build toolchain pinned
+- Added the root build plugin declarations: AGP 9.3.1 and Kotlin 2.4.21 (Android + Compose compiler).
+- Added Gradle project settings and AndroidX/Kotlin conventions.
+- Gradle distribution target for CI: 9.5.1; CI JDK target: 21.
+- Compatibility basis: Kotlin 2.4.21 supports AGP up to 9.3.1 and Gradle up to 9.7.0. Haze 2.1.0 also expects Kotlin 2.4.21 / Compose Multiplatform 1.12.2.
+- No app module has been added yet; this commit cannot produce an APK.
