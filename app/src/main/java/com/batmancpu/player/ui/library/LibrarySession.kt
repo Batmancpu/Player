@@ -18,6 +18,8 @@ internal data class LibrarySessionState(
     val isLoading: Boolean = false,
     val isScanning: Boolean = false,
     val hasError: Boolean = false,
+    val hasCompletedScan: Boolean = false,
+    val wasCancelled: Boolean = false,
 )
 
 /**
@@ -55,7 +57,7 @@ internal class LibrarySession(
         val tree = current.tree ?: return
         // Finish cache restoration first so cancellation/failure retains that snapshot.
         if (current.isLoading || current.isScanning) return
-        launchOperation(current.copy(isScanning = true, hasError = false)) {
+        launchOperation(current.copy(isScanning = true, hasError = false, wasCancelled = false)) {
             val results = scan(tree)
             currentCoroutineContext().ensureActive()
             save(tree, results)
@@ -67,7 +69,7 @@ internal class LibrarySession(
         if (!state.value.isScanning) return
         generation++
         operation?.cancel()
-        mutableState.value = state.value.copy(isScanning = false)
+        mutableState.value = state.value.copy(isScanning = false, wasCancelled = true)
     }
 
     private fun launchOperation(
@@ -84,7 +86,10 @@ internal class LibrarySession(
                     val results = action()
                     currentCoroutineContext().ensureActive()
                     if (ticket == generation) {
-                        mutableState.value = state.value.copy(media = results)
+                        mutableState.value = state.value.copy(
+                            media = results,
+                            hasCompletedScan = initial.isScanning || state.value.hasCompletedScan,
+                        )
                     }
                 }
             } catch (cancelled: CancellationException) {

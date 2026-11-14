@@ -180,3 +180,6 @@ Serialized FolderAccessManager/AndroidFolderAccessStore now probe actual root av
 
 ### H-011 implementation update — 2026-11-14
 SAF root/child query CancellationSignal and per-row checks added, cursor lifecycle scoped to helper. Explicit row/directory/depth/width budgets throw before reconciliation. Out-of-tree/invalid rows now fail complete scan instead of producing misleading partial success. Added pure budget/cycle regression tests; CI and Android cursor verification pending. isChildDocument binder calls cannot be forcibly cancelled with this API; actual provider behavior remains device-dependent.
+
+### H-012 — Numeric titles and multi-episode parser ambiguity
+- Source-confirmed at 30ea20f; affects prior test releases. Leading year-like titles could become empty; multi-episode names could become movies or one episode. No OPPO report. Fix uses trailing nonleading year and explicitly leaves multi-episode fixtures unrecognized. Source regressions added; CI pending.

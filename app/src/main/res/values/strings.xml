@@ -42,8 +42,13 @@
     <string name="library_scan_start">Scan this folder</string>
     <string name="library_scan_progress">Scanning selected folder and subfolders…</string>
     <string name="library_scan_cancel">Cancel scan</string>
+    <string name="library_cache_loading">Loading your saved library…</string>
+    <string name="library_scan_cancelled">Scan cancelled. Your last complete library is unchanged.</string>
+    <string name="library_scan_empty">Scan complete. No supported media was found in this folder.</string>
+    <string name="library_index_empty">No indexed media yet. Scan this folder to build your library.</string>
     <string name="library_scan_error">The folder scan could not finish. Check folder access and try again. Previous results were not replaced.</string>
     <string name="library_scan_found">%1$d videos and %2$d subtitle sidecars found</string>
     <string name="library_movies_heading">MOVIES AND UNMATCHED FILES</string>
     <string name="library_episodes_heading">TV EPISODES</string>
 </resources>
+

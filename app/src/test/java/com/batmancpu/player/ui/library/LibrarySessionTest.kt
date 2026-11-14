@@ -73,6 +73,7 @@ class LibrarySessionTest {
         session.startScan()
         oldStarted.await()
         session.cancelScan()
+        assertTrue(session.state.value.wasCancelled)
         assertEquals(media("cached"), session.state.value.media)
         session.startScan()
         oldRelease.complete(Unit)
@@ -83,6 +84,18 @@ class LibrarySessionTest {
         session.state.first { !it.isScanning }
         assertEquals(listOf(media("new")), saved)
         assertEquals(media("new"), session.state.value.media)
+        assertFalse(session.state.value.wasCancelled)
+    }
+
+    @Test(timeout = 10_000)
+    fun emptyCacheDoesNotClaimCompletedScanButSuccessfulEmptyScanDoes() = runBlocking {
+        val session = LibrarySession(this, { emptyList() }, { emptyList() }, { _, _ -> Unit })
+        session.select("A")
+        session.state.first { !it.isLoading }
+        assertFalse(session.state.value.hasCompletedScan)
+        session.startScan()
+        session.state.first { !it.isScanning }
+        assertTrue(session.state.value.hasCompletedScan)
     }
 
     @Test(timeout = 10_000)
