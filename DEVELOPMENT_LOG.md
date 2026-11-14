@@ -343,14 +343,23 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - Delivered private files separately in this conversation: `player-release.jks`, `PLAYER_RELEASE_KEYSTORE_BASE64.txt`, `PLAYER_RELEASE_CREDENTIALS.txt`, and the public `PLAYER_RELEASE_CERTIFICATE_FINGERPRINT.txt`. No keystore bytes, base64 or password were committed to GitHub.
 - User should save the JKS in at least two secure locations and store the password in Proton Pass. The four repository Actions secrets remain to be created manually because the GitHub connector has no repository-secret write action.
 - Explained that changing the Android applicationId later does not require a new signing key; it creates a distinct installed app. User wants branding/package cleanup deferred while the app's core functionality is built.
-- Removed the no-longer-needed Termux script and its CI syntax step from the repository. Earlier helper CI workflow run 27 (`43573474031`) passed; that check was for the now-retired script. The cleanup commit must be CI-verified independently.
+- Removed the no-longer-needed Termux script and its CI syntax step from the repository. Earlier helper CI workflow run 28 (`43573474031`) passed; that check was for the now-retired script. The cleanup commit must be CI-verified independently.
 - Next: user downloads/backups the key, stores password in Proton Pass and creates the four GitHub repository secrets. Then trigger Android CI to verify Release APK signature. Continue the functional foundation; do not wait on branding or app-ID finalization.
 
 
 
 ## 2026-11-14 — CI handoff after Termux removal
-- The first cleanup commit removed `scripts/generate-release-keystore.sh` before removing the workflow's syntax-check step. Its run (workflow run 28, ID `43574064538`) failed exactly at `bash -n scripts/generate-release-keystore.sh`: file not found. This was a sequencing error, not an Android/Kotlin failure.
-- The following focused workflow update removed the obsolete syntax-check step and completed successfully: run 29, ID `43574233803`, https://github.com/Batmancpu/Player/actions/runs/43574233803. Unit tests and CI-only debug APK assembly/artifact upload passed; Release signing was correctly skipped because repository secrets are not configured.
-- The later chat-history/handoff commit triggered run 30, ID `43574286284`; its status must be checked before proceeding.
+- The first cleanup commit removed `scripts/generate-release-keystore.sh` before removing the workflow's syntax-check step. Its run (workflow run 29, ID `43574064538`) failed exactly at `bash -n scripts/generate-release-keystore.sh`: file not found. This was a sequencing error, not an Android/Kotlin failure.
+- The following focused workflow update removed the obsolete syntax-check step and completed successfully: run 30, ID `43574233803`, https://github.com/Batmancpu/Player/actions/runs/43574233803. Unit tests and CI-only debug APK assembly/artifact upload passed; Release signing was correctly skipped because repository secrets are not configured.
+- The later chat-history/handoff commit triggered run 31, ID `43574286284`; its status must be checked before proceeding.
 - The helper and Termux flow are fully removed. Do not reintroduce them.
 - Added `CHAT_HISTORY.md` as the cumulative chronological session record. Future agents must read and append to it, while keeping all credentials out of the log.
+
+
+## 2026-11-14 — Signing and handoff documentation CI verified through run 34
+- Corrected run-number references in the handoff docs. Actual CI run mapping: run 28 = `43573474031` (helper syntax passed); run 29 = `43574064538` (temporary missing-helper failure); run 30 = `43574233803` (workflow fix passed); run 31 = `43574286284` (chat-history handoff passed); run 32 = `43574384432` (agent/history corrections passed); run 33 = `43574452938` (mandatory chat-log handoff passed); run 34 = `43574546390` (historical signing context clarification passed).
+- Runs 30–34 completed successfully with JVM tests, debug APK assembly and artifact upload. Release assembly, signature verification and Release artifact upload were correctly skipped because the four repository secrets had not yet been configured.
+- The only failed run in this cleanup sequence was run 29, caused by the deleted Termux helper still being referenced for one intermediate commit. The stale workflow step was removed in run 30 and all subsequent runs passed.
+- Current main before this log update: `260adf70469f36f8dbed4a797c0899a5529e4aba`; latest verified workflow run 34: https://github.com/Batmancpu/Player/actions/runs/43574546390.
+- Permanent key is generated/verified and delivered. User-side outstanding tasks: save the JKS and backup, store its password in Proton Pass, add the four repository Actions secrets. No signed Release APK exists yet.
+- Exact next engineering task after secret setup is complete: validate the selected-folder provider on CPH2531, then implement a cancellable read-only recursive scanner and tests. Avoid branding/applicationId work until core app functionality is ready.

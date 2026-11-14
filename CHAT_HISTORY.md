@@ -54,5 +54,12 @@ This file is the durable, accumulating record of important user requests, produc
 
 
 ### CI sequencing note — signing helper removal
-- The helper-deletion commit temporarily left its Bash syntax-check step in the workflow; run 28 (`43574064538`) failed with file-not-found. The next workflow commit removed that stale step; run 29 (`43574233803`) passed tests, debug build and artifact upload. This was a transient workflow cleanup failure, not an application-code defect.
+- The helper-deletion commit temporarily left its Bash syntax-check step in the workflow; run 29 (`43574064538`) failed with file-not-found. The next workflow commit removed that stale step; run 30 (`43574233803`) passed tests, debug build and artifact upload. This was a transient workflow cleanup failure, not an application-code defect.
 - The cumulative log is now part of the mandatory reading order and must be appended at each future session end. Keep all secrets out of it.
+
+
+### Handoff verification update — 2026-11-14
+- The canonical `AGENTS.md` now requires every agent to read `CHAT_HISTORY.md` first and append a dated session summary before ending work; secrets must never be written into the chat log.
+- Historical signing snapshots 22–23 in `PROJECT_CONTEXT.md` are explicitly marked superseded by the current generated-key status in section 24; the obsolete Termux instructions are not current.
+- Verified Android CI run 34 (`43574546390`) passed tests, debug APK assembly and artifact upload. Release signing remains skipped until the user configures the four exact repository Actions secrets.
+- Corrected run numbering in this record: run 29 (`43574064538`) was the temporary missing-helper failure; run 30 (`43574233803`) was the successful workflow correction; runs 31–34 all passed.
