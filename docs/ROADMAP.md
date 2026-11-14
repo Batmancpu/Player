@@ -2,7 +2,7 @@
 
 Sequential plan. Each item is a focused commit, split further if its diff/failure surface grows. Update DEVELOPMENT_LOG.md in every implementation commit. A failed gate blocks subsequent work.
 
-**Current position:** documentation bootstrap. The app is not yet buildable.
+**Current position:** buildable Android shell and foundational design tokens/icon registry. Liquid Glass proof of concept is next.
 
 ## Phase 0 — Durable handoff
 - [x] README, AGENTS.md, PROJECT_CONTEXT.md and initial DEVELOPMENT_LOG.md.
@@ -25,11 +25,11 @@ Sequential plan. Each item is a focused commit, split further if its diff/failur
 **Gate:** clean checkout builds and produces installable debug APK.
 
 ## Phase 2 — Design tokens and typography
-9. ui: add cinematic dark color tokens.
-10. ui: add spacing, shape and elevation tokens.
-11. ui: add typography scale, text truncation and system font policy.
-12. ui: add one symbol registry and semantic icon descriptions.
-13. ui: establish edge-to-edge and window inset handling.
+9. ui: add cinematic dark color tokens. **Done:** semantic dark palette in PlayerTheme.
+10. ui: add spacing, shape and elevation tokens. **Done:** shared spacing and corner geometry.
+11. ui: add typography scale, text truncation and system font policy. **Partial:** system sans-serif typography scale is in place; truncation rules remain.
+12. ui: add one symbol registry and semantic icon descriptions. **Done:** four-icon PlayerGlyph registry with localized content-description parameter; Lucide notice packaged.
+13. ui: establish edge-to-edge and window inset handling. **Partial:** transparent system bars and edge-to-edge enabled; screen-specific safe-area/inset handling remains.
 14. ui: add reusable artwork/loading placeholders with fixed aspect ratio.
 15. test(ui): add dark/light contrast and layout previews.
 

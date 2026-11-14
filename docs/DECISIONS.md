@@ -61,3 +61,9 @@ CI build/test success and OPPO handset validation must be reported separately.
 **Status:** Accepted  
 **Decision:** Do not ship SF Symbols glyph assets in the Android APK unless explicit licensing permission for this use is established. Use a coherent permissively licensed or original vector icon family, tuned for Apple-like optical sizing, stroke, spacing and motion.  
 **Reason:** FC Zenith's icon library code is MIT, but its own README states the glyph artwork remains Apple-owned and directs users to Apple's SF Symbols license, which restricts use to Apple platforms. Design inspiration does not grant glyph redistribution rights.
+
+
+### D-014 — Use selected Lucide vectors for Player's initial symbol system
+**Status:** Accepted  
+**Decision:** Use a small set of adapted Lucide outline vector assets behind a single PlayerGlyph registry. Preserve the upstream ISC/MIT license text. Add new icons only when product screens need them.  
+**Reason:** Lucide is a consistent, permissively licensed line-icon family; selective vectors reduce the asset footprint and avoid bundling the full library or Apple-owned SF glyph artwork.

@@ -17,7 +17,7 @@ Choose **one local folder**. Player scans only that folder and its descendants, 
 
 ## Current status
 
-This repository is in its **project-bootstrap / documentation phase**. It is not yet an installable Android application. Read [AGENTS.md](AGENTS.md) and [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) before changing anything.
+This repository now contains a **buildable Android/Compose foundation** with a shared cinematic theme, a small licensed icon registry, and a verified GitHub Actions APK pipeline. Local-folder scanning, TMDB metadata, offline library persistence and Liquid Glass remain planned implementation work. Read [AGENTS.md](AGENTS.md) and [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) before changing anything.
 
 ## Canonical project records
 
@@ -29,6 +29,7 @@ This repository is in its **project-bootstrap / documentation phase**. It is not
 - [Device test and crash playbook](docs/DEVICE_TESTING.md)
 - [Development log](DEVELOPMENT_LOG.md)
 - [Known issues and fixes](ISSUES_AND_FIXES.md)
+- [Third-party notices](THIRD_PARTY_NOTICES.md)
 
 ## Design references
 
