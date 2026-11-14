@@ -427,3 +427,9 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - NOT verified: real device, provider compatibility, large-library scrolling, selected folder restricted access, permission-loss handling, manual release publication signing branch, full parser corpus or Room migrations.
 - GitHub Releases was empty and no signed Release APK existed at review; user still needs to provide existing key through GitHub Actions secrets. Do not create a new signing identity, do not publish debug APK and do not claim a phase test happened.
 - Next action for AI: strengthen Phase 1 acceptance tests and review actual provider behavior when the user has an installed signed APK. Next action for user: add the four existing release secrets as described in docs/ANDROID_SIGNING.md; no key/password material in chat.
+
+## 2026-11-14 — User-authorized signing reset before first release
+- At the user's explicit request, replaced the former **unreleased** signing identity with a newly generated JKS/RSA-3072 key. No GitHub Release previously existed (public Releases API empty), and no published signed APK had been produced. Do not claim a previously installed package was checked on-device.
+- A new key was generated and re-opened with keytool. Public certificate SHA-256: 4D:2F:17:89:ED:27:D3:96:13:35:FE:36:45:64:55:BD:9A:31:0B:0D:CD:F4:1E:8C:CC:92:53:98:33:9E:80:BF. Private key and password are distributed as private ChatGPT conversation files, NOT GitHub commits.
+- Updated the release workflow's certificate pin (lowercase hex) and release-note fingerprint; docs/ANDROID_SIGNING.md is the current source of truth. Old key/fingerprint historical records remain for audit but are superseded.
+- The user must back up the new JKS, store password in Proton Pass and enter four repository Actions secrets manually. No signed APK has been produced with this new key yet; CI pending for documentation/workflow update.

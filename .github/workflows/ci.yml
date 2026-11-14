@@ -150,7 +150,7 @@ jobs:
         run: |
           apk="app/build/outputs/apk/release/app-release.apk"
           fingerprint="$("$ANDROID_HOME/build-tools/37.0.0/apksigner" verify --print-certs "$apk" | awk '/Signer #1 certificate SHA-256 digest:/ {print $NF; exit}')"
-          expected="62a097b7be7d22a9883d9e09015c0417727216d73e2506edf470b24a61cdadc0"
+          expected="4d2f1789ed27d3961335fe36456455bd9a310b0dcdf41e8ccc925398339e80bf"
           if [[ -z "$fingerprint" || "${fingerprint,,}" != "$expected" ]]; then
             echo "Signed APK certificate does not match the permanent Player release key." >&2
             exit 1
@@ -177,7 +177,7 @@ jobs:
             echo "This APK was signed with the permanent Player release key. Use this APK, never the CI-only debug artifact. Later releases can update it in place."
             echo
             echo "APK SHA-256: ${hash}"
-            echo "Certificate SHA-256: 62:A0:97:B7:BE:7D:22:A9:88:3D:9E:09:01:5C:04:17:72:72:16:D7:3E:25:06:ED:F4:70:B2:4A:61:CD:AD:C0"
+            echo "Certificate SHA-256: 4D:2F:17:89:ED:27:D3:96:13:35:FE:36:45:64:55:BD:9A:31:0B:0D:CD:F4:1E:8C:CC:92:53:98:33:9E:80:BF"
             echo
             echo "Physical-device acceptance is separate from CI; follow docs/ROADMAP.md."
           } > "$RUNNER_TEMP/release-notes.md"
