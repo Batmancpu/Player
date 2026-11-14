@@ -279,3 +279,14 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - No application source, dependency, manifest permission or runtime behaviour was changed in this documentation update.
 - **Next exact implementation:** replace the Glass Lab launcher with a plain setup/library shell and implement one-folder SAF selection with persisted read grant and permission-recovery state. Keep the scanner in the next focused commit.
 - Current code evidence: source CI run 16 passed (https://github.com/Batmancpu/Player/actions/runs/43563620311), APK artifact ID 14101590882. Docs-only CI run 17 passed (https://github.com/Batmancpu/Player/actions/runs/43563846274). No handset install or media playback test is recorded.
+
+
+## 2026-11-14 — Plain folder-setup shell and persisted SAF access
+- Replaced the default Glass Lab launcher with a plain cinematic folder-setup screen; the Glass Lab remains available through a developer-preview entry and Android Back returns to setup.
+- Added one-folder selection via the Android system OpenDocumentTree picker.
+- Current provider policy explicitly accepts only Android's external-storage DocumentsProvider authority. Unknown, cloud and network providers are rejected by default pending device verification.
+- Persisted only the read grant and selected tree URI in app-private preferences. Revalidates the persisted read grant at startup, removes stale selections and provides a reselect path if permission was revoked.
+- Changing folders releases the previous persisted read grant after the replacement grant is saved. No broad storage permission or filesystem path access was added.
+- This milestone stores the folder grant only. Recursive scanning, filename parsing, metadata requests, poster retrieval, database and playback are not implemented yet.
+- Validation: CI pending for this commit; real OPPO CPH2531 provider selection/revocation validation remains pending. No media files are read or modified by this screen.
+- Next: implement a cancellable read-only recursive scanner bounded to the persisted tree; include video files and identify sidecar subtitle files without reading or transmitting subtitle contents.
