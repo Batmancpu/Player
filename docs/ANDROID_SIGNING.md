@@ -61,3 +61,15 @@ Gradle derives versionCode from the monotonically increasing GitHub Actions run 
 - Current source application ID is `com.batmancpu.player`, but it is provisional. User wants the branding/package makeover deferred until core functionality works.
 - If the application ID changes later, reuse this same signing key. Android treats the new application ID as a different app; it cannot update the old package in place.
 - A one-time uninstall may be necessary when moving from an already-installed debug APK signed with another certificate to the first stable-key Release APK. After that migration, use only signed Release artifacts for in-place updates.
+
+## Publishing updates to GitHub Releases / Obtainium
+
+The workflow supports an explicit manual Release publication gate without publishing an APK for every docs/code commit.
+
+1. Configure the four encrypted GitHub Actions secrets listed above, using the previously delivered **permanent** key. Do not share secrets in chat.
+2. Open GitHub -> Actions -> Android CI -> Run workflow on **main**. Enable **Publish verified signed APK to GitHub Releases for Obtainium**.
+3. The workflow runs JVM tests and builds, verifies the signed APK certificate against the permanent public fingerprint, then publishes a GitHub Release APK with SHA-256. Missing/wrong secrets or a fingerprint mismatch fail publication.
+4. Add https://github.com/Batmancpu/Player to Obtainium as a GitHub source. Each new release retains the certificate/package and uses a higher versionCode.
+5. The user must test each phase's APK on CPH2531 before its acceptance is recorded.
+
+As of 2026-11-14, no signed APK was created in CI run 36; repository secrets were absent. Do not claim a Release exists until workflow publication succeeds.

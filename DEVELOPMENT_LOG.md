@@ -387,3 +387,9 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - DocumentsContract.isChildDocument verifies each returned opaque ID remains inside the chosen root; unsupported/failed checks fail closed. The scanner itself handles deduplication, filtering and cancellation between queries.
 - FolderSetupScreen now exposes manual Scan, Cancel, counts and a basic display of up to 100 discovered video filenames; errors do not silently masquerade as successful empty scans. This is a phase 1 prototype, **not** a persisted Room library yet. Device provider support remains unverified.
 - Validation: CI pending; no release APK or OPPO handset test claimed. Next add filename parser, Room persistence and a scalable results screen, then signed milestone release.
+
+## 2026-11-14 — Manual GitHub Release publication workflow for Obtainium
+- Base commit 6ce3329ba44058d0e8102dca83f760307f5a7cee. CI workflow gains a manual publish_release input. Ordinary main pushes still compile/test and upload artifacts but do not publish every small change.
+- A requested publish without permanent signing secrets fails. Signed APK certificate SHA-256 is checked against the project's public fingerprint.
+- A successful manual publish will create GitHub Release v0.1.<run number> with a single signed APK asset, SHA-256 and package/signature/update instructions. The run number is APK versionCode.
+- Verification via CI pending; no signed APK produced or claimed. User secret setup required.
