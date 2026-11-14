@@ -399,3 +399,8 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - Parser is local-only and never calls TMDB. Ambiguous cases remain unrecognized instead of inventing identities.
 - This initial corpus is intentionally modest; later phase 1 work must add multi-episode, anime, duplicate remake and alternate naming tests before declaring parsing complete.
 - CI pending. Next persist and present parsed library through Room rather than displaying only raw filenames.
+
+## 2026-11-14 — Room persistence dependency gate
+- Base commit 79150479be412fb76e1f429dfc3dda6f02eada22. Added KSP Gradle plugin 2.3.12 and AndroidX Room runtime/ktx/compiler 2.8.5 as dependencies only, in an isolated build commit before adding entities/DAOs.
+- Version choice follows current Kotlin KSP quickstart (2.3.12) and AndroidX Room stable documentation (2.8.5) on 2026-11-14.
+- CI pending; no database generated or shipped yet. Do not add database source before this dependency compile gate passes.
