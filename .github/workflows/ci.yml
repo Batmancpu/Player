@@ -126,7 +126,7 @@ jobs:
           echo "Release-signing credentials loaded; values were not logged."
 
       - name: Run unit tests and assemble CI-only debug APK
-        run: gradle --no-daemon --stacktrace :app:testDebugUnitTest :app:assembleDebug
+        run: gradle --no-daemon --stacktrace :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest
 
       - name: Upload CI-only debug APK
         uses: actions/upload-artifact@v7
@@ -209,3 +209,4 @@ jobs:
             --notes-file "$RUNNER_TEMP/release-notes.md" \
             --latest \
             --target "${GITHUB_SHA}"
+
