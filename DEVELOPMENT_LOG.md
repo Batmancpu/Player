@@ -208,3 +208,11 @@ Tests: documentation review only. No application build exists yet; no APK or dev
 
 ## Current next step
 Implement one isolated Glass laboratory screen with a fixed local gradient/artwork test source and a small four-control morphing Glass group. Keep the existing library/product scope unchanged. Build and CI-check the lab before asking the user to install it on CPH2531.
+
+## 2026-11-14 — Shared source-backed Glass primitive added
+- Added app/src/main/java/com/batmancpu/player/ui/glass/PlayerGlass.kt.
+- Added PlayerGlassSurface: explicit HazeInput.Sources input, remembered Clear style, balanced/default performance profile, interaction response, pointer pivot and system reduced-motion policy.
+- Added PlayerGlassContainer: a small configurable wrapper around hazeGlassContainer for morphing groups.
+- When the caller disables Glass, the modifier returns a consistent tinted/outlined fallback. Haze's own fallback remains available when its full renderer is unsupported.
+- Explicitly does not use HazeInput.Backdrop, HazeFeatureFlags.isPlatformBackdropEnabled, Android window blur or JNI/NDK.
+- Verification: pending CI. The helper is not wired into any screen yet.
