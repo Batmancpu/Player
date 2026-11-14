@@ -363,3 +363,11 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - Current main before this log update: `260adf70469f36f8dbed4a797c0899a5529e4aba`; latest verified workflow run 34: https://github.com/Batmancpu/Player/actions/runs/43574546390.
 - Permanent key is generated/verified and delivered. User-side outstanding tasks: save the JKS and backup, store its password in Proton Pass, add the four repository Actions secrets. No signed Release APK exists yet.
 - Exact next engineering task after secret setup is complete: validate the selected-folder provider on CPH2531, then implement a cancellable read-only recursive scanner and tests. Avoid branding/applicationId work until core app functionality is ready.
+
+## 2026-11-14 — Start of recursive scanner (pure traversal and JVM tests)
+- Starting main commit: 2f37020d8923f9f8e1d76c45270210cd7b25d5a3. Previous GitHub Actions run 35 (43574688992) passed.
+- Added a small sequential, cancellable, read-only traversal engine that takes an explicit selected-root containment validator and provider child-query function. It discovers common videos and subtitle sidecars by extension/MIME, skips hidden/unsupported entries and de-duplicates by document ID.
+- The engine deliberately propagates permission and provider errors rather than returning a partial scan that could be treated as authoritative by a future index.
+- Added JVM tests for nested discovery, duplicates, root containment, provider failure and cancellation.
+- This commit does not access Android storage yet; the next focused step is to wire a SAF DocumentsContract adapter and then expose scan results on the setup screen. No TMDB, playback engine or additional permission is introduced.
+- Verification: GitHub Actions CI is pending for this commit; target OPPO device testing has not occurred.
