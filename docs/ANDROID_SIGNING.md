@@ -1,93 +1,63 @@
 # Android release signing and update continuity
 
-**Status (2026-11-14):** Gradle and CI signing support is committed. The user's private keystore has not yet been generated, and GitHub Actions secrets have not yet been configured. No signed release APK is available until those two user-side steps are completed.
+**Current status (2026-11-14):** a permanent release keystore has been generated and verified. It was delivered to the user as private downloadable files in the current ChatGPT conversation. It is not stored in this public repository. The user must save the JKS securely, store its password in Proton Pass or another password manager, and add the four GitHub Actions repository secrets. No signed Release APK has been produced yet.
 
-## Why this is required
+## Why this exists
 
-Android accepts an in-place APK update only when the new APK is signed by the same signing certificate as the installed APK, and the new build must have a higher versionCode. A different signing certificate requires uninstalling the old app before installing the new one. The release pipeline therefore uses one permanent keystore and a monotonically increasing CI run number.
+Android APK updates require the same application ID, a compatible signing identity (normally the same certificate), and a higher `versionCode`. The one permanent signing key can be reused for the app's entire life.
+
+The signing key is **not tied to the application ID**. Renaming the app or changing its package/application ID later does not require another signing key. However, changing the application ID makes Android treat the result as a different app: it will install as a separate app and cannot update the old package in place. The user wants the final brand/package decision deferred while core functionality is built.
 
 Official Android guide: https://developer.android.com/studio/publish/app-signing
 
-**Do not install artifacts named Player-debug-CI-ONLY-... for routine testing.** They use the CI debug certificate and are not the update channel. Install the Player-release-v... artifact once signing secrets are configured; subsequent main-branch builds will use the same release key.
+## Generated key identity
 
-## 1. Generate the keystore on your own Android device
+- Keystore file: `player-release.jks`
+- Key alias: `player-release`
+- Store password and key password: same generated random password; see the private credentials file delivered with the keystore.
+- Algorithm: RSA 2048, SHA256withRSA.
+- Validity: 10,000 days.
+- Public SHA-256 certificate fingerprint: `62:A0:97:B7:BE:7D:22:A9:88:3D:9E:09:01:5C:04:17:72:72:16:D7:3E:25:06:ED:F4:70:B2:4A:61:CD:AD:C0`.
 
-**Generate the private key on your phone, not in this chat, an AI/cloud workspace or a GitHub Actions runner.** This keeps the initial private-key generation under your control. The repository contains only a helper script; it never contains the generated keystore or password.
+The fingerprint is public and safe to record. **Never commit or publish the JKS, the base64 value, or the password.**
 
-Install Termux from one official source (F-Droid or the Termux GitHub release; do not mix Termux app/plugins from different signing sources). Official installation guidance: https://github.com/termux/termux-app.
+## Files delivered to the user
 
-In Termux, install the required packages, clone the public source repository, and run the helper:
+1. `player-release.jks`: original private keystore. Keep a primary copy and at least one separate secure backup.
+2. `PLAYER_RELEASE_KEYSTORE_BASE64.txt`: one-line base64 encoding used as the GitHub secret. Base64 is not encryption; treat this file as the private key.
+3. `PLAYER_RELEASE_CREDENTIALS.txt`: generated store/key password, alias and public fingerprint. Save the password in Proton Pass, then delete unnecessary plaintext copies.
+4. `PLAYER_RELEASE_CERTIFICATE_FINGERPRINT.txt`: public certificate details; safe to retain separately.
 
-~~~sh
-pkg update -y
-pkg install git openjdk-21 coreutils -y
+The files were generated and the keystore was reopened with `keytool -list` to verify the alias/password. No key material has been added to GitHub source, repository history, this documentation or CI logs.
 
-git clone https://github.com/Batmancpu/Player.git
-cd Player
-bash scripts/generate-release-keystore.sh
-~~~
+## Configure the four GitHub repository secrets
 
-The script creates the key at `~/player-signing/player-release.jks`, **outside the cloned repository**, with directory/file permissions restricted to your Termux user. It uses RSA-2048/SHA-256 and a 10,000-day validity period (about 27 years). Current Termux package sources still provide OpenJDK 21: https://github.com/termux/termux-packages/tree/master/packages/openjdk-21.
+Open: https://github.com/Batmancpu/Player/settings/secrets/actions
 
-When keytool prompts:
-1. Enter a strong, unique keystore password and save it in your password manager.
-2. Confirm the certificate details when prompted.
-3. At the key-password prompt, press Enter to reuse the keystore password. The workflow still stores this under its own separate secret name.
-
-The script verifies the alias and prints the **public** SHA-256 certificate fingerprint. If you run it again and the JKS already exists, it reuses the same key; it does not generate or overwrite a new one. Keep the original Termux copy.
-
-## 2. Verify and back up the key
-
-Run:
-
-~~~sh
-cd ~/player-signing
-keytool -list -v -keystore player-release.jks -alias player-release
-~~~
-
-Check that the alias is player-release, the keystore opens with your saved password, and the certificate validity is about 27 years. Record its SHA-256 certificate fingerprint. Keep at least one additional offline backup of player-release.jks in a secure place separate from the phone. Keep the password separate from the file. Do not delete the original Termux copy.
-
-## 3. Prepare the base64 secret value
-
-The helper creates a one-line base64 file in Termux's private home directory. Display it in Termux:
-
-~~~sh
-cat ~/player-signing/PLAYER_RELEASE_KEYSTORE_BASE64.txt
-~~~
-
-Copy the **entire single line** for the GitHub secret in the next step. Base64 is encoding, not encryption: treat this value exactly like the private keystore. Do not paste it into this conversation, a GitHub issue, a repository file or a public note.
-
-## 4. Add four GitHub Actions repository secrets
-
-Open https://github.com/Batmancpu/Player/settings/secrets/actions, choose **New repository secret**, and add these exact names:
+Create these exact names as **repository secrets**:
 
 | Secret name | Value |
 |---|---|
-| PLAYER_RELEASE_KEYSTORE_BASE64 | Complete base64 output from step 3 |
-| PLAYER_RELEASE_KEYSTORE_PASSWORD | Keystore password |
-| PLAYER_RELEASE_KEY_ALIAS | player-release |
-| PLAYER_RELEASE_KEY_PASSWORD | Same password (because keytool used the keystore password for the key) |
+| `PLAYER_RELEASE_KEYSTORE_BASE64` | Entire one-line contents of `PLAYER_RELEASE_KEYSTORE_BASE64.txt` |
+| `PLAYER_RELEASE_KEYSTORE_PASSWORD` | Password in `PLAYER_RELEASE_CREDENTIALS.txt` |
+| `PLAYER_RELEASE_KEY_ALIAS` | `player-release` |
+| `PLAYER_RELEASE_KEY_PASSWORD` | Same password as the keystore password |
 
-GitHub stores Actions secrets encrypted and only exposes them to workflows that explicitly request them. Official documentation: https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions. Do not add these values to repository files, ordinary Actions variables, workflow_dispatch inputs or logs. Repository secrets are limited to 48 KB; this JKS base64 value should be well below that limit.
+Do not put the password or base64 string in chat, issues, source files, ordinary repository variables or workflow inputs. The GitHub connector available to AI agents does not expose a repository-secret write action, so the repository owner must enter these values through Settings.
 
-## 5. Verify the first stable-key APK
+## Verify the first signed build
 
-After all four secrets are saved, a push to main or a manual run of **Android CI** will:
+After all four secrets are saved, trigger **Android CI** from its Actions page, or let the next push to `main` run it. The workflow will decode the keystore into the runner's temporary directory, validate the password and alias without printing secrets, run tests, assemble the signed Release APK, verify it with `apksigner`, report the public certificate fingerprint and APK SHA-256, and upload a separately named `Player-release-v...` artifact.
 
-1. Decode the keystore into the runner's temporary directory with restrictive file permissions.
-2. Validate the keystore password and alias without printing secrets.
-3. Run unit tests and assemble the CI-only debug APK.
-4. Assemble the signed Release APK with the saved release key.
-5. Verify the APK signature and display only the public certificate SHA-256 fingerprint and APK SHA-256.
-6. Upload an artifact named Player-release-v<run-number>-<commit>.
+Compare the CI fingerprint with the fingerprint above. Only the signed Release artifact is the stable update channel. Debug artifacts are marked CI-only; do not use them as routine installs.
 
-Download and install that signed release APK. Compare the certificate fingerprint with the one recorded from keytool. On the next main-branch build, install the new signed release APK directly over the previous one. The app should retain its data and update in place, provided the application ID is unchanged and the version code is higher.
+Gradle derives versionCode from the monotonically increasing GitHub Actions run number. Never reset or reuse a released version code. The workflow skips Release signing when all four secrets are absent and fails if only some are configured.
 
-## Important identity and recovery rules
+## Backup and update rules
 
-- Current Android application ID: com.batmancpu.player. It is provisional until the first signed install. Decide whether to keep it before installing the first signed release.
-- After the first signed install, never change applicationId if the goal is in-place updates. Changing the visible app label is safe; changing the package/application ID creates a different Android app.
-- Never lose or casually rotate the keystore. Without the original signing key, future APKs cannot update the existing self-managed installation. Keep a secure backup and password record.
-- If a different-key debug/test build is already installed, one uninstall may be needed when migrating to this release key. After the first stable-key release install, never use debug artifacts as the update channel.
-- CI run number supplies the increasing versionCode; never manually reset it or reuse a previously released number.
-- If the release workflow says signing secrets are missing, it will skip the release artifact rather than produce a misleading installable build. If only some secrets exist or the password/alias is wrong, CI fails.
+- Never regenerate, rotate, overwrite or replace this key just to rename or redesign the app.
+- Keep the original JKS and at least one separate backup. Keep the password in Proton Pass or another password manager. Do not keep the only key copy and its only password copy in the same place.
+- If the key is lost, an app installed under the old signing certificate cannot be updated with a newly generated key. Do not create a replacement casually.
+- Current source application ID is `com.batmancpu.player`, but it is provisional. User wants the branding/package makeover deferred until core functionality works.
+- If the application ID changes later, reuse this same signing key. Android treats the new application ID as a different app; it cannot update the old package in place.
+- A one-time uninstall may be necessary when moving from an already-installed debug APK signed with another certificate to the first stable-key Release APK. After that migration, use only signed Release artifacts for in-place updates.

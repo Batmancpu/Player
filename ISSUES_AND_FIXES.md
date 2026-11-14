@@ -121,7 +121,7 @@ Do not erase a failure after a fix. Mark fixed and link the corrective commit.
 
 
 ### H-006 — First committed Termux signing helper had over-escaped shell sequences
-- **Status:** Fixed; corrected source passes local Bash syntax validation. CI verification of the correction is pending.
+- **Status:** Closed; helper removed because the user requested a no-Termux workflow. The corrected helper passed CI run 27 before removal.
 - **First observed:** 2026-11-14, during post-commit source review of `df9d62c2ea03fa9fb8da731fc33a9508a7028c94`.
 - **Affected file:** `scripts/generate-release-keystore.sh`.
 - **Expected:** Bash line continuations keep keytool options in one command; printf format strings produce normal newlines.
@@ -129,4 +129,4 @@ Do not erase a failure after a fix. Mark fixed and link the corrective commit.
 - **Root cause confidence:** high; direct inspection of the committed file exposed the exact over-escaping.
 - **Exposure:** The helper was not run on a device; no keystore was generated and no secret was exposed. The defect was caught before use.
 - **Fix:** Replace the script with correctly escaped shell source, add a CI `bash -n` step, and run `bash -n` against the exact corrected file.
-- **Regression verification:** local `bash -n` passed; the new GitHub Actions run is pending.
+- **Regression verification:** local `bash -n` and GitHub Actions run 27 (`43573474031`) passed. Helper was not run on the user's phone and is no longer part of the project.

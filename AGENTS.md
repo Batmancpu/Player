@@ -96,7 +96,7 @@ Keep expensive effects to a small number of important controls. Do not put a gla
 
 - Use HTTPS only.
 - TMDB API credentials must not be committed, printed in CI logs, or embedded as a long-lived shared secret in a public APK. Prefer user-provided credentials stored locally with Android Keystore-backed encryption.
-- The Android release keystore, private key and passwords must never be committed, posted in issues or pasted into chat. Keep a user-controlled offline backup; GitHub Actions receives them only through encrypted repository secrets. Never print decoded keystore bytes or password values in logs.
+- The permanent Android release keystore was generated on 2026-11-14 and delivered to the user as private files in that ChatGPT session. Never regenerate, rotate, replace or ask the user to share the JKS, base64 or password in chat. Refer to the user's saved backup and Proton Pass entry. The keystore, private key and passwords must never be committed, posted in issues or printed in CI logs; GitHub Actions receives them only through encrypted repository secrets.
 - Do not add a proxy/backend merely to hide an API key. Explain the trade-off honestly.
 - Do not silently add any other host, SDK, API, crash-report endpoint, or permission. Document and justify it first.
 - Include required TMDB attribution and approved logo treatment in the About/Credits area before release.
@@ -107,7 +107,7 @@ Keep expensive effects to a small number of important controls. Do not put a gla
 - All APKs distributed for installation must use the same long-lived release keystore and alias. Debug APKs are CI-only and must not be recommended for installation or updates.
 - The release build uses GitHub Actions repository secrets only. Missing all signing secrets skips signed APK generation; partial configuration must fail loudly.
 - versionCode comes from the monotonically increasing GitHub Actions run number. Do not reduce, reset or manually reuse a released version code.
-- Do not change applicationId after the first signed install. The display label may change without changing application identity.
+- The current applicationId is provisional and may be changed during development. Reuse the existing signing key if it changes; a changed applicationId is a separate Android app and cannot update the previous package in place. Do not generate or rotate the key for a package rename. After the package ID is finalized and the first Release APK for that ID is installed, keep it stable for in-place updates.
 - If migrating from a differently signed debug/test APK, a one-time uninstall/reinstall may be required. After the first stable-key release install, every subsequent update must use that same key and a higher versionCode.
 - Never rotate or replace the signing key casually. Loss of the only keystore backup may make future updates to this app identity impossible.
 

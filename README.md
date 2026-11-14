@@ -29,7 +29,7 @@ This repository contains a **buildable Android/Compose foundation** with a share
 - [Device test and crash playbook](docs/DEVICE_TESTING.md)
 - [Development log](DEVELOPMENT_LOG.md)
 - [Known issues and fixes](ISSUES_AND_FIXES.md)
-- [Third-party notices](THIRD_PARTY_NOTICES.md)\n- [Android release signing and update continuity](docs/ANDROID_SIGNING.md)
+- [Third-party notices](THIRD_PARTY_NOTICES.md)\n- [Android release signing and update continuity](docs/ANDROID_SIGNING.md)\n- [Chronological project conversation/session log](CHAT_HISTORY.md)\n- [Android release signing and update continuity](docs/ANDROID_SIGNING.md)
 
 ## Design references
 
