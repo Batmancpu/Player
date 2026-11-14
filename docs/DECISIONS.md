@@ -92,3 +92,10 @@ CI build/test success and OPPO handset validation must be reported separately.
 **Status:** Accepted  
 **Decision:** The existing Glass Lab remains an isolated experiment, not the production home screen. Build a plain, stable catalogue flow first: one-folder setup, media discovery, filename matching, TMDB metadata/artwork, local persistence and library/detail screens. Add local playback and subtitle/audio features next. Integrate and tune Liquid Glass only on functional navigation/player controls after these foundations work; keep posters and video unobscured.  
 **Reason:** The user explicitly prioritised a useful working product over further visual experiments. Haze dependencies and lab work are retained but must not dictate the functional architecture.
+
+
+### D-019 — Stable self-managed Android release signing
+**Status:** Accepted  
+**Decision:** Use one long-lived RSA 2048 Android release keystore with a validity of 10,000 days and alias player-release. Generate it locally on the user's Android device; keep a separate offline backup. Never commit the private keystore or passwords. Store the base64 keystore and passwords only in GitHub Actions repository secrets. CI signs a release APK with the same key on every main-branch build and verifies its certificate; debug APKs are labelled CI-only. Use the monotonically increasing GitHub Actions run number as versionCode.  
+**Identity constraint:** Keep applicationId=com.batmancpu.player unchanged after the first signed install. The visible app label/brand can be renamed without changing application identity.  
+**Reason:** Android checks the signing certificate when installing an update; the stable certificate and a higher versionCode avoid the repeated uninstall/reinstall cycle.

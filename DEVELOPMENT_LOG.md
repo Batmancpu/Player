@@ -297,3 +297,18 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - Failure run: https://github.com/Batmancpu/Player/actions/runs/43569596301. No APK artifact was produced.
 - Fix: import rememberSaveable from androidx.compose.runtime.saveable; no UI state or runtime behaviour changed.
 - Regression gate: rerun testDebugUnitTest and assembleDebug; do not mark folder setup complete until CI passes. Device/provider verification remains separate.
+
+
+## 2026-11-14 — Folder setup CI verified
+- Corrected folder-setup commit e20d8aa6bb193acac41414bd9e1f6b6b034ba13f passed workflow 43569710969: https://github.com/Batmancpu/Player/actions/runs/43569710969.
+- The subsequent documentation handoff commit 47ce1fbfaa71c6613f5e2d210026bcf2eef8ffad passed workflow 43569752178: https://github.com/Batmancpu/Player/actions/runs/43569752178.
+- Folder setup is compile/build verified in CI. OPPO local DocumentsProvider behaviour and actual permission revocation/regrant are still not device-verified.
+
+## 2026-11-14 — Stable release-signing infrastructure prepared
+- User requested one permanent signing identity so a newly built APK can update the previous installed version in place.
+- Added Gradle release signing configuration sourced exclusively from runtime environment variables; no credentials or private key are stored in source.
+- CI keeps debug APKs explicitly labelled CI-only, conditionally assembles a Release APK when all signing secrets exist, validates the keystore alias/password, checks the APK signature with apksigner, prints only public certificate/hash information and uploads a separately named release artifact.
+- Version code is derived from GitHub Actions GITHUB_RUN_NUMBER; each new workflow run has a higher version code.
+- Required repository secrets are documented in docs/ANDROID_SIGNING.md. User-side generation and configuration remain outstanding: private keystore, secure backup, base64 secret and three password/alias secrets. No secrets or key material were transmitted in this session.
+- applicationId=com.batmancpu.player is unchanged. Keep it stable after the first signed install.
+- Verification: pending CI for the signing scaffold. Signed APK production remains blocked until the user configures the four repository secrets.

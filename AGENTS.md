@@ -96,10 +96,20 @@ Keep expensive effects to a small number of important controls. Do not put a gla
 
 - Use HTTPS only.
 - TMDB API credentials must not be committed, printed in CI logs, or embedded as a long-lived shared secret in a public APK. Prefer user-provided credentials stored locally with Android Keystore-backed encryption.
+- The Android release keystore, private key and passwords must never be committed, posted in issues or pasted into chat. Keep a user-controlled offline backup; GitHub Actions receives them only through encrypted repository secrets. Never print decoded keystore bytes or password values in logs.
 - Do not add a proxy/backend merely to hide an API key. Explain the trade-off honestly.
 - Do not silently add any other host, SDK, API, crash-report endpoint, or permission. Document and justify it first.
 - Include required TMDB attribution and approved logo treatment in the About/Credits area before release.
 - Preserve all third-party notices and copyleft obligations.
+
+## Android signing and update policy
+
+- All APKs distributed for installation must use the same long-lived release keystore and alias. Debug APKs are CI-only and must not be recommended for installation or updates.
+- The release build uses GitHub Actions repository secrets only. Missing all signing secrets skips signed APK generation; partial configuration must fail loudly.
+- versionCode comes from the monotonically increasing GitHub Actions run number. Do not reduce, reset or manually reuse a released version code.
+- Do not change applicationId after the first signed install. The display label may change without changing application identity.
+- If migrating from a differently signed debug/test APK, a one-time uninstall/reinstall may be required. After the first stable-key release install, every subsequent update must use that same key and a higher versionCode.
+- Never rotate or replace the signing key casually. Loss of the only keystore backup may make future updates to this app identity impossible.
 
 ## Session handoff protocol
 

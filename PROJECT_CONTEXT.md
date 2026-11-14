@@ -266,4 +266,19 @@ No playback engine or online subtitle provider has been selected or added. Evalu
 
 ## 21. Folder setup CI correction handoff — 2026-11-14
 
-The first folder-setup source commit (59216311c92b0619a9550651e9fc1539f749931d) did not pass Kotlin compilation. Workflow run 43569596301 reported only an unresolved import for rememberSaveable in MainActivity.kt. The import was corrected to androidx.compose.runtime.saveable.rememberSaveable in commit e20d8aa6bb193acac41414bd9e1f6b6b034ba13f. The corrected workflow run 43569710969 was pending at the time of this update. The next agent must inspect that run before continuing. If successful, proceed to real-device validation of the accepted external-storage provider and folder permission recovery; only then implement the recursive scanner. The failure and correction are preserved in DEVELOPMENT_LOG.md and ISSUES_AND_FIXES.md.
+The first folder-setup source commit (59216311c92b0619a9550651e9fc1539f749931d) did not pass Kotlin compilation. Workflow run 43569596301 reported only an unresolved import for rememberSaveable in MainActivity.kt. The import was corrected to androidx.compose.runtime.saveable.rememberSaveable in commit e20d8aa6bb193acac41414bd9e1f6b6b034ba13f. The corrected workflow run 43569710969 completed successfully; the subsequent context/roadmap handoff run 43569752178 also completed successfully. The source folder-setup compile gate is green. OPPO CPH2531 provider behaviour and permission-revocation tests remain pending. If successful, proceed to real-device validation of the accepted external-storage provider and folder permission recovery; only then implement the recursive scanner. The failure and correction are preserved in DEVELOPMENT_LOG.md and ISSUES_AND_FIXES.md.
+
+
+## 22. Stable Android release signing — infrastructure prepared (2026-11-14)
+
+The user requested a permanent signing key so future APK builds update the installed app rather than requiring uninstall/reinstall. The following infrastructure is committed:
+
+- app/build.gradle.kts reads release signing values only from environment variables; no keystore or password is in source.
+- .github/workflows/ci.yml keeps unit tests and a CI-only debug artifact, and produces a separately named signed Release APK only when all four repository secrets exist. It validates the keystore alias/password, runs apksigner verify --print-certs, reports the public certificate fingerprint and APK SHA-256, and uploads a 30-day release artifact.
+- versionCode is sourced from GITHUB_RUN_NUMBER so each new workflow run on main has a higher version code.
+- Four expected Actions secrets: PLAYER_RELEASE_KEYSTORE_BASE64, PLAYER_RELEASE_KEYSTORE_PASSWORD, PLAYER_RELEASE_KEY_ALIAS, PLAYER_RELEASE_KEY_PASSWORD.
+- docs/ANDROID_SIGNING.md contains the safe local Termux key-generation steps, GitHub secret setup, backup instructions and the update/migration rules.
+- The GitHub connector used for repository code changes cannot create repository Actions secrets. The user must generate the private keystore on their Android device and add the four secrets in repository Settings. Never ask the user to paste the private keystore/base64 or passwords into chat.
+- Signing status: Gradle/CI scaffolding committed; private keystore not yet generated; GitHub secrets not yet configured; signed release APK not yet produced.
+- Current application ID is com.batmancpu.player. Keep it unchanged after first signed install. Changing only the visible app label later is safe; changing applicationId creates a different app identity.
+- Debug artifacts are CI-only and must not be installed for normal device testing. Install the first stable-key signed release artifact. If a differently signed test build is already installed, one one-time uninstall may be needed for migration; after that all updates use the stable key and increasing versionCode.
