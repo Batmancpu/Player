@@ -192,3 +192,10 @@ The shared PlayerGlass.kt helper now compiles against Haze 2.1.0; CI run 13 pass
 - CI run 15 passed and artifact 14101132751 was uploaded. The lab compiled but was not yet connected to MainActivity at that checkpoint.
 - MainActivity is now being wired to launch this temporary lab. It is a development verification surface, not the final library/home UI.
 - The user must install the next successful APK on OPPO Reno10 CPH2531 and provide screenshots/observations for optical and performance tuning. CI does not prove handset rendering.
+
+
+## 17. Current launcher state — Glass Lab is now the temporary app entry
+
+CI run 16 passed: https://github.com/Batmancpu/Player/actions/runs/43563620311. The app's MainActivity now launches GlassLabScreen rather than the introductory placeholder. APK artifact ID 14101590882 (11,025,438 bytes), download: https://github.com/Batmancpu/Player/actions/runs/43563620311/artifacts/14101590882. Artifact ZIP digest is in DEVELOPMENT_LOG.md.
+
+The lab is development-only. It uses a local generated gradient backdrop and no user media, permissions or network. It has a 4-item glass navigation group, selected-state feedback and a glass enabled/disabled switch. The app has not been installed or visually validated on the user's OPPO Reno10 CPH2531. The next action is to ask the user to install this APK and provide a screenshot or clear rendering/performance observations; then fix actual device issues before implementing the real media library screens.

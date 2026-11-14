@@ -2,7 +2,7 @@
 
 Sequential plan. Each item is a focused commit, split further if its diff/failure surface grows. Update DEVELOPMENT_LOG.md in every implementation commit. A failed gate blocks subsequent work.
 
-**Current position:** buildable Android shell, shared theme, icon registry, three passing theme tests and Haze 2.1.0 dependencies. First Glass laboratory is next.
+**Current position:** buildable Android shell, shared theme, icon registry, three passing theme tests, Haze 2.1.0 and a CI-verified Glass Lab launched from MainActivity. Physical-device visual validation is now the immediate gate.
 
 ## Phase 0 — Durable handoff
 - [x] README, AGENTS.md, PROJECT_CONTEXT.md and initial DEVELOPMENT_LOG.md.
@@ -44,7 +44,7 @@ Sequential plan. Each item is a focused commit, split further if its diff/failur
 23. ui(glass): prototype merging controls with hazeGlassContainer. **Done in lab:** connected four-control navigation group using playerGlassContainer.
 24. ui(glass): add reduced-transparency and reduced-motion fallbacks.
 25. test(ui): add Glass fallback/animation smoke tests.
-26. perf(ui): measure Glass lab on CPH2531 and disable unstable effects.
+26. perf(ui): measure Glass lab on CPH2531 and disable unstable effects. **CI build passed; physical-device test pending user.**
 **Gate:** usable without Glass; no unverified native backend.
 
 ## Phase 4 — Single-folder storage
@@ -86,7 +86,7 @@ Sequential plan. Each item is a focused commit, split further if its diff/failur
 **Gate:** library persists across process death and works offline.
 
 ## Phase 7 — Screens
-56. ui: add cinematic application shell and floating Glass navigation.
+56. ui: add cinematic application shell and floating Glass navigation. **Prototype only:** floating Glass navigation exists in the Glass Lab, not yet the production shell.
 57. ui: add onboarding and one-folder setup/recovery.
 58. ui(library): add efficient movie poster grid.
 59. ui(library): add featured/recent shelves.

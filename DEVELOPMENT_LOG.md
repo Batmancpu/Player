@@ -255,3 +255,14 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - Artifact ZIP SHA-256: 4ef45bf94360ee34c6503a6ab07e98fce97d6c34058e7c9f48beeec2bc9bff13 (not raw APK digest).
 - This lab is compiled but still not visible on app launch until the separate launcher wiring commit.
 - Device visual/GPU validation: pending user installation on CPH2531.
+
+
+## 2026-11-14 — CI run 16: Glass laboratory launcher verified
+- Workflow: https://github.com/Batmancpu/Player/actions/runs/43563620311 — final conclusion: success.
+- MainActivity now launches GlassLabScreen as a temporary developer test surface. Edge-to-edge system bars remain configured.
+- Gradle output: BUILD SUCCESSFUL in 31s; :app:testDebugUnitTest, :app:assembleDebug and artifact upload all passed.
+- APK artifact: Player-debug-20e13b928b9c5ce75b64ecb219f795f7dd8bc67f, artifact ID 14101590882, size 11,025,438 bytes, URL https://github.com/Batmancpu/Player/actions/runs/43563620311/artifacts/14101590882, expiration 2026-11-28.
+- Artifact ZIP SHA-256: 7e132dddc037598a3579ea051e124e9e7239477fc28a360a68ce295f02f86b70 (not raw APK digest).
+- The app now opens directly into the local-only Glass laboratory. It displays generated gradient/backdrop content, three poster-like tiles, a four-item floating glass navigation group and an on/off comparison switch.
+- Device validation on OPPO CPH2531 / Android 15: not yet performed. The next gate is user installation and screenshot/performance observations before tuning blur, tint, refraction, light, motion or layer count.
+- The final library UI is not yet implemented. Do not treat the lab as the product UI.
