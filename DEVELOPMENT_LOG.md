@@ -150,3 +150,11 @@ Tests: documentation review only. No application build exists yet; no APK or dev
 - The library's generator/source is MIT-licensed, but the README explicitly says SF glyph artwork and symbol data remain Apple's property and points to Apple's SF Symbols license restricting usage to Apple platforms.
 - Decision D-013: do not ship SF Symbols glyph assets in Player's Android APK without express permission. Preserve Apple-like optical design through original/permissively licensed icons, consistent weight/spacing and animation instead.
 - Next: add design tokens/typography and evaluate a compatible icon library; do not add SF Symbol glyph packs.
+
+
+## 2026-11-14 — Shared cinematic design tokens
+- Added `app/src/main/java/com/batmancpu/player/ui/theme/PlayerTheme.kt`.
+- Added a single dark palette, semantic text/surface colors, typography scale using the Android system sans-serif family, spacing tokens, corner geometry and Material 3 shape mapping.
+- Rewired the launcher surface to use PlayerTheme and shared typography/spacing instead of local hardcoded styling.
+- No Apple font, SF Symbols glyphs, glass engine, network, storage or media features were added.
+- Verification: pending CI run triggered by this commit; no device screenshots/installation yet.
