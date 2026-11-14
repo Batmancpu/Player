@@ -112,3 +112,13 @@ Tests: documentation review only. No application build exists yet; no APK or dev
 - CI uses JDK 21, Gradle 9.5.1, Android SDK platform 37/build tools 37.0.0, runs :app:testDebugUnitTest and :app:assembleDebug, then uploads the APK for 14 days.
 - Workflow intentionally has read-only contents permission and no secrets, release publishing, telemetry or signing configuration.
 - The first run is the initial toolchain proof. Its result must be inspected before proceeding to Glass or storage work.
+
+
+## 2026-11-14 — CI run 1: SDK package ID correction
+- Workflow run: https://github.com/Batmancpu/Player/actions/runs/43560806966
+- Outcome: failed before Gradle setup/build.
+- Completed: checkout and JDK 21 setup.
+- Failure: sdkmanager reported "Failed to find package 'platforms;android-37'"; the package identifier used by the Android 37 SDK channel is `platforms;android-37.0`.
+- Correction: change only the CI SDK package identifier to `platforms;android-37.0`; keep build-tools 37.0.0.
+- Root-cause confidence: high; the log explicitly identifies the missing package.
+- Regression verification: new push will trigger CI run 2. Do not proceed to design/Glass until the baseline debug build passes.

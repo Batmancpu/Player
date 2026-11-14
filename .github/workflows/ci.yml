@@ -38,7 +38,7 @@ jobs:
       - name: Install Android 37 platform and build tools
         run: |
           yes | sdkmanager --licenses
-          sdkmanager "platforms;android-37" "build-tools;37.0.0"
+          sdkmanager "platforms;android-37.0" "build-tools;37.0.0"
 
       - name: Set up Gradle 9.5.1
         uses: gradle/actions/setup-gradle@v4
