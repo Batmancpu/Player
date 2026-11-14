@@ -91,3 +91,10 @@ Tests: documentation review only. No application build exists yet; no APK or dev
 - Removed the redundant org.jetbrains.kotlin.android root plugin declaration. AGP 9.x provides built-in Kotlin support; the Compose compiler plugin remains version-matched to Kotlin 2.4.21.
 - This is a pre-module compatibility correction, made before any app code was added.
 - Verification: documentation/toolchain compatibility check only; no app build exists yet.
+
+
+## 2026-11-14 — Minimal Android application module scaffold
+- Added app/build.gradle.kts with AGP 9.3.1 built-in Kotlin, Kotlin-matched Compose compiler 2.4.21, compileSdk/targetSdk 37, minSdk 29 and Compose BOM 2026.09.00.
+- Added a minimal launcher manifest and resource-backed app label/theme; no runtime permissions or network permission are declared.
+- No screen implementation, storage access, metadata API or Glass engine is added in this commit.
+- Verification: source/configuration review only; the GitHub Actions build workflow is the next gate.
