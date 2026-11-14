@@ -58,7 +58,8 @@ jobs:
         env:
           PLAYER_RELEASE_KEYSTORE_BASE64: ${{ secrets.PLAYER_RELEASE_KEYSTORE_BASE64 }}
           PLAYER_RELEASE_KEYSTORE_PASSWORD: ${{ secrets.PLAYER_RELEASE_KEYSTORE_PASSWORD }}
-          PLAYER_RELEASE_KEY_ALIAS: ${{ secrets.PLAYER_RELEASE_KEY_ALIAS }}
+          # The alias is a fixed, non-secret JKS entry name.
+          PLAYER_RELEASE_KEY_ALIAS: player-release
           PLAYER_RELEASE_KEY_PASSWORD: ${{ secrets.PLAYER_RELEASE_KEY_PASSWORD }}
         run: |
           set +x

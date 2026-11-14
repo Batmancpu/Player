@@ -43,3 +43,7 @@ At end of every Work session write: current SHA, relevant workflows/artifacts, w
 ## Signing diagnostic gate after run 48 (2026-11-14)
 - Workflows #47 and #48 failed at initial signing validation. Run 47: fourth key-pass secret absent; workflow modified to fall back to store pass. Run 48: keytool check failed despite that correction. The locally generated JKS, Base64 and credentials were verified to match by keytool in a private session workspace.
 - CI now includes a non-secret local-JKS file hash checkpoint, followed by separate store-password and alias validation. Use the next CI's precise public diagnostic to ask the user to correct only the necessary GitHub secret. No signed APK has yet been published; never claim one.
+
+## 2026-11-14 — Alias fix after run #49
+- CI #49 identified a wrong GitHub alias secret. The JKS byte hash and store password both matched the private original. The alias is public and fixed, so workflow now passes 'player-release' directly rather than reading a potentially wrong GitHub alias secret.
+- User should not be asked to re-enter any more secrets unless signed assembly reveals a new actual problem. Do not claim Release published until GitHub Releases reports an APK asset.

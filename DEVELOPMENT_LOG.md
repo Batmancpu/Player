@@ -450,3 +450,8 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - Privately checked the ORIGINAL generated JKS, Base64 file and password in the local session: Base64 decodes byte-for-byte to the JKS and keytool can open the private JKS with the generated credentials.
 - Added safe, distinct diagnostics in CI: JKS SHA-256 match (not secret content), keystore password verification and alias verification. None of these diagnostic steps prints keys or passwords; the exact failed checkpoint can tell user which GitHub value to correct.
 - Next: verify new workflow result; do not publish until all signing and cert checks pass.
+
+## 2026-11-14 — Remove incorrectly entered public alias from GitHub secret dependency
+- GitHub Actions diagnostic run #49 (43584051484) verified the exact generated JKS contents and correct keystore password, but the value passed as PLAYER_RELEASE_KEY_ALIAS did not match public alias 'player-release'. No APK or GitHub Release was created.
+- Alias is not secret, and this application's generated JKS is known to use 'player-release'. Switched workflow to set fixed alias directly rather than trusting an incorrectly populated repository secret; no user action required.
+- Preserve the exact key and password; next CI must pass signed assembly and certificate verification before publishing first test release.
