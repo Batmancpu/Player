@@ -35,3 +35,7 @@ At end of every Work session write: current SHA, relevant workflows/artifacts, w
 - Because the GitHub connector does not expose workflow_dispatch, the CI workflow accepts a specifically named `main` push commit with subject prefix `release(test):` as a one-time intentional publication trigger. Ordinary source commits DO NOT publish releases. The manual workflow_dispatch publish toggle remains available.
 - Signing, APK certificate check, tests, versionCode, GitHub Release asset and SHA-256 all remain mandatory. The release is explicitly a TEST BUILD and must not be represented as Phase 1 completed.
 - Do not publish a second update build until the user has installed the first through Obtainium; then publish a higher versionCode with the same certificate so they can verify update-in-place.
+
+## 2026-11-14 — Release-signing diagnostic correction
+- GitHub Actions run 47 identified an empty PLAYER_RELEASE_KEY_PASSWORD even though the user said all four secrets had been added. The three other signing secret variables were populated. Run failed at early configuration; no APK published.
+- Current JKS uses identical store/key passwords. The CI source now safely falls back to PLAYER_RELEASE_KEYSTORE_PASSWORD when optional key password is absent. Never expose either password in log/docs. Next gate: successful CI signing/certificate verification, then an explicit release(test): trigger commit to publish for Obtainium.

@@ -22,7 +22,7 @@
 
 These files are conversation downloads and must NEVER be committed to the repository or pasted into an issue, a chat message or a CI log.
 
-## Enter exactly four GitHub Actions repository secrets
+## Required GitHub Actions repository secrets
 
 Open https://github.com/Batmancpu/Player/settings/secrets/actions and select **New repository secret** separately for each:
 
@@ -31,9 +31,9 @@ Open https://github.com/Batmancpu/Player/settings/secrets/actions and select **N
 | `PLAYER_RELEASE_KEYSTORE_BASE64` | All text from the NEW `PLAYER_RELEASE_KEYSTORE_BASE64.txt`, no extra characters |
 | `PLAYER_RELEASE_KEYSTORE_PASSWORD` | Password in the NEW `PLAYER_RELEASE_CREDENTIALS.txt` |
 | `PLAYER_RELEASE_KEY_ALIAS` | Literal text `player-release` |
-| `PLAYER_RELEASE_KEY_PASSWORD` | The SAME password from the NEW credentials file |
+| `PLAYER_RELEASE_KEY_PASSWORD` | Optional: same password as the keystore password; CI falls back to the store password if omitted |
 
-The connector cannot edit repository Actions secrets. Only the GitHub account owner should enter the four values via GitHub Settings.
+The first three values are required. The fourth, `PLAYER_RELEASE_KEY_PASSWORD`, is optional for the current keystore because its private-key password is identical to the store password; CI reuses `PLAYER_RELEASE_KEYSTORE_PASSWORD` if the separate key-password secret is empty. The connector cannot edit GitHub secrets.
 
 ## Produce a GitHub Release APK
 

@@ -73,11 +73,15 @@ jobs:
 
           if [[ -z "$PLAYER_RELEASE_KEYSTORE_BASE64" ||
                 -z "$PLAYER_RELEASE_KEYSTORE_PASSWORD" ||
-                -z "$PLAYER_RELEASE_KEY_ALIAS" ||
-                -z "$PLAYER_RELEASE_KEY_PASSWORD" ]]; then
-            echo "Release-signing secrets are only partially configured." >&2
+                -z "$PLAYER_RELEASE_KEY_ALIAS" ]]; then
+            echo "Required release-signing secrets are missing." >&2
             exit 1
           fi
+
+          # The current permanent JKS uses the same password for the store
+          # and private-key entry. An optional separate key password is accepted.
+          # Do not generate or print a replacement password.
+          key_password="${PLAYER_RELEASE_KEY_PASSWORD:-$PLAYER_RELEASE_KEYSTORE_PASSWORD}"
 
           keystore_path="$RUNNER_TEMP/player-release.jks"
           printf '%s' "$PLAYER_RELEASE_KEYSTORE_BASE64" | base64 --decode > "$keystore_path"
@@ -96,7 +100,7 @@ jobs:
             printf 'PLAYER_RELEASE_KEYSTORE_PATH=%s\n' "$keystore_path"
             printf 'PLAYER_RELEASE_KEYSTORE_PASSWORD=%s\n' "$PLAYER_RELEASE_KEYSTORE_PASSWORD"
             printf 'PLAYER_RELEASE_KEY_ALIAS=%s\n' "$PLAYER_RELEASE_KEY_ALIAS"
-            printf 'PLAYER_RELEASE_KEY_PASSWORD=%s\n' "$PLAYER_RELEASE_KEY_PASSWORD"
+            printf 'PLAYER_RELEASE_KEY_PASSWORD=%s\n' "$key_password"
           } >> "$GITHUB_ENV"
 
           echo "enabled=true" >> "$GITHUB_OUTPUT"
@@ -140,7 +144,7 @@ jobs:
         shell: bash
         run: |
           if [[ "${{ steps.release_signing.outputs.enabled }}" != "true" ]]; then
-            echo "Cannot publish a release: all four permanent signing secrets must be configured." >&2
+            echo "Cannot publish a release: signing key, store password or alias is missing." >&2
             exit 1
           fi
 

@@ -439,3 +439,8 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - Added a narrowly scoped signed Release publication trigger for `main` commit subject prefix `release(test):`, in addition to the existing manual workflow_dispatch option. No ordinary push publishes a GitHub Release.
 - Signing secret validation, tests, certificate verification, versionCode, signed APK hash and GitHub Release publication remain required; release notes identify Phase 1 as incomplete.
 - This workflow edit must pass its own CI before a separate explicit test-publish commit is made.
+
+## 2026-11-14 — Signing gate fixed for identical store/key password
+- User reported four secrets configured. Test workflow run 47 (43583692161) failed before Gradle: the Base64 key, store password and alias were present, but GitHub passed an empty PLAYER_RELEASE_KEY_PASSWORD. No private values were printed.
+- The current generated permanent JKS is documented with identical store and key passwords. Updated CI to reuse the store password if the optional separate key password secret is empty. The first three secrets remain mandatory; no key regeneration or manual replacement needed.
+- This does not bypass key verification: keytool, signed Release build, apksigner certificate verification and SHA-256 pin still gate publication. CI re-verification pending. Do not mark an APK released until a real GitHub Release asset exists.
