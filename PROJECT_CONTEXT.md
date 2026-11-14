@@ -259,6 +259,11 @@ No playback engine or online subtitle provider has been selected or added. Evalu
 - Implemented in source: plain dark setup screen, Android system OpenDocumentTree picker, explicit allowlist for com.android.externalstorage.documents, persisted read-only tree grant, app-private URI preference, startup grant revalidation and stale-grant recovery. Replacing the selected tree releases the old grant after the new grant is saved.
 - No manifest storage/media/Internet permission was added. This stage does not enumerate or read media files.
 - Not implemented: recursive scan, sidecar subtitle pairing, filename parsing, Room, TMDB, artwork cache, catalogue/detail screens, playback engine or subtitle UI.
-- CI run 43569596301 for this source commit is in progress at the time of this handoff. Do not call this code build-verified until that run succeeds.
+- Initial CI run 43569596301 failed because MainActivity imported rememberSaveable from the wrong package. The correction is committed in e20d8aa6bb193acac41414bd9e1f6b6b034ba13f; corrective CI run 43569710969 is pending. Do not call folder setup build-verified until the corrected run succeeds.
 - OPPO CPH2531 real-device picker/provider and permission-revocation validation remains pending.
 - Exact next task: implement and test a cancellable, read-only recursive scanner bounded to the persisted tree; discover video and sidecar subtitle documents, but do not read/transmit subtitle contents.
+
+
+## 21. Folder setup CI correction handoff — 2026-11-14
+
+The first folder-setup source commit (59216311c92b0619a9550651e9fc1539f749931d) did not pass Kotlin compilation. Workflow run 43569596301 reported only an unresolved import for rememberSaveable in MainActivity.kt. The import was corrected to androidx.compose.runtime.saveable.rememberSaveable in commit e20d8aa6bb193acac41414bd9e1f6b6b034ba13f. The corrected workflow run 43569710969 was pending at the time of this update. The next agent must inspect that run before continuing. If successful, proceed to real-device validation of the accepted external-storage provider and folder permission recovery; only then implement the recursive scanner. The failure and correction are preserved in DEVELOPMENT_LOG.md and ISSUES_AND_FIXES.md.
