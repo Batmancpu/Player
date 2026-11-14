@@ -411,3 +411,8 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - UI loads the cached index at startup for the selected tree, saves scan results, shows parsed movie/episode labels; switching folders removes cached rows from the old tree. No original media files are written.
 - Initial DB schema version 1; explicit migrations are mandatory before any future schema version change. Exported schema setup and instrumentation migration test still pending.
 - CI verification pending and CPH2531 testing unverified. Do not declare phase 1 complete until the release APK and on-device acceptance gate.
+
+## 2026-11-14 — Scalable Phase 1 offline library list
+- Base commit 7779b701761a697500f72531519158d59a52446e. Replaced the first scan UI's 100-item truncation and eager text list with a height-bounded Compose LazyColumn. It displays all indexed video entries lazily in separate movie/unmatched and TV-episode groups with normalized labels.
+- Updated the folder-grant instruction from future-tense scanning to the now-implemented Scan command. The list can read from offline Room rows after restart.
+- Verification: CI pending; local handset scrolling and nested-scroll behavior are not yet verified.

@@ -12,9 +12,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -268,20 +271,34 @@ internal fun FolderSetupScreen(
                                     text = stringResource(R.string.library_scan_found, videos, subtitles),
                                     color = PlayerPalette.textPrimary,
                                 )
-                                discoveredMedia.filter { it.kind == LocalMediaKind.VIDEO }
-                                    .take(100).forEach { document ->
-                                        Text(
-                                            text = when (val parsed = MediaNameParser.parse(document.displayName)) {
-                                                is ParsedMediaName.Movie -> parsed.title + (parsed.year?.let { " ($it)" } ?: "")
-                                                is ParsedMediaName.Episode -> parsed.series + " · S" +
-                                                    parsed.season.toString().padStart(2, '0') + "E" +
-                                                    parsed.episode.toString().padStart(2, '0')
-                                                is ParsedMediaName.Unrecognized -> document.displayName
-                                            },
-                                            color = PlayerPalette.textSecondary,
-                                            style = MaterialTheme.typography.bodyMedium,
-                                        )
+                                val files = discoveredMedia.filter { it.kind == LocalMediaKind.VIDEO }
+                                val movies = files.filter { MediaNameParser.parse(it.displayName) !is ParsedMediaName.Episode }
+                                val episodes = files.filter { MediaNameParser.parse(it.displayName) is ParsedMediaName.Episode }
+                                LazyColumn(
+                                    modifier = Modifier.fillMaxWidth().heightIn(max = 420.dp),
+                                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                                ) {
+                                    if (movies.isNotEmpty()) {
+                                        item { Text(stringResource(R.string.library_movies_heading), color = PlayerPalette.textPrimary) }
+                                        items(movies, key = { it.documentId }) { document ->
+                                            Text(
+                                                text = mediaDisplayLabel(document),
+                                                color = PlayerPalette.textSecondary,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                            )
+                                        }
                                     }
+                                    if (episodes.isNotEmpty()) {
+                                        item { Text(stringResource(R.string.library_episodes_heading), color = PlayerPalette.textPrimary) }
+                                        items(episodes.sortedBy { it.displayName }, key = { it.documentId }) { document ->
+                                            Text(
+                                                text = mediaDisplayLabel(document),
+                                                color = PlayerPalette.textSecondary,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                            )
+                                        }
+                                    }
+                                }
                             }
                             OutlinedButton(
                                 onClick = { folderPicker.launch(selection!!.uri) },
@@ -353,3 +370,12 @@ private fun resolveFolderDisplayName(context: Context, treeUri: Uri): String {
         }
     }.getOrNull() ?: context.getString(R.string.folder_setup_fallback_name)
 }
+
+private fun mediaDisplayLabel(document: DiscoveredLocalMedia): String =
+    when (val parsed = MediaNameParser.parse(document.displayName)) {
+        is ParsedMediaName.Movie -> parsed.title + (parsed.year?.let { " ($it)" } ?: "")
+        is ParsedMediaName.Episode -> parsed.series + " · S" +
+            parsed.season.toString().padStart(2, '0') + "E" +
+            parsed.episode.toString().padStart(2, '0')
+        is ParsedMediaName.Unrecognized -> document.displayName
+    }

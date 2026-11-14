@@ -29,7 +29,7 @@
     <string name="folder_setup_description">Choose one folder on this device. Player will search only inside that folder and its subfolders, then build your movie and series library.</string>
     <string name="folder_setup_restoring">Checking saved folder access…</string>
     <string name="folder_setup_selected_label">LIBRARY FOLDER</string>
-    <string name="folder_setup_access_saved">Read-only folder access is saved on this device. Media scanning is the next setup step.</string>
+    <string name="folder_setup_access_saved">Read-only folder access is saved on this device. Scan now to build or refresh the offline library.</string>
     <string name="folder_setup_change_folder">Choose a different folder</string>
     <string name="folder_setup_no_folder">Your library is not connected yet. Choose a local folder to get started.</string>
     <string name="folder_setup_choose_folder">Choose library folder</string>
@@ -44,4 +44,6 @@
     <string name="library_scan_cancel">Cancel scan</string>
     <string name="library_scan_error">The folder scan could not finish. Check folder access and try again. Previous results were not replaced.</string>
     <string name="library_scan_found">%1$d videos and %2$d subtitle sidecars found</string>
+    <string name="library_movies_heading">MOVIES AND UNMATCHED FILES</string>
+    <string name="library_episodes_heading">TV EPISODES</string>
 </resources>
