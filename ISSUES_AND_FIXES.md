@@ -51,6 +51,16 @@ A risk is not a confirmed defect. Record evidence, confidence and status precise
 - **Risk:** copying Flux app code creates copyleft obligations for distributed derivatives.
 - **Mitigation:** build independently using compatible libraries/architectural ideas, or adopt Flux with full GPL compliance/notices. Do not copy code before reviewing licences.
 
+### R-008 — Local playback engine compatibility and licensing
+- **Status:** Open; evaluation required before adding a playback dependency.
+- **Risk:** no Android engine can universally guarantee every container/codec combination; decoder availability varies by handset and OS. A native engine changes APK/ABI size, performance, crash surface and licence obligations.
+- **Mitigation:** evaluate AndroidX Media3 against a representative local test corpus first; evaluate LibVLC only if Media3 gaps are material. Record exact container/codec/audio/subtitle results and target-device outcomes. Never infer support from extension or claim universal compatibility.
+
+### R-009 — External subtitle provider privacy and availability
+- **Status:** Open; provider not selected.
+- **Risk:** subtitle APIs may require an account/key, impose language/rate/availability limits, change availability or transmit identifiers; automatic matches can be wrong.
+- **Mitigation:** audit terms, privacy, authentication and limits; send only normalized title/year/season/episode identifiers; store subtitle downloads in app-private storage; retain local sidecar import and manual selection; never modify source media.
+
 ## New issue template
 - **ID / title:**
 - **Status:** Open / Investigating / Fixed / Won't fix

@@ -40,6 +40,12 @@ Reconfirm device and OS before interpreting a later incident.
 - Compare full Glass, frosted and no-glass paths.
 - Measure frame timing, memory and thermal behaviour where possible. CI emulator tests do not replace handset tests.
 
+## Playback format matrix and subtitle checks
+
+Do not infer codec support from filename extension. For each local test asset record container, video codec/profile/level, audio codec, subtitle type, resolution, HDR mode, file size, engine version, decoder selected and pass/fail. Include common MP4/H.264/AAC and Matroska/MKV with H.264 or HEVC, WebM/VP9 and AV1 only where the target device reports support, multiple audio streams, embedded subtitles and sidecar SRT/ASS/VTT/TTML.
+
+Exercise play/pause, seeking, progress, resume after process death, full-screen/orientation, audio selection, embedded subtitle selection, local external subtitle import, online subtitle search/download, subtitle delay adjustment/reset, and unsupported-track recovery. Verify no crash on malformed/unsupported media, no write/move/delete of source media, and app-private subtitle cache behaviour. Capture device logs for native decoder failures; CI compilation is not proof of codec compatibility.
+
 ## CurrentLens historical incident
 
 User-reported native SIGSEGV on CPH2531 / Android 15, package com.mangoloads.currentlens.stability, build 0.2.2-stability, after “BrrrNewsApp composition started”. Exact tombstone/root cause is not present in the repository audit. Do not attribute it to a particular file without evidence.

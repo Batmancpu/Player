@@ -266,3 +266,16 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - The app now opens directly into the local-only Glass laboratory. It displays generated gradient/backdrop content, three poster-like tiles, a four-item floating glass navigation group and an on/off comparison switch.
 - Device validation on OPPO CPH2531 / Android 15: not yet performed. The next gate is user installation and screenshot/performance observations before tuning blur, tint, refraction, light, motion or layer count.
 - The final library UI is not yet implemented. Do not treat the lab as the product UI.
+
+
+## 2026-11-14 — User-approved local playback scope and functional-first reprioritization
+- User explicitly expanded the product from catalogue-only to a local media catalogue with built-in local playback.
+- Newly approved player requirements: tap a movie/episode to play its local file; broad practical container/codec support; embedded audio/subtitle track selection; local external subtitle import; online subtitle search/download while playback is open; adjustable subtitle delay with reset; minimal, uncluttered player chrome.
+- Downloaded subtitles default to app-private storage. The one-folder/read-only boundary remains. No media upload, streaming, server or remote playback is allowed. Subtitle-provider network calls require a separate API/terms/privacy review and may send normalized title/year/season/episode identifiers only.
+- The earlier D-010 playback-deferred decision is superseded by D-017. The production implementation order is now functional shell → SAF folder/scanner → filename parser → Room/offline data → TMDB/artwork → catalogue/detail screens → playback engine → subtitle/audio controls → production Glass.
+- Media engine remains undecided. Evaluate AndroidX Media3 first; use LibVLC only if measured format gaps justify its native footprint and GPL/LGPL review. “Every format” is a compatibility goal, not a guarantee. No Media3 or LibVLC dependency has been added.
+- The existing GlassLab remains a development experiment. It is not the production home screen and is no longer on the critical path for catalogue implementation. Real-device Glass validation remains mandatory before shipping/tuning Glass.
+- Documentation updated: AGENTS.md, PROJECT_CONTEXT.md, README.md, docs/ARCHITECTURE.md, docs/DECISIONS.md, docs/ROADMAP.md, docs/DEVICE_TESTING.md and ISSUES_AND_FIXES.md.
+- No application source, dependency, manifest permission or runtime behaviour was changed in this documentation update.
+- **Next exact implementation:** replace the Glass Lab launcher with a plain setup/library shell and implement one-folder SAF selection with persisted read grant and permission-recovery state. Keep the scanner in the next focused commit.
+- Current code evidence: source CI run 16 passed (https://github.com/Batmancpu/Player/actions/runs/43563620311), APK artifact ID 14101590882. Docs-only CI run 17 passed (https://github.com/Batmancpu/Player/actions/runs/43563846274). No handset install or media playback test is recorded.
