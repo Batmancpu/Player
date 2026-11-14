@@ -57,3 +57,5 @@ All four repositories were non-archived at inspection. Dates establish recent de
 
 ## H-009 slice — 2026-11-14
 Retained LibraryViewModel now owns a pure serialized LibrarySession with stale-operation guards. Scan waits for restoration; changing trees clears visible rows immediately and waits for obsolete work before activating the new Room tree. Picker-local cache deletion was removed to avoid A→B→A deletion races. Six JVM cases cover ordering/cancellation/error/scope ownership. PR CI pending at authoring; actual Android recreation/Room/grant behavior remains unverified. Next: H-010 root/grant recovery.
+
+H-009 verification completed: [PR #2](https://github.com/Batmancpu/Player/pull/2) merged as 10dab08 after unit/debug CI 43613459732. [Main CI #65](https://github.com/Batmancpu/Player/actions/runs/43613651152) passed tests/build/signing/certificate pin. Android lifecycle/Room/provider behavior remains unverified. Next: H-010.

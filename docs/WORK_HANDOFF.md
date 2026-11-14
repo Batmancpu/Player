@@ -90,3 +90,5 @@ At end of every Work session write: current SHA, relevant workflows/artifacts, w
 
 ## H-009 next-goal update — 2026-11-14
 LibrarySession/LibraryViewModel now own load/scan/save across recreation, serialize obsolete work and reject stale publications. Selected-tree cache activation replaces picker-local cleanup. Six JVM regression cases added; PR gate pending at authoring, actual Room/device lifecycle behavior unverified. After green merge/signing, next coding goal is H-010 root/grant recovery, then H-011 provider cancellation/bounds.
+
+H-009 verification: PR #2 commit 17e46a8 passed CI 43613459732, merged as 10dab08; main CI 43613651152 passed unit/debug, signed release and permanent certificate pin. No new Release. Next coding goal H-010 grant/root recovery with deterministic acquisition/revocation/process-interruption tests, then H-011.

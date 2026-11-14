@@ -348,3 +348,6 @@ The user also explicitly asked that the project retain a chronological Markdown 
 - Research references and implementation requirements are in the two new documents; do not reinvent mature code or blindly copy from unlicensed GitHub repositories. Never add Apple proprietary assets, excessive Glass, secret exposure, outbound media, unreviewed network hosts or broad storage permissions.
 - Docs commits include a4317c8 (new specifications), 3649e7f (agent and Work handoff), 07e1dcc (roadmap, architecture and decisions). CI validation of latest documentation updates pending when recorded. Next engineer action: read docs and implement next focused Phase 1 regression test/change with AGENTS ledger update.
 
+
+## 2026-11-14 — Phase 1 lifecycle reliability
+LibrarySession/LibraryViewModel now retain and serialize cache/scan/save state across screen recreation. Stale operations cannot overwrite newer state; folder cache activation is transactional. Six deterministic JVM scenarios added, with PR #2 unit/debug CI passing. Full OPPO recreation/Room/provider checks remain unverified; next H-010 grant/root recovery and H-011 query cancellation/bounds. Rough planning estimate remains 10–15% overall, Phase 1 about half implemented; zero phases have physical-device acceptance. These estimates are not measured completion or acceptance scores.

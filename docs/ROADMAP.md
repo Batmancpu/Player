@@ -82,3 +82,7 @@ Apply the exact screen-by-screen Glass surfaces and interactive seek/volume/subt
 - The in-place update test is **passed**, but unattended/silent background auto-install and persistence of a previously populated Room library across an update were not separately tested. Phase 1 local-media functionality and device acceptance remain incomplete.
 - The next owner is Codex: prioritize finishing Phase 1 and releasing a signed APK for phone testing, not broad feature development. Keep commits and verification focused; use `docs/PHASE1_PHONE_TEST.md`.
 - CI debug artifacts are for build investigation only; only signed GitHub Release APKs are part of the Obtainium update channel. Never change package ID/key or decrease versionCode once released.
+
+
+## Brief progress snapshot — 2026-11-14
+Planning estimate only: **10–15% of the whole product**, roughly **half of Phase 1 implemented**; **0/6 phases accepted on the target phone**. Scope/effort is uneven, so phases are not equal percentages. Implemented foundations and recent fixes still need provider/Room/lifecycle/phone verification. Next: grant/root recovery → query cancellation/bounds → persistence/parser/UI checks → signed Phase 1 candidate and user acceptance. Later: metadata/artwork → cinematic catalogue → playback → audio/subtitles → Glass/accessibility/measured performance.

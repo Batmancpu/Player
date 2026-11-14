@@ -142,3 +142,5 @@ This file is the durable, accumulating record of important user requests, produc
 ## 2026-11-14 — Next goal: lifecycle ordering
 - User requested next goal and very brief whole-plan/progress points. Reported rough planning estimate 10–15% overall, Phase 1 about half implemented; no accepted-phase or on-device claim.
 - Implemented H-009 retained session/serialized operations and transactional selected-tree cache activation with deterministic tests. PR CI pending at recording. No new Release; no manual user work needed yet. Next: verify/integrate, then root/grant recovery H-010 and provider cancellation/bounds H-011.
+
+- H-009 outcome: PR #2 merged as 10dab08, six regression cases added and unit/debug CI passed (43613459732). Main signed CI 43613651152 also passed including permanent certificate verification. No new Release or manual work requested. Continue H-010 grant/root recovery; broad product estimate remains rough 10–15%, 0/6 phases phone-accepted.

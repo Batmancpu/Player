@@ -172,3 +172,5 @@ Do not erase a failure after a fix. Mark fixed and link the corrective commit.
 - Status: implemented, PR CI pending; no OPPO reproduction/acceptance claimed. Retained lifecycle owner plus generation checks and serialized operations prevent old load/scan/finalizer from publishing into new state; cache restoration blocks scan start.
 - A second source-confirmed switching race was found: picker-local forgetTree could run after A→B→A and delete reselected A. Cleanup now belongs to serialized transactional tree activation, not a detached picker coroutine.
 - Regression scenarios implemented in LibrarySessionTest (six cases); Android recreation, Room cancellation/reconciliation and actual grant/provider checks remain pending. H-010 grant acquisition/release/process-death behavior is not resolved by this change.
+
+H-009 regression verification: functional commit 17e46a8 merged via PR #2 as 10dab08; PR CI 43613459732 and main signed CI 43613651152 passed. Marked fixed at source/JVM/build level; actual Android recreation/Room/provider acceptance still pending. H-010/H-011 remain open.

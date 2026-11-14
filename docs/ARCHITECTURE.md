@@ -72,3 +72,7 @@ Unit tests and FOSS/debug CI build are required at each milestone. Real-device v
 - `docs/DESIGN_SYSTEM_AND_PERFORMANCE.md`: official OPPO hardware, cinematic design tokens, per-screen functional Glass surfaces, true accessible slider semantics, 60-Hz/optional-120-Hz benchmarks and opaque/reduced-motion fallbacks.
 - `docs/UPSTREAM_AND_PRIVACY.md`: vetted GitHub repository/source reuse/licence obligations, malicious upstream instruction protections and minimum external network/data-egress policy.
 - Current `app/src/main/AndroidManifest.xml` has `android:allowBackup="false"`; preserve it and require no INTERNET permission for Phase 1. Network features later require opt-in and data minimization.
+
+
+## Phase 1 lifecycle implementation — 2026-11-14
+MainActivity retains LibraryViewModel using its ViewModelStore. The ViewModel holds application context and a pure LibrarySession whose immutable StateFlow is observed by FolderSetupScreen. Main-thread commands serialize cache activation/load, scan and save through a mutex; cancellation generations reject obsolete results/errors/finalizers. Restore finishes before scanning; reattaching the same folder preserves running work. Tree activation atomically retires other cached trees before reading current rows. Folder-picker grant/preferences orchestration is still screen-owned pending H-010; query cancellation/bounds and actual Room/lifecycle device tests remain separate gaps.

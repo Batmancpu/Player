@@ -23,6 +23,7 @@ Never share private media paths or file contents in GitHub issues or logs.
 - Change to another local folder. Previously chosen folder's entries must not mix with the new library. Observe whether the OEM picker supports Android external-storage DocumentsProvider.
 - Start a scan of a reasonably large nested folder and cancel it. No app crash; the prior complete library remains.
 - Revoke the selected folder permission through Android settings if available; app should request folder reconnection instead of crashing or showing files from ungranted sources.
+- During a scan, rotate the phone if supported; return from Glass Lab and verify the same scan/library state. Switch A→B→A and confirm only the current folder’s results appear; cancel/rescan and confirm old work cannot replace newer results.
 - If possible test 100+ mixed files for reasonable scrolling and restart behavior. Check filenames for TV episode identifiers, Unicode and year extraction.
 
 ## Report
