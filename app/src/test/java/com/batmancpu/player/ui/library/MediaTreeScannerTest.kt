@@ -61,8 +61,8 @@ class MediaTreeScannerTest {
             isWithinSelectedTree = { _, candidate -> candidate != "outside" },
         )
 
-        assertEquals(listOf("safe-video"), scanner.scan("root").map { it.documentId })
-        assertEquals(listOf("root", "inside"), inspected)
+        assertThrows(IOException::class.java) { runBlocking { scanner.scan("root") } }
+        assertEquals(listOf("root"), inspected)
     }
 
     @Test
@@ -142,5 +142,48 @@ class MediaTreeScannerTest {
         )
         assertTrue(scanner.scan("root").isEmpty())
     }
+    @Test fun boundsTotalRowsIncludingDuplicatesAndHiddenFiles() {
+        val scanner = MediaTreeScanner(
+            listChildren = { TreeListing(List(4) { file("same", ".hidden") }) },
+            isWithinSelectedTree = { _, _ -> true },
+            limits = ScanLimits(entries = 3),
+        )
+        assertThrows(IOException::class.java) { runBlocking { scanner.scan("root") } }
+    }
+
+    @Test fun boundsDepthWithoutRecursiveStackGrowth() {
+        var id = 0
+        val scanner = MediaTreeScanner(
+            listChildren = { TreeListing(listOf(directory("dir-${++id}"))) },
+            isWithinSelectedTree = { _, _ -> true },
+            limits = ScanLimits(depth = 2),
+        )
+        assertThrows(IOException::class.java) { runBlocking { scanner.scan("root") } }
+        assertEquals(3, id)
+    }
+
+    @Test fun boundsWideDirectoryQueues() {
+        val scanner = MediaTreeScanner(
+            listChildren = { TreeListing(listOf(directory("a"), directory("b"))) },
+            isWithinSelectedTree = { _, _ -> true },
+            limits = ScanLimits(directories = 2),
+        )
+        assertThrows(IOException::class.java) { runBlocking { scanner.scan("root") } }
+    }
+
+    @Test fun cyclesAreDeduplicatedAndDoNotConsumeDirectoryBudget() = runBlocking {
+        val visited = mutableListOf<String>()
+        val scanner = MediaTreeScanner(
+            listChildren = { parent ->
+                visited.add(parent)
+                TreeListing(listOf(directory("root"), file("video", "Movie.mp4")))
+            },
+            isWithinSelectedTree = { _, _ -> true },
+            limits = ScanLimits(directories = 1),
+        )
+        assertEquals(listOf("video"), scanner.scan("root").map { it.documentId })
+        assertEquals(listOf("root"), visited)
+    }
+
 }
 

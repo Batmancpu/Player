@@ -24,16 +24,18 @@ internal class SafLocalMediaSource(
     }
 
     private val rootId = DocumentsContract.getTreeDocumentId(treeUri)
+    private val limits = ScanLimits()
     private val resolver get() = context.contentResolver
     private val rootDocumentUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, rootId)
 
     suspend fun scan(): List<DiscoveredLocalMedia> {
-        check(resolver.persistedUriPermissions.any { it.uri == treeUri && it.isReadPermission }) {
-            "Local folder read access was revoked"
+        if (resolver.persistedUriPermissions.none { it.uri == treeUri && it.isReadPermission }) {
+            throw SecurityException("Local folder read access was revoked")
         }
         return MediaTreeScanner(
             listChildren = ::queryImmediateChildren,
             isWithinSelectedTree = ::isWithinSelectedTree,
+            limits = limits,
         ).scan(rootId)
     }
 
@@ -54,13 +56,16 @@ internal class SafLocalMediaSource(
                 DocumentsContract.Document.COLUMN_MIME_TYPE,
             )
             val results = mutableListOf<TreeEntry>()
-            val cursor = resolver.query(childrenUri, projection, null, null, null)
-                ?: throw IOException("Local folder provider returned no results cursor")
-            cursor.use {
+            resolver.readSafCursor(childrenUri, projection) { cursor, checkActive ->
+                val it = cursor
                 val idColumn = it.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
                 val nameColumn = it.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
                 val mimeColumn = it.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_MIME_TYPE)
                 while (it.moveToNext()) {
+                    checkActive()
+                    if (results.size >= limits.childrenPerDirectory) {
+                        throw IOException("Local directory entry limit reached")
+                    }
                     val documentId = it.getString(idColumn)?.takeIf(String::isNotBlank)
                         ?: throw IOException("Local folder returned an invalid document ID")
                     val name = it.getString(nameColumn)?.takeIf(String::isNotBlank)
