@@ -2,7 +2,7 @@
 
 This roadmap reflects the user's latest approved scope (2026-11-14). Build the functional catalogue and local player first; treat the current Glass Lab as an isolated experiment, not the product UI. Every implementation commit must update DEVELOPMENT_LOG.md. Work only on main, use small commits, and stop when a verification gate fails.
 
-**Current verified position:** Android/Compose app skeleton; edge-to-edge launcher; shared dark cinematic theme, typography/spacing tokens and four-icon Lucide registry; three JVM theme tests; Haze 2.1.0 dependencies; shared source-backed PlayerGlass helper; isolated GlassLab currently launched from MainActivity. Code CI run 16 passed and uploaded APK artifact 14101590882. The latest docs-only run 17 also passed. No physical-device install/Glass validation has been recorded. No storage, metadata, database, catalogue or playback feature exists yet.
+**Current state:** the Android/Compose shell, theme/tokens, icon registry, three JVM theme tests, Haze 2.1.0 helper and isolated Glass Lab exist. The default screen is now the plain folder-setup screen. SAF selection, one-provider allowlist, persisted read grant and startup permission recovery are implemented in source commit 5921631; its CI run 43569596301 is still running. Recursive scanning, filename parsing, database, TMDB, artwork, catalogue and playback are not implemented. Physical-device validation has not occurred.
 
 ## Phase 0 — Repository and build foundation
 - [x] Canonical handoff, operating rules, architecture, decisions, roadmap, device playbook, development log and issue register.
@@ -13,12 +13,12 @@ This roadmap reflects the user's latest approved scope (2026-11-14). Build the f
 - [ ] Add dependency/licence inventory and Compose UI smoke test.
 **Gate:** clean main build, tests and APK artifact all pass.
 
-## Phase 1 — Plain functional app shell and one-folder access (NEXT)
-1. Replace the Glass Lab as the default launcher screen with a plain, content-first setup/library shell. Keep the Glass Lab isolated and reachable only as a development experiment; do not delete it or integrate it into the product navigation yet.
-2. Add one-folder onboarding using ACTION_OPEN_DOCUMENT_TREE / ActivityResultContracts.OpenDocumentTree.
-3. Validate the selected document provider against an explicit local-provider allowlist; default-deny unknown, cloud and network providers. Confirm the OPPO local provider on device before expanding the allowlist.
-4. Persist the read-only tree grant and selected tree identity securely; recover gracefully after permission revocation/reselection. Do not request MANAGE_EXTERNAL_STORAGE.
-5. Add a cancellable recursive scanner restricted to the chosen tree and descendants. Whitelist video MIME types/extensions, skip unsupported/system entries, deduplicate by provider authority + document ID, bound concurrency, and never modify source files.
+## Phase 1 — Plain functional app shell and one-folder access
+1. [x] Replace the Glass Lab as the default launcher with a plain, content-first setup screen. Keep the Glass Lab isolated behind a developer-preview entry.
+2. [x] Add one-folder onboarding using the Android system OpenDocumentTree picker.
+3. [partial] Allow only Android external-storage DocumentsProvider; unknown/cloud/network providers are rejected. Confirm actual OPPO provider behaviour on device before expanding the allowlist.
+4. [x] Persist only the read grant and selected tree URI in app-private preferences; restore it on startup and recover when the grant is missing. Do not request MANAGE_EXTERNAL_STORAGE.
+5. **NEXT:** Add a cancellable recursive scanner restricted to the chosen tree and descendants. Whitelist video MIME types/extensions, skip unsupported/system entries, deduplicate by provider authority + document ID, bound concurrency, and never modify source files.
 6. Recognize sidecar subtitle files for later pairing, but never include subtitle contents in metadata requests.
 7. Add tests for root-boundary enforcement, nested folders, cancellation, duplicates, inaccessible providers and permission loss.
 **Gate:** the app remembers exactly one local folder, discovers only its descendants, and leaves source files untouched. No TMDB or player dependency is added in this phase.

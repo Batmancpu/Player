@@ -251,3 +251,14 @@ No playback engine or online subtitle provider has been selected or added. Evalu
 - The manifest currently has no Internet, media or broad-storage permission. MainActivity opens GlassLabScreen. App code contains no folder picker, scanner, TMDB client, Room database, poster loader, library/detail screen, Media3/LibVLC dependency or playback flow.
 - The existing Haze 2.1.0 dependency and PlayerGlass helper are present; the isolated lab compiles. No physical-device installation, Glass performance or playback-format test is recorded.
 - The user's prompt on 2026-11-14 is the authoritative approval to add local playback and subtitle/audio features. No online subtitle provider is yet approved.
+
+
+## 20. Current implementation state after folder setup — 2026-11-14
+
+- Latest source commit: 59216311c92b0619a9550651e9fc1539f749931d. MainActivity now opens FolderSetupScreen; GlassLabScreen remains a developer preview.
+- Implemented in source: plain dark setup screen, Android system OpenDocumentTree picker, explicit allowlist for com.android.externalstorage.documents, persisted read-only tree grant, app-private URI preference, startup grant revalidation and stale-grant recovery. Replacing the selected tree releases the old grant after the new grant is saved.
+- No manifest storage/media/Internet permission was added. This stage does not enumerate or read media files.
+- Not implemented: recursive scan, sidecar subtitle pairing, filename parsing, Room, TMDB, artwork cache, catalogue/detail screens, playback engine or subtitle UI.
+- CI run 43569596301 for this source commit is in progress at the time of this handoff. Do not call this code build-verified until that run succeeds.
+- OPPO CPH2531 real-device picker/provider and permission-revocation validation remains pending.
+- Exact next task: implement and test a cancellable, read-only recursive scanner bounded to the persisted tree; discover video and sidecar subtitle documents, but do not read/transmit subtitle contents.

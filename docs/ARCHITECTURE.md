@@ -1,6 +1,6 @@
 # Architecture
 
-Status: partial implementation. The Android/Compose shell, theme, icon registry, Haze dependency/helper and isolated Glass Lab exist; the runtime media-library, storage, metadata, persistence and playback layers are not implemented.
+Status: partial implementation. The Android/Compose shell, theme, icon registry, Haze dependency/helper and isolated Glass Lab exist. A plain folder-setup screen with one-tree SAF selection and persisted read grant is implemented in source; recursive scanning, media indexing, metadata, artwork, catalogue and playback layers are not implemented.
 
 ## Product boundary
 One Android application, one user-selected local folder, recursive read-only scan, TMDB metadata/artwork, offline local library. No media server, upload, streaming, account, cloud drive, ads, telemetry or analytics.
