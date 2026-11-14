@@ -39,4 +39,9 @@
     <string name="folder_setup_permission_failed">Player could not save read access to that folder. Please choose it again.</string>
     <string name="folder_setup_permission_lost">Saved folder access is no longer available. Choose the library folder again.</string>
     <string name="folder_setup_fallback_name">Selected local folder</string>
+    <string name="library_scan_start">Scan this folder</string>
+    <string name="library_scan_progress">Scanning selected folder and subfolders…</string>
+    <string name="library_scan_cancel">Cancel scan</string>
+    <string name="library_scan_error">The folder scan could not finish. Check folder access and try again. Previous results were not replaced.</string>
+    <string name="library_scan_found">%1$d videos and %2$d subtitle sidecars found</string>
 </resources>

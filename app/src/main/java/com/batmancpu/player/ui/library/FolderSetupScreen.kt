@@ -23,6 +23,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -63,6 +65,37 @@ internal fun FolderSetupScreen(
     var selection by remember { mutableStateOf<FolderSelection?>(null) }
     var isRestoring by remember { mutableStateOf(true) }
     var feedback by remember { mutableStateOf<String?>(null) }
+    var discoveredMedia by remember { mutableStateOf<List<DiscoveredLocalMedia>>(emptyList()) }
+    var scanError by remember { mutableStateOf<String?>(null) }
+    var isScanning by remember { mutableStateOf(false) }
+    var scanJob by remember { mutableStateOf<Job?>(null) }
+
+    LaunchedEffect(selection?.uri) {
+        scanJob?.cancel()
+        scanJob = null
+        isScanning = false
+        scanError = null
+        discoveredMedia = emptyList()
+    }
+
+    fun startScan(treeUri: Uri) {
+        scanJob?.cancel()
+        scanError = null
+        isScanning = true
+        scanJob = scope.launch {
+            try {
+                val results = SafLocalMediaSource(context, treeUri).scan()
+                discoveredMedia = results
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                scanError = context.getString(R.string.library_scan_error)
+            } finally {
+                isScanning = false
+            }
+        }
+    }
+
 
     LaunchedEffect(preferences) {
         val restored = withContext(Dispatchers.IO) {
@@ -190,6 +223,44 @@ internal fun FolderSetupScreen(
                                 color = PlayerPalette.textSecondary,
                                 style = MaterialTheme.typography.bodySmall,
                             )
+                            Button(
+                                onClick = { startScan(selection!!.uri) },
+                                enabled = !isScanning,
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Text(stringResource(R.string.library_scan_start))
+                            }
+                            if (isScanning) {
+                                Text(
+                                    text = stringResource(R.string.library_scan_progress),
+                                    color = PlayerPalette.textSecondary,
+                                )
+                                OutlinedButton(
+                                    onClick = { scanJob?.cancel() },
+                                    modifier = Modifier.fillMaxWidth(),
+                                ) {
+                                    Text(stringResource(R.string.library_scan_cancel))
+                                }
+                            }
+                            if (!scanError.isNullOrBlank()) {
+                                Text(scanError!!, color = PlayerPalette.accentMuted)
+                            }
+                            if (discoveredMedia.isNotEmpty()) {
+                                val videos = discoveredMedia.count { it.kind == LocalMediaKind.VIDEO }
+                                val subtitles = discoveredMedia.size - videos
+                                Text(
+                                    text = stringResource(R.string.library_scan_found, videos, subtitles),
+                                    color = PlayerPalette.textPrimary,
+                                )
+                                discoveredMedia.filter { it.kind == LocalMediaKind.VIDEO }
+                                    .take(100).forEach { document ->
+                                        Text(
+                                            text = document.displayName,
+                                            color = PlayerPalette.textSecondary,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                        )
+                                    }
+                            }
                             OutlinedButton(
                                 onClick = { folderPicker.launch(selection!!.uri) },
                                 modifier = Modifier.fillMaxWidth(),

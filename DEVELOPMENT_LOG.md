@@ -381,3 +381,9 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - The canonical instructions for a future ChatGPT Work agent are docs/WORK_HANDOFF.md and AGENTS.md; all product history remains in existing repo Markdown.
 - Checked main 95881e4 and CI #36 passed. GitHub Releases was empty; signed release steps were skipped because Actions signing secrets were not configured. No signed installable APK can be claimed now.
 - Next: implement Android SAF adapter + scanner list UI and build gate, then parser, Room, incremental reconciler. Add manual signed release publication workflow; user must configure four signing secrets before publishing.
+
+## 2026-11-14 — Connect scanner to actual Android local folder (phase 1 substep)
+- Base commit 6c1c616442b335d9d999dcb96608f7842702db2b. Added SafLocalMediaSource reading DocumentsContract immediate-child queries using the one persisted read-only tree URI and Android external-storage provider allowlist. No broad permissions, media reads/writes or network calls.
+- DocumentsContract.isChildDocument verifies each returned opaque ID remains inside the chosen root; unsupported/failed checks fail closed. The scanner itself handles deduplication, filtering and cancellation between queries.
+- FolderSetupScreen now exposes manual Scan, Cancel, counts and a basic display of up to 100 discovered video filenames; errors do not silently masquerade as successful empty scans. This is a phase 1 prototype, **not** a persisted Room library yet. Device provider support remains unverified.
+- Validation: CI pending; no release APK or OPPO handset test claimed. Next add filename parser, Room persistence and a scalable results screen, then signed milestone release.
