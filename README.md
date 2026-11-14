@@ -13,11 +13,11 @@ Choose **one local folder**. Player scans only that folder and its descendants, 
 - TMDB is contacted directly for metadata and artwork only. No video bytes, file paths, folder listings, or document URIs are sent.
 - Previously indexed metadata and artwork remain available offline.
 - The media library is read-only: never move, rename, edit, or delete the user's source files.
-- The primary goal is the library and its presentation. Playback is outside the first milestone unless separately approved.
+- Local playback is now in scope: tap a movie/episode to play its local file, with audio/subtitle track selection, external subtitle loading/download and subtitle-delay controls planned. Playback remains local-only.
 
 ## Current status
 
-This repository now contains a **buildable Android/Compose foundation** with a shared cinematic theme, licensed icon registry, three theme regression tests and a verified GitHub Actions APK pipeline. A temporary, local-only Liquid Glass laboratory is now the launcher screen. The production media library, one-folder scanning, TMDB metadata and offline cache remain under development. Physical-device rendering validation is pending. Read [AGENTS.md](AGENTS.md) and [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) before changing anything.
+This repository now contains a **buildable Android/Compose foundation** with a shared cinematic theme, licensed icon registry, three theme regression tests and a verified GitHub Actions APK pipeline. A temporary, local-only Liquid Glass laboratory is now the launcher screen. The production media library, one-folder scanning, TMDB metadata, offline cache and playback remain under development. The Glass Lab is experimental, not the product UI; no physical-device rendering or playback validation is recorded. Read [AGENTS.md](AGENTS.md) and [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) before changing anything.
 
 ## Canonical project records
 
