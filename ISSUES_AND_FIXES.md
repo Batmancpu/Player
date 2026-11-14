@@ -183,3 +183,11 @@ SAF root/child query CancellationSignal and per-row checks added, cursor lifecyc
 
 ### H-012 — Numeric titles and multi-episode parser ambiguity
 - Source-confirmed at 30ea20f; affects prior test releases. Leading year-like titles could become empty; multi-episode names could become movies or one episode. No OPPO report. Fix uses trailing nonleading year and explicitly leaves multi-episode fixtures unrecognized. Source regressions added; CI pending.
+
+### Phase 1 verification follow-up — 2026-11-14
+H-010 fixed at fake/JVM/source level (CI 43614796902); H-011 bounded scan/cursor helper fixed at JVM/build level (CI 43615085618). Android integration CI 43615935921 passed all 9 synthetic cases, including real cursor cancellation/close and launcher recreation. H-012 parser and plain UI/session state regressions passed CI 43616107190. Actual OPPO external-storage provider, permission recovery, media isolation and performance remain unverified until phone report.
+
+### H-013 — Release backup verifier assumed one aapt2 display format
+- First observed: publication workflow 43617409651 (#78), script backup assertion. No new APK was published. App source and merged debug-manifest Android test retain backup disabled; production representation is under verification.
+- Root-cause confidence: format mismatch likely from narrow regex, exact attribute value pending corrected gate output. No signing/app identity change.
+- Fix: recognize only known semantic false representations, log sanitized attribute value, reject true/unknown. Three full-script regression groups pass locally including forbidden network/debug-provider/stale-version checks; CI/publication pending.

@@ -20,6 +20,10 @@ for line in permissions.splitlines():
         permission = re.search(r"name='([^']+)'", line)
         assert permission and permission[1] in allowed, "Unexpected production permission"
 xml = dump("xmltree", "--file", "AndroidManifest.xml")
-assert re.search(r"android:allowBackup[^\n]*\(type 0x12\)0x0\b", xml), "Backup must remain disabled"
+backup = re.search(r"(?:android:)?allowBackup(?:\(0x[0-9a-fA-F]+\))?\s*=\s*([^\n]+)", xml)
+assert backup and re.fullmatch(
+    r"(?:\(type 0x12\))?(?:0x0+|false)(?:\s+\(Raw: \"false\"\))?", backup[1].strip()
+), "Backup must remain disabled; observed " + (backup[1].strip() if backup else "missing attribute")
+print("Verified allowBackup representation:", backup[1].strip())
 assert "SyntheticSafProvider" not in xml and "com.batmancpu.player.synthetic" not in xml, "Debug provider entered release"
 print("Release manifest verified: stable identity/version, offline permissions, backup disabled, no debug provider.")

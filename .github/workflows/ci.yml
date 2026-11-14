@@ -126,6 +126,9 @@ jobs:
           echo "enabled=true" >> "$GITHUB_OUTPUT"
           echo "Release-signing credentials loaded; values were not logged."
 
+      - name: Verify release-checker regression fixtures
+        run: python -m unittest discover -s scripts -p 'test_*.py'
+
       - name: Run unit tests and assemble CI-only debug APK
         run: gradle --no-daemon --stacktrace :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest
 
