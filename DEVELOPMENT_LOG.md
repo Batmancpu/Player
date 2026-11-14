@@ -98,3 +98,10 @@ Tests: documentation review only. No application build exists yet; no APK or dev
 - Added a minimal launcher manifest and resource-backed app label/theme; no runtime permissions or network permission are declared.
 - No screen implementation, storage access, metadata API or Glass engine is added in this commit.
 - Verification: source/configuration review only; the GitHub Actions build workflow is the next gate.
+
+
+## 2026-11-14 — Minimal Compose launcher surface
+- Added app/src/main/java/com/batmancpu/player/MainActivity.kt.
+- Added an edge-to-edge launcher surface with a restrained dark cinematic base and system typography. This is a buildable foundation placeholder, not the final screen design.
+- System bars are transparent with light glyphs; no folder permissions, network, metadata or Glass dependencies are active.
+- Verification: source review only; CI workflow not yet committed.
