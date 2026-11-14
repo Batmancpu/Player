@@ -433,3 +433,9 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - A new key was generated and re-opened with keytool. Public certificate SHA-256: 4D:2F:17:89:ED:27:D3:96:13:35:FE:36:45:64:55:BD:9A:31:0B:0D:CD:F4:1E:8C:CC:92:53:98:33:9E:80:BF. Private key and password are distributed as private ChatGPT conversation files, NOT GitHub commits.
 - Updated the release workflow's certificate pin (lowercase hex) and release-note fingerprint; docs/ANDROID_SIGNING.md is the current source of truth. Old key/fingerprint historical records remain for audit but are superseded.
 - The user must back up the new JKS, store password in Proton Pass and enter four repository Actions secrets manually. No signed APK has been produced with this new key yet; CI pending for documentation/workflow update.
+
+## 2026-11-14 — Add safe commit-triggered first signed Obtainium test publication
+- User reported adding four Actions secrets and requested a real installable GitHub Release APK to test Obtainium in-place updates. The GitHub connector cannot directly trigger Actions manual workflows.
+- Added a narrowly scoped signed Release publication trigger for `main` commit subject prefix `release(test):`, in addition to the existing manual workflow_dispatch option. No ordinary push publishes a GitHub Release.
+- Signing secret validation, tests, certificate verification, versionCode, signed APK hash and GitHub Release publication remain required; release notes identify Phase 1 as incomplete.
+- This workflow edit must pass its own CI before a separate explicit test-publish commit is made.

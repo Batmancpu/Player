@@ -136,7 +136,7 @@ jobs:
           retention-days: 30
 
       - name: Refuse requested publication without permanent signing
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_release == true }}
+        if: ${{ github.ref == 'refs/heads/main' && ((github.event_name == 'workflow_dispatch' && inputs.publish_release == true) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, 'release(test):'))) }}
         shell: bash
         run: |
           if [[ "${{ steps.release_signing.outputs.enabled }}" != "true" ]]; then
@@ -158,7 +158,7 @@ jobs:
           echo "Permanent signing certificate fingerprint matches the project record."
 
       - name: Publish signed APK to GitHub Releases for Obtainium
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_release == true && steps.release_signing.outputs.enabled == 'true' }}
+        if: ${{ github.ref == 'refs/heads/main' && ((github.event_name == 'workflow_dispatch' && inputs.publish_release == true) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, 'release(test):'))) && steps.release_signing.outputs.enabled == 'true' }}
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -179,10 +179,10 @@ jobs:
             echo "APK SHA-256: ${hash}"
             echo "Certificate SHA-256: 4D:2F:17:89:ED:27:D3:96:13:35:FE:36:45:64:55:BD:9A:31:0B:0D:CD:F4:1E:8C:CC:92:53:98:33:9E:80:BF"
             echo
-            echo "Physical-device acceptance is separate from CI; follow docs/ROADMAP.md."
+            echo "TEST BUILD: Phase 1 is incomplete and not yet verified on a physical phone. This release is for Obtainium installation/update pipeline testing; follow docs/PHASE1_PHONE_TEST.md."
           } > "$RUNNER_TEMP/release-notes.md"
           gh release create "$tag" "$release_apk" \
-            --title "Player ${tag} — device test" \
+            --title "Player ${tag} — test APK (not accepted)" \
             --notes-file "$RUNNER_TEMP/release-notes.md" \
             --latest \
             --target "${GITHUB_SHA}"

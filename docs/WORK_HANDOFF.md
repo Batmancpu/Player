@@ -29,3 +29,9 @@ At end of every Work session write: current SHA, relevant workflows/artifacts, w
 - User explicitly rejected reuse of the prior key because no signed release exists and authorized a fresh key. New private JKS and base64/credential files generated and delivered in the current chat. They are not in GitHub. The previous fingerprint documented in historical sections is obsolete.
 - NEW public SHA-256: `4D:2F:17:89:ED:27:D3:96:13:35:FE:36:45:64:55:BD:9A:31:0B:0D:CD:F4:1E:8C:CC:92:53:98:33:9E:80:BF`. Current `docs/ANDROID_SIGNING.md` is authoritative, and CI certificate pin now matches this identity (commit f119f07). Do not revert to an old key or commit private key material.
 - User is currently entering the four GitHub Actions secrets, one at a time, via GitHub Settings. A password generator is not a substitute for the Base64 keystore contents. No signed release has been published or physically installed with the new certificate yet.
+
+## Controlled first release trigger for Obtainium testing (2026-11-14)
+- The user has entered all four GitHub Actions secrets and requested the first APK to install through Obtainium before Phase 1 acceptance.
+- Because the GitHub connector does not expose workflow_dispatch, the CI workflow accepts a specifically named `main` push commit with subject prefix `release(test):` as a one-time intentional publication trigger. Ordinary source commits DO NOT publish releases. The manual workflow_dispatch publish toggle remains available.
+- Signing, APK certificate check, tests, versionCode, GitHub Release asset and SHA-256 all remain mandatory. The release is explicitly a TEST BUILD and must not be represented as Phase 1 completed.
+- Do not publish a second update build until the user has installed the first through Obtainium; then publish a higher versionCode with the same certificate so they can verify update-in-place.
