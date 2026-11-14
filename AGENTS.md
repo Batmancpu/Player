@@ -2,7 +2,11 @@
 
 This file is binding project guidance. Read it before making changes. Do not rely on chat history as the source of truth.
 
-## Active development protocol\n\nThe active six phone-testable phases and release criteria are in docs/ROADMAP.md. A concise Work-mode operational handoff is in docs/WORK_HANDOFF.md. Follow both; historical roadmap snapshots are superseded. Every phase must deliver a verified signed APK in GitHub Releases, then be tested on the actual OPPO handset before acceptance. Do not claim a signed release when Actions secrets are absent.\n\n## Mandatory reading order
+## Active development protocol
+
+The active six phone-testable phases and release criteria are in docs/ROADMAP.md. A concise Work-mode operational handoff is in docs/WORK_HANDOFF.md. Follow both; historical roadmap snapshots are superseded. Every phase must deliver a verified signed APK in GitHub Releases, then be tested on the actual OPPO handset before acceptance. Do not claim a signed release when Actions secrets are absent.
+
+## Mandatory reading order
 
 1. `PROJECT_CONTEXT.md` — product intent, origin, constraints, previous discussions and current facts.
 2. `CHAT_HISTORY.md` — chronological session summaries of user requests, decisions, work and unresolved actions.
@@ -95,7 +99,7 @@ Keep expensive effects to a small number of important controls. Do not put a gla
 
 - Use HTTPS only.
 - TMDB API credentials must not be committed, printed in CI logs, or embedded as a long-lived shared secret in a public APK. Prefer user-provided credentials stored locally with Android Keystore-backed encryption.
-- The permanent Android release keystore was generated on 2026-11-14 and delivered to the user as private files in that ChatGPT session. Never regenerate, rotate, replace or ask the user to share the JKS, base64 or password in chat. Refer to the user's saved backup and Proton Pass entry. The keystore, private key and passwords must never be committed, posted in issues or printed in CI logs; GitHub Actions receives them only through encrypted repository secrets.
+- **Updated signing instruction (2026-11-14):** the user explicitly approved REPLACING the earlier unreleased signing key before the first GitHub Release. A NEW keystore was generated and delivered privately in the CURRENT chat. The historical key and certificate fingerprint are superseded. Follow docs/ANDROID_SIGNING.md for the NEW public certificate and four GitHub Actions secrets. Do not create yet another replacement after the first signed install, and never ask the user to share JKS, Base64 or passwords in chat. Refer to the user's saved backup and Proton Pass entry. The keystore, private key and passwords must never be committed, posted in issues or printed in CI logs; GitHub Actions receives them only through encrypted repository secrets.
 - Do not add a proxy/backend merely to hide an API key. Explain the trade-off honestly.
 - Do not silently add any other host, SDK, API, crash-report endpoint, or permission. Document and justify it first.
 - Include required TMDB attribution and approved logo treatment in the About/Credits area before release.

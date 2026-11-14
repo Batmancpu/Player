@@ -12,7 +12,7 @@ A phase is not complete merely because code builds. Before advancing:
 5. Fix critical failures in focused commits and publish a higher-version signed APK; only mark acceptance complete when user confirms real-device behavior. Do not claim acceptance without evidence.
 6. Update docs/WORK_HANDOFF.md, CHAT_HISTORY.md, PROJECT_CONTEXT.md and the issue register appropriately. Record exact commit, CI run, Release URL/tag, SHA-256, signing certificate fingerprint, app versionCode and next step.
 
-**Release rule:** Use existing keystore, alias and app identity for every APK. Keep applicationId com.batmancpu.player stable for updates until a user-approved migration plan. Never generate or rotate another release key. Increment versionCode on every new installable APK. Never publish unsigned/debug APKs as an Obtainium update. Manual milestone publishing is preferred to publishing every small commit.
+**Release rule:** Use the NEW keystore explicitly approved and created on 2026-11-14 (see docs/ANDROID_SIGNING.md), alias and app identity for every APK. The older key and old fingerprint in historical notes were superseded BEFORE the first signed release. Keep applicationId com.batmancpu.player stable for updates until a user-approved migration plan. Do not regenerate or rotate the NEW key after the first signed release install. Increment versionCode on every new installable APK. Never publish unsigned/debug APKs as an Obtainium update. Manual milestone publishing is preferred to publishing every small commit.
 
 ## Phase 1 — Offline media library and one-folder privacy (ACTIVE)
 
