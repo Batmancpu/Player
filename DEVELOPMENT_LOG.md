@@ -522,3 +522,9 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - docs/PHASE1_AUDIT.md now includes exact inspected upstream revision, commit date and root Apache-2.0 license for Now in Android, Media3, Coil and Haze. Full dependency/security/permission/NOTICE/APK/performance evaluation remains required before new adoption; no copied code/new library.
 - ISSUES_AND_FIXES.md cross-references H-009/010/011 source-confirmed gaps and next regression scenarios. H-008 JVM gate passed; Android cursor/Room/device reproduction still pending.
 - Main signed CI pending at this documentation commit. No new GitHub Release; latest published version remains v0.1.53. Phase 1 unaccepted and no FPS measurements. Next: verify main CI and implement H-009 with deterministic cached-load/scan/selection ordering tests.
+
+## 2026-11-14 — Main signed verification after storage merge
+- Main merge 79ee09d7669f90ff14a9592a801a84170006c062 passed workflow #61: https://github.com/Batmancpu/Player/actions/runs/43612318514. Tests/debug assembly, signed Release assembly, apksigner validation and pinned permanent certificate comparison all succeeded (job 132499811851).
+- Signed CI artifact: Player-release-v61-79ee09d7669f90ff14a9592a801a84170006c062; artifact ID 14120517799; ZIP archive digest 1f51fafd35a2168020653b7446ee6e2f5818bd6af26fc87b1852cff432faab05 (not raw APK digest). Application identity/signing unchanged; versionCode 61 is greater than published 53.
+- Publication was skipped by design; no new GitHub Release or phone acceptance claimed. Latest published Obtainium release remains v0.1.53. No device frame measurements.
+- This entry supersedes prior main-pending notes, which describe status when written. Documentation follow-up 44e3d09 records PR proof/provenance. First next coding action: deterministic tests reproducing H-009 delayed cached load versus newer scan/folder selection, then serialize lifecycle state without broad feature expansion.
