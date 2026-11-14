@@ -2,7 +2,7 @@
 
 This roadmap reflects the user's latest approved scope (2026-11-14). Build the functional catalogue and local player first; treat the current Glass Lab as an isolated experiment, not the product UI. Every implementation commit must update DEVELOPMENT_LOG.md. Work only on main, use small commits, and stop when a verification gate fails.
 
-**Current state:** the Android/Compose shell, theme/tokens, icon registry, three JVM theme tests, Haze 2.1.0 helper and isolated Glass Lab exist. The default screen is now the plain folder-setup screen. SAF selection, one-provider allowlist, persisted read grant and startup permission recovery are implemented. The first CI run exposed an incorrect rememberSaveable import; it was fixed in e20d8aa. Corrected workflow 43569710969 passed; handoff workflow 43569752178 also passed. Recursive scanning, filename parsing, database, TMDB, artwork, catalogue and playback are not implemented. Physical-device validation has not occurred. Stable signing scaffolding is now committed; private key and GitHub secrets remain a user setup step.
+**Current state:** the Android/Compose shell, theme/tokens, icon registry, three JVM theme tests, Haze 2.1.0 helper and isolated Glass Lab exist. The default screen is now the plain folder-setup screen. SAF selection, one-provider allowlist, persisted read grant and startup permission recovery are implemented. The first CI run exposed an incorrect rememberSaveable import; it was fixed in e20d8aa. Corrected workflow 43569710969 passed; handoff workflow 43569752178 also passed. Recursive scanning, filename parsing, database, TMDB, artwork, catalogue and playback are not implemented. Physical-device validation has not occurred. Stable signing scaffolding passed CI runs 25 and 26. A Termux helper script is committed, but the private keystore and four Actions secrets are still user-side setup; run 25 deliberately skipped signed release creation because no secrets were present.
 
 ## Phase 0 — Repository and build foundation
 - [x] Canonical handoff, operating rules, architecture, decisions, roadmap, device playbook, development log and issue register.
@@ -10,7 +10,7 @@ This roadmap reflects the user's latest approved scope (2026-11-14). Build the f
 - [x] Node 24-compatible CI workflow; unit tests, debug APK assembly and artifact upload.
 - [x] Three JVM theme/contrast regression tests.
 - [ ] Add Gradle wrapper and reproducible local build entry point; CI currently installs Gradle 9.5.1 directly.
-- [partial] Stable release-signing Gradle/CI scaffold and signature verification are implemented. User must generate the local keystore and configure the four repository Actions secrets before signed release APKs can be produced.
+- [x] Stable release-signing Gradle/CI scaffold, monotonic versionCode, conditional release assembly and apksigner verification are implemented; signing scaffold CI passed (run 25).\n- [x] Secret-free Termux helper added at scripts/generate-release-keystore.sh; shell syntax validated.\n- [ ] User generates and backs up the keystore on their own Android device, then manually configures all four repository Actions secrets. No signed APK exists yet.
 - [ ] Add dependency/licence inventory and Compose UI smoke test.
 **Gate:** clean main build, tests and APK artifact all pass.
 
@@ -90,7 +90,7 @@ This roadmap reflects the user's latest approved scope (2026-11-14). Build the f
 49. Test offline, slow network, API errors, permission revocation, provider failures, corrupt cache and unsupported codecs.
 50. Inspect dependencies, licenses, manifest permissions and network hosts; verify no analytics, telemetry, media upload or hidden backend.
 51. Document all third-party licenses, TMDB attribution and any playback-engine copyleft obligations.
-52. Configure stable signing and monotonic version-code policy only after package identity is final.
+52. Generate and securely back up the permanent signing key before release; configure the four repository secrets. Freeze applicationId before the first signed install, then verify the signed APK fingerprint and monotonic versionCode.
 53. Publish the first release only after clean CI, APK verification, documented format matrix and separate physical-device validation.
 **Gate:** reproducible signed APK, passed tests, privacy audit and target-device acceptance.
 

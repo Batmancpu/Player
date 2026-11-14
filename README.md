@@ -17,7 +17,7 @@ Choose **one local folder**. Player scans only that folder and its descendants, 
 
 ## Current status
 
-This repository now contains a **buildable Android/Compose foundation** with a shared cinematic theme, licensed icon registry, three theme regression tests and a verified GitHub Actions APK pipeline. A temporary, local-only Liquid Glass laboratory is now the launcher screen. The production media library, one-folder scanning, TMDB metadata, offline cache and playback remain under development. The Glass Lab is experimental, not the product UI; no physical-device rendering or playback validation is recorded. Read [AGENTS.md](AGENTS.md) and [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) before changing anything.
+This repository contains a **buildable Android/Compose foundation** with a shared cinematic theme, licensed icon registry, three theme regression tests, and a GitHub Actions build pipeline. The current launcher is the plain one-folder setup screen; the Liquid Glass Lab remains a developer preview. Folder selection and persisted read-grant recovery compile and pass CI, but the recursive scanner, TMDB metadata, offline catalogue, and playback are not implemented yet. The release-signing workflow is prepared, but the private keystore and four GitHub Actions secrets are not yet configured, so no signed Release APK exists. See [Android signing](docs/ANDROID_SIGNING.md), [AGENTS.md](AGENTS.md), and [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) before changing anything.
 
 ## Canonical project records
 
@@ -29,7 +29,7 @@ This repository now contains a **buildable Android/Compose foundation** with a s
 - [Device test and crash playbook](docs/DEVICE_TESTING.md)
 - [Development log](DEVELOPMENT_LOG.md)
 - [Known issues and fixes](ISSUES_AND_FIXES.md)
-- [Third-party notices](THIRD_PARTY_NOTICES.md)
+- [Third-party notices](THIRD_PARTY_NOTICES.md)\n- [Android release signing and update continuity](docs/ANDROID_SIGNING.md)
 
 ## Design references
 

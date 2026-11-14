@@ -312,3 +312,16 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - Required repository secrets are documented in docs/ANDROID_SIGNING.md. User-side generation and configuration remain outstanding: private keystore, secure backup, base64 secret and three password/alias secrets. No secrets or key material were transmitted in this session.
 - applicationId=com.batmancpu.player is unchanged. Keep it stable after the first signed install.
 - Verification: pending CI for the signing scaffold. Signed APK production remains blocked until the user configures the four repository secrets.
+
+
+## 2026-11-14 — Stable release-signing scaffold CI verified; device-side key helper added
+- Rechecked current main and signing workflow before proceeding. Current branch head at the start of this work: `f11f2a3eb0ce300644baaecffdd760a41e45f298`.
+- Signing scaffold commit `37f84dda2bffb106f50dc7ccc768808cdecb99d8`, workflow run 25 (`43570229274`): success. Its signing-preparation step confirmed that no secrets were configured; signed Release assembly, apksigner verification and Release artifact upload were correctly skipped. Do not treat this as a signed build.
+- Latest documentation/handoff workflow run 26 (`43570272899`): success.
+- Added `scripts/generate-release-keystore.sh`. It is secret-free, runs on the user's own Android device in Termux, creates/reuses the private JKS outside the repository, sets restrictive file permissions, verifies the alias/certificate, and prepares the base64 Actions-secret value in the same private directory.
+- Updated `docs/ANDROID_SIGNING.md`, `PROJECT_CONTEXT.md`, `docs/ROADMAP.md`, `README.md` and `AGENTS.md` with the safe device-side key process, user-only GitHub secret step, first-install package-identity gate and current status.
+- Added an explicit agent rule: do not generate the user's private release key in an assistant/cloud workspace or CI runner; keep it under the user's control. Never ask for its bytes/password in chat.
+- Validation: `bash -n scripts/generate-release-keystore.sh` passed in the authoring environment. The helper has **not** been run on the user's phone; no real keystore or certificate fingerprint exists yet.
+- Remaining user action: run the script in Termux, make at least one additional secure backup of the JKS and password, and add the four repository Actions secrets. The GitHub connector does not expose repository secret-write APIs, so this final settings operation must be done by the repository owner.
+- `applicationId` remains `com.batmancpu.player`; it is still provisional until the first signed APK is installed. Decide whether to retain it before that installation.
+- **Next engineering milestone after the signing setup is in place:** validate the folder picker on CPH2531, then implement the cancellable read-only recursive scanner bounded to the saved SAF tree. Do not jump to TMDB/database/player before scanner privacy and boundary tests.

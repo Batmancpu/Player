@@ -282,3 +282,20 @@ The user requested a permanent signing key so future APK builds update the insta
 - Signing status: Gradle/CI scaffolding committed; private keystore not yet generated; GitHub secrets not yet configured; signed release APK not yet produced.
 - Current application ID is com.batmancpu.player. Keep it unchanged after first signed install. Changing only the visible app label later is safe; changing applicationId creates a different app identity.
 - Debug artifacts are CI-only and must not be installed for normal device testing. Install the first stable-key signed release artifact. If a differently signed test build is already installed, one one-time uninstall may be needed for migration; after that all updates use the stable key and increasing versionCode.
+
+
+## 23. Release-signing scaffold verified; private key is still user-side — 2026-11-14
+
+The stable-signing workflow is committed and CI-verified, but **no private keystore has been generated, no Actions secret has been configured, and no signed Release APK exists yet**.
+
+- Current `main` before this handoff: `f11f2a3eb0ce300644baaecffdd760a41e45f298`.
+- Signing scaffold commit `37f84dda2bffb106f50dc7ccc768808cdecb99d8`, workflow run 25 (`43570229274`) succeeded. The signing-preparation step succeeded with all four secrets absent; the release assembly, signature-verification and release-upload steps were deliberately skipped. Only the CI-only debug artifact was produced.
+- Follow-up documentation commit `f11f2a3eb0ce300644baaecffdd760a41e45f298`, workflow run 26 (`43570272899`), succeeded.
+- `app/build.gradle.kts` uses `com.batmancpu.player` as applicationId, and derives versionCode from `GITHUB_RUN_NUMBER`. Do not change applicationId after the first signed install. The app/repository display name remains a working title and can be changed separately.
+- `docs/ANDROID_SIGNING.md` is the canonical user procedure. `scripts/generate-release-keystore.sh` is a public, secret-free helper; it must be run on the user's own Android device in Termux. It creates the JKS and base64 value under `~/player-signing`, outside the cloned repo, uses restricted permissions, prints only the public certificate fingerprint, and reuses an existing JKS rather than rotating it.
+- The GitHub connector available to agents does not expose repository Actions-secret write APIs. Therefore, the user must enter the four values in GitHub Settings → Secrets and variables → Actions. Never ask the user to paste the keystore, base64 value or password into chat.
+- `.gitignore` already ignores `*.jks`, `*.keystore`, `*.p12` and `*.pfx`; the helper also stores generated files outside the repository.
+
+**Next exact action:** the user runs the Termux helper locally, saves the JKS plus password in at least two secure places, records the SHA-256 certificate fingerprint, and adds the four repository Actions secrets. Then trigger Android CI and confirm that the signed Release build, apksigner verification and release artifact all succeed. Only then install the first signed Release APK.
+
+**Important package-identity gate:** creating/backing up the key can happen now, but before installing the first signed APK the user must decide whether `com.batmancpu.player` is the final applicationId. Changing it after installation creates a different Android app and breaks the intended in-place update chain.

@@ -10,34 +10,31 @@ Official Android guide: https://developer.android.com/studio/publish/app-signing
 
 **Do not install artifacts named Player-debug-CI-ONLY-... for routine testing.** They use the CI debug certificate and are not the update channel. Install the Player-release-v... artifact once signing secrets are configured; subsequent main-branch builds will use the same release key.
 
-## 1. Generate the keystore on the Android phone
+## 1. Generate the keystore on your own Android device
 
-Install Termux from one official source (F-Droid or the Termux GitHub release; do not mix Termux app/plugins from different signing sources). Termux maintainers' installation guidance: https://github.com/termux/termux-app.
+**Generate the private key on your phone, not in this chat, an AI/cloud workspace or a GitHub Actions runner.** This keeps the initial private-key generation under your control. The repository contains only a helper script; it never contains the generated keystore or password.
 
-In Termux, run:
+Install Termux from one official source (F-Droid or the Termux GitHub release; do not mix Termux app/plugins from different signing sources). Official installation guidance: https://github.com/termux/termux-app.
+
+In Termux, install the required packages, clone the public source repository, and run the helper:
 
 ~~~sh
 pkg update -y
-pkg install openjdk-21 coreutils -y
+pkg install git openjdk-21 coreutils -y
 
-mkdir -p ~/player-signing
-cd ~/player-signing
-umask 077
-
-keytool -genkeypair -v \
-  -keystore player-release.jks \
-  -storetype JKS \
-  -alias player-release \
-  -keyalg RSA \
-  -keysize 2048 \
-  -sigalg SHA256withRSA \
-  -validity 10000 \
-  -dname "CN=Player Release, OU=Android, O=Player Project, L=Gurugram, ST=Haryana, C=IN"
+git clone https://github.com/Batmancpu/Player.git
+cd Player
+bash scripts/generate-release-keystore.sh
 ~~~
 
-When prompted, enter a strong, unique keystore password and save it in a password manager. When keytool asks for the key password, press Enter to reuse the keystore password. The two credentials are stored under two separate GitHub secret names for the Gradle configuration.
+The script creates the key at `~/player-signing/player-release.jks`, **outside the cloned repository**, with directory/file permissions restricted to your Termux user. It uses RSA-2048/SHA-256 and a 10,000-day validity period (about 27 years). Current Termux package sources still provide OpenJDK 21: https://github.com/termux/termux-packages/tree/master/packages/openjdk-21.
 
-The key is generated in Termux's private home directory, not in shared Downloads and not in the Git repository. Do not upload the raw JKS file to GitHub, a chat, a public cloud folder or an issue.
+When keytool prompts:
+1. Enter a strong, unique keystore password and save it in your password manager.
+2. Confirm the certificate details when prompted.
+3. At the key-password prompt, press Enter to reuse the keystore password. The workflow still stores this under its own separate secret name.
+
+The script verifies the alias and prints the **public** SHA-256 certificate fingerprint. If you run it again and the JKS already exists, it reuses the same key; it does not generate or overwrite a new one. Keep the original Termux copy.
 
 ## 2. Verify and back up the key
 
@@ -52,14 +49,13 @@ Check that the alias is player-release, the keystore opens with your saved passw
 
 ## 3. Prepare the base64 secret value
 
-In Termux:
+The helper creates a one-line base64 file in Termux's private home directory. Display it in Termux:
 
 ~~~sh
-cd ~/player-signing
-base64 -w 0 player-release.jks
+cat ~/player-signing/PLAYER_RELEASE_KEYSTORE_BASE64.txt
 ~~~
 
-Copy the complete output. It is the encoded private keystore, so handle it exactly like the keystore itself. Do not paste it into this conversation.
+Copy the **entire single line** for the GitHub secret in the next step. Base64 is encoding, not encryption: treat this value exactly like the private keystore. Do not paste it into this conversation, a GitHub issue, a repository file or a public note.
 
 ## 4. Add four GitHub Actions repository secrets
 
@@ -72,7 +68,7 @@ Open https://github.com/Batmancpu/Player/settings/secrets/actions, choose **New 
 | PLAYER_RELEASE_KEY_ALIAS | player-release |
 | PLAYER_RELEASE_KEY_PASSWORD | Same password (because keytool used the keystore password for the key) |
 
-GitHub stores Actions secrets encrypted and only exposes them to workflows that explicitly request them. Do not add these values to repository files, ordinary Actions variables, workflow_dispatch inputs or logs. Repository secrets are limited to 48 KB; this JKS base64 value should be well below that limit.
+GitHub stores Actions secrets encrypted and only exposes them to workflows that explicitly request them. Official documentation: https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions. Do not add these values to repository files, ordinary Actions variables, workflow_dispatch inputs or logs. Repository secrets are limited to 48 KB; this JKS base64 value should be well below that limit.
 
 ## 5. Verify the first stable-key APK
 
