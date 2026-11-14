@@ -118,3 +118,15 @@ Do not erase a failure after a fix. Mark fixed and link the corrective commit.
 - **Root cause confidence:** high; compiler output explicitly reports the type mismatch.
 - **Fix:** narrow the helper argument to RoundedCornerShape. More complex/custom shapes can be added only if the Haze public API supports them.
 - **Regression test:** next CI run must compile PlayerGlass and complete the debug APK task.
+
+
+### H-006 — First committed Termux signing helper had over-escaped shell sequences
+- **Status:** Fixed; corrected source passes local Bash syntax validation. CI verification of the correction is pending.
+- **First observed:** 2026-11-14, during post-commit source review of `df9d62c2ea03fa9fb8da731fc33a9508a7028c94`.
+- **Affected file:** `scripts/generate-release-keystore.sh`.
+- **Expected:** Bash line continuations keep keytool options in one command; printf format strings produce normal newlines.
+- **Actual:** The initial committed text contained doubled backslashes before line breaks and doubled escapes in printf formats. That would split keytool options into separate shell commands and print literal escape sequences.
+- **Root cause confidence:** high; direct inspection of the committed file exposed the exact over-escaping.
+- **Exposure:** The helper was not run on a device; no keystore was generated and no secret was exposed. The defect was caught before use.
+- **Fix:** Replace the script with correctly escaped shell source, add a CI `bash -n` step, and run `bash -n` against the exact corrected file.
+- **Regression verification:** local `bash -n` passed; the new GitHub Actions run is pending.

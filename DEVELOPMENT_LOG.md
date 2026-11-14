@@ -325,3 +325,12 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - Remaining user action: run the script in Termux, make at least one additional secure backup of the JKS and password, and add the four repository Actions secrets. The GitHub connector does not expose repository secret-write APIs, so this final settings operation must be done by the repository owner.
 - `applicationId` remains `com.batmancpu.player`; it is still provisional until the first signed APK is installed. Decide whether to retain it before that installation.
 - **Next engineering milestone after the signing setup is in place:** validate the folder picker on CPH2531, then implement the cancellable read-only recursive scanner bounded to the saved SAF tree. Do not jump to TMDB/database/player before scanner privacy and boundary tests.
+
+
+## 2026-11-14 — Corrected signing-helper shell escaping before device use
+- Post-commit review of `df9d62c2ea03fa9fb8da731fc33a9508a7028c94` found that the helper's shell line-continuation and printf escapes had been doubled while creating the GitHub blob.
+- This would have split the keytool command and printed literal escape sequences. It was caught before the helper was run; no keystore or password was created or exposed.
+- Replaced the helper with correct Bash line continuations and printf formats.
+- Added a CI step to run `bash -n scripts/generate-release-keystore.sh` on every build.
+- Validation: `bash -n` on the exact corrected source passed locally. GitHub Actions regression run pending.
+- The key remains a user-side operation on the OPPO phone through Termux; do not use the earlier script revision.
