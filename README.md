@@ -19,7 +19,7 @@ Choose **one local folder**. Player scans only that folder and its descendants, 
 
 Phase 1 is actively under construction. The app includes Android/Compose, a saved one-folder SAF read grant, a cancellable read-only recursive SAF scanner, a simple movies/TV list, a deterministic local filename parser and an app-private Room index that survives restarts and reconciles only completed scans. The code passed GitHub Actions run #43 on 2026-11-14; real-device behavior on OPPO CPH2531 is not yet validated. TMDB, artwork, cinematic screens, local playback and subtitle controls are still unimplemented.
 
-A **manual signed Release publication** workflow is prepared, but GitHub Actions signing secrets have not yet been configured, so GitHub Releases currently contains no installable APK. Never use the CI-only debug artifact for update continuity. For the plan, see [six-phase roadmap](docs/ROADMAP.md), [Work agent handoff](docs/WORK_HANDOFF.md), [release signing](docs/ANDROID_SIGNING.md) and [Phase 1 phone test](docs/PHASE1_PHONE_TEST.md).
+A **manual signed Release publication** workflow is prepared, but GitHub Actions signing secrets have not yet been configured, so The FIRST signed test APK is now published as [v0.1.51](https://github.com/Batmancpu/Player/releases/tag/v0.1.51). Never use the CI-only debug artifact for update continuity. For the plan, see [six-phase roadmap](docs/ROADMAP.md), [Work agent handoff](docs/WORK_HANDOFF.md), [release signing](docs/ANDROID_SIGNING.md) and [Phase 1 phone test](docs/PHASE1_PHONE_TEST.md).
 
 ## Canonical project records
 
@@ -43,3 +43,6 @@ A **manual signed Release publication** workflow is prepared, but GitHub Actions
 ## Licence
 
 The implementation licence and all third-party licence obligations must be settled and documented before code is copied or distributed. See [DECISIONS.md](docs/DECISIONS.md).
+
+## First Obtainium test APK (2026-11-14)
+The signed first test release is [Player v0.1.51](https://github.com/Batmancpu/Player/releases/tag/v0.1.51), from successful CI run #51. Add this repository URL in Obtainium and install release v0.1.51. After successful first install, publish a higher-version signed test update and verify installation over the prior version; do not count Phase 1 complete until device acceptance tests pass.

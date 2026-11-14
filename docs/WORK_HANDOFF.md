@@ -52,3 +52,12 @@ At end of every Work session write: current SHA, relevant workflows/artifacts, w
 - CI #50 succeeded in actual signed APK assembly and apksigner verification. Its final duplicate fingerprint check failed only due to hardcoded apksigner output label: current tool prints "V2 Signer: certificate SHA-256 digest". The certificate digest in CI matched the permanent key. This is a known parsing defect, not evidence of wrong signing.
 - The script now reads any "certificate SHA-256 digest:" line and compares it to the pinned exact certificate, then publishes only when CI passes and the main-branch commit subject starts with release(test):.
 - This session's next push is specifically the user-requested FIRST signed Obtainium testing release. Verify real GitHub Release and APK asset before claiming publication.
+
+## 2026-11-14 — FIRST signed GitHub Release: v0.1.51
+- **Verified public release:** https://github.com/Batmancpu/Player/releases/tag/v0.1.51
+- **Direct APK asset:** https://github.com/Batmancpu/Player/releases/download/v0.1.51/Player-release-51.apk (24,869,875 bytes).
+- **GitHub Actions run #51:** https://github.com/Batmancpu/Player/actions/runs/43584487865 — completed SUCCESS. Automated tests/debug build, signed Release assembly, APK signature verification, pinned certificate SHA-256 validation and GitHub Release publication all succeeded.
+- Release commit: b2d766132438f94a2e4bbe3add9bff6aad53622d. Android package `com.batmancpu.player`, versionCode 51, versionName `0.1.51`. Certificate fingerprint is in docs/ANDROID_SIGNING.md.
+- This is a **test release of incomplete Phase 1**. No OPPO CPH2531 installation, folder-permission or actual Obtainium update has been verified. Do NOT mark Phase 1 accepted.
+- **Next user action:** add https://github.com/Batmancpu/Player to Obtainium, install signed v0.1.51, and report that it installs and launches. Do NOT publish a second test release until first install is confirmed; then publish a higher run-number signed release with same app ID/certificate to test an in-place update without uninstalling.
+- Secret diagnostic history: run #47 failed from missing separate key-pass secret; workflow now derives it from store pass for this JKS. Run #49 identified an incorrect non-secret alias and CI now pins `player-release`. Run #50 successfully signed APK but custom certificate comparison expected an obsolete apksigner output prefix. Run #51 changed the parser to match current output and completed full publication. All secret files remain private, never in source control.
