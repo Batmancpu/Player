@@ -561,3 +561,9 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - Tests add total-row/depth/directory/cycle cases and change out-of-root expectation to fail whole scan before collecting any results. Existing incomplete/cancellation cases retained. No dependency/manifest/schema/signing change. Verification pending separate PR gate; Android cancellation/cursor tests still required.
 
 - H-010 verification: PR #3 commit 57ddfbc passed unit/debug CI 43614796902 and was merged. Android/device checks still pending; signed main gate to be inspected before release.
+
+## 2026-11-14 — Android integration test dependency gate
+- H-010 PR #3 (57ddfbc) passed CI 43614796902; H-011 PR #4 (8a46a33) passed CI 43615085618 and merged. No phone evidence inferred.
+- Add only androidTestImplementation runner 1.7.0 and existing JUnit 4.13.2; add assembleDebugAndroidTest to verification command. Dependency-only gate before writing Android test sources. No new production SDK/permission/network/size impact expected; merged production manifest still needs assertion.
+- Official stable version verified from https://developer.android.com/jetpack/androidx/releases/test (runner stable 1.7.0); https://github.com/android/android-test/blob/main/LICENSE is Apache-2.0. Retain applicable notices for redistributed test binaries; no upstream source copied.
+- CI pending. Next: real Room reconciliation/reopen/tree-isolation/rollback and synthetic cursor/cancellation tests on Android 15 emulator. Emulator results are not OPPO acceptance or measured FPS.
