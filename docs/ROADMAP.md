@@ -11,7 +11,8 @@ This roadmap reflects the user's latest approved scope (2026-11-14). Build the f
 - [x] Three JVM theme/contrast regression tests.
 - [ ] Add Gradle wrapper and reproducible local build entry point; CI currently installs Gradle 9.5.1 directly.
 - [x] Stable release-signing Gradle/CI scaffold, monotonic versionCode, conditional release assembly and apksigner verification are implemented; signing scaffold CI passed (run 25).
-- [x] Permanent JKS release key generated and verified; private JKS, base64 secret text and credential note delivered as private files in the current conversation.\n- [ ] User backs up the JKS, stores its password in Proton Pass, and manually configures all four repository Actions secrets. No signed APK exists yet.
+- [x] Permanent JKS release key generated and verified; private JKS, base64 secret text and credential note delivered as private files in the current conversation.
+- [ ] User backs up the JKS, stores its password in Proton Pass, and manually configures all four repository Actions secrets. No signed APK exists yet.
 - [ ] Add dependency/licence inventory and Compose UI smoke test.
 **Gate:** clean main build, tests and APK artifact all pass.
 

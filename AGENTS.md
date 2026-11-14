@@ -4,14 +4,13 @@ This file is binding project guidance. Read it before making changes. Do not rel
 
 ## Mandatory reading order
 
-1. `PROJECT_CONTEXT.md` — product intent, origin, constraints, previous discussions, known repository facts.
-2. `docs/ARCHITECTURE.md` — intended system boundaries and data flow.
-3. `docs/DECISIONS.md` — decisions already made and decisions still open.
-4. `docs/ROADMAP.md` — approved implementation sequence and commit-sized work.
-5. `docs/DEVICE_TESTING.md` and `ISSUES_AND_FIXES.md` — device history, crash lessons, reproduction and recovery.
-6. `DEVELOPMENT_LOG.md` — current implementation state and completed work.
-
-If a file is missing, create it in the appropriate documentation commit before relying on undocumented assumptions.
+1. `PROJECT_CONTEXT.md` — product intent, origin, constraints, previous discussions and current facts.
+2. `CHAT_HISTORY.md` — chronological session summaries of user requests, decisions, work and unresolved actions.
+3. `docs/ARCHITECTURE.md` — intended system boundaries and data flow.
+4. `docs/DECISIONS.md` — decisions already made and decisions still open.
+5. `docs/ROADMAP.md` — approved implementation sequence and commit-sized work.
+6. `docs/DEVICE_TESTING.md` and `ISSUES_AND_FIXES.md` — device history, crash lessons, reproduction and recovery.
+7. `DEVELOPMENT_LOG.md` — current implementation state and completed work.
 
 ## Product goal: do not drift
 
@@ -114,15 +113,16 @@ Keep expensive effects to a small number of important controls. Do not put a gla
 ## Session handoff protocol
 
 At the start of every AI session:
-1. Read this file and all canonical records above.
+1. Read this file and all canonical records above, including `CHAT_HISTORY.md`.
 2. Inspect `main`, the latest commit, open issues, recent workflow runs and artifacts.
 3. Compare actual repository state with the roadmap; do not assume old chat statements are current.
 4. Update the docs if reality differs from the recorded state.
 
 Before ending a session:
 1. Ensure every completed change is committed.
-2. Update `DEVELOPMENT_LOG.md` and `ISSUES_AND_FIXES.md`.
-3. Record the exact next action and the first command/test to run.
-4. State clearly what is implemented, what is only planned, and what remains unverified.
+2. Append a dated, decision-focused summary to `CHAT_HISTORY.md`; never include passwords, private keys, base64 secrets or credentials.
+3. Update `PROJECT_CONTEXT.md`, `DEVELOPMENT_LOG.md` and `ISSUES_AND_FIXES.md` where current state changed.
+4. Record the exact next action and first command/test to run.
+5. State clearly what is implemented, what is only planned, and what remains unverified.
 
 If chat context is lost, these repository records are the handoff. Do not invent missing history; label user-reported history separately from source-verified facts.
