@@ -174,3 +174,6 @@ Do not erase a failure after a fix. Mark fixed and link the corrective commit.
 - Regression scenarios implemented in LibrarySessionTest (six cases); Android recreation, Room cancellation/reconciliation and actual grant/provider checks remain pending. H-010 grant acquisition/release/process-death behavior is not resolved by this change.
 
 H-009 regression verification: functional commit 17e46a8 merged via PR #2 as 10dab08; PR CI 43613459732 and main signed CI 43613651152 passed. Marked fixed at source/JVM/build level; actual Android recreation/Room/provider acceptance still pending. H-010/H-011 remain open.
+
+### H-010 implementation update — 2026-11-14
+Serialized FolderAccessManager/AndroidFolderAccessStore now probe actual root availability, persist selection before release, strip writes, clean abandoned grants and refuse activation after cleanup failure. Retained ViewModel owns picker/restoration with stale-completion guard. Nine fake-store regressions added; PR CI pending, OPPO grant/cursor behavior unverified. Next regression layer is Android cursor/Room instrumentation.

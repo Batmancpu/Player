@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
             isAppearanceLightNavigationBars = false
         }
 
-        val librarySession = ViewModelProvider(this)[LibraryViewModel::class.java].session
+        val libraryModel = ViewModelProvider(this)[LibraryViewModel::class.java]
         setContent {
             var showGlassLab by rememberSaveable { mutableStateOf(false) }
             BackHandler(enabled = showGlassLab) { showGlassLab = false }
@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
                     GlassLabScreen()
                 } else {
                     FolderSetupScreen(
-                        session = librarySession,
+                        model = libraryModel,
                         onOpenGlassLab = { showGlassLab = true },
                     )
                 }
