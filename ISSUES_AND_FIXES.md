@@ -61,6 +61,16 @@ A risk is not a confirmed defect. Record evidence, confidence and status precise
 - **Risk:** subtitle APIs may require an account/key, impose language/rate/availability limits, change availability or transmit identifiers; automatic matches can be wrong.
 - **Mitigation:** audit terms, privacy, authentication and limits; send only normalized title/year/season/episode identifiers; store subtitle downloads in app-private storage; retain local sidecar import and manual selection; never modify source media.
 
+### H-005 — Folder setup launcher imported rememberSaveable from the wrong package
+- **Status:** Fixed in source; regression CI pending.
+- **First observed:** 2026-11-14, workflow run 43569596301.
+- **Affected file:** app/src/main/java/com/batmancpu/player/MainActivity.kt.
+- **Expected:** launcher route state compiles and preserves the developer Glass Lab route across configuration changes.
+- **Actual:** Kotlin compiler reported unresolved reference rememberSaveable.
+- **Root cause confidence:** high; it is declared by androidx.compose.runtime.saveable, not androidx.compose.runtime.
+- **Fix:** correct the import; no dependency or runtime behaviour change.
+- **Regression verification:** pending next CI run.
+
 ## New issue template
 - **ID / title:**
 - **Status:** Open / Investigating / Fixed / Won't fix

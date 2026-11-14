@@ -290,3 +290,10 @@ Implement one isolated Glass laboratory screen with a fixed local gradient/artwo
 - This milestone stores the folder grant only. Recursive scanning, filename parsing, metadata requests, poster retrieval, database and playback are not implemented yet.
 - Validation: CI pending for this commit; real OPPO CPH2531 provider selection/revocation validation remains pending. No media files are read or modified by this screen.
 - Next: implement a cancellable read-only recursive scanner bounded to the persisted tree; include video files and identify sidecar subtitle files without reading or transmitting subtitle contents.
+
+
+## 2026-11-14 — CI run 18: folder-setup Compose import correction
+- Initial folder-setup implementation CI run 18 failed at Kotlin compilation: MainActivity.kt could not resolve rememberSaveable because it was imported from androidx.compose.runtime instead of androidx.compose.runtime.saveable.
+- Failure run: https://github.com/Batmancpu/Player/actions/runs/43569596301. No APK artifact was produced.
+- Fix: import rememberSaveable from androidx.compose.runtime.saveable; no UI state or runtime behaviour changed.
+- Regression gate: rerun testDebugUnitTest and assembleDebug; do not mark folder setup complete until CI passes. Device/provider verification remains separate.
