@@ -1,5 +1,7 @@
-## Active execution update — 2026-11-15
-D-025 records the latest user instruction: ship a larger offline preview with local search/details/basic local playback and repair the broken Glass preview after successful four-video folder/offline/switching checks on v0.1.79. This brings independent local portions forward; it does not enable networking, complete metadata/subtitle work, prove OPPO performance or mark later phases accepted. Six-phase acceptance remains evidence-based. Current integration CI/device preview checks are pending. Latest user additionally authorizes next-phase implementation while absent, without routine APK-install pauses; formal handset acceptance remains recorded separately (D-026).
+## Current implementation status — 2026-11-15
+The user-reported v0.1.79 checks on OPPO CPH2531 confirm four movie/video titles with years, folder selection, library persistence after airplane-mode restart and folder switching. Cancellation feedback was unclear; Glass Lab looked broken in that version. Main now contains an offline searchable catalogue/details, local Media3 playback/resume preview, scan feedback and a single-surface Glass Lab dock. Functional commit e4cc4b1 passed CI90 / 43678768709, including 15 Android 15 synthetic integration tests, JVM/build and signed APK privacy/identity/certificate gates. The run produced a signed CI artifact but skipped publication, so v0.1.79 remains the latest Release. New preview behavior and performance still need OPPO evidence; Phase 1 is not accepted.
+
+Per D-026, continue independent implementation while handset testing is unavailable, without inventing device acceptance or frame-rate results. After publishing this offline preview, start with Room v1 schema export and normalized metadata-request/explicit-opt-in contracts. No HTTP client or new permission is part of the current offline preview. Work directly on `main`; no task branches/PRs.
 
 # Player — six phone-testable release phases
 
@@ -78,23 +80,12 @@ Apply the exact screen-by-screen Glass surfaces and interactive seek/volume/subt
 - Accessibility, battery, cold start, scrolling, offline, caches, source privacy and licences verified on handset.
 **Phone gate:** all earlier journeys function with Glass on/off; 60-Hz target and no confirmed instability; final signed APK update and licence/privacy checks pass.
 
-## Workflow and release blockers
+## Current release and implementation state — 2026-11-15
 
-- **Current state (2026-11-14):** Signed GitHub test Releases [v0.1.51](https://github.com/Batmancpu/Player/releases/tag/v0.1.51) and [v0.1.53](https://github.com/Batmancpu/Player/releases/tag/v0.1.53) were published by passing workflows #51 and #53; matching permanent signing certificate, applicationId `com.batmancpu.player`, and increasing versionCode were verified. The user **confirmed an in-place update in Obtainium** from v0.1.51 to v0.1.53, without uninstalling.
-- GitHub Actions signing credentials are configured and validated, and no further manual signing setup is needed. NEVER ask for private key or password in a chat, commit or log. `docs/ANDROID_SIGNING.md` contains the CURRENT authoritative public certificate fingerprint after a pre-release reset; earlier keys were superseded.
-- The in-place update test is **passed**, but unattended/silent background auto-install and persistence of a previously populated Room library across an update were not separately tested. Phase 1 local-media functionality and device acceptance remain incomplete.
-- The next owner is Codex: prioritize finishing Phase 1 and releasing a signed APK for phone testing, not broad feature development. Keep commits and verification focused; use `docs/PHASE1_PHONE_TEST.md`.
-- CI debug artifacts are for build investigation only; only signed GitHub Release APKs are part of the Obtainium update channel. Never change package ID/key or decrease versionCode once released.
-
-
-## Brief progress snapshot — 2026-11-14
-Planning estimate only: **10–15% of the whole product**, roughly **half of Phase 1 implemented**; **0/6 phases accepted on the target phone**. Scope/effort is uneven, so phases are not equal percentages. Implemented foundations and recent fixes still need provider/Room/lifecycle/phone verification. Next: grant/root recovery → query cancellation/bounds → persistence/parser/UI checks → signed Phase 1 candidate and user acceptance. Later: metadata/artwork → cinematic catalogue → playback → audio/subtitles → Glass/accessibility/measured performance.
-
-## Phase 1 candidate readiness — 2026-11-14
-- Source/JVM/build verified: retained library state, grant/root recovery, read-only/orphan reconciliation, bounded/cancellable provider query helper, safe completed-scan reconciliation, grouped series and conservative filename edge cases.
-- Android 15 emulator: 9 integration cases passed (CI 43615935921) for Room reopen/empty/reconcile/isolation/rollback, cursor lifetime/cancellation, merged privacy and launcher recreation. These use synthetic data/provider; real OPPO SAF/provider and update-data persistence still require phone acceptance.
-- Pending before publication: PR #8 final APK manifest/identity/attribution gate on signed main; explicit signed candidate Release. Pending after publication: actual OPPO checklist. Phase 1 remains unaccepted; no later phase started.
-- Known non-blocking follow-ups: export Room v1 schema before any migration; persist scan-history/size/date metadata in a later schema-tested slice; broader filename corpus and handset accessibility/performance evidence. Core Phase 1 goal is offline discovery/list persistence, not playback/metadata/production Glass.
-
-## Current delivery gate — 2026-11-14
-Signed Phase 1 candidate [v0.1.79](https://github.com/Batmancpu/Player/releases/tag/v0.1.79) is published; CI 43618442469 passed automated, built-APK privacy/identity and permanent certificate gates. Next is the actual OPPO phone checklist, not Phase 2 production. Zero phases phone-accepted until user reports. Latest branch rule: direct main-only small tested commits, at most one optional backup if genuinely needed; older task-PR exception superseded.
+- Latest public installable APK: signed [v0.1.79](https://github.com/Batmancpu/Player/releases/tag/v0.1.79), versionCode 79, stable applicationId `com.batmancpu.player` and permanent certificate. CI90 passed on current offline preview source `e4cc4b1`; no Release was published by that normal push. Next action is a higher-version signed preview Release using the existing `release(test):` workflow gate.
+- CI90 has 15 Android15 synthetic integration cases for Room/SAF/privacy, launcher state, local content-only first-frame/seek and denial/resume isolation, catalogue search/details/play identity, dock accessibility/fallback, plus JVM/build and signed production manifest/certificate checks. Five synthetic screenshots were inspected. This evidence is not target-handset acceptance, codec coverage beyond the fixture or a performance benchmark.
+- User has confirmed on v0.1.79: four videos recognized with names/years, selected-folder use, offline restart retention and folder switching. Full Phase 1 permission recovery/cancellation/change scenarios remain unverified. None of the six phone-testable phases may be called accepted without user/device evidence.
+- After the signed offline preview is verified, continue Phase 2 groundwork in small main-only commits: capture Room v1 schema before migrations, then normalized title/year/type value models and consent-bound request tests. Network, credentials and destination allowlisting remain off until separately implemented and reviewed.
+- No marketing/120-FPS claim: actual OPPO CPH2531 profiling (60-Hz FrameTimingMetric/Perfetto baseline, then optional120-Hz and thermal/memory checks) remains future evidence.
+- Release policy: increase versionCode from GitHub Actions run number, preserve `com.batmancpu.player` and the permanent certificate, install only Release APKs, never debug artifacts; maintain `allowBackup=false`, one read-only local SAF folder and no original-media writes.
+- Estimate of whole product completion is intentionally not refreshed here; the six phases have unequal work and no phase has full phone acceptance yet.

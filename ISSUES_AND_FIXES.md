@@ -224,3 +224,7 @@ H-019 image retention verified in CI88 Android job: all5 PNGs retrieved and visu
 
 ### H-020 — Search UI test did not await asynchronous accessibility edit
 - CI89 second movie is now visible in corrected two-column layout. The absence assertion ran before Compose/accessibility reflected ACTION_SET_TEXT, producing a stale-node failure; old one-column fixture could falsely pass because that movie was offscreen. Fix waits up to10s for actual nonmatching-title disappearance before checking search/details/play. No blanket sleep, retrying a failed workflow or dropping assertions; application search code unchanged. Follow-up CI pending.
+
+
+### H-020 resolution — 2026-11-15
+CI90 / 43678768709 passed the full Android15 integration suite including the corrected asynchronous catalogue-search case, after waiting up to10 seconds for the nonmatching visible title to disappear. Correct-title, details and play-identity assertions remain enabled. Root cause and test-only fix are confirmed; no application behavior change was needed. No OPPO UI result is inferred.
