@@ -28,11 +28,11 @@ internal class SafLocalMediaSource(
     private val resolver get() = context.contentResolver
     private val rootDocumentUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, rootId)
 
-    suspend fun scan(): List<DiscoveredLocalMedia> {
+    suspend fun scan(): List<DiscoveredLocalMedia> = withContext(Dispatchers.IO) {
         if (resolver.persistedUriPermissions.none { it.uri == treeUri && it.isReadPermission }) {
             throw SecurityException("Local folder read access was revoked")
         }
-        return MediaTreeScanner(
+        MediaTreeScanner(
             listChildren = ::queryImmediateChildren,
             isWithinSelectedTree = ::isWithinSelectedTree,
             limits = limits,

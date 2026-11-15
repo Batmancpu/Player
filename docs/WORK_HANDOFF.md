@@ -102,3 +102,6 @@ H-009 verification: PR #2 commit 17e46a8 passed CI 43613459732, merged as 10dab0
 
 ## H-010 slice — 2026-11-14
 Folder grant/root ownership moved to retained ViewModel plus serialized manager; nine fake-store tests. PR gate pending. Next H-011 cancellable/bounded provider queries, then persistence/parser/UI acceptance coverage and a signed Phase 1 Release candidate. User authorized sustained implementation and +5h/+10h scheduled continuations; inspect live main/open PRs before resuming, no routine permission requests, no fabricated phone acceptance.
+
+## 2026-11-15 continuation — unreleased main maintenance
+Both one-time continuations have now fired. Published candidate remains v0.1.79; no actual OPPO acceptance report. H-014 moves whole scan/index callbacks off UI thread and adds per-row mapping cancellation plus a 1,000→100 Android main-caller reconciliation regression. CI pending at authoring; this change is unreleased and must not be described as part of v0.1.79. Next: inspect latest main CI, record result, then actual phone report/Phase 1 defect triage. Main only; no duplicate release or gated Phase 2 production.

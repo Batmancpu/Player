@@ -159,3 +159,7 @@ User requested sustained work until signed Phase 1 candidate in Releases; actual
 
 - Branch request fulfilled: all eight extra task branches deleted after unchanged-head/ancestry checks by CI 43642157896; fresh branch list contains main only. Temporary workflow removed. No work/history/release lost and no manual branch deletion needed. Both scheduled prompts updated to main-only; no new branch to be created for ordinary work.
 - Signed v0.1.79 is available; final user action is Obtainium update without uninstalling plus short OPPO checklist. Phase 1 acceptance remains pending, zero real-device FPS results claimed.
+
+## 2026-11-15 — Second scheduled continuation
+- Verified main-only repository, no open PRs, green latest CI and published signed v0.1.79. No user phone acceptance arrived. Avoid duplicate release/new branches or gated Phase 2 implementation.
+- Found and addressed H-014 background-thread/cancellation boundaries in SAF traversal and index parsing/mapping; added 1,000→100 synthetic Android reconciliation from main caller. CI pending at authoring, no FPS claim. Latest released APK remains v0.1.79; this is unreleased main maintenance.

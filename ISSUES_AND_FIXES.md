@@ -194,3 +194,9 @@ H-010 fixed at fake/JVM/source level (CI 43614796902); H-011 bounded scan/cursor
 
 ### H-013 verified resolution and candidate availability — 2026-11-14
 Publication run 43618442469 passed all gates and published v0.1.79. Actual release aapt2 text is `false`; the original typed-hex-only regex caused #78’s failure. Full-script regression fixtures and actual built-APK assertion now pass without weakening rejection of true/unknown backup. No backup-on defect existed in Player. Source/JVM/Android synthetic tests pass; real OPPO provider/phone acceptance remains pending.
+
+### H-014 — Traversal and index mapping can resume on UI thread
+- First observed: 2026-11-15 source audit at fb78659; affects v0.1.79 code path. No actual OPPO reproduction or measured timing. Potential large-library UI blocking and delayed mapping cancellation.
+- Root-cause confidence high from coroutine boundaries: VM main scope invokes scanner and index callbacks; query/DAO suspend dispatch does not automatically move subsequent traversal/parsing/mapping off caller thread.
+- Fix: whole scan and index entry-point IO dispatch, per-record cancellation checks. No source media write, schema, permission or signing change.
+- Regression: Android main-caller 1,000-item save/activation/load then 100-item reconciliation; existing preservation/rollback/cancellation cases. CI pending; exact frame/memory/thermal outcomes require actual OPPO traces. Unreleased main; v0.1.79 remains current candidate.

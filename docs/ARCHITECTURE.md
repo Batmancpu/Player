@@ -79,3 +79,6 @@ MainActivity retains LibraryViewModel using its ViewModelStore. The ViewModel ho
 
 ## Phase 1 grant and provider hardening — 2026-11-14
 FolderAccessManager plus AndroidFolderAccessStore now own serialized restore/connect, durable selection, root directory probe, orphan-grant cleanup and removal of persisted write grants. Retained ViewModel owns picker completion and guards stale requests. SAF query helper binds CancellationSignal, scopes cursor lifetime, and checks cancellation per row; traversal budgets cap rows/directories/depth/width. Invalid/incomplete/out-of-tree results fail before Room reconciliation. Android 15 emulator tests exercise Room/cursor helper/manifest and launcher recreation; actual OPPO DocumentsProvider and frame performance remain unverified.
+
+## Unreleased Phase 1 main-safe data entry points — 2026-11-15
+SafLocalMediaSource.scan and OfflineLibraryIndex public entry points own IO dispatch for their entire operation, including permission preflight, traversal and filename/row mapping. Suspend DAO/query calls alone do not move subsequent work off their caller context. Mapping checks cancellation per record; Room reconciliation remains atomic, and activation mapping stays inside the Room transaction context. No database schema or source-storage write change. CI/actual device timing still pending; no FPS inference.

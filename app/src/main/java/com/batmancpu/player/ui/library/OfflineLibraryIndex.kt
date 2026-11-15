@@ -12,6 +12,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.withTransaction
 import java.util.UUID
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.withContext
 
 /** Folder tree ID and provider document ID form the stable local identity. */
 @Entity(tableName = "indexed_media", primaryKeys = ["treeUri", "documentId"])
@@ -71,34 +75,42 @@ internal abstract class PlayerLibraryDatabase : RoomDatabase() {
  */
 internal object OfflineLibraryIndex {
     /** Serialized by LibrarySession after obsolete work has unwound. */
-    suspend fun activateAndLoad(context: Context, treeUri: Uri): List<DiscoveredLocalMedia> {
-        val db = PlayerLibraryDatabase.get(context)
-        return db.withTransaction {
-            db.mediaDao().removeOtherTrees(treeUri.toString())
-            load(context, treeUri)
-        }
-    }
-
-    suspend fun load(context: Context, treeUri: Uri): List<DiscoveredLocalMedia> {
-        return PlayerLibraryDatabase.get(context).mediaDao()
-            .forTree(treeUri.toString())
-            .map {
-                DiscoveredLocalMedia(
-                    documentId = it.documentId,
-                    displayName = it.displayName,
-                    kind = LocalMediaKind.valueOf(it.mediaKind),
-                )
+    suspend fun activateAndLoad(context: Context, treeUri: Uri): List<DiscoveredLocalMedia> =
+        withContext(Dispatchers.IO) {
+            val db = PlayerLibraryDatabase.get(context)
+            db.withTransaction {
+                db.mediaDao().removeOtherTrees(treeUri.toString())
+                toDiscovered(db.mediaDao().forTree(treeUri.toString()))
             }
+        }
+
+    suspend fun load(context: Context, treeUri: Uri): List<DiscoveredLocalMedia> =
+        withContext(Dispatchers.IO) {
+            toDiscovered(PlayerLibraryDatabase.get(context).mediaDao().forTree(treeUri.toString()))
+        }
+
+    private suspend fun toDiscovered(records: List<IndexedMedia>): List<DiscoveredLocalMedia> {
+        val workContext = currentCoroutineContext()
+        return records.map {
+            workContext.ensureActive()
+            DiscoveredLocalMedia(
+                documentId = it.documentId,
+                displayName = it.displayName,
+                kind = LocalMediaKind.valueOf(it.mediaKind),
+            )
+        }
     }
 
     suspend fun saveSuccessfulScan(
         context: Context,
         treeUri: Uri,
         discovered: List<DiscoveredLocalMedia>,
-    ) {
+    ) = withContext(Dispatchers.IO) {
+        val workContext = currentCoroutineContext()
         val token = UUID.randomUUID().toString()
         val root = treeUri.toString()
         val records = discovered.map { media ->
+            workContext.ensureActive()
             val parsed = if (media.kind == LocalMediaKind.VIDEO) {
                 MediaNameParser.parse(media.displayName)
             } else {
@@ -132,7 +144,7 @@ internal object OfflineLibraryIndex {
         }
     }
 
-    suspend fun forgetTree(context: Context, treeUri: Uri) {
+    suspend fun forgetTree(context: Context, treeUri: Uri): Unit = withContext(Dispatchers.IO) {
         PlayerLibraryDatabase.get(context).mediaDao().removeTree(treeUri.toString())
     }
 }

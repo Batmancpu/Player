@@ -8,6 +8,8 @@ import androidx.room.withTransaction
 import androidx.test.platform.app.InstrumentationRegistry
 import java.io.IOException
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -69,6 +71,21 @@ class OfflineLibraryAndroidTest {
             }
         }
         assertEquals(original, OfflineLibraryIndex.load(context, a))
+    }
+
+    @Test(timeout = 30_000) fun thousandItemReconciliationIsSafeToCallFromMain() = runBlocking {
+        val expected = (1..1000).map { media("synthetic-$it") }
+        val loaded = withContext(Dispatchers.Main) {
+            OfflineLibraryIndex.saveSuccessfulScan(context, a, expected)
+            OfflineLibraryIndex.activateAndLoad(context, a)
+        }
+        assertEquals(expected.map { it.documentId }.toSet(), loaded.map { it.documentId }.toSet())
+        val remaining = expected.take(100)
+        val rescanned = withContext(Dispatchers.Main) {
+            OfflineLibraryIndex.saveSuccessfulScan(context, a, remaining)
+            OfflineLibraryIndex.load(context, a)
+        }
+        assertEquals(remaining.map { it.documentId }.toSet(), rescanned.map { it.documentId }.toSet())
     }
 
     @Test fun mergedManifestRetainsOfflineReadOnlyPrivacyBoundary() {
