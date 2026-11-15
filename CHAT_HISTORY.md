@@ -186,3 +186,10 @@ Published [signed v0.1.91](https://github.com/Batmancpu/Player/releases/tag/v0.1
 
 ## 2026-11-15 — Phase 2 database-safety foundation started
 After publishing v0.1.91, began a focused schema-only update: Room/KSP exports version1 through an incremental-build-aware Gradle argument provider; CI validates the schema is the expected single `indexed_media` entity and retains its JSON for review. No database version/entity/runtime behavior changed, and no network functionality was added. CI and schema artifact are pending. Next: inspect generated JSON from Actions, commit that exact baseline, then add the offline normalized metadata/opt-in contract tests before an HTTP client. Real OPPO preview acceptance/FPS remain unverified.
+
+
+## 2026-11-15 — Room v1 snapshot verified and preserved
+
+- Main schema-export commit 1e4e63a initially hit a transient Gradle plugin-resolution failure before build/tests. The identical pinned plugin passed CI #91; retrying only failed jobs as CI #92 attempt 2 then passed Android 15 and verification gates. Android XML confirms 15 tests with 0 failures/errors/skips; signed APK, privacy/identity and permanent certificate verification also passed. No Release publication from this schema task.
+- Inspected Actions artifact `Player-Room-Schema-1e4e63a473bb20f90119412acb1ed1a69f3fbab9`; committed its exact generated v1 JSON at `app/schemas/com.batmancpu.player.ui.library.PlayerLibraryDatabase/1.json`. It declares one `indexed_media` table, ten fields and the composite `treeUri/documentId` key; SHA-256 `820f2e814c9fcc3780be7c4bf6a1cbcb2498d52d1f92a0439b58aef11c9d6d04`. No user data or runtime change.
+- Next: check the committed schema through CI, then add offline normalized title/year/type query and default-off opt-in tests. No HTTP/client/credential/permission addition in this slice. User's v0.1.79 OPPO evidence stands; v0.1.91 preview, full Phase 1 acceptance and all performance targets remain unverified.
