@@ -201,3 +201,10 @@ After publishing v0.1.91, began a focused schema-only update: Room/KSP exports v
 - The builder rejects path/URI-like and file-suffix inputs, controls, blank/over-120-code-point values; it preserves Unicode NFC and omits invalid years. Seven JVM regression cases added. No HTTP client, API key, new dependency, permission, persistent user setting or metadata request is included. CI pending.
 - Checked official TMDB movie/TV search references and FAQ: separate endpoint/year parameters; adult content defaults false; API use requires TMDB attribution, approved logo and the stated non-endorsement notice in About/Credits. No TMDB data use yet.
 - Next: verify CI, then design secure user-managed credentials and exact API/image host controls before any network code. Phase 1 remains pending OPPO acceptance; v0.1.91 preview/performance is not handset-verified.
+
+
+## 2026-11-15 — Metadata query contract verified
+
+- CI #94 / 43731972463 passed after the `TmdbSearchTerms` implementation. Android 15 XML shows 15 tests, zero failures/errors/skips; JVM `:app:testDebugUnitTest` passed, including all seven new consent/normalization/privacy cases. Schema validation, signed APK assembly, package/manifest privacy and permanent certificate gates passed.
+- Signed artifact `Player-release-v94-935601313171e1f43bb6632bb693787b1f84720f` is CI-only. No GitHub Release, network permission, HTTP/API integration, credential, persistent opt-in setting or migration was added.
+- Next: review safe persistence for explicit opt-in and a user-managed encrypted TMDB credential, plus a strict API/image host allowlist. Keep external requests disabled until those controls are implemented and tested. No OPPO preview acceptance or performance evidence.
