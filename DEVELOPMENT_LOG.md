@@ -764,7 +764,14 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 ## 2026-11-15 — Room v1→v2 manual override persistence foundation
 
 - Added a separate `manual_tmdb_matches` entity keyed by selected tree/document ID; stores only provider ID, media kind and local confirmation timestamp. `indexed_media` v1 fields remain unchanged.
-- Added explicit `MIGRATION_1_2` and registered it on the production Room builder, with `MigrationTestHelper` coverage that creates a v1 database, inserts synthetic indexed data, opens it through the v2 migration, verifies old library rows survive and validates override storage.
+- Added explicit `MIGRATION_1_2` and registered it on the production Room builder. The first Android test used `MigrationTestHelper`, but CI #95 failed before migration execution with an `AbstractMethodError` while Room's serializer decoded the schema JSON. The corrective test now builds a version-1 SQLite database directly from the committed v1 schema JSON asset and opens it through the production Room builder; this exercises the actual migration and Room's v2 validation without that broken helper path. Verification of the corrective harness is pending CI #96.
 - Successful scan reconciliation removes overrides for absent documents in the same transaction; selected-tree activation and `forgetTree` remove matching overrides transactionally. No cascading FK is used because media indexing uses `INSERT OR REPLACE`.
 - CI schema check now requires the unchanged v1 snapshot plus exactly the generated v2 schema and verifies the manual-match columns/composite identity. Room testing is test-only; no release runtime dependency or permission change. CI and exported v2 JSON pending.
-- Official reference: https://developer.android.com/training/data-storage/room/migrating-db-versions.html and https://developer.android.com/reference/androidx/room/testing/MigrationTestHelper . No network/client/settings/manual matching UI is implemented.
+- Official migration reference: https://developer.android.com/training/data-storage/room/migrating-db-versions.html . MigrationTestHelper failure evidence: run 43734224640, `SchemaBundle.deserialize` threw `AbstractMethodError` for `GeneratedSerializer.typeParametersSerializers()` before migration ran. No network/client/settings/manual matching UI is implemented.
+
+## 2026-11-15 — Correct Room migration integration-test harness
+
+- Corrective source commit SHA and CI #96 are pending. Removed the Room testing helper dependency that failed while decoding the schema bundle in Android CI #95. The Android test now constructs a genuine v1 SQLite DB from the exact committed Room v1 JSON, seeds one synthetic library record, sets Room's v1 identity hash/user version, then opens it with the production v1→v2 migration and verifies preserved rows plus new override DAO operations.
+- The production migration and schema are unchanged; no destructive fallback, permission, network, or media-file access was added. CI #95 logs confirm the earlier error occurred before migration execution, so do not count its attempted migration case as verified.
+- Next: inspect CI #96 Android test report, generated v2 schema artifact and signed privacy/identity gates. No Release or actual-device evidence is associated with this change.
+

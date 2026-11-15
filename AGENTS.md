@@ -192,3 +192,6 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-15 — Started the Room v1→v2 manual TMDB-match override table using a separate composite SAF-keyed entity, explicit migration, Android migration test and tree/reconciliation cleanup. Updated schema CI to verify both snapshots. Code/tests/docs on main; CI and generated v2 JSON pending. No network, permission, matching UI or source-media mutation. Next inspect v2 artifact, correct failures, then commit exact generated JSON.
+
+
+- 2026-11-15 — CI #95 / 43734224640 exposed a Room migration-test harness failure: `MigrationTestHelper` raised `AbstractMethodError` in `SchemaBundle.deserialize` before executing SQL (13/17 Android tests completed; one failed). Replaced it with a test SQLite database built from the committed Room v1 JSON; production Room opens it through the real v1→v2 migration and validates v2. Removed the incompatible test-only helper dependency. CI #96 pending. Also recorded Android's Android-12+ OEM device-transfer backup caveat before credentials are stored. Next: verify CI #96 and exact generated schema, then harden explicit backup-transfer exclusions before credential storage; no release or OPPO acceptance.

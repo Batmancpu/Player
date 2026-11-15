@@ -228,3 +228,10 @@ H-019 image retention verified in CI88 Android job: all5 PNGs retrieved and visu
 
 ### H-020 resolution — 2026-11-15
 CI90 / 43678768709 passed the full Android15 integration suite including the corrected asynchronous catalogue-search case, after waiting up to10 seconds for the nonmatching visible title to disappear. Correct-title, details and play-identity assertions remain enabled. Root cause and test-only fix are confirmed; no application behavior change was needed. No OPPO UI result is inferred.
+
+
+### H-021 — Room migration helper crashes before migration execution
+- First observed: CI #95 / 43734224640, Android 15 instrumentation, commit 76330c96. The new migration case fails in `androidx.room.migration.bundle.SchemaBundle.deserialize` with `AbstractMethodError` for `GeneratedSerializer.typeParametersSerializers()` while `MigrationTestHelper.createDatabase` reads the v1 schema. The failure happens before the SQL migration is invoked; the run reports 13/17 tests completed with this as the one failure.
+- Root-cause confidence: high that this is a binary incompatibility between Room's schema-serializer bytecode and the Android-test kotlinx.serialization runtime; exact resolved runtime versions were not printed in the job log.
+- Correction: remove the test-only Room helper dependency. Load the exact committed v1 JSON asset, use its Room-generated CREATE/setup SQL and identity hash to construct a version-1 SQLite database, then open it via the production Room builder with `MIGRATION_1_2`. Room itself performs migration and validates the complete v2 schema; the test verifies old data and new DAO operations. No production database behavior changes.
+- Regression status: corrective test is on main; CI #96 / run not yet available. Do not treat migration as verified until that Android test and the generated schema gate pass. No APK release, device acceptance, or performance result.
