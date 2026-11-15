@@ -200,3 +200,5 @@ Publication run 43618442469 passed all gates and published v0.1.79. Actual relea
 - Root-cause confidence high from coroutine boundaries: VM main scope invokes scanner and index callbacks; query/DAO suspend dispatch does not automatically move subsequent traversal/parsing/mapping off caller thread.
 - Fix: whole scan and index entry-point IO dispatch, per-record cancellation checks. No source media write, schema, permission or signing change.
 - Regression: Android main-caller 1,000-item save/activation/load then 100-item reconciliation; existing preservation/rollback/cancellation cases. CI pending; exact frame/memory/thermal outcomes require actual OPPO traces. Unreleased main; v0.1.79 remains current candidate.
+
+H-014 verification: 57e4539 passed full main CI 43667022100, including 10 Android integration cases and signed-build/privacy/certificate checks. Fixed at source/build/functional-test level; unreleased, still present in the older v0.1.79 code path. Actual phone timing/impact is unmeasured.

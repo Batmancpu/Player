@@ -1,7 +1,8 @@
-## Active handoff — signed Phase 1 candidate published, 2026-11-14
+## Active handoff — signed candidate and unreleased maintenance, 2026-11-15
 - Release: [v0.1.79](https://github.com/Batmancpu/Player/releases/tag/v0.1.79), source f1d7f277ad8a3534715803f098f3a33336cba0c4, versionCode 79, stable applicationId/certificate. [CI #79](https://github.com/Batmancpu/Player/actions/runs/43618442469) passed all automated/signing/privacy gates. APK SHA-256 3f889523752df27fd5c025825af828304c2436c34b217021f2439cdd83fb5e95.
 - **Latest user rule: main only. No task branches/PRs; at most one optional backup if genuinely needed.** All eight old task heads were fully merged and deleted; cleanup CI 43642157896 succeeded and branch API confirms main only. Temporary cleanup workflow removed; preserve main/history/releases.
-- First scheduled continuation has fired. Second remains 2026-11-15 02:14 UTC; both prompts now respect main-only. Inspect live repo/user report before work; avoid duplicate changes/releases.
+- Both requested one-time continuations have fired; no further task was created. Inspect live repo/user report before work; avoid duplicate changes/releases.
+- Unreleased main fix H-014 (57e4539) moves whole traversal/index work off UI thread and adds mapping cancellation. CI #82 (43667022100) passed 10 Android integration tests including 1,000→100 reconciliation, unit/build/signing/privacy. This fix is not in v0.1.79; no measured phone/FPS result.
 - Actual OPPO acceptance is pending. Ask user to update through Obtainium without uninstalling and follow docs/PHASE1_PHONE_TEST.md. Do not claim phase acceptance/FPS or start gated Phase 2 production work without that report. Safe independent Phase 1 fixes/tests and later research remain authorized.
 - Next action: inspect actual user OPPO checklist report, triage Phase 1 bugs on main. Do not duplicate the already published candidate. All older pending/signing/branch snapshots below are historical.
 
@@ -105,3 +106,5 @@ Folder grant/root ownership moved to retained ViewModel plus serialized manager;
 
 ## 2026-11-15 continuation — unreleased main maintenance
 Both one-time continuations have now fired. Published candidate remains v0.1.79; no actual OPPO acceptance report. H-014 moves whole scan/index callbacks off UI thread and adds per-row mapping cancellation plus a 1,000→100 Android main-caller reconciliation regression. CI pending at authoring; this change is unreleased and must not be described as part of v0.1.79. Next: inspect latest main CI, record result, then actual phone report/Phase 1 defect triage. Main only; no duplicate release or gated Phase 2 production.
+
+H-014 verification completed: 57e4539, CI 43667022100 passed all gates; publication skipped as intended. Documentation follow-up CI pending at authoring. Next actual OPPO report and direct-main Phase 1 bug triage, no duplicate release/gated Phase 2.

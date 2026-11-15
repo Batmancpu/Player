@@ -62,3 +62,6 @@ H-009 verification completed: [PR #2](https://github.com/Batmancpu/Player/pull/2
 
 ## Published candidate and current workflow — 2026-11-14
 Candidate v0.1.79 (f1d7f27) published after CI 43618442469 passed unit, nine Android 15 integration tests, release-checker regressions, actual APK privacy/identity and permanent certificate gates. Actual OPPO/provider acceptance and frame measurements remain unverified. Main-only development now supersedes the task-PR exception; all old task heads are fully merged and are being safely retired. Next: phone report and Phase 1 defect triage.
+
+## 2026-11-15 — H-014 background data work
+Found caller-thread traversal and index mapping/parsing despite per-query/DAO dispatch. Unreleased main 57e4539 dispatches the complete data entry points and checks per-row cancellation. CI 43667022100 passed 10 Android integration cases (including 1,000→100 main-caller reconciliation), unit/build/signing/privacy. Source boundaries and functional behavior verified; no actual OPPO FPS claim. v0.1.79 stays the phone candidate; next real-device report/defect triage.

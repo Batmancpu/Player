@@ -362,3 +362,5 @@ Branch cleanup completed: CI 43642157896 succeeded, GitHub API confirms only mai
 
 ## 2026-11-15 — Unreleased Phase 1 thread-boundary maintenance
 Main now prepares H-014: whole SAF traversal/index entry points dispatch to IO, record mapping cooperates with cancellation, and an Android main-caller 1,000→100 reconciliation case is added. CI pending at authoring. This is not in released v0.1.79 and does not establish FPS; that signed candidate still awaits actual OPPO acceptance. Main-only rule and release identity unchanged.
+
+H-014 main verification completed: 57e4539 passed CI 43667022100 (#82), 10 Android integration cases including 1,000→100 main-caller reconciliation plus unit/build/signing/privacy. No new Release; v0.1.79 remains the physical-phone candidate and actual OPPO acceptance is pending. Both scheduled one-time continuations have fired; main-only workflow remains in force.

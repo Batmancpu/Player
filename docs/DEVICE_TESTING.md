@@ -74,3 +74,6 @@ Never claim fixed because the app launched once or CI is green. Sanitize user-su
 
 ## v0.1.79 candidate — automated evidence only, 2026-11-14
 Published signed APK: https://github.com/Batmancpu/Player/releases/tag/v0.1.79 (source f1d7f27, versionCode 79, unchanged certificate). CI 43618442469 passed nine Android 15 emulator integration cases plus unit/build/privacy/signing gates. This is not an OPPO test, file-provider acceptance or GPU benchmark. Await user update without uninstalling, nested-folder scan, offline reopen, rescan/cancel/switch/reconnect results under docs/PHASE1_PHONE_TEST.md.
+
+## 2026-11-15 — Unreleased H-014 automated evidence
+CI 43667022100 at 57e4539 passed 10 Android 15 emulator integration cases, adding main-caller 1,000-item save/activation then 100-item rescan. Unit/build/privacy/signature gates passed. This is functional synthetic coverage, not handset frame timing, thermal/memory measurement or OPPO acceptance. Published v0.1.79 is unchanged and does not include H-014.
