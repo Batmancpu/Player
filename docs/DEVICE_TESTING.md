@@ -83,3 +83,8 @@ Confirmed by user: folder selection, retained library after airplane-mode restar
 
 ### User clarification, 2026-11-15
 Audio wording was a misinterpretation. User confirms all four movie videos are recognized correctly with names and bracketed years. Keep video/subtitle product scope. Combined with prior report, selection/offline restart/folder switching are physically confirmed. Glass dock defect remains valid; no original-file removal, permission-revocation, frame-time or full codec report inferred.
+
+
+## 2026-11-15 — Signed v0.1.91 preview (automated only)
+
+Release [v0.1.91](https://github.com/Batmancpu/Player/releases/tag/v0.1.91), versionCode 91, APK SHA-256 `7c9ff8287405be9b1f607259608d84a256e5aed1fcc4cea24e3f9b882dd05e17`, source `36e6c684f8191037c183603139de2e0891b832c8`, CI [#91](https://github.com/Batmancpu/Player/actions/runs/43726886945). CI passed 15/15 Android15 emulator tests, JVM/build, signed manifest/privacy/identity and pinned certificate. The user has not reported installing this build; v0.1.79 phone report remains the only current handset evidence. No frame-time, codec breadth, Glass quality or thermal data is available.

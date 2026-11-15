@@ -17,11 +17,9 @@ Choose **one local folder**. Player scans only that folder and its descendants, 
 
 ## Current status
 
-The signed **[Phase 1 phone-test candidate v0.1.79](https://github.com/Batmancpu/Player/releases/tag/v0.1.79)** is available. Update your existing Player installation through Obtainium without uninstalling.
+The latest signed preview is **[Player v0.1.91](https://github.com/Batmancpu/Player/releases/tag/v0.1.91)** (versionCode 91) and updates the existing app through Obtainium without uninstalling. APK SHA-256: `7c9ff8287405be9b1f607259608d84a256e5aed1fcc4cea24e3f9b882dd05e17`. CI #91 passed 15 Android 15 integration tests, JVM/build, signed APK privacy/identity and permanent-certificate checks.
 
-Phase 1 includes one local read-only SAF folder, recursive video/subtitle discovery, a persisted offline Room index, conservative filename parsing, grouped series, safe rescans/cancellation and grant recovery. [CI #79](https://github.com/Batmancpu/Player/actions/runs/43618442469) passed unit tests, nine Android 15 emulator integration cases, build, built-APK privacy/identity and permanent signing-certificate checks. Actual OPPO CPH2531 acceptance and frame-time measurements remain pending.
-
-Phase 1 has no network permission or online metadata requirement. TMDB/artwork, cinematic catalogue, local playback, subtitle controls and production Glass are later phases. Follow the [phone checklist](docs/PHASE1_PHONE_TEST.md), [six-phase roadmap](docs/ROADMAP.md) and [handoff](docs/WORK_HANDOFF.md). Never install a CI-only debug APK as an update. Development now uses main only; see [AGENTS.md](AGENTS.md).
+The offline preview includes one read-only local SAF folder, Room persistence, searchable movie/show browsing, details and basic local Media3 playback with pause/seek/private resume, plus a single-surface Glass Lab dock. The user confirmed on v0.1.79 that four videos were correctly named/year-parsed, the folder persisted in airplane mode and folder switching worked. New preview behavior and remaining permission/cancellation scenarios still need OPPO testing; Phase 1 is not accepted and no FPS/thermal results are claimed. Phase 1 requires no network permission or online metadata. Follow the [short preview checklist](docs/OFFLINE_PREVIEW_TEST.md), [Phase 1 checklist](docs/PHASE1_PHONE_TEST.md), [six-phase roadmap](docs/ROADMAP.md) and [handoff](docs/WORK_HANDOFF.md). Never install a CI-only debug APK as an update. Development uses main only; see [AGENTS.md](AGENTS.md).
 
 ## Canonical project records
 

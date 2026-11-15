@@ -1,6 +1,6 @@
 # Offline browsing and playback preview
 
-This preview adds useful local parts of catalogue and playback before online metadata. It uses only the already selected read-only folder. Titles come from filenames; the coloured cards are local placeholders, not retrieved posters. No network permission, shared API credential or backend is added. Embedded subtitle controls use Media3; sidecar loading, custom track sheets and subtitle delay remain later work.
+Signed preview release: [v0.1.91](https://github.com/Batmancpu/Player/releases/tag/v0.1.91). This adds useful local parts of catalogue and playback before online metadata. It uses only the already selected read-only folder. Titles come from filenames; the coloured cards are local placeholders, not retrieved posters. No network permission, shared API credential or backend is added. Embedded subtitle controls use Media3; sidecar loading, custom track sheets and subtitle delay remain later work.
 
 ## Optional phone check when convenient
 

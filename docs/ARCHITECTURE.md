@@ -1,6 +1,6 @@
 # Architecture
 
-Status (2026-11-15): one-tree offline SAF/Room library passed automated tests; user confirmed v0.1.79 recognizes four movies with correct names/years, retains the library across airplane-mode restart and switches folders. Searchable catalogue/details/basic foreground Media3 playback and single-surface Glass preview repair are integrated on main with CI pending. TMDB, production artwork/Glass, advanced playback/subtitle work and remaining OPPO checks are uncompleted. Permanent signing/application identity remain unchanged.
+Status (2026-11-15): one-tree offline SAF/Room library passed automated tests; user confirmed v0.1.79 recognizes four movies with correct names/years, retains the library across airplane-mode restart and switches folders. Searchable catalogue/details/basic foreground Media3 playback and single-surface Glass preview are in signed v0.1.91; CI91 passed 15 Android15 integration cases and signing/privacy gates. The user has not tested the new preview on OPPO. TMDB, production artwork/Glass, advanced playback/subtitle work and remaining Phase 1 OPPO checks are uncompleted. Permanent signing/application identity remain unchanged.
 
 ## Product boundary
 One Android application, one user-selected local folder, recursive read-only scan, TMDB metadata/artwork, offline local library. No media server, upload, streaming, account, cloud drive, ads, telemetry or analytics.
