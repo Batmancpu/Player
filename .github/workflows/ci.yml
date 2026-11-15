@@ -132,6 +132,34 @@ jobs:
       - name: Run unit tests and assemble CI-only debug APK
         run: gradle --no-daemon --stacktrace :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest
 
+      - name: Verify exported Room v1 schema
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          schemas = list(Path("app/schemas").rglob("*.json"))
+          if len(schemas) != 1:
+              raise SystemExit(f"Expected exactly one exported Room schema; found {len(schemas)}")
+          exported = json.loads(schemas[0].read_text(encoding="utf-8"))
+          database = exported.get("database", {})
+          if database.get("version") != 1:
+              raise SystemExit("Expected Room database schema version 1")
+          entities = database.get("entities", [])
+          if len(entities) != 1 or entities[0].get("tableName") != "indexed_media":
+              raise SystemExit("Unexpected Room v1 entity set")
+          print(f"Verified Room schema v1 ({schemas[0]}): indexed_media")
+          PY
+
+      - name: Upload exported Room schema for review
+        uses: actions/upload-artifact@v7
+        with:
+          name: Player-Room-Schema-${{ github.sha }}
+          path: app/schemas/**/*.json
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Upload CI-only debug APK
         uses: actions/upload-artifact@v7
         with:

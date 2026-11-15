@@ -1,6 +1,6 @@
 # Architecture
 
-Status (2026-11-15): one-tree offline SAF/Room library passed automated tests; user confirmed v0.1.79 recognizes four movies with correct names/years, retains the library across airplane-mode restart and switches folders. Searchable catalogue/details/basic foreground Media3 playback and single-surface Glass preview are in signed v0.1.91; CI91 passed 15 Android15 integration cases and signing/privacy gates. The user has not tested the new preview on OPPO. TMDB, production artwork/Glass, advanced playback/subtitle work and remaining Phase 1 OPPO checks are uncompleted. Permanent signing/application identity remain unchanged.
+Status (2026-11-15): one-tree offline SAF/Room library passed automated tests; user confirmed v0.1.79 recognizes four movies with correct names/years, retains the library across airplane-mode restart and switches folders. Searchable catalogue/details/basic foreground Media3 playback and single-surface Glass preview are in signed v0.1.91; CI91 passed 15 Android15 integration cases and signing/privacy gates. The user has not tested the new preview on OPPO. Room v1 schema-export configuration is being added; generated JSON is not yet committed. TMDB, production artwork/Glass, advanced playback/subtitle work and remaining Phase 1 OPPO checks are uncompleted. Permanent signing/application identity remain unchanged.
 
 ## Product boundary
 One Android application, one user-selected local folder, recursive read-only scan, TMDB metadata/artwork, offline local library. No media server, upload, streaming, account, cloud drive, ads, telemetry or analytics.
@@ -39,6 +39,10 @@ The no-backend design means a private shared API credential cannot be kept secre
 - Match override: file identity -> confirmed TMDB ID/type; never overwritten by a later guess.
 - Artwork cache: bounded and local; never cache video files.
 Use explicit Room migrations; never destructive-migrate user data in release builds.
+
+## Room schema history
+
+The current Room database is version1 with the existing `indexed_media` entity. KSP now exports its compile-time schema JSON through a Gradle-tracked `CommandLineArgumentProvider`; CI validates the generated version/entity and exposes the artifact for exact review. The baseline JSON must be committed before adding columns or migration code. The export is build metadata only and contains no user library rows; it is not packaged as production app data. Never use destructive migration fallback for this library.
 
 ## Scanning correctness
 - Whitelist video MIME types/extensions; ignore hidden/system/unsupported files.

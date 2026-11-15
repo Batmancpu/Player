@@ -1,7 +1,27 @@
+import java.io.File
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
+import org.gradle.process.CommandLineArgumentProvider
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.devtools.ksp")
+}
+
+private class RoomSchemaArgProvider(
+    @get:InputDirectory
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    val schemaDir: File,
+) : CommandLineArgumentProvider {
+    override fun asArguments(): Iterable<String> =
+        listOf("room.schemaLocation=${schemaDir.path}")
+}
+
+val roomSchemaDir = File(projectDir, "schemas").apply { mkdirs() }
+ksp {
+    arg(RoomSchemaArgProvider(roomSchemaDir))
 }
 
 val buildNumber = System.getenv("GITHUB_RUN_NUMBER")

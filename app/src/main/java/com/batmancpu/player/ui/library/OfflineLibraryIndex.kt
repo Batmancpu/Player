@@ -50,7 +50,7 @@ internal interface IndexedMediaDao {
     suspend fun removeOtherTrees(selectedTree: String)
 }
 
-@Database(entities = [IndexedMedia::class], version = 1, exportSchema = false)
+@Database(entities = [IndexedMedia::class], version = 1, exportSchema = true)
 internal abstract class PlayerLibraryDatabase : RoomDatabase() {
     abstract fun mediaDao(): IndexedMediaDao
 
