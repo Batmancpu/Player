@@ -26,6 +26,10 @@ One Android application, one user-selected local folder, recursive read-only sca
 ## Storage boundary
 The selected SAF tree URI is the only scan root. Never use raw filesystem paths as stable identity. Use provider allowlisting and default-deny unknown authorities; verify OPPO local provider support on-device. Reject known cloud, WebDAV, SMB and network sources. A content URI alone does not prove local storage. Android 11+ has folder-picker restrictions; explain unsupported roots instead of requesting broad storage access.
 
+## Offline metadata query contract
+
+`TmdbSearchTerms` is a pure value model containing only a normalized title, optional valid year and typed movie/TV kind. It is created only from recognized parser output and defaults to disabled unless the caller supplies explicit user opt-in. Series lookups use the show title without season/episode numbers. Path/URI/file-suffix/control/oversized inputs are rejected. This type has no network side effects and no local file or SAF identity fields; persistent preferences, credential storage, HTTP and `INTERNET` are not yet implemented.
+
 ## Network boundary
 Allow only HTTPS TMDB API and approved TMDB image CDN hosts. Permitted fields: normalized title, optional year, media type and language. Never send source URI, folder path/name, full filename, directory listing or video bytes. Validate returned image hosts. No custom proxy or backend.
 

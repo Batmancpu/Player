@@ -18,3 +18,10 @@ Reference candidates (research only, not automatic approvals): https://github.co
 - No unexpected additional domains/HTTP redirects, analytics headers, new network SDKs or permissions without a recorded review. Codex internet for upstream research is different from shipping network access into Player.
 - Test **fresh install without opted-in metadata** for zero app-initiated network requests; distinguish Android OS background traffic. Test opted-in path for explicit allowlisted hosts/fields. Record tested conditions, gaps and violations; never infer privacy from code inspection alone.
 - Never expose GitHub Actions signing secrets, JKS, Base64 or passwords to Codex prompts, logs, web search or dependencies. Keep current `com.batmancpu.player`, release signing certificate and strictly increasing version codes. Only trusted GitHub Actions creates signed Release APKs; user's Obtainium in-place update from v0.1.51 → v0.1.53 is verified.
+
+
+## TMDB official-reference check — before integration
+
+- Search uses separate official `/3/search/movie` and `/3/search/tv` endpoints. Each requires a query; each has type-specific optional year filtering. Adult inclusion defaults to false; keep that conservative default. Official refs: https://developer.themoviedb.org/reference/search-movie and https://developer.themoviedb.org/reference/search-tv .
+- The public official FAQ says non-commercial API use requires attribution, an approved unmodified logo that is less prominent than Player's brand, and the notice “This product uses the TMDB API but is not endorsed or certified by TMDB.” in About/Credits. Source: https://developer.themoviedb.org/docs/faq . Recheck current terms before any integration or distribution using TMDB data.
+- Current code only builds an in-memory, default-off normalized title/year/type value. No TMDB request, credential, cache, endpoint allowlist, `INTERNET` permission, opt-in settings screen or logo/attribution is in the app yet. These are explicit future gates, not implemented behavior.
