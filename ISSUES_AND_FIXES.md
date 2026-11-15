@@ -210,3 +210,7 @@ H-014 verification: 57e4539 passed full main CI 43667022100, including 10 Androi
 
 ### H-017 — New fixture generation assumed FFmpeg on hosted runner
 - CI #85 / 43676678448: ubuntu-26.04 image has no ffmpeg, exit127 in fixture generation before any Gradle/test execution. Exact log confirms tooling absence, not a video playback result. Corrective workflow explicitly installs the distribution package when absent, then generates the owned synthetic test asset. No production dependency/source-media access change; full gate pending.
+
+### H-018 — Media3 builder rejects NO_OP bandwidth meter
+- Unpublished preview source 3c62a71/14b0b0b; Android15 first-frame test in CI43676928900 threw IllegalArgumentException at ExoPlayer.Builder.setBandwidthMeter line708. Exact1.11.1 source explicitly disallows the NO_OP singleton. Caught before signed publication; v0.1.79 unaffected.
+- Fixed with a positive fixed local-track bandwidth estimate implementation, no connectivity/transfer monitoring. The generic default meter was rejected as a solution because its constructor registers NetworkTypeObserver. No network/media source expansion or permission added. Actual first-frame test remains the regression gate; 14 other Android cases passed.

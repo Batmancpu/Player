@@ -2,6 +2,8 @@ package com.batmancpu.player.ui.player
 
 import android.content.Context
 import android.net.Uri
+import android.os.Handler
+import androidx.media3.datasource.TransferListener
 import android.provider.DocumentsContract
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -64,8 +66,17 @@ internal object ResumePositions {
 @androidx.annotation.OptIn(UnstableApi::class)
 internal fun createLocalPlayer(context: Context): ExoPlayer = ExoPlayer.Builder(context)
     .setMediaSourceFactory(DefaultMediaSourceFactory(DataSource.Factory { ContentDataSource(context) }))
-    .setBandwidthMeter(BandwidthMeter.NO_OP)
+    .setBandwidthMeter(LocalBandwidthEstimate)
     .setUsePlatformDiagnostics(false)
     .setAudioAttributes(AudioAttributes.Builder().setUsage(C.USAGE_MEDIA).setContentType(C.AUDIO_CONTENT_TYPE_MOVIE).build(), true)
     .setHandleAudioBecomingNoisy(true)
     .build()
+
+/** A fixed positive estimate for local tracks; never observes connectivity or transfers. */
+@androidx.annotation.OptIn(UnstableApi::class)
+private object LocalBandwidthEstimate : BandwidthMeter {
+    override fun getBitrateEstimate(): Long = 10_000_000L
+    override fun getTransferListener(): TransferListener? = null
+    override fun addEventListener(handler: Handler, listener: BandwidthMeter.EventListener) = Unit
+    override fun removeEventListener(listener: BandwidthMeter.EventListener) = Unit
+}
