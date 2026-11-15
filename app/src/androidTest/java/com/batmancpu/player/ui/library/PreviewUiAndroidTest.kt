@@ -101,7 +101,12 @@ class PreviewUiAndroidTest {
             }))
             text("Aurora")
             instrumentation.waitForIdleSync()
-            assertNull(find { it.text?.toString() == "Blue Harbour" })
+            val filteredBy = SystemClock.uptimeMillis() + 10_000
+            while (find { it.text?.toString() == "Blue Harbour" } != null && SystemClock.uptimeMillis() < filteredBy) {
+                instrumentation.waitForIdleSync()
+                SystemClock.sleep(100)
+            }
+            assertNull("Nonmatching title must disappear after the asynchronous edit", find { it.text?.toString() == "Blue Harbour" })
             screenshot("search")
             click(text("Aurora"))
             text("Aurora.2022.mp4")
