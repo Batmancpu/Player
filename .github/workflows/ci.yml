@@ -263,6 +263,10 @@ jobs:
       - name: Generate owned local video fixture
         shell: bash
         run: |
+          if ! command -v ffmpeg >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y --no-install-recommends ffmpeg
+          fi
           mkdir -p app/src/androidTest/assets
           ffmpeg -hide_banner -loglevel error -y -f lavfi -i color=c=0x31415a:s=320x180:r=24 -f lavfi -i sine=frequency=440:sample_rate=44100 -t 3 -c:v libx264 -preset ultrafast -profile:v baseline -pix_fmt yuv420p -c:a aac -movflags +faststart app/src/androidTest/assets/synthetic-video.mp4
       - name: Run Room and cursor integration tests

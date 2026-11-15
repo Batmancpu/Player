@@ -207,3 +207,6 @@ H-014 verification: 57e4539 passed full main CI 43667022100, including 10 Androi
 - v0.1.79 on OPPO CPH2531: user describes bottom navigation broken/floating in air. Exact pixel defect/renderer cause unverified (no screenshot). Source uses four fixed-width independent clear Glass surfaces merged in a container. Replace with coherent bounded single-surface dock, verify layouts/screenshots/fallback; no claim that library engine itself is proven defective.
 ### H-016 — Scan cancellation/rescan feedback is insufficient
 - v0.1.79 user sees no clear effect after cancel. Very short scans can already be complete; current inline state is easy to miss. Keep safe completed-snapshot behavior and add explicit action feedback distinguishing cancelled versus already completed. No source deletion control is wanted.
+
+### H-017 — New fixture generation assumed FFmpeg on hosted runner
+- CI #85 / 43676678448: ubuntu-26.04 image has no ffmpeg, exit127 in fixture generation before any Gradle/test execution. Exact log confirms tooling absence, not a video playback result. Corrective workflow explicitly installs the distribution package when absent, then generates the owned synthetic test asset. No production dependency/source-media access change; full gate pending.
