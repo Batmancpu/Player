@@ -214,3 +214,6 @@ H-014 verification: 57e4539 passed full main CI 43667022100, including 10 Androi
 ### H-018 — Media3 builder rejects NO_OP bandwidth meter
 - Unpublished preview source 3c62a71/14b0b0b; Android15 first-frame test in CI43676928900 threw IllegalArgumentException at ExoPlayer.Builder.setBandwidthMeter line708. Exact1.11.1 source explicitly disallows the NO_OP singleton. Caught before signed publication; v0.1.79 unaffected.
 - Fixed with a positive fixed local-track bandwidth estimate implementation, no connectivity/transfer monitoring. The generic default meter was rejected as a solution because its constructor registers NetworkTypeObserver. No network/media source expansion or permission added. Actual first-frame test remains the regression gate; 14 other Android cases passed.
+
+### H-019 — Passing UI tests lost screenshots during connected-test teardown
+- CI86 UI cases passed but post-test adb pull had no app external directory. Package-owned external output is removed with AGP connected-test uninstall; no retained screenshots existed to inspect. Test-only UiAutomation shell now captures owned synthetic screens in a shell-owned Download subfolder; CI pulls that path. No production filesystem permission, media write or test fixture in release. Image retrieval/inspection pending.

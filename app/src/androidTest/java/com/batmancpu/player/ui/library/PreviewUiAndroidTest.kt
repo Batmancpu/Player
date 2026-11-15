@@ -1,7 +1,6 @@
 package com.batmancpu.player.ui.library
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Rect
 import android.os.Bundle
 import android.os.SystemClock
@@ -11,7 +10,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.batmancpu.player.MainActivity
 import com.batmancpu.player.ui.glass.GlassLabScreen
 import com.batmancpu.player.ui.theme.PlayerTheme
-import java.io.File
+import android.os.ParcelFileDescriptor
 import java.util.concurrent.atomic.AtomicReference
 import org.junit.Assert.*
 import org.junit.Test
@@ -59,10 +58,13 @@ class PreviewUiAndroidTest {
     private fun screenshot(name: String) {
         instrumentation.waitForIdleSync()
         SystemClock.sleep(400) // Let the finite sheet/selection transition finish.
-        val bitmap = checkNotNull(automation.takeScreenshot())
-        val directory = File(context.getExternalFilesDir(null), "preview-screens").apply { mkdirs() }
-        File(directory, "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
-        bitmap.recycle()
+        // AGP uninstalls tested packages after connected tests and removes their external dirs.
+        // Shell-owned, synthetic screenshots survive that cleanup without app storage permissions.
+        fun shell(command: String) {
+            ParcelFileDescriptor.AutoCloseInputStream(automation.executeShellCommand(command)).use { it.readBytes() }
+        }
+        shell("mkdir -p /sdcard/Download/player-preview-screens")
+        shell("screencap -p /sdcard/Download/player-preview-screens/$name.png")
     }
 
     @Test(timeout = 45_000) fun catalogueSearchDetailsAndPlayUseIndexedIdentity() {

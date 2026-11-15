@@ -1,5 +1,5 @@
 ## Active execution update — 2026-11-15
-D-025 records the latest user instruction: ship a larger offline preview with local search/details/basic local playback and repair the broken Glass preview after successful four-video folder/offline/switching checks on v0.1.79. This brings independent local portions forward; it does not enable networking, complete metadata/subtitle work, prove OPPO performance or mark later phases accepted. Six-phase acceptance remains evidence-based. Current integration CI/device preview checks are pending.
+D-025 records the latest user instruction: ship a larger offline preview with local search/details/basic local playback and repair the broken Glass preview after successful four-video folder/offline/switching checks on v0.1.79. This brings independent local portions forward; it does not enable networking, complete metadata/subtitle work, prove OPPO performance or mark later phases accepted. Six-phase acceptance remains evidence-based. Current integration CI/device preview checks are pending. Latest user additionally authorizes next-phase implementation while absent, without routine APK-install pauses; formal handset acceptance remains recorded separately (D-026).
 
 # Player — six phone-testable release phases
 

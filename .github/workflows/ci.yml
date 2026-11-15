@@ -210,14 +210,14 @@ jobs:
             echo "APK SHA-256: ${hash}"
             echo "Certificate SHA-256: 4D:2F:17:89:ED:27:D3:96:13:35:FE:36:45:64:55:BD:9A:31:0B:0D:CD:F4:1E:8C:CC:92:53:98:33:9E:80:BF"
             echo
-            echo "PHASE 1 PHONE-TEST CANDIDATE: one read-only local folder, recursive video/subtitle discovery, offline Room library, grouped episodes, safe rescans/cancellation and permission recovery. Automated verification is separate from real OPPO acceptance."
+            echo "OFFLINE LIBRARY + PLAYBACK PREVIEW: searchable movie/show grid, title/episode details, built-in local Media3 playback with pause/seek/private resume, clearer scan feedback and a single-surface Glass preview dock. Includes background-safe SAF/index fix. One selected read-only local folder, offline Room persistence; no INTERNET, broad storage, source-media writes or backup."
             echo
-            echo "Phone test: update without uninstalling; select a nested local test folder; scan; reopen in airplane mode; add/remove a test file and rescan; cancel a scan; switch folders; reconnect after permission loss. Confirm no outside files or source modifications."
+            echo "Optional next phone check when available: update without uninstalling, search a movie, open details and Play video; pause/seek, return/reopen and check resume; try airplane mode and folder switching. Compare Glass preview on/off. No file deletion is required."
             echo "Full checklist: https://github.com/Batmancpu/Player/blob/main/docs/PHASE1_PHONE_TEST.md"
-            echo "Phase 1 remains unaccepted until the actual OPPO Reno10 CPH2531 report. No handset FPS measurement is claimed."
+            echo "v0.1.79 device report confirmed four videos/titles/years, offline restart and folder switching. New playback/appearance, format coverage and remaining recovery checks need OPPO evidence; no handset FPS measurement or later-phase acceptance is claimed. Development continues independently while the user is away."
           } > "$RUNNER_TEMP/release-notes.md"
           gh release create "$tag" "$release_apk" \
-            --title "Player ${tag} — Phase 1 phone-test candidate" \
+            --title "Player ${tag} — Offline library and playback preview" \
             --notes-file "$RUNNER_TEMP/release-notes.md" \
             --latest \
             --target "${GITHUB_SHA}"
@@ -273,7 +273,7 @@ jobs:
         run: gradle --no-daemon --stacktrace :app:connectedDebugAndroidTest
       - name: Collect synthetic interface screenshots
         if: always()
-        run: adb pull /sdcard/Android/data/com.batmancpu.player/files/preview-screens "$RUNNER_TEMP/player-screens" || true
+        run: adb pull /sdcard/Download/player-preview-screens "$RUNNER_TEMP/player-screens" || true
       - name: Upload synthetic test results
         if: always()
         uses: actions/upload-artifact@v7
