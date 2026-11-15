@@ -1,3 +1,5 @@
+Current larger offline preview checklist (search/details/playback/Glass): [OFFLINE_PREVIEW_TEST.md](OFFLINE_PREVIEW_TEST.md). v0.1.79 core phone successes are recorded below; remaining physical checks do not pause independent implementation per D-026.
+
 # Phase 1 — OPPO phone checks (partially performed)
 
 **Target:** OPPO Reno10 5G CPH2531, Android 15. Use a **signed** Player APK from the GitHub Releases page, never the CI-only debug artifact. Signed v0.1.51 and v0.1.53 are published and the user confirmed an in-place Obtainium update. Phase 1 functional acceptance remains pending; Current signed candidate: [v0.1.79](https://github.com/Batmancpu/Player/releases/tag/v0.1.79), versionCode 79. Update your existing installation through Obtainium without uninstalling. Automated CI 43618442469 passed. On 2026-11-15 the user confirmed four videos recognized with correct names/years, airplane-mode restart retained the library and folder switching worked. Cancellation feedback was unclear; Glass Lab dock looked broken. Full permission/recovery/change/cancellation checks and measured performance are still unverified.
