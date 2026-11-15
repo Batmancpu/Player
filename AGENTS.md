@@ -198,3 +198,6 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-15 — CI #96 Android 15 XML confirms 17/17 cases, including the production Room migration; verify job then failed because cached `:app:kspDebugKotlin` did not restore the generated v2 schema JSON side effect. Workflow now explicitly reruns KSP before schema validation; CI #97 pending. H-021 is verified; H-022 tracks schema export. No APK release, OPPO acceptance or handset-performance result. Next: inspect exact v2 artifact and signed privacy/certificate gates, then commit the generated schema only if validated.
+
+
+- 2026-11-15 — Cache-safe Room export verified in CI #97 / 43737778787: Android 15 report 17/17, all unit/build/schema/manifest/signing/permanent-certificate gates passed. Exact generated v1 is byte-identical to the committed snapshot (SHA-256 820f2e814c9fcc3780be7c4bf6a1cbcb2498d52d1f92a0439b58aef11c9d6d04); v2 contains only the intended composite-key manual-match table (SHA-256 6d2a1dd422834f5cadf3e6c4292aed393bf2a784adc3cef1108ba9975c0bd4fe), now committed from the artifact. No Release or OPPO acceptance. Next: harden cloud/D2D backup exclusions, then finish opt-in credential/destination controls before any HTTP.

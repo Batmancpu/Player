@@ -788,3 +788,12 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 - CI now runs `gradle --no-daemon --rerun-tasks :app:kspDebugKotlin` immediately before validating Room schema snapshots. This explicitly regenerates the KSP schema JSON instead of relying on a cached task result.
 - No app runtime or production DB behavior changed. CI #97 is pending to verify exact v1/v2 JSON generation, upload the artifact and continue signed identity/privacy/certificate checks.
 - Next: inspect CI #97; confirm v1 is byte-identical and v2 matches the entity/migration, then commit the exact generated v2 JSON. No new Release, OPPO acceptance or performance claim.
+
+
+## 2026-11-15 — Verify and preserve Room v2 snapshot
+
+- CI #97 / 43737778787 completed successfully on main commit 241e08427c1a35ec9fa1b2b2ecc4b3677fe06c0b. Android 15 instrumentation XML reports 17 tests, 0 failures/errors/skips, including v1 row preservation and manual-match DAO operations.
+- The cache-safe KSP export step generated both JSON snapshots. v1 exactly matches the committed baseline (SHA-256 `820f2e814c9fcc3780be7c4bf6a1cbcb2498d52d1f92a0439b58aef11c9d6d04`). Reviewed v2 output: version 2, unchanged `indexed_media`, plus only `manual_tmdb_matches` with composite primary key `(treeUri, documentId)` and fields `tmdbId`, `mediaType`, `confirmedAtEpochMs`; exact artifact SHA-256 `6d2a1dd422834f5cadf3e6c4292aed393bf2a784adc3cef1108ba9975c0bd4fe`. The generated file is committed verbatim.
+- CI also passed JVM/unit/debug build, release assembly, exported schema validation, production manifest privacy/identity (no unexpected permissions; backup remains false), APK signature and the pinned permanent certificate. VersionCode 97 artifact is CI-only and not a GitHub Release; no phone acceptance/performance result.
+- H-021 and H-022 are resolved. No network/client/permission, runtime app behavior or signing identity changed.
+- Next: add explicit Android 12+ cloud/device-transfer backup exclusions and Android 11-and-lower legacy exclusions; validate source and packaged rules. Only then store any credential or add opt-in network integration.

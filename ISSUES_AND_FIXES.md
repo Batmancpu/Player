@@ -231,15 +231,16 @@ CI90 / 43678768709 passed the full Android15 integration suite including the cor
 
 
 ### H-021 — Room migration helper crashes before migration execution
-- **Status: resolved by integration test; CI correction complete, v2 schema export still pending.**
+- **Status: resolved and fully verified in CI #97.**
 - First observed: CI #95 / 43734224640, Android 15 instrumentation, commit 76330c96. The new migration case failed in `androidx.room.migration.bundle.SchemaBundle.deserialize` with `AbstractMethodError` for `GeneratedSerializer.typeParametersSerializers()` while `MigrationTestHelper.createDatabase` read the v1 schema. It failed before SQL; 13/17 tests completed with this one failure.
 - Root-cause confidence: high that this was a binary incompatibility between Room schema-serializer bytecode and Android-test kotlinx.serialization runtime; exact resolved runtime versions were not printed.
 - Correction: remove the test-only Room helper dependency. Load the exact committed v1 JSON, use Room-generated CREATE/setup SQL and identity hash to build a version-1 database, then open it through production Room with `MIGRATION_1_2`. The production migration and DAO operations passed in CI #96.
 - Regression evidence: CI #96 Android 15 XML contains 17 tests, zero failures/errors/skips, including `v1MediaSurvivesAndManualOverrideTableWorksAfterMigration`. This resolves the earlier harness failure; the overall workflow was still red at the separate schema-export gate. No APK release, device acceptance or performance result.
 
 ### H-022 — Room schema JSON side effect was absent after Gradle task cache restore
-- **Status: workflow fix committed; CI #97 pending.**
+- **Status: resolved in CI #97 / run 43737778787.**
 - First observed: CI #96 / run 43735914768, verify job 132880042081. Android 15 instrumentation succeeded with 17/17 tests. Verify logs show `:app:kspDebugKotlin FROM-CACHE`; the validator found only tracked `1.json` and no generated `2.json`. Unit/build/test-APK tasks passed; the schema gate prevented downstream signed APK and privacy/certificate checks from running.
 - Cause: Room writes schema JSON as a KSP side effect outside the task outputs restored by the Gradle cache, so a cache hit did not put the file in the verify workspace.
-- Correction: force `:app:kspDebugKotlin` execution with Gradle `--rerun-tasks` immediately before schema verification. CI #97 must produce and upload exact v1/v2 snapshots, pass downstream signing/privacy checks and demonstrate the fix.
-- No app runtime behavior, database schema, permission, network access, signing key or version changed. No release or OPPO acceptance; handset performance remains unmeasured.
+- Correction: force `:app:kspDebugKotlin` execution with Gradle `--rerun-tasks` immediately before schema verification. CI #97 reran KSP, generated both snapshots, passed schema validation, and completed signed APK, production manifest privacy/identity and permanent-certificate gates. The Android 15 XML reports 17 tests with zero failures/errors/skips.
+- Artifact review: v1 remains byte-identical at SHA-256 `820f2e814c9fcc3780be7c4bf6a1cbcb2498d52d1f92a0439b58aef11c9d6d04`; v2 is exactly generated at SHA-256 `6d2a1dd422834f5cadf3e6c4292aed393bf2a784adc3cef1108ba9975c0bd4fe`, with only the intended composite-key `manual_tmdb_matches` entity. The v2 file is committed in main.
+- No app runtime behavior, database migration semantics, permission, network access, signing key or user release changed. VersionCode 97 is a CI-only signed artifact, not a Release. No OPPO acceptance or handset performance result.
