@@ -5,6 +5,8 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -40,6 +42,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -83,6 +87,7 @@ internal fun GlassLabScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .windowInsetsPadding(WindowInsets.statusBars)
+                    .verticalScroll(rememberScrollState())
                     .padding(horizontal = PlayerSpacing.screenHorizontal),
             ) {
                 Spacer(Modifier.height(22.dp))
@@ -113,6 +118,7 @@ internal fun GlassLabScreen(
                             style = MaterialTheme.typography.labelSmall,
                         )
                         Switch(
+                            modifier = Modifier.semantics { contentDescription = "Glass effects" },
                             checked = glassEnabled,
                             onCheckedChange = { glassEnabled = it },
                         )
@@ -199,7 +205,7 @@ internal fun GlassLabScreen(
                     )
                 }
 
-                Spacer(Modifier.weight(1f))
+                Spacer(Modifier.height(24.dp))
 
                 AnimatedContent(
                     targetState = selectedTab,
@@ -224,53 +230,13 @@ internal fun GlassLabScreen(
             }
         }
 
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
+        GlassPreviewDock(
+            hazeState = hazeState, enabled = glassEnabled, selected = selectedTab,
+            onSelected = { selectedTab = it },
+            modifier = Modifier.align(Alignment.BottomCenter)
                 .windowInsetsPadding(WindowInsets.navigationBars)
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 14.dp)
-                .playerGlassContainer(
-                    enabled = glassEnabled,
-                    mergeDistance = 20.dp,
-                )
-                .padding(7.dp),
-            horizontalArrangement = Arrangement.spacedBy(7.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            GlassLabNavigationItem(
-                glyph = PlayerGlyph.HOME,
-                label = stringResource(R.string.nav_home),
-                selected = selectedTab == 0,
-                hazeState = hazeState,
-                glassEnabled = glassEnabled,
-                onClick = { selectedTab = 0 },
-            )
-            GlassLabNavigationItem(
-                glyph = PlayerGlyph.MOVIES,
-                label = stringResource(R.string.nav_movies),
-                selected = selectedTab == 1,
-                hazeState = hazeState,
-                glassEnabled = glassEnabled,
-                onClick = { selectedTab = 1 },
-            )
-            GlassLabNavigationItem(
-                glyph = PlayerGlyph.SHOWS,
-                label = stringResource(R.string.nav_shows),
-                selected = selectedTab == 2,
-                hazeState = hazeState,
-                glassEnabled = glassEnabled,
-                onClick = { selectedTab = 2 },
-            )
-            GlassLabNavigationItem(
-                glyph = PlayerGlyph.SEARCH,
-                label = stringResource(R.string.nav_search),
-                selected = selectedTab == 3,
-                hazeState = hazeState,
-                glassEnabled = glassEnabled,
-                onClick = { selectedTab = 3 },
-            )
-        }
+                .padding(horizontal = 18.dp).padding(bottom = 14.dp),
+        )
     }
 }
 
@@ -331,68 +297,3 @@ private fun ArtworkTile(
     }
 }
 
-@Composable
-private fun GlassLabNavigationItem(
-    glyph: PlayerGlyph,
-    label: String,
-    selected: Boolean,
-    hazeState: HazeState,
-    glassEnabled: Boolean,
-    onClick: () -> Unit,
-) {
-    val interactionSource = remember { MutableInteractionSource() }
-
-    Column(
-        modifier = Modifier
-            .width(65.dp)
-            .height(60.dp)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null,
-                onClick = onClick,
-            )
-            .focusable(interactionSource = interactionSource)
-            .playerGlassSurface(
-                hazeState = hazeState,
-                enabled = glassEnabled,
-                interactionSource = interactionSource,
-                shape = RoundedCornerShape(20.dp),
-            )
-            .padding(horizontal = 4.dp, vertical = 5.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        if (selected) {
-            Box(
-                modifier = Modifier
-                    .size(26.dp)
-                    .clip(RoundedCornerShape(9.dp))
-                    .background(Color.White.copy(alpha = 0.10f)),
-            ) {
-                PlayerGlyphIcon(
-                    glyph = glyph,
-                    contentDescription = null,
-                    modifier = Modifier.align(Alignment.Center),
-                    size = 19.dp,
-                    tint = Color.White,
-                )
-            }
-        } else {
-            PlayerGlyphIcon(
-                glyph = glyph,
-                contentDescription = null,
-                size = 19.dp,
-                tint = Color.White.copy(alpha = 0.72f),
-            )
-        }
-
-        Spacer(Modifier.height(3.dp))
-        Text(
-            text = label,
-            color = if (selected) Color.White else Color.White.copy(alpha = 0.72f),
-            style = MaterialTheme.typography.labelSmall,
-            maxLines = 1,
-            overflow = TextOverflow.Clip,
-        )
-    }
-}

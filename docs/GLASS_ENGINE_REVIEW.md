@@ -1,0 +1,23 @@
+# Glass engine review — 2026-11-15
+
+The user reports the floating dock in v0.1.79 looks broken on OPPO Reno10 CPH2531. This is a real visual defect report. A successful build never established visual quality, frame rate or thermal efficiency. The preview remains experimental; production library and video rendering do not apply Glass.
+
+## What is currently used
+
+Haze 2.1.0, Apache-2.0, source-backed Glass with `HazeInput.Sources`, Default/Balanced performance. This records designated Compose content, then processes a bounded control surface. It is not Apple's renderer and does not depend on Android 17 native window backdrop. Public guidance: https://chrisbanes.github.io/haze/2.1.0/performance/ . Regular/shared surfaces are the conservative starting point; the old preview instead merged four separate Clear tiles.
+
+The new original preview uses one max420dp Regular dock, equal flexible tabs, an independent spring selection pill and an opaque effects-off fallback. The pill is an ordinary Compose highlight, not a claim of rubbery lens deformation. No custom shader, JNI, pixel-readback contrast loop or proprietary assets were added. UI screenshots verify emulator layout only. OPPO appearance and performance remain unverified.
+
+## Correct user reference: FCZenith and immediate Zenith upstream
+
+- User fork: https://github.com/Batmancpu/FCZenith . Its immediate parent is https://github.com/rezapranata089-bit/Zenith . Bitcode/BitChord is not the requested visual reference.
+- Reviewed immediate-parent commit `26c5ed8496b7beb5f248ee93f26fbe73e3df47dd`, including `app/src/main/java/com/music/zenith/ui/components/LiquidGlass.kt`; compared fork integration/backdrop files. The inspected glue says rendering is vendored Kyant0/backdrop, with separate GPL-3.0 Echo Music integration. The vendored renderer identifies Backdrop v2.0.0/Apache-2.0. App-level licence is GPL-3.0; do not treat all its glue as permissive renderer code.
+- Pipeline includes captured backdrop, blur/lens, highlight/shadow and tint. Inspected defaults include 10dp blur, lens height/amount 0.5, maximum48dp and resolution fraction0.33. One-third width and height processes about one-ninth the pixels; this is an implementation property, not an OPPO benchmark or a proof of equal quality.
+- Zenith's current upstream also has backdrop seam work. Its selection/refraction integration and settings are app-specific. A renderer name alone cannot reproduce its finish; geometry, source content, contrast, selection motion and compositing all matter.
+- No Zenith/Echo application source was copied. A future Backdrop evaluation must independently audit the exact pinned renderer licence, retained notices, Compose ABI, Android fallback, dependency/permission graph and allocation/GPU cost before adoption. No wholesale renderer/toolchain switch is justified by unmeasured claims.
+
+## Decision and measurements still needed
+
+Haze remains a viable candidate, with no established superiority or premium-quality acceptance. First repair bounded geometry and inspect real rendered output. Then compare the same control sizes/content/motion using Glass on/off and, if justified, a separately licensed Backdrop prototype. Follow `DESIGN_SYSTEM_AND_PERFORMANCE.md`: release-like Macrobenchmark/Perfetto on the actual OPPO at 60Hz, optional120Hz, p50/p95/p99 frame time/jank, scrolling/transitions/slider/playback, memory and sustained thermal behavior. Do not claim either renderer efficient on this phone without these results.
+
+Apple's public material informs original controls and hierarchy, not copied assets: https://developer.apple.com/design/human-interface-guidelines/materials and https://developer.apple.com/documentation/technologyoverviews/adopting-liquid-glass . Content stays crisp; Glass belongs to restrained functional chrome with accessible fallbacks. Library feature work proceeds independently of renderer experiments.

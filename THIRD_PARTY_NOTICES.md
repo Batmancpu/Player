@@ -16,3 +16,6 @@ No Apple SF Symbols glyphs, Apple logos or SF font files are bundled.
 
 ## Runtime libraries
 AndroidX/Jetpack (Android Open Source Project and contributors), Kotlin/kotlinx.coroutines (JetBrains and contributors), and Haze 2.1.0 (Chris Banes and contributors) use Apache-2.0. Packaged license/attribution: `app/src/main/assets/licenses/APACHE_2_0.txt` and `DEPENDENCIES.md`. Haze license verified at tag 2.1.0: https://github.com/chrisbanes/haze/blob/2.1.0/LICENSE. Build tooling and AndroidX Test/JUnit are development/test dependencies, not runtime feature additions. Retain upstream per-file copyright and any applicable NOTICE when adapting code.
+
+## AndroidX Media3 local playback
+Media3 ExoPlayer and UI 1.11.1, Android Open Source Project/contributors, Apache-2.0: https://github.com/androidx/media/tree/1.11.1 (LICENSE). Included through pinned Maven dependencies; packaged Apache-2.0 text and dependency attribution above apply. Uses platform decoders; no separate GPL/native codec bundle or Zenith application source is included.

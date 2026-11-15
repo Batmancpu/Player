@@ -19,7 +19,7 @@ Never share private media paths or file contents in GitHub issues or logs.
 - Launch Player and choose the test folder using Android's **system folder picker**. Decline all other providers, and confirm Player never requests "all files" or access to photos/media outside that folder.
 - Tap **Scan this folder**; confirm nested video names are shown and the unrelated outside file is absent. Subtitle count should include SRT; non-media text files should be ignored.
 - Close Player completely and reopen it, including with airplane mode on. The previously scanned library should still appear without a rescan.
-- Add one test video inside the selected folder; rescan; new file appears. Remove a test video; rescan; missing file disappears, but the source file was not modified by Player.
+- Optional rescan check: use Android’s file manager to add/remove only a disposable test copy inside the selected folder, then rescan. Player intentionally has no delete control and must not modify originals. If you prefer not to change test files, report this check as not performed; folder switching is a separate useful check.
 - Change to another local folder. Previously chosen folder's entries must not mix with the new library. Observe whether the OEM picker supports Android external-storage DocumentsProvider.
 - Start a scan of a reasonably large nested folder and cancel it. No app crash; the prior complete library remains.
 - Revoke the selected folder permission through Android settings if available; app should request folder reconnection instead of crashing or showing files from ungranted sources.

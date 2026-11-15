@@ -3,6 +3,7 @@
 The Android release uses AndroidX / Jetpack (Android Open Source Project and contributors), Kotlin standard libraries and kotlinx.coroutines (JetBrains and contributors), and Haze (Chris Banes and contributors). These projects use the Apache License 2.0, included as APACHE_2_0.txt. Individual upstream copyright and applicable notices remain with their original owners.
 
 - AndroidX / Compose / Room / Activity / Core: https://android.googlesource.com/platform/frameworks/support/
+- AndroidX Media3 ExoPlayer/UI 1.11.1 (Android Open Source Project): https://github.com/androidx/media/tree/1.11.1 — Apache-2.0; no additional native codec package bundled.
 - Kotlin: https://github.com/JetBrains/kotlin
 - kotlinx.coroutines: https://github.com/Kotlin/kotlinx.coroutines
 - Haze 2.1.0 (core, Glass, Material integration): https://github.com/chrisbanes/haze/tree/2.1.0

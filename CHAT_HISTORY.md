@@ -168,3 +168,5 @@ User requested sustained work until signed Phase 1 candidate in Releases; actual
 
 ## 2026-11-15 — Phone findings and larger offline preview authorization
 User reports v0.1.79 selection/offline persistence/folder switching success; cancellation feedback unclear and Glass Lab nav looks broken. Media called audio, clarification pending. User rejects night-long micro-updates and asks larger useful progress, specifically FC Zenith and immediate Zenith upstream as rendering reference. Proceed with larger offline browsing/local playback preview and visible Glass/scan fixes; retain real-device/phase gaps instead of blocking all independent implementation. Main only; no app delete/original writes, network/backend, secret/key changes.
+
+- User clarified all four files are movies/videos and naming/year parsing is correct. Continue larger offline browsing/playback preview; no audio-library scope change. Glass dock changed to original bounded single-surface layout with spring selection; actual OPPO validation remains pending.

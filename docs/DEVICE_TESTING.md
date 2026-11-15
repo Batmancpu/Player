@@ -80,3 +80,6 @@ CI 43667022100 at 57e4539 passed 10 Android 15 emulator integration cases, addin
 
 ## 2026-11-15 — Actual user report, v0.1.79 / OPPO
 Confirmed by user: folder selection, retained library after airplane-mode restart, folder switching works. User said audio files: exact media classification awaiting clarification. Cancel produced no obvious effect; Glass Lab bottom dock visually broken/floating. These are user reports, not agent measurements. Source deletion check not performed (user expected in-app delete); app intentionally has no source delete. No full Phase 1 acceptance, actual frame times, or Glass efficiency evidence yet.
+
+### User clarification, 2026-11-15
+Audio wording was a misinterpretation. User confirms all four movie videos are recognized correctly with names and bracketed years. Keep video/subtitle product scope. Combined with prior report, selection/offline restart/folder switching are physically confirmed. Glass dock defect remains valid; no original-file removal, permission-revocation, frame-time or full codec report inferred.

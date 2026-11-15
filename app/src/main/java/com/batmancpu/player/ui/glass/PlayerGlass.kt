@@ -37,14 +37,13 @@ internal fun Modifier.playerGlassSurface(
 ): Modifier {
     if (!enabled) {
         return clip(shape)
-            .background(Color.White.copy(alpha = 0.075f), shape)
+            .background(Color(0xFF20242D), shape)
             .border(0.75.dp, Color.White.copy(alpha = 0.16f), shape)
     }
 
     val style = remember(shape) {
-        GlassStyle.clear.then {
+        GlassStyle.regular.then {
             shape(shape)
-            backgroundColor(Color.Transparent)
             tint(Color.White.copy(alpha = 0.11f))
             specularIntensity(0.58f)
             edgeSoftness(1.dp)
@@ -79,3 +78,4 @@ internal fun Modifier.playerGlassContainer(
 } else {
     this
 }
+

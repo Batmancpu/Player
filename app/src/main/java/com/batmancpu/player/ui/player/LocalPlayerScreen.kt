@@ -1,0 +1,110 @@
+package com.batmancpu.player.ui.player
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.batmancpu.player.R
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.ui.PlayerView
+import kotlinx.coroutines.delay
+
+@androidx.annotation.OptIn(UnstableApi::class)
+@Composable
+internal fun LocalPlayerScreen(
+    target: LocalPlaybackTarget,
+    lifecycle: Lifecycle,
+    onCheckpoint: (Long, Boolean) -> Unit,
+    onClose: () -> Unit,
+) {
+    val context = LocalContext.current
+    val checkpoint by rememberUpdatedState(onCheckpoint)
+    var isPlaying by remember(target.uri) { mutableStateOf(false) }
+    var error by remember(target.uri) { mutableStateOf(false) }
+    val player = remember(target.uri) {
+        createLocalPlayer(context).apply {
+            setMediaItem(MediaItem.fromUri(target.uri))
+            seekTo(target.positionMs)
+            prepare()
+        }
+    }
+    var savedPlayIntent by remember(target.uri) { mutableStateOf(target.playWhenReady) }
+    DisposableEffect(player, lifecycle) {
+        var firstResume = true
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME && firstResume) {
+                firstResume = false
+                player.playWhenReady = savedPlayIntent
+            } else if (event == Lifecycle.Event.ON_PAUSE) {
+                savedPlayIntent = player.playWhenReady
+                checkpoint(player.currentPosition, savedPlayIntent)
+                player.pause()
+            }
+        }
+        val listener = object : Player.Listener {
+            override fun onPlayerError(failure: PlaybackException) { error = true }
+            override fun onIsPlayingChanged(value: Boolean) { isPlaying = value }
+            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) savedPlayIntent = playWhenReady
+            }
+        }
+        player.addListener(listener)
+        lifecycle.addObserver(observer)
+        if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+            firstResume = false
+            player.playWhenReady = savedPlayIntent
+        }
+        onDispose {
+            checkpoint(player.currentPosition, savedPlayIntent)
+            lifecycle.removeObserver(observer)
+            player.removeListener(listener)
+            player.release()
+        }
+    }
+    LaunchedEffect(player) {
+        while (true) {
+            delay(5_000)
+            if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                checkpoint(player.currentPosition, player.playWhenReady)
+            }
+        }
+    }
+    Box(Modifier.fillMaxSize().background(Color.Black)) {
+        AndroidView(
+            factory = { viewContext -> PlayerView(viewContext).apply {
+                this.player = player
+                setShowNextButton(false)
+                setShowPreviousButton(false)
+                setShowSubtitleButton(true)
+            } },
+            update = { it.keepScreenOn = isPlaying },
+            modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing),
+        )
+        Row(Modifier.align(Alignment.TopStart).fillMaxWidth().background(Color.Black.copy(alpha = .72f))
+            .windowInsetsPadding(WindowInsets.statusBars).padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            TextButton(onClick = onClose) { Text(stringResource(R.string.player_back), color = Color.White) }
+            Text(target.label, color = Color.White, maxLines = 1, modifier = Modifier.weight(1f))
+        }
+        if (error) {
+            Surface(Modifier.align(Alignment.Center).padding(24.dp), shape = MaterialTheme.shapes.large) {
+                Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(stringResource(R.string.player_unavailable), style = MaterialTheme.typography.titleLarge)
+                    Text(stringResource(R.string.player_error_detail))
+                    Button(onClick = onClose) { Text(stringResource(R.string.player_back)) }
+                }
+            }
+        }
+    }
+}

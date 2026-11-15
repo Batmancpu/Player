@@ -2,10 +2,10 @@
 <resources>
     <string name="app_name">Player</string>
 
-    <string name="glass_lab_kicker">VISUAL EXPERIMENT</string>
-    <string name="glass_lab_title">Liquid Glass</string>
+    <string name="glass_lab_kicker">MATERIAL PREVIEW</string>
+    <string name="glass_lab_title">Glass preview</string>
     <string name="glass_lab_toggle">Glass</string>
-    <string name="glass_lab_description">A local rendering test for light, refraction and connected controls.</string>
+    <string name="glass_lab_description">A single floating dock over local artwork. Turn effects off to compare the layout.</string>
     <string name="glass_lab_feature_label">FEATURED COLLECTION</string>
     <string name="glass_lab_feature_title">A world beyond the ordinary</string>
     <string name="glass_lab_artwork_heading">Artwork behind the glass</string>
@@ -50,5 +50,29 @@
     <string name="library_scan_found">%1$d videos and %2$d subtitle sidecars found</string>
     <string name="library_movies_heading">MOVIES AND UNMATCHED FILES</string>
     <string name="library_episodes_heading">TV EPISODES</string>
+    <string name="catalogue_kicker">ON THIS DEVICE</string>
+    <string name="catalogue_title">Your library</string>
+    <string name="catalogue_manage">Manage</string>
+    <string name="catalogue_counts">%1$d videos · %2$d subtitles</string>
+    <string name="catalogue_search">Search your library</string>
+    <string name="catalogue_all">All</string>
+    <string name="catalogue_refresh">Rescan</string>
+    <string name="catalogue_no_matches">No titles match this search.</string>
+    <string name="catalogue_clear_search">Clear search and filters</string>
+    <string name="catalogue_local_note">Titles come from your filenames. Artwork and online matching are not enabled.</string>
+    <string name="catalogue_on_device">On this device</string>
+    <string name="catalogue_local_video">Local video</string>
+    <string name="catalogue_play">Play video</string>
+    <string name="catalogue_settings">Library settings</string>
+    <string name="catalogue_glass_preview">Glass preview</string>
+    <string name="catalogue_glass_note">A separate rendering preview. It does not affect your library or enable online access.</string>
+    <string name="catalogue_scan_started">Scan started. Your saved library stays available.</string>
+    <string name="catalogue_scan_finished">Scan complete. Your library is up to date.</string>
+    <string name="player_back">Back to library</string>
+    <string name="player_unavailable">This video could not be played</string>
+    <string name="player_error_detail">The file may be unavailable or use a format this device cannot decode.</string>
+    <string name="player_opening">Opening local video…</string>
+    <string name="player_access_error">Folder access may have changed. Reconnect the folder and scan again.</string>
+    <plurals name="catalogue_episodes"><item quantity="one">%d episode</item><item quantity="other">%d episodes</item></plurals>
 </resources>
 

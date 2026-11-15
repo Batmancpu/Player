@@ -1,3 +1,6 @@
+## Current preview work — 2026-11-15
+User tested signed v0.1.79 on OPPO: four videos correctly recognized/named with years, folder selection, airplane-mode restart persistence and folder switching work. Cancellation feedback unclear; Glass Lab floating dock visually broken. Media3 dependency-only main 1bdaace / CI #84 (43675286879) passed full signing/privacy gates. User explicitly requests a larger useful offline upgrade now (D-025): searchable local catalogue/details and foreground local playback preview plus bounded dock repair. No TMDB/network/production Glass promotion or later-phase completion claim. Integration/tests/screenshots pending; do not duplicate v0.1.79 publication. Next: full preview CI, inspect synthetic screenshots/first-frame test, then publish a higher signed version via existing workflow and request a brief new-feature device test. Main only, no branches or new automations. Historical snapshots below are superseded by this entry.
+
 # Canonical project context and handoff
 
 Last reviewed: 2026-11-14 (Asia/Kolkata)
@@ -364,3 +367,6 @@ Branch cleanup completed: CI 43642157896 succeeded, GitHub API confirms only mai
 Main now prepares H-014: whole SAF traversal/index entry points dispatch to IO, record mapping cooperates with cancellation, and an Android main-caller 1,000→100 reconciliation case is added. CI pending at authoring. This is not in released v0.1.79 and does not establish FPS; that signed candidate still awaits actual OPPO acceptance. Main-only rule and release identity unchanged.
 
 H-014 main verification completed: 57e4539 passed CI 43667022100 (#82), 10 Android integration cases including 1,000→100 main-caller reconciliation plus unit/build/signing/privacy. No new Release; v0.1.79 remains the physical-phone candidate and actual OPPO acceptance is pending. Both scheduled one-time continuations have fired; main-only workflow remains in force.
+
+## Latest phone report and broader preview — 2026-11-15
+User confirms v0.1.79 selection/offline cache/folder switching; cancellation feedback unclear and Glass Lab nav visually broken. User requests larger useful upgrade and explicitly points to Batmancpu/FCZenith/immediate rezapranata089-bit/Zenith upstream. Research identifies Kyant0/backdrop Apache renderer and GPL app glue, not copied. Proceed with larger local-only catalogue/search/details/basic foreground Media3 playback and bounded lab dock; no online metadata/internet permission. Physical acceptance and real performance remain incomplete; do not describe later phases as complete.

@@ -260,8 +260,16 @@ jobs:
           done
           cat "$RUNNER_TEMP/player-emulator.log"
           exit 1
+      - name: Generate owned local video fixture
+        shell: bash
+        run: |
+          mkdir -p app/src/androidTest/assets
+          ffmpeg -hide_banner -loglevel error -y -f lavfi -i color=c=0x31415a:s=320x180:r=24 -f lavfi -i sine=frequency=440:sample_rate=44100 -t 3 -c:v libx264 -preset ultrafast -profile:v baseline -pix_fmt yuv420p -c:a aac -movflags +faststart app/src/androidTest/assets/synthetic-video.mp4
       - name: Run Room and cursor integration tests
         run: gradle --no-daemon --stacktrace :app:connectedDebugAndroidTest
+      - name: Collect synthetic interface screenshots
+        if: always()
+        run: adb pull /sdcard/Android/data/com.batmancpu.player/files/preview-screens "$RUNNER_TEMP/player-screens" || true
       - name: Upload synthetic test results
         if: always()
         uses: actions/upload-artifact@v7
@@ -270,5 +278,6 @@ jobs:
           path: |
             app/build/reports/androidTests/connected/
             app/build/outputs/androidTest-results/connected/
+            ${{ runner.temp }}/player-screens/
           if-no-files-found: warn
           retention-days: 14
