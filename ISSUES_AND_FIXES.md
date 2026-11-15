@@ -247,9 +247,9 @@ CI90 / 43678768709 passed the full Android15 integration suite including the cor
 
 
 ### H-023 — Android app data can transfer despite allowBackup=false on some OEMs
-- **Status:** Source and local regression tests added; packaged-resource and signed privacy gates pending CI #99.
+- **Status:** Configured Android modes fixed and CI-verified; actual OEM backup/restore behavior remains untested.
 - **Evidence:** Android's official Auto Backup documentation (https://developer.android.com/identity/data/autobackup) states that some Android 12+ manufacturers may allow D2D transfer even with `allowBackup=false`; when a backup mode has no rule section, all app data is enabled by default.
 - **Correction in this commit:** preserve `allowBackup=false`; add legacy `fullBackupContent` exclusions and Android 12+ `dataExtractionRules` exclusions for all nine documented domains under both cloud-backup and device-transfer. Add XML/manifest tests and make the release APK checker require both attached resources.
-- **Local regression evidence:** seven focused Python tests pass against the exact source patch. CI must still prove Android resource compilation, the full script suite and signed manifest/privacy/certificate gates. No app runtime, permission, network, schema or signing change.
+- **Regression evidence:** seven focused Python tests passed locally. CI #99 / 43740997631 passed all 17 Android 15 integration tests, the full Python script suite, debug/release builds, schema validation, compiled manifest check (`allowBackup=false`, both rules referenced, no unexpected permissions/debug provider), APK signature and pinned permanent certificate. VersionCode99 APK SHA-256 `29f3945c4c8aa5e1501e90a3f05ad5de7685d7acc543821bb3fc74e57f9296fb` is CI-only; release publishing was skipped. No app runtime, permission, network, schema or signing identity changed.
 - **Remaining limit:** Android 16 QPR2 cross-platform transfer needs real iOS bundle ID/Team ID/content version. There is no iOS Player target; that mode is not claimed as excluded and no placeholder IDs are used.
-- **Next:** inspect CI #99. Do not add persistent credentials or HTTP until the configured Android backup modes pass packaged verification.
+- **Next:** keep actual OEM transfer behavior unverified. Continue independent privacy work on explicit opt-in/destinations; do not add persistent credentials or HTTP until their design/tests pass.

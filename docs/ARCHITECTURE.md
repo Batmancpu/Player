@@ -1,6 +1,6 @@
 # Architecture
 
-Status (2026-11-15): the one-tree offline SAF/Room library passed automated tests; user confirmed v0.1.79 behavior on OPPO. The newer catalogue/details/local Media3 preview in signed v0.1.91 remains untested on OPPO. Room v1/v2 snapshots and manual-match migration are committed; CI #98 passed 17 Android 15 integration tests plus schema/build/manifest/signing/certificate gates. The current source change adds explicit legacy Android backup exclusions and Android 12+ cloud/device-transfer exclusions for all app-data domains; focused tests pass 7/7 and CI #99 is pending. No HTTP client or network permission is implemented. H-021/H-022 are resolved; backup validation is pending H-023. Package identity and permanent signing remain unchanged.
+Status (2026-11-15): the one-tree offline SAF/Room library passed automated tests; user confirmed v0.1.79 behavior on OPPO. The newer catalogue/details/local Media3 preview in signed v0.1.91 remains untested on OPPO. Room v1/v2 snapshots and manual-match migration are committed; CI #99 / 43740997631 passed 17 Android 15 integration tests, schema/build/manifest/signing/certificate gates and all Python regressions. Explicit legacy Android and Android 12+ cloud/device-transfer exclusions cover all app-data domains; H-023 is resolved for configured Android modes. Its versionCode99 artifact is CI-only. No HTTP client or network permission is implemented. H-021/H-022/H-023 are resolved. Package identity and permanent signing remain unchanged.
 
 ## Product boundary
 One Android application, one user-selected local folder, recursive read-only scan, TMDB metadata/artwork, offline local library. No media server, upload, streaming, account, cloud drive, ads, telemetry or analytics.
@@ -80,7 +80,7 @@ Unit tests and FOSS/debug CI build are required at each milestone. Real-device v
 ## Binding premium design and privacy details (2026-11-14)
 - `docs/DESIGN_SYSTEM_AND_PERFORMANCE.md`: official OPPO hardware, cinematic design tokens, per-screen functional Glass surfaces, true accessible slider semantics, 60-Hz/optional-120-Hz benchmarks and opaque/reduced-motion fallbacks.
 - `docs/UPSTREAM_AND_PRIVACY.md`: vetted GitHub repository/source reuse/licence obligations, malicious upstream instruction protections and minimum external network/data-egress policy.
-- Current `app/src/main/AndroidManifest.xml` retains `android:allowBackup="false"` and references explicit legacy plus Android 12+ cloud/device-transfer exclusion resources. CI packaging verification is pending for this slice. Phase 1 requires no INTERNET permission. Android 16 QPR2 cross-platform transfer is not configured: there is no iOS Player counterpart or real identifiers.
+- Current `app/src/main/AndroidManifest.xml` retains `android:allowBackup="false"` and references explicit legacy plus Android 12+ cloud/device-transfer exclusion resources. CI #99 passed source/XML and compiled-manifest verification for the configured Android backup modes. Phase 1 requires no INTERNET permission. Android 16 QPR2 cross-platform transfer is not configured: there is no iOS Player counterpart or real identifiers.
 
 
 ## Phase 1 lifecycle implementation — 2026-11-14

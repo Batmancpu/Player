@@ -230,8 +230,8 @@ After publishing v0.1.91, began a focused schema-only update: Room/KSP exports v
 
 ## 2026-11-15 — Explicit Android backup exclusion work
 
-- Resumed from live main `655dd19209c7a5166146398fa1a488bd4beac348`; CI #98 passed, v0.1.91 remains the latest signed Release, and no PR/other branch is open.
+- Resumed from live main `655dd19209c7a5166146398fa1a488bd4beac348`; CI #98 passed, v0.1.91 remains the latest signed Release, and no PR/other branch is open. Implemented backup hardening as `20a3bceb2fac31cf381bcb265a4424e35cf3fe8f`.
 - Reviewed Android's current Auto Backup docs. Some Android 12+ OEMs can allow D2D transfer despite `allowBackup=false`; an omitted transfer-mode rule defaults to including all app data. Added explicit legacy and Android 12+ cloud/device-transfer exclusions for all app-data domains.
-- Added source XML/manifest tests and hardened the compiled-APK verifier. Focused local Python test suite passed 7/7; CI #99 is pending. No APK release or phone acceptance is inferred.
+- Added source XML/manifest tests and hardened the compiled-APK verifier. Focused local Python test suite passed 7/7. CI #99 / 43740997631 passed 17/17 Android 15 tests, complete Python suite, build/schema/compiled manifest privacy, APK signature and permanent certificate. VersionCode 99 signed artifact SHA-256 `29f3945c4c8aa5e1501e90a3f05ad5de7685d7acc543821bb3fc74e57f9296fb` is CI-only; no APK Release or phone acceptance is inferred.
 - Android 16 QPR2 cross-platform transfer to iOS requires actual target-app bundle/team/content identifiers; there is no iOS Player app, so identifiers are not fabricated and that mode is not claimed as excluded.
-- Next: verify CI #99's package and signing/privacy checks. Continue independent work without inventing OPPO results; no new Release from this config-only slice.
+- Next: continue independent privacy work on credential-free opt-in/destination-policy tests; keep HTTP and credential storage gated. OPPO behavior/performance remain unverified; no new Release from this config-only slice.
