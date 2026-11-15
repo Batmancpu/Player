@@ -6,7 +6,7 @@ The user reports the floating dock in v0.1.79 looks broken on OPPO Reno10 CPH253
 
 Haze 2.1.0, Apache-2.0, source-backed Glass with `HazeInput.Sources`, Default/Balanced performance. This records designated Compose content, then processes a bounded control surface. It is not Apple's renderer and does not depend on Android 17 native window backdrop. Public guidance: https://chrisbanes.github.io/haze/2.1.0/performance/ . Regular/shared surfaces are the conservative starting point; the old preview instead merged four separate Clear tiles.
 
-The new original preview uses one max420dp Regular dock, equal flexible tabs, an independent spring selection pill and an opaque effects-off fallback. The pill is an ordinary Compose highlight, not a claim of rubbery lens deformation. No custom shader, JNI, pixel-readback contrast loop or proprietary assets were added. UI screenshots verify emulator layout only. OPPO appearance and performance remain unverified.
+The new original preview uses one max420dp Regular dock, equal flexible tabs, an independent spring selection pill and an opaque effects-off fallback. The pill is an ordinary Compose highlight, not a claim of rubbery lens deformation. No custom shader, JNI, pixel-readback contrast loop or proprietary assets were added. Synthetic UI tests passed on Android15 in CI86/87; retained screenshot artifact inspection is still pending the capture-path correction. Screenshots can verify emulator layout only. OPPO appearance and performance remain unverified.
 
 ## Correct user reference: FCZenith and immediate Zenith upstream
 

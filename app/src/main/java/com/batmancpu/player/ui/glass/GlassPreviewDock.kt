@@ -36,12 +36,15 @@ internal fun GlassPreviewDock(
     val labels = listOf(R.string.nav_home, R.string.nav_movies, R.string.nav_shows, R.string.nav_search)
     BoxWithConstraints(
         modifier.widthIn(max = 420.dp).fillMaxWidth().height(76.dp)
-            .playerGlassSurface(hazeState, enabled, shape = RoundedCornerShape(30.dp)).padding(6.dp),
+            .playerGlassSurface(hazeState, enabled, shape = RoundedCornerShape(30.dp))
+            // Bound light-background luminance behind white labels in this always-dark interface.
+            .background(Color.Black.copy(alpha = if (enabled) .62f else 0f), RoundedCornerShape(30.dp))
+            .padding(6.dp),
     ) {
         val cell = maxWidth / 4
         val offset by animateDpAsState(cell * selected, spring(dampingRatio = .72f, stiffness = 420f), label = "dock_selection")
         Box(Modifier.offset(x = offset).width(cell).fillMaxHeight()
-            .background(Color.White.copy(alpha = .14f), RoundedCornerShape(24.dp)))
+            .background(Color.White.copy(alpha = .10f), RoundedCornerShape(24.dp)))
         Row(Modifier.fillMaxSize().selectableGroup()) {
             glyphs.forEachIndexed { index, glyph ->
                 val interaction = remember { MutableInteractionSource() }

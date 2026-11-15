@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.*
@@ -109,11 +110,16 @@ internal fun LocalLibraryContent(
                 }
                 TextButton(onClick = { settings = true }) { Text(stringResource(R.string.catalogue_manage)) }
             }
-            Text(
-                stringResource(R.string.catalogue_counts, library.media.count { it.kind == LocalMediaKind.VIDEO }, library.media.count { it.kind == LocalMediaKind.SUBTITLE }),
-                color = PlayerPalette.textSecondary, style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
-            )
+            Row(Modifier.fillMaxWidth().padding(top = 4.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    stringResource(R.string.catalogue_counts, library.media.count { it.kind == LocalMediaKind.VIDEO }, library.media.count { it.kind == LocalMediaKind.SUBTITLE }),
+                    color = PlayerPalette.textSecondary, style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.weight(1f),
+                )
+                TextButton(onClick = ::scanAction, enabled = !loading) {
+                    Text(stringResource(if (library.isScanning) R.string.library_scan_cancel else R.string.catalogue_refresh))
+                }
+            }
             OutlinedTextField(
                 value = query, onValueChange = { query = it }, singleLine = true,
                 label = { Text(stringResource(R.string.catalogue_search)) },
@@ -131,9 +137,6 @@ internal fun LocalLibraryContent(
                         }))
                     })
                 }
-                }
-                TextButton(onClick = ::scanAction, enabled = !loading) {
-                    Text(stringResource(if (library.isScanning) R.string.library_scan_cancel else R.string.catalogue_refresh))
                 }
             }
             when {
@@ -155,7 +158,7 @@ internal fun LocalLibraryContent(
                 }
             } else {
                 LazyVerticalGrid(
-                    columns = GridCells.Adaptive(145.dp),
+                    columns = GridCells.Adaptive(132.dp),
                     contentPadding = PaddingValues(top = 16.dp, bottom = 24.dp),
                     horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(18.dp),
                 ) {
@@ -171,7 +174,7 @@ internal fun LocalLibraryContent(
     }
     if (selected != null) {
         ModalBottomSheet(onDismissRequest = { selectedKey = null }, containerColor = PlayerPalette.surface) {
-            Column(Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 28.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 28.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(selected.title, style = MaterialTheme.typography.headlineLarge, color = PlayerPalette.textPrimary)
                 Text(selected.year?.toString() ?: stringResource(R.string.catalogue_on_device), color = PlayerPalette.textSecondary)
                 if (!selected.isSeries) {
@@ -194,7 +197,7 @@ internal fun LocalLibraryContent(
     }
     if (settings) {
         ModalBottomSheet(onDismissRequest = { settings = false }, containerColor = PlayerPalette.surface) {
-            Column(Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 28.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 28.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(stringResource(R.string.catalogue_settings), style = MaterialTheme.typography.headlineMedium, color = PlayerPalette.textPrimary)
                 Text(folder.label, color = PlayerPalette.textSecondary)
                 Button(onClick = { settings = false; scanAction() }, enabled = !loading, modifier = Modifier.fillMaxWidth()) {

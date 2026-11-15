@@ -89,7 +89,11 @@ class PreviewUiAndroidTest {
                     }
                 }
             }
-            text("Aurora")
+            val first = Rect().also { text("Aurora").getBoundsInScreen(it) }
+            val second = Rect().also { text("Blue Harbour").getBoundsInScreen(it) }
+            assertEquals("Two visible columns on the narrow synthetic phone", first.top, second.top)
+            assertTrue(first.right <= second.left)
+            text("Shows")
             screenshot("catalogue")
             val input = awaitNode { it.className?.toString()?.contains("EditText") == true }
             assertTrue(input.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, Bundle().apply {

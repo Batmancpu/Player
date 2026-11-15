@@ -217,3 +217,7 @@ H-014 verification: 57e4539 passed full main CI 43667022100, including 10 Androi
 
 ### H-019 — Passing UI tests lost screenshots during connected-test teardown
 - CI86 UI cases passed but post-test adb pull had no app external directory. Package-owned external output is removed with AGP connected-test uninstall; no retained screenshots existed to inspect. Test-only UiAutomation shell now captures owned synthetic screens in a shell-owned Download subfolder; CI pulls that path. No production filesystem permission, media write or test fixture in release. Image retrieval/inspection pending.
+
+H-017/H-018 verification: explicit FFmpeg fixture setup and supported fixed local estimate passed full CI #87 / 43677324287. All15 Android cases include actual first-frame decode/seek, deny/ungranted playback, resume isolation and existing SAF/Room tests; JVM and signed manifest/certificate gates passed. H-019 image retention still awaiting CI88 artifact inspection; H-015 actual OPPO appearance remains pending.
+
+H-019 image retention verified in CI88 Android job: all5 PNGs retrieved and visually inspected (owned synthetic catalogue/search/details/Glass on/off). Found narrow320dp single-column/clipped-filter and bright-dock contrast defects despite bounds tests passing. Catalogue cell threshold/filter allocation and deterministic dock text scrim corrected; source screenshot regression strengthened, new image inspection pending. H-015 remains physically unverified on OPPO.
