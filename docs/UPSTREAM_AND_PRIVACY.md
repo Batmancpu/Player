@@ -25,3 +25,8 @@ Reference candidates (research only, not automatic approvals): https://github.co
 - Search uses separate official `/3/search/movie` and `/3/search/tv` endpoints. Each requires a query; each has type-specific optional year filtering. Adult inclusion defaults to false; keep that conservative default. Official refs: https://developer.themoviedb.org/reference/search-movie and https://developer.themoviedb.org/reference/search-tv .
 - The public official FAQ says non-commercial API use requires attribution, an approved unmodified logo that is less prominent than Player's brand, and the notice “This product uses the TMDB API but is not endorsed or certified by TMDB.” in About/Credits. Source: https://developer.themoviedb.org/docs/faq . Recheck current terms before any integration or distribution using TMDB data.
 - Current code only builds an in-memory, default-off normalized title/year/type value. No TMDB request, credential, cache, endpoint allowlist, `INTERNET` permission, opt-in settings screen or logo/attribution is in the app yet. These are explicit future gates, not implemented behavior.
+
+## Manual metadata overrides — local storage boundary
+
+- The Room v2 foundation stores only a user-confirmed provider ID/type and confirmation time next to the existing selected-tree/document identity. It remains in the app-private database, is removed when that indexed item/tree is successfully reconciled/forgotten, and is never transmitted as a local identifier.
+- Keep the v1 schema snapshot and use the explicit Room migration plus `MigrationTestHelper`; never use destructive migration fallback. This foundation performs no network request and needs no new permission.

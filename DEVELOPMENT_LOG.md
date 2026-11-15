@@ -759,3 +759,12 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 - CI #94 / https://github.com/Batmancpu/Player/actions/runs/43731972463 completed successfully. Android 15 report: 15 tests, 0 failures/errors/skips. Unit-test/build task passed including the seven new query-contract tests. The Room v1 schema validator, signed APK assembly, production privacy manifest, package identity and permanent release-certificate check all passed.
 - Retained CI artifacts: `Player-Android15-tests-935601313171e1f43bb6632bb693787b1f84720f`, `Player-Room-Schema-935601313171e1f43bb6632bb693787b1f84720f`, and CI-only signed release artifact `Player-release-v94-935601313171e1f43bb6632bb693787b1f84720f`. No GitHub Release was published; versionCode 94 was built only for verification.
 - No network/API client, credential, setting UI, `INTERNET` permission, runtime query, migration or source-media change. No handset acceptance/FPS evidence. Next: evaluate a privacy-safe explicit opt-in and encrypted user-managed credential design plus exact TMDB API/image-host allowlist before considering HTTP code.
+
+
+## 2026-11-15 — Room v1→v2 manual override persistence foundation
+
+- Added a separate `manual_tmdb_matches` entity keyed by selected tree/document ID; stores only provider ID, media kind and local confirmation timestamp. `indexed_media` v1 fields remain unchanged.
+- Added explicit `MIGRATION_1_2` and registered it on the production Room builder, with `MigrationTestHelper` coverage that creates a v1 database, inserts synthetic indexed data, opens it through the v2 migration, verifies old library rows survive and validates override storage.
+- Successful scan reconciliation removes overrides for absent documents in the same transaction; selected-tree activation and `forgetTree` remove matching overrides transactionally. No cascading FK is used because media indexing uses `INSERT OR REPLACE`.
+- CI schema check now requires the unchanged v1 snapshot plus exactly the generated v2 schema and verifies the manual-match columns/composite identity. Room testing is test-only; no release runtime dependency or permission change. CI and exported v2 JSON pending.
+- Official reference: https://developer.android.com/training/data-storage/room/migrating-db-versions.html and https://developer.android.com/reference/androidx/room/testing/MigrationTestHelper . No network/client/settings/manual matching UI is implemented.

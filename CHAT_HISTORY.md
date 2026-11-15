@@ -208,3 +208,10 @@ After publishing v0.1.91, began a focused schema-only update: Room/KSP exports v
 - CI #94 / 43731972463 passed after the `TmdbSearchTerms` implementation. Android 15 XML shows 15 tests, zero failures/errors/skips; JVM `:app:testDebugUnitTest` passed, including all seven new consent/normalization/privacy cases. Schema validation, signed APK assembly, package/manifest privacy and permanent certificate gates passed.
 - Signed artifact `Player-release-v94-935601313171e1f43bb6632bb693787b1f84720f` is CI-only. No GitHub Release, network permission, HTTP/API integration, credential, persistent opt-in setting or migration was added.
 - Next: review safe persistence for explicit opt-in and a user-managed encrypted TMDB credential, plus a strict API/image host allowlist. Keep external requests disabled until those controls are implemented and tested. No OPPO preview acceptance or performance evidence.
+
+
+## 2026-11-15 — Started safe local manual-match persistence
+
+- With Room v1 JSON now captured and CI #94 green, the next task is a separate `manual_tmdb_matches` table keyed by selected SAF tree/document, storing a provider ID/type and local confirmation timestamp. It is explicitly separate from `indexed_media`; v1 file data remains unchanged.
+- Plan includes explicit tested Room v1→v2 migration, CI schema validator update, resume-safe cleanup after completed scans/tree switches/forgetting, and no cascading FK because `indexed_media` uses `INSERT OR REPLACE`. No network/client/permission or user matching UI is part of this migration slice.
+- Official Android Room migration guidance and `MigrationTestHelper` were reviewed. Source/build/test changes are on main; CI/schema v2 artifact pending. Next retrieve and review exact generated v2 JSON before preserving it. Phase 1 OPPO acceptance/performance remain pending.

@@ -189,3 +189,6 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-15 — Added the offline TMDB search-terms contract and seven focused JVM cases. CI #94 / 43731972463 passed the Android 15 suite (15/15), JVM/build, Room schema, signed APK privacy/identity and permanent-certificate checks. Default consent remains disabled; query terms contain only normalized title/year/type and reject paths, file suffixes, controls and oversized/unrecognized input. No HTTP, credential, INTERNET permission, persisted opt-in UI or Release. Next: review user-managed credential storage and approved API/image destinations before network code; phone acceptance remains pending.
+
+
+- 2026-11-15 — Started the Room v1→v2 manual TMDB-match override table using a separate composite SAF-keyed entity, explicit migration, Android migration test and tree/reconciliation cleanup. Updated schema CI to verify both snapshots. Code/tests/docs on main; CI and generated v2 JSON pending. No network, permission, matching UI or source-media mutation. Next inspect v2 artifact, correct failures, then commit exact generated JSON.

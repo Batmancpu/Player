@@ -10,6 +10,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.room.withTransaction
 import java.util.UUID
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +34,16 @@ internal data class IndexedMedia(
     val scanToken: String,
 )
 
+/** A user-confirmed TMDB match, private to one selected SAF tree/document. */
+@Entity(tableName = "manual_tmdb_matches", primaryKeys = ["treeUri", "documentId"])
+internal data class ManualTmdbMatch(
+    val treeUri: String,
+    val documentId: String,
+    val tmdbId: Long,
+    val mediaType: String,
+    val confirmedAtEpochMs: Long,
+)
+
 @Dao
 internal interface IndexedMediaDao {
     @Query("SELECT * FROM indexed_media WHERE treeUri = :tree ORDER BY title, season, episode")
@@ -50,11 +62,44 @@ internal interface IndexedMediaDao {
     suspend fun removeOtherTrees(selectedTree: String)
 }
 
-@Database(entities = [IndexedMedia::class], version = 1, exportSchema = true)
+@Dao
+internal interface ManualTmdbMatchDao {
+    @Query("SELECT * FROM manual_tmdb_matches WHERE treeUri = :tree AND documentId = :documentId")
+    suspend fun forDocument(tree: String, documentId: String): ManualTmdbMatch?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(match: ManualTmdbMatch)
+
+    @Query("DELETE FROM manual_tmdb_matches WHERE treeUri = :tree AND documentId = :documentId")
+    suspend fun remove(tree: String, documentId: String)
+
+    @Query("DELETE FROM manual_tmdb_matches WHERE treeUri = :tree")
+    suspend fun removeTree(tree: String)
+
+    @Query("DELETE FROM manual_tmdb_matches WHERE treeUri != :selectedTree")
+    suspend fun removeOtherTrees(selectedTree: String)
+
+    @Query("DELETE FROM manual_tmdb_matches WHERE treeUri = :tree AND documentId NOT IN (SELECT documentId FROM indexed_media WHERE treeUri = :tree)")
+    suspend fun removeOrphans(tree: String)
+}
+
+@Database(entities = [IndexedMedia::class, ManualTmdbMatch::class], version = 2, exportSchema = true)
 internal abstract class PlayerLibraryDatabase : RoomDatabase() {
     abstract fun mediaDao(): IndexedMediaDao
+    abstract fun manualTmdbMatchDao(): ManualTmdbMatchDao
 
     companion object {
+        val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS manual_tmdb_matches (" +
+                        "treeUri TEXT NOT NULL, documentId TEXT NOT NULL, tmdbId INTEGER NOT NULL, " +
+                        "mediaType TEXT NOT NULL, confirmedAtEpochMs INTEGER NOT NULL, " +
+                        "PRIMARY KEY(treeUri, documentId))",
+                )
+            }
+        }
+
         @Volatile private var instance: PlayerLibraryDatabase? = null
 
         fun get(context: Context): PlayerLibraryDatabase =
@@ -63,7 +108,7 @@ internal abstract class PlayerLibraryDatabase : RoomDatabase() {
                     context.applicationContext,
                     PlayerLibraryDatabase::class.java,
                     "player-local-library.db",
-                ).build().also { instance = it }
+                ).addMigrations(MIGRATION_1_2).build().also { instance = it }
             }
     }
 }
@@ -80,6 +125,7 @@ internal object OfflineLibraryIndex {
             val db = PlayerLibraryDatabase.get(context)
             db.withTransaction {
                 db.mediaDao().removeOtherTrees(treeUri.toString())
+                db.manualTmdbMatchDao().removeOtherTrees(treeUri.toString())
                 toDiscovered(db.mediaDao().forTree(treeUri.toString()))
             }
         }
@@ -141,11 +187,16 @@ internal object OfflineLibraryIndex {
         db.withTransaction {
             db.mediaDao().upsert(records)
             db.mediaDao().removeStale(root, token)
+            db.manualTmdbMatchDao().removeOrphans(root)
         }
     }
 
     suspend fun forgetTree(context: Context, treeUri: Uri): Unit = withContext(Dispatchers.IO) {
-        PlayerLibraryDatabase.get(context).mediaDao().removeTree(treeUri.toString())
+        val db = PlayerLibraryDatabase.get(context)
+        db.withTransaction {
+            db.manualTmdbMatchDao().removeTree(treeUri.toString())
+            db.mediaDao().removeTree(treeUri.toString())
+        }
     }
 }
 

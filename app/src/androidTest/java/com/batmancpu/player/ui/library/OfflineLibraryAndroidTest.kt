@@ -14,6 +14,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -41,8 +42,26 @@ class OfflineLibraryAndroidTest {
     @Test fun activationRetiresOnlyOtherTreeAndNeverMixesLibraries() = runBlocking {
         OfflineLibraryIndex.saveSuccessfulScan(context, a, listOf(media("A")))
         OfflineLibraryIndex.saveSuccessfulScan(context, b, listOf(media("B")))
+        val matches = PlayerLibraryDatabase.get(context).manualTmdbMatchDao()
+        matches.upsert(ManualTmdbMatch(a.toString(), "A", 101L, "MOVIE", 1L))
+        matches.upsert(ManualTmdbMatch(b.toString(), "B", 202L, "MOVIE", 2L))
+
         assertEquals(listOf(media("B")), OfflineLibraryIndex.activateAndLoad(context, b))
         assertTrue(OfflineLibraryIndex.load(context, a).isEmpty())
+        assertNull(matches.forDocument(a.toString(), "A"))
+        assertEquals(202L, matches.forDocument(b.toString(), "B")?.tmdbId)
+    }
+
+    @Test fun completedRescanKeepsOnlyManualMatchesForStillIndexedDocuments() = runBlocking {
+        OfflineLibraryIndex.saveSuccessfulScan(context, a, listOf(media("keep"), media("remove")))
+        val matches = PlayerLibraryDatabase.get(context).manualTmdbMatchDao()
+        matches.upsert(ManualTmdbMatch(a.toString(), "keep", 123L, "MOVIE", 1L))
+        matches.upsert(ManualTmdbMatch(a.toString(), "remove", 456L, "TV", 2L))
+
+        OfflineLibraryIndex.saveSuccessfulScan(context, a, listOf(media("keep")))
+
+        assertEquals(123L, matches.forDocument(a.toString(), "keep")?.tmdbId)
+        assertNull(matches.forDocument(a.toString(), "remove"))
     }
 
     @Test fun incompleteProviderScanDoesNotReplaceIndexedRows() = runBlocking {

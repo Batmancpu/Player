@@ -132,27 +132,38 @@ jobs:
       - name: Run unit tests and assemble CI-only debug APK
         run: gradle --no-daemon --stacktrace :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest
 
-      - name: Verify exported Room v1 schema
+      - name: Verify exported Room v1 and v2 schemas
         shell: bash
         run: |
           python - <<'PY'
           import json
           from pathlib import Path
 
-          schemas = list(Path("app/schemas").rglob("*.json"))
-          if len(schemas) != 1:
-              raise SystemExit(f"Expected exactly one exported Room schema; found {len(schemas)}")
-          exported = json.loads(schemas[0].read_text(encoding="utf-8"))
-          database = exported.get("database", {})
-          if database.get("version") != 1:
-              raise SystemExit("Expected Room database schema version 1")
-          entities = database.get("entities", [])
-          if len(entities) != 1 or entities[0].get("tableName") != "indexed_media":
-              raise SystemExit("Unexpected Room v1 entity set")
-          print(f"Verified Room schema v1 ({schemas[0]}): indexed_media")
+          schema_dir = Path("app/schemas/com.batmancpu.player.ui.library.PlayerLibraryDatabase")
+          schemas = {path.stem: json.loads(path.read_text(encoding="utf-8")) for path in schema_dir.glob("*.json")}
+          if set(schemas) != {"1", "2"}:
+              raise SystemExit(f"Expected exact Room schema snapshots 1 and 2; found {sorted(schemas)}")
+
+          version_one = schemas["1"].get("database", {})
+          if version_one.get("version") != 1:
+              raise SystemExit("Room v1 snapshot must retain database version 1")
+          if [entity.get("tableName") for entity in version_one.get("entities", [])] != ["indexed_media"]:
+              raise SystemExit("Room v1 baseline entity changed unexpectedly")
+
+          version_two = schemas["2"].get("database", {})
+          entities = version_two.get("entities", [])
+          tables = {entity.get("tableName") for entity in entities}
+          if version_two.get("version") != 2 or tables != {"indexed_media", "manual_tmdb_matches"}:
+              raise SystemExit(f"Unexpected Room v2 schema: version={version_two.get('version')}, tables={tables}")
+          match = next(entity for entity in entities if entity.get("tableName") == "manual_tmdb_matches")
+          if [field.get("columnName") for field in match.get("fields", [])] != ["treeUri", "documentId", "tmdbId", "mediaType", "confirmedAtEpochMs"]:
+              raise SystemExit("Unexpected Room v2 manual match columns")
+          if match.get("primaryKey", {}).get("columnNames") != ["treeUri", "documentId"]:
+              raise SystemExit("Manual match must be scoped by the composite SAF document identity")
+          print("Verified Room v1 baseline and v2 manual match schema")
           PY
 
-      - name: Upload exported Room schema for review
+      - name: Upload exported Room v1 and v2 schemas for review
         uses: actions/upload-artifact@v7
         with:
           name: Player-Room-Schema-${{ github.sha }}

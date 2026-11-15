@@ -46,6 +46,8 @@ Use explicit Room migrations; never destructive-migrate user data in release bui
 
 ## Room schema history
 
+The exact version1 schema is committed at `app/schemas/com.batmancpu.player.ui.library.PlayerLibraryDatabase/1.json`. A version2 manual TMDB-match table and explicit migration are being prepared; no metadata fields have been added to `indexed_media`, and the generated version2 JSON must be reviewed before committing. Migration validation uses the saved v1 schema and must retain all indexed media.
+
 The current Room database is version1 with the existing `indexed_media` entity. KSP now exports its compile-time schema JSON through a Gradle-tracked `CommandLineArgumentProvider`; CI validates the generated version/entity and exposes the artifact for exact review. The baseline JSON must be committed before adding columns or migration code. The export is build metadata only and contains no user library rows; it is not packaged as production app data. Never use destructive migration fallback for this library.
 
 ## Scanning correctness
