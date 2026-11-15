@@ -226,3 +226,12 @@ After publishing v0.1.91, began a focused schema-only update: Room/KSP exports v
 - CI #96 / 43735914768 completed: Android 15 XML has 17 tests, 0 failures/errors/skips. The replacement migration test preserves a v1 row and exercises the new DAO. Verify job failed at schema validation because `:app:kspDebugKotlin` was `FROM-CACHE` but the schema JSON side effect was absent; downstream signed privacy/certificate steps were skipped. H-021 is resolved and H-022 tracks schema export.
 - CI #97 / 43737778787 completed successfully. Android 15 XML reports 17 tests, 0 failures/errors/skips, including the production v1→v2 migration and manual-match DAO operations. Forced KSP export recreated v1/v2 JSON and schema validation passed; v1 is byte-identical to the prior snapshot, and exact v2 JSON was reviewed and committed. Unit/build, signed APK, production manifest privacy/identity and permanent-certificate gates also passed. VersionCode 97 remains a CI artifact only; no GitHub Release, OPPO acceptance or performance claim.
 - Next: harden Android backup rules against cloud/D2D restore (legacy Android 11 and older plus Android 12+ extraction modes), verify packaged configuration, then implement user-managed encrypted credentials and persistent opt-in/destination controls before any HTTP. Phone acceptance/performance remain pending.
+
+
+## 2026-11-15 — Explicit Android backup exclusion work
+
+- Resumed from live main `655dd19209c7a5166146398fa1a488bd4beac348`; CI #98 passed, v0.1.91 remains the latest signed Release, and no PR/other branch is open.
+- Reviewed Android's current Auto Backup docs. Some Android 12+ OEMs can allow D2D transfer despite `allowBackup=false`; an omitted transfer-mode rule defaults to including all app data. Added explicit legacy and Android 12+ cloud/device-transfer exclusions for all app-data domains.
+- Added source XML/manifest tests and hardened the compiled-APK verifier. Focused local Python test suite passed 7/7; CI #99 is pending. No APK release or phone acceptance is inferred.
+- Android 16 QPR2 cross-platform transfer to iOS requires actual target-app bundle/team/content identifiers; there is no iOS Player app, so identifiers are not fabricated and that mode is not claimed as excluded.
+- Next: verify CI #99's package and signing/privacy checks. Continue independent work without inventing OPPO results; no new Release from this config-only slice.

@@ -201,3 +201,6 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-15 — Cache-safe Room export verified in CI #97 / 43737778787: Android 15 report 17/17, all unit/build/schema/manifest/signing/permanent-certificate gates passed. Exact generated v1 is byte-identical to the committed snapshot (SHA-256 820f2e814c9fcc3780be7c4bf6a1cbcb2498d52d1f92a0439b58aef11c9d6d04); v2 contains only the intended composite-key manual-match table (SHA-256 6d2a1dd422834f5cadf3e6c4292aed393bf2a784adc3cef1108ba9975c0bd4fe), now committed from the artifact. No Release or OPPO acceptance. Next: harden cloud/D2D backup exclusions, then finish opt-in credential/destination controls before any HTTP.
+
+
+- 2026-11-15 — Added explicit Android app-data backup exclusions: retain `allowBackup=false`, attach legacy rules for Android 11 and lower and Android 12+ cloud/device-transfer rules, and exclude all nine supported app-data domains. Added source/XML and compiled-manifest regression checks. Local focused Python suite passed 7/7; CI #99 pending. No runtime, permission, network, Room schema, signing or release change. Next verify CI #99, including resource packaging and signed privacy gates; do not claim iOS cross-platform transfer exclusions because Player has no iOS counterpart IDs.

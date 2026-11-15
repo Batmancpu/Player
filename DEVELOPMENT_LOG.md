@@ -797,3 +797,13 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 - CI also passed JVM/unit/debug build, release assembly, exported schema validation, production manifest privacy/identity (no unexpected permissions; backup remains false), APK signature and the pinned permanent certificate. VersionCode 97 artifact is CI-only and not a GitHub Release; no phone acceptance/performance result.
 - H-021 and H-022 are resolved. No network/client/permission, runtime app behavior or signing identity changed.
 - Next: add explicit Android 12+ cloud/device-transfer backup exclusions and Android 11-and-lower legacy exclusions; validate source and packaged rules. Only then store any credential or add opt-in network integration.
+
+
+## 2026-11-15 — Explicit Android backup exclusions
+
+- Retained `android:allowBackup="false"` and attached `@xml/backup_rules` (`fullBackupContent`) for Android 11 and lower plus `@xml/data_extraction_rules` for Android 12+ cloud backup and device-to-device transfer. Both configurations exclude all nine documented app-data domains at path `.`; cache/no-backup remain platform excluded.
+- Added tests that verify the manifest references both rules, each mode excludes every domain with no include rules, and the release manifest checker rejects absent rule resources. The packaged-APK check still verifies the stable application ID/versionCode, no unexpected production permission, no debug provider and disabled `allowBackup`.
+- Why: Android's official backup documentation warns some Android 12+ manufacturers may still allow device-to-device transfer when `allowBackup=false`; a missing extraction-rule mode defaults to all app data. Official reference: https://developer.android.com/identity/data/autobackup .
+- Local focused regression run: `python3 -m unittest discover -s scripts -p 'test_*.py' -v` in an isolated tree containing the exact patch — 7 tests passed. Android resource/package and signed privacy gates are pending CI #99. No app runtime, permission, network, Room schema, signing or Release changed.
+- Cross-platform transfer: Android 16 QPR2/API 36.1 adds optional Android↔iOS transfer rules requiring a real iOS bundle ID, Team ID and content version. Player has no iOS counterpart; these values are not invented and cross-platform transfer is not claimed as excluded. Revisit only if a real iOS app and identifiers are approved.
+- Next: verify CI #99 on this exact source commit and update the handoff with its result. Do not store any credential or add HTTP until privacy-rule validation passes. OPPO acceptance/performance and Release v0.1.91 handset verification remain pending.

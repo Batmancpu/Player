@@ -25,5 +25,7 @@ assert backup and re.fullmatch(
     r"(?:\(type 0x12\))?(?:0x0+|false)(?:\s+\(Raw: \"false\"\))?", backup[1].strip()
 ), "Backup must remain disabled; observed " + (backup[1].strip() if backup else "missing attribute")
 print("Verified allowBackup representation:", backup[1].strip())
+assert "fullBackupContent" in xml and "dataExtractionRules" in xml, "Explicit legacy/cloud/device-transfer backup rules must be attached"
+print("Verified explicit legacy and modern backup-rule resources are attached.")
 assert "SyntheticSafProvider" not in xml and "com.batmancpu.player.synthetic" not in xml, "Debug provider entered release"
 print("Release manifest verified: stable identity/version, offline permissions, backup disabled, no debug provider.")

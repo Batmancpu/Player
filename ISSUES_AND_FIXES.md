@@ -244,3 +244,12 @@ CI90 / 43678768709 passed the full Android15 integration suite including the cor
 - Correction: force `:app:kspDebugKotlin` execution with Gradle `--rerun-tasks` immediately before schema verification. CI #97 reran KSP, generated both snapshots, passed schema validation, and completed signed APK, production manifest privacy/identity and permanent-certificate gates. The Android 15 XML reports 17 tests with zero failures/errors/skips.
 - Artifact review: v1 remains byte-identical at SHA-256 `820f2e814c9fcc3780be7c4bf6a1cbcb2498d52d1f92a0439b58aef11c9d6d04`; v2 is exactly generated at SHA-256 `6d2a1dd422834f5cadf3e6c4292aed393bf2a784adc3cef1108ba9975c0bd4fe`, with only the intended composite-key `manual_tmdb_matches` entity. The v2 file is committed in main.
 - No app runtime behavior, database migration semantics, permission, network access, signing key or user release changed. VersionCode 97 is a CI-only signed artifact, not a Release. No OPPO acceptance or handset performance result.
+
+
+### H-023 — Android app data can transfer despite allowBackup=false on some OEMs
+- **Status:** Source and local regression tests added; packaged-resource and signed privacy gates pending CI #99.
+- **Evidence:** Android's official Auto Backup documentation (https://developer.android.com/identity/data/autobackup) states that some Android 12+ manufacturers may allow D2D transfer even with `allowBackup=false`; when a backup mode has no rule section, all app data is enabled by default.
+- **Correction in this commit:** preserve `allowBackup=false`; add legacy `fullBackupContent` exclusions and Android 12+ `dataExtractionRules` exclusions for all nine documented domains under both cloud-backup and device-transfer. Add XML/manifest tests and make the release APK checker require both attached resources.
+- **Local regression evidence:** seven focused Python tests pass against the exact source patch. CI must still prove Android resource compilation, the full script suite and signed manifest/privacy/certificate gates. No app runtime, permission, network, schema or signing change.
+- **Remaining limit:** Android 16 QPR2 cross-platform transfer needs real iOS bundle ID/Team ID/content version. There is no iOS Player target; that mode is not claimed as excluded and no placeholder IDs are used.
+- **Next:** inspect CI #99. Do not add persistent credentials or HTTP until the configured Android backup modes pass packaged verification.

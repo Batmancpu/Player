@@ -8,11 +8,16 @@ import unittest
 
 
 class ReleaseManifestTest(unittest.TestCase):
-    def check_apk(self, backup, permission=None, provider=False, version=5):
+    def check_apk(self, backup, permission=None, provider=False, version=5, backup_rules=True):
+        xmltree = "A: android:allowBackup(0x01010280)=" + backup
+        if backup_rules:
+            xmltree += "\nA: android:fullBackupContent(0x0101027c)=@0x7f120001\nA: android:dataExtractionRules(0x010106f4)=@0x7f120002"
+        if provider:
+            xmltree += "\nSyntheticSafProvider"
         responses = {
             "badging": f"package: name='com.batmancpu.player' versionCode='{version}'",
             "permissions": "" if permission is None else f"uses-permission: name='{permission}'",
-            "xmltree": "A: android:allowBackup(0x01010280)=" + backup + ("\nSyntheticSafProvider" if provider else ""),
+            "xmltree": xmltree,
         }
         with tempfile.TemporaryDirectory() as directory:
             aapt = Path(directory) / "fixture-aapt"
@@ -33,6 +38,9 @@ class ReleaseManifestTest(unittest.TestCase):
         for value in ["true", "0xffffffff", "(type 0x12)0x01", "@bool/unknown", ""]:
             with self.subTest(value=value):
                 self.assertNotEqual(0, self.check_apk(value).returncode)
+
+    def test_rejects_missing_explicit_backup_rule_resources(self):
+        self.assertNotEqual(0, self.check_apk("false", backup_rules=False).returncode)
 
     def test_rejects_network_permissions_debug_provider_and_stale_version(self):
         self.assertNotEqual(0, self.check_apk("false", permission="android.permission.INTERNET").returncode)
