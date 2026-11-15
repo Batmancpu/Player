@@ -202,3 +202,8 @@ Publication run 43618442469 passed all gates and published v0.1.79. Actual relea
 - Regression: Android main-caller 1,000-item save/activation/load then 100-item reconciliation; existing preservation/rollback/cancellation cases. CI pending; exact frame/memory/thermal outcomes require actual OPPO traces. Unreleased main; v0.1.79 remains current candidate.
 
 H-014 verification: 57e4539 passed full main CI 43667022100, including 10 Android integration cases and signed-build/privacy/certificate checks. Fixed at source/build/functional-test level; unreleased, still present in the older v0.1.79 code path. Actual phone timing/impact is unmeasured.
+
+### H-015 — User-reported broken Glass Lab dock
+- v0.1.79 on OPPO CPH2531: user describes bottom navigation broken/floating in air. Exact pixel defect/renderer cause unverified (no screenshot). Source uses four fixed-width independent clear Glass surfaces merged in a container. Replace with coherent bounded single-surface dock, verify layouts/screenshots/fallback; no claim that library engine itself is proven defective.
+### H-016 — Scan cancellation/rescan feedback is insufficient
+- v0.1.79 user sees no clear effect after cancel. Very short scans can already be complete; current inline state is easy to miss. Keep safe completed-snapshot behavior and add explicit action feedback distinguishing cancelled versus already completed. No source deletion control is wanted.

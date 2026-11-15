@@ -77,3 +77,6 @@ Published signed APK: https://github.com/Batmancpu/Player/releases/tag/v0.1.79 (
 
 ## 2026-11-15 — Unreleased H-014 automated evidence
 CI 43667022100 at 57e4539 passed 10 Android 15 emulator integration cases, adding main-caller 1,000-item save/activation then 100-item rescan. Unit/build/privacy/signature gates passed. This is functional synthetic coverage, not handset frame timing, thermal/memory measurement or OPPO acceptance. Published v0.1.79 is unchanged and does not include H-014.
+
+## 2026-11-15 — Actual user report, v0.1.79 / OPPO
+Confirmed by user: folder selection, retained library after airplane-mode restart, folder switching works. User said audio files: exact media classification awaiting clarification. Cancel produced no obvious effect; Glass Lab bottom dock visually broken/floating. These are user reports, not agent measurements. Source deletion check not performed (user expected in-app delete); app intentionally has no source delete. No full Phase 1 acceptance, actual frame times, or Glass efficiency evidence yet.
