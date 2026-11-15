@@ -775,3 +775,16 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 - The production migration and schema are unchanged; no destructive fallback, permission, network, or media-file access was added. CI #95 logs confirm the earlier error occurred before migration execution, so do not count its attempted migration case as verified.
 - Next: inspect CI #96 Android test report, generated v2 schema artifact and signed privacy/identity gates. No Release or actual-device evidence is associated with this change.
 
+
+
+## 2026-11-15 — CI #96 migration pass and cache-sensitive schema export
+
+- CI #96 / 43735914768 Android 15 XML contains 17 tests, 0 failures/errors/skips. The replacement fixture test built a v1 SQLite DB from the exact committed Room v1 JSON and verified the production migration retained its row and supports the new DAO.
+- Verify job 132880042081 passed Python fixtures and unit/build/test-APK tasks, then failed at the schema-file presence check. Logs show `:app:kspDebugKotlin FROM-CACHE`; KSP's Room schema JSON side effect was not restored. The schema gate stopped downstream signed APK, privacy and permanent-certificate checks; those must not be inferred as passed.
+- H-021 is resolved by the passing Android migration case. H-022 records the separate build-cache omission. No app behavior/release permission/schema/runtime changed; no APK release or device acceptance.
+
+## 2026-11-15 — Force Room schema export before validation
+
+- CI now runs `gradle --no-daemon --rerun-tasks :app:kspDebugKotlin` immediately before validating Room schema snapshots. This explicitly regenerates the KSP schema JSON instead of relying on a cached task result.
+- No app runtime or production DB behavior changed. CI #97 is pending to verify exact v1/v2 JSON generation, upload the artifact and continue signed identity/privacy/certificate checks.
+- Next: inspect CI #97; confirm v1 is byte-identical and v2 matches the entity/migration, then commit the exact generated v2 JSON. No new Release, OPPO acceptance or performance claim.

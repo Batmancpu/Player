@@ -195,3 +195,6 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-15 — CI #95 / 43734224640 exposed a Room migration-test harness failure: `MigrationTestHelper` raised `AbstractMethodError` in `SchemaBundle.deserialize` before executing SQL (13/17 Android tests completed; one failed). Replaced it with a test SQLite database built from the committed Room v1 JSON; production Room opens it through the real v1→v2 migration and validates v2. Removed the incompatible test-only helper dependency. CI #96 pending. Also recorded Android's Android-12+ OEM device-transfer backup caveat before credentials are stored. Next: verify CI #96 and exact generated schema, then harden explicit backup-transfer exclusions before credential storage; no release or OPPO acceptance.
+
+
+- 2026-11-15 — CI #96 Android 15 XML confirms 17/17 cases, including the production Room migration; verify job then failed because cached `:app:kspDebugKotlin` did not restore the generated v2 schema JSON side effect. Workflow now explicitly reruns KSP before schema validation; CI #97 pending. H-021 is verified; H-022 tracks schema export. No APK release, OPPO acceptance or handset-performance result. Next: inspect exact v2 artifact and signed privacy/certificate gates, then commit the generated schema only if validated.

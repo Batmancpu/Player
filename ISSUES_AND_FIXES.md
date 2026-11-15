@@ -231,7 +231,15 @@ CI90 / 43678768709 passed the full Android15 integration suite including the cor
 
 
 ### H-021 — Room migration helper crashes before migration execution
-- First observed: CI #95 / 43734224640, Android 15 instrumentation, commit 76330c96. The new migration case fails in `androidx.room.migration.bundle.SchemaBundle.deserialize` with `AbstractMethodError` for `GeneratedSerializer.typeParametersSerializers()` while `MigrationTestHelper.createDatabase` reads the v1 schema. The failure happens before the SQL migration is invoked; the run reports 13/17 tests completed with this as the one failure.
-- Root-cause confidence: high that this is a binary incompatibility between Room's schema-serializer bytecode and the Android-test kotlinx.serialization runtime; exact resolved runtime versions were not printed in the job log.
-- Correction: remove the test-only Room helper dependency. Load the exact committed v1 JSON asset, use its Room-generated CREATE/setup SQL and identity hash to construct a version-1 SQLite database, then open it via the production Room builder with `MIGRATION_1_2`. Room itself performs migration and validates the complete v2 schema; the test verifies old data and new DAO operations. No production database behavior changes.
-- Regression status: corrective test is on main; CI #96 / run not yet available. Do not treat migration as verified until that Android test and the generated schema gate pass. No APK release, device acceptance, or performance result.
+- **Status: resolved by integration test; CI correction complete, v2 schema export still pending.**
+- First observed: CI #95 / 43734224640, Android 15 instrumentation, commit 76330c96. The new migration case failed in `androidx.room.migration.bundle.SchemaBundle.deserialize` with `AbstractMethodError` for `GeneratedSerializer.typeParametersSerializers()` while `MigrationTestHelper.createDatabase` read the v1 schema. It failed before SQL; 13/17 tests completed with this one failure.
+- Root-cause confidence: high that this was a binary incompatibility between Room schema-serializer bytecode and Android-test kotlinx.serialization runtime; exact resolved runtime versions were not printed.
+- Correction: remove the test-only Room helper dependency. Load the exact committed v1 JSON, use Room-generated CREATE/setup SQL and identity hash to build a version-1 database, then open it through production Room with `MIGRATION_1_2`. The production migration and DAO operations passed in CI #96.
+- Regression evidence: CI #96 Android 15 XML contains 17 tests, zero failures/errors/skips, including `v1MediaSurvivesAndManualOverrideTableWorksAfterMigration`. This resolves the earlier harness failure; the overall workflow was still red at the separate schema-export gate. No APK release, device acceptance or performance result.
+
+### H-022 — Room schema JSON side effect was absent after Gradle task cache restore
+- **Status: workflow fix committed; CI #97 pending.**
+- First observed: CI #96 / run 43735914768, verify job 132880042081. Android 15 instrumentation succeeded with 17/17 tests. Verify logs show `:app:kspDebugKotlin FROM-CACHE`; the validator found only tracked `1.json` and no generated `2.json`. Unit/build/test-APK tasks passed; the schema gate prevented downstream signed APK and privacy/certificate checks from running.
+- Cause: Room writes schema JSON as a KSP side effect outside the task outputs restored by the Gradle cache, so a cache hit did not put the file in the verify workspace.
+- Correction: force `:app:kspDebugKotlin` execution with Gradle `--rerun-tasks` immediately before schema verification. CI #97 must produce and upload exact v1/v2 snapshots, pass downstream signing/privacy checks and demonstrate the fix.
+- No app runtime behavior, database schema, permission, network access, signing key or version changed. No release or OPPO acceptance; handset performance remains unmeasured.
