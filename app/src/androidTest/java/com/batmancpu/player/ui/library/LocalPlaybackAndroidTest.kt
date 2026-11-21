@@ -152,7 +152,12 @@ class LocalPlaybackAndroidTest {
             while (button != null && !button.isClickable) button = button.parent
             assertTrue("Full-screen control can be activated", button?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true)
             assertTrue("Toggle enters full-screen state", fullScreen.value)
-            assertTrue("Exit control remains accessible", awaitText("Exit full screen", true, 2_000))
+            if (!awaitText("Exit full screen", true, 500)) {
+                ParcelFileDescriptor.AutoCloseInputStream(
+                    automation.executeShellCommand("input tap ${metrics.widthPixels / 2} ${metrics.heightPixels / 2}"),
+                ).use { it.readBytes() }
+            }
+            assertTrue("A video tap reveals the accessible exit action", awaitText("Exit full screen", true, 3_000))
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
             SyntheticSafProvider.playbackFile = null

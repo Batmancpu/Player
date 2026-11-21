@@ -383,3 +383,7 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 
 ## 2026-11-21 — Auto-hide exit-control timing
 - CI #142 passed 42/43 tests. Auto-hide, tap restore and fullscreen entry worked; the exit label timed out before assertion. Full-screen action now calls `showController()` to restart the auto-hide timer. Rerun pending; no APK.
+
+
+## 2026-11-21 — Exit action reveal regression
+- CI #143 again timed out the exit-label assertion after fullscreen entry; transport/title auto-hide and tap restore worked. Updated the test to tap video to reveal controls before checking the exit action, and added an explicit localized accessibility description. Rerun pending; no APK.

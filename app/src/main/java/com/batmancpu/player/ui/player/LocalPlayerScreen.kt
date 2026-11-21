@@ -9,6 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import com.batmancpu.player.R
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -149,5 +151,5 @@ internal fun LocalPlayerScreen(
 @Composable
 internal fun PlayerFullscreenButton(isFullScreen: Boolean, onToggle: () -> Unit) {
     val label = stringResource(if (isFullScreen) R.string.player_exit_fullscreen else R.string.player_enter_fullscreen)
-    TextButton(onClick = onToggle) { Text(label, color = Color.White) }
+    TextButton(onClick = onToggle, modifier = Modifier.semantics { contentDescription = label }) { Text(label, color = Color.White) }
 }

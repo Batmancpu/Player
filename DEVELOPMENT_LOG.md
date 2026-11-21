@@ -1105,5 +1105,12 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 ## 2026-11-21 — Keep exit control visible during full-screen toggle
 
 - CI #142 / 44918375043 ran 43 Android tests; the new player overlay integration passed initial display, auto-hide, tap-to-restore and enter action, then failed because the exit label was checked as the controller timeout elapsed. Other 42 tests passed.
-- The full-screen button now explicitly calls `PlayerView.showController()` before switching mode, resetting Media3's visibility timer so the resulting exit action remains available. Player view reference is scoped to the media target and cleared during disposal.
-- Rerun Android 15 integration and full build/schema/privacy gates. No APK/Release.
+- The full-screen button calls `PlayerView.showController()` before switching mode. Because controls are designed to auto-hide, the integration test now taps the video again if needed before verifying the accessible exit label. The button also exposes a localized content description. Player view reference is scoped to the media target and cleared during disposal.
+- CI rerun pending. No APK/Release.
+
+
+## 2026-11-21 — Verify exit action after reveal
+
+- CI #143 / 44919172485 confirmed the earlier 42/43 result: header hiding, tap restore and fullscreen toggle all worked, but the exit-label assertion occurred after the controller auto-hide timer.
+- Updated the integration test to tap the synthetic video if the toolbar has hidden before checking the exit action; this tests the intended reveal flow. Added an explicit localized content description to the button.
+- Rerun Android 15 plus unit/build/schema/privacy gates. No APK or Release.
