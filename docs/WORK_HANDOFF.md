@@ -1,9 +1,9 @@
 ## Current handoff — 2026-11-21 (latest)
-- Main is e43b779467f25d08f84c8f0a971c31ef16002a22 (local sidecar playback); CI #132 / 44911456180 passed.
+- Implementation commit e43b779467f25d08f84c8f0a971c31ef16002a22 (local sidecar playback); CI #132 / 44911456180 passed.
 - Latest signed Release remains v0.1.91 (versionCode 91). User requests one complete app before the next install APK; do not publish milestone APKs.
 - Latest completed phone evidence is user-reported v0.1.79: four video titles/year parsed, library retained after airplane-mode restart, and folder switching worked. The newer v0.1.91 catalogue/player/Glass preview is not accepted or performance-tested on OPPO.
 - The current source attaches only fresh, exact same-parent SRT/VTT/ASS/SSA/TTML local content URIs to Media3. CI passed 41 Android 15 instrumentation tests (zero failures), JVM/build, Room schema v1-v4 and privacy gates. The synthetic SRT decode/selector path passed. Workflow artifacts were test/schema only; no user-installable APK/Release was produced.
-- Next exact action: inspect Android, JVM/build, schema and privacy gates; repair failures in small commits. Then add subtitle delay/reset and finish player, catalogue/navigation, original Glass Lab repair, accessibility/fallback and battery/performance review. Only after one integrated build is ready should CI publish a signed APK for the broad phone checklist.
+- Next exact action: implement local subtitle delay/reset with automated behavior checks; then finish playback controls/full-screen/resume, repair and integrate the original Glass/navigation surfaces, accessibility/fallback and battery/performance review. Keep final APK deferred until the integrated app is ready. Only after one integrated build is ready should CI publish a signed APK for the broad phone checklist.
 - Preserve app ID, release certificate, increasing versionCode, one read-only SAF root, disabled backup and no source-media writes. Do not claim phone/performance evidence without OPPO evidence.
 
 ## Current handoff — 2026-11-21

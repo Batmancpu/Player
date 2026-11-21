@@ -306,4 +306,9 @@ CI #130 / 44909463881 passed Android 15 migration/persistence, unit/build, Room 
 
 ## 2026-11-21 continuation — local sidecar playback
 
-Attached only freshly revalidated same-parent subtitle URIs to local Media3 playback (SRT/VTT/ASS/SSA/TTML); stale provider results fail closed for subtitles while keeping video playback. Added synthetic Media3 SRT decode/selector coverage. Local Gradle unavailable (no wrapper or system Gradle); CI is pending. No APK/Release. Next: inspect CI, then subtitle delay/reset and integrated player/Glass/accessibility before one final APK.
+Attached only freshly revalidated same-parent subtitle URIs to local Media3 playback (SRT/VTT/ASS/SSA/TTML); stale provider results fail closed for subtitles while keeping video playback. Added synthetic Media3 SRT decode/selector coverage. CI #132 / 44911456180 passed Android 15 41/41, JVM/build, Room v1-v4 schema and privacy gates. No installable APK/Release. Next: subtitle delay/reset, then integrated player/Glass/accessibility before one final APK.
+
+
+## 2026-11-21 — CI #132 verification follow-up
+
+Recorded the green 41/41 Android 15 integration run and all JVM/build/schema/privacy gates for e43b779; only test/schema artifacts were produced. Updated current handoff next steps. Latest installable Release is still v0.1.91; no interim APK. Next: implement subtitle delay/reset and continue integrated app work.

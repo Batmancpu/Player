@@ -1035,3 +1035,8 @@ Next: validate same-tree sidecar candidates into bounded local subtitle configur
 - CI #132 / 44911456180 passed: Android 15 instrumentation 41/41 with zero failures, JVM unit tests, debug/test builds, exported Room v1-v4 schema validation, release-manifest/privacy checks. The synthetic local SRT track was accepted by Media3, and the selector UI opened/dismissed. Android 15 emulator evidence is not OPPO handset acceptance.
 - Workflow artifacts contain Room schema and Android test results only; no installable APK or GitHub Release was produced. The latest public signed APK remains v0.1.91.
 - Next: implement and test local subtitle delay/reset, then improve the integrated playback experience and original Glass/navigation/accessibility. Keep all Release output deferred until the app is complete enough for one comprehensive phone test.
+
+
+## 2026-11-21 — Handoff reconciled after CI #132
+
+Recorded that local Media3 sidecar subtitle integration passed CI #132 / 44911456180: 41/41 Android 15 tests, JVM/build, Room v1-v4 schema and privacy checks. Reconciled the current handoff and agent ledger to remove pending-status text. Only Android test and Room schema artifacts exist for this run; no user APK/Release. Next: local subtitle delay/reset and full player/Glass/accessibility integration.
