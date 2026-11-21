@@ -1338,3 +1338,10 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 ## 2026-11-21 — Correct navigation selected-state test
 - CI #184 passed compilation and 48 of 49 Android 15 tests. The navigation test's movie filter assertion passed, then its generic helper matched the earlier Movies shelf heading instead of the selected tab label.
 - Changed the test helper to examine all matching text/content-description nodes and their selected ancestors. Product navigation code is unchanged. Re-run CI before treating navigation as verified.
+
+
+## 2026-11-21 — Navigation selected state made explicit
+- CI #185 / 44951546792 compiled the navigation and ran all 49 Android 15 instrumentation tests; only the selected-tab assertion failed. The screenshot shows the bottom bar is laid out correctly. Movie/Show filtering worked; Android accessibility did not expose Material3's selected value via `isSelected` as the test expected.
+- Added explicit localized selected/not-selected state descriptions on each production NavigationBarItem and changed the synthetic test to accept that state description or the platform selected flag. This improves the spoken destination state and tests it directly.
+- Verification: source/test change is committed on main; new full CI run is pending. No APK produced and no Reno10 behavior/performance claimed.
+- Next: inspect latest workflow, resolve any test or UI issue, then continue player captions/controls and Glass/performance batches.
