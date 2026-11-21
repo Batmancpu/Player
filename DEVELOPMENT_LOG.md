@@ -1431,4 +1431,4 @@ CI #209 / 44958254084 failed Kotlin compilation at `LocalLibraryScreen.kt:601`: 
 
 - CI #215 / `44962980148` reached app Kotlin compilation and failed because `LocalPlayerScreen.kt:298` referenced the Compose semantics `role` extension without importing it. Android instrumentation/screenshots did not run; release-only job was skipped.
 - Added `androidx.compose.ui.semantics.role`. Local `git diff --check` and strings XML parsing pass; no local Android SDK/Gradle wrapper. This correction must be compiled and fully tested by CI #216 before additional product code.
-- Next: push a focused corrective commit with context records, inspect CI #216 and the player interaction screenshot/artifact, then fix any subsequent real compile/test defects.
+- Corrective commit `684c35f` is pushed to main; CI #216 is running. A documentation reconciliation records its exact source SHA and current test state. Next: inspect CI #216 and the player interaction screenshot/artifact, then fix any subsequent real compile/test defects.
