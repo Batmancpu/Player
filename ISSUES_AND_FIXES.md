@@ -329,3 +329,10 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - **Evidence:** Pinned Media3 1.11.1 default `exo_player_view.xml` placed `SubtitleView` inside `AspectRatioFrameLayout` (`exo_content_frame`), so the subtitle viewport shared resize/crop geometry.
 - **Fix:** App's Apache-2.0 layout adaptation moves SubtitleView to a sibling spanning PlayerView; accessible Fit/Fill/Zoom controls target the video frame. Automated test checks sibling hierarchy.
 - **Next:** verify CI, screenshots and later OPPO cue position/legibility. Revalidate layout contract on Media3 upgrade.
+
+
+### R-017 — Player integration test races fullscreen overlay semantics
+- **Status:** Test timing expectation removed; CI #148 includes product subtitle/zoom changes, next corrected full-suite rerun pending.
+- **Evidence:** CI #147 / 44923019327 passed 42/43. The final exit-label lookup failed after the player action changed fullscreen state; #146 showed a related visibility-timer race. The independent UI test verifies enter/exit accessible labels and reversible state.
+- **Fix:** Keep the player integration focused on video auto-hide/reveal, action activation and state callback; do not perform a second accessibility-tree lookup across the controller timer.
+- **Next:** Require green complete CI; do not infer a product defect from this synthetic tree race.

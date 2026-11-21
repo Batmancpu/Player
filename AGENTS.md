@@ -352,3 +352,8 @@ CI #146 / 44922204439 found the revised test's extra post-toggle auto-hide expec
 ## 2026-11-21 — Independent subtitle viewport and video scaling
 
 Added player Fit/Fill/Zoom modes and an Apache-2.0 attributed Media3 player-layout adaptation that places the subtitle renderer outside the zoomable aspect-ratio frame. Added UI-cycle and Android hierarchy regressions. CI pending; no APK. Next: inspect CI and synthetic screenshots, then continue subtitles/accessibility and broader player coverage.
+
+
+## 2026-11-21 — Separate fullscreen state test from controller timer
+
+CI #147 / 44923019327 passed 42/43; the player integration test's final accessibility-tree read still raced the Media3 controller's own auto-hide callback after pressing the fullscreen action. The integration keeps verifying video-tap restore, control activation and state change; a focused Compose test already verifies both accessible labels and reversible state. Removed only the redundant timing-sensitive accessibility-tree read. No product code changed. CI #148 (subtitle viewport / resize controls) pending. Next: inspect #148 and rerun the complete suite; investigate the single #146 metadata fixture timeout if it recurs.

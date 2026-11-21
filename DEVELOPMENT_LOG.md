@@ -1147,3 +1147,12 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - Added synthetic instrumentation for sibling viewport placement and for cycling the three modes. No VLC/LibVLC dependency was added; this resolves the identified behavior without native engine size/battery/licensing changes. LibVLC remains an option only if actual local codec corpus testing demonstrates material Media3 gaps.
 - Verification: source/API reviewed; CI pending. Local Gradle/Android emulator unavailable. No signed APK/Release.
 - Next: inspect CI and screenshots, fix failures, then proceed with subtitle delay after Media3 1.12 stabilizes and continue production Glass/accessibility.
+
+
+## 2026-11-21 — Fullscreen test no longer couples to controller timeout
+
+- CI #147 / 44923019327 ran 43 Android 15 tests; 42 passed. The sole failure was the exit-label tree assertion immediately following an accessibility click on the fullscreen button. Previous variants either waited past the controller timeout or raced the visibility listener.
+- Retained integration assertions for initial toolbar, auto-hide, tap-to-restore, entry-button reachability, successful activation and changed app state. The dedicated `PreviewUiAndroidTest.playerFullscreenButtonHasReversibleAccessibleState` exercises both enter/exit labels and state. Removed the redundant accessibility-tree read after the controller and Compose visibility callbacks race.
+- CI #146's one synthetic metadata timeout did not recur in #147; treat it as transient unless repeated.
+- Product code unchanged. No installable APK/Release. CI #148 on source change is still pending.
+- Next: inspect #148 source/build/test results, then rerun the corrected full suite. Continue subtitle/zoom only with test evidence.

@@ -227,3 +227,7 @@ CI #130 / 44909463881 fully passed: Android 15 v1→v4 migration + offline paren
 
 ### Next integration — subtitle-safe video resize
 Added Fit/Fill/Zoom controls and a documented Media3 layout adaptation with the caption view outside the aspect-ratio video frame. Android hierarchy and resize-cycle tests added; CI pending. No APK. Review synthetic artifacts after the run. Then complete subtitle delay when Media3 support reaches stable, continue production Glass/navigation/accessibility, and measure target-device behavior only when an OPPO trace is available.
+
+
+### Player test note (2026-11-21)
+CI #147 / 44923019327 passed 42/43; remaining failure was the final fullscreen label lookup racing controller visibility. The integration test now covers action activation/state change while the isolated Compose test covers reversible enter/exit accessible labels. CI #148 is testing the new separate subtitle viewport and Fit/Fill/Zoom behavior. CI result pending; no APK.

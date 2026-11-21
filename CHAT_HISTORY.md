@@ -410,3 +410,8 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 - The user wants captions/lyrics independent from movie zoom. Review of the pinned Media3 1.11.1 layout showed its SubtitleView was nested inside the resize-managed content frame, so merely switching engines was unnecessary but the current geometry needed correction.
 - Added app's Apache-2.0 attributed layout adaptation with SubtitleView as a sibling overlay and accessible Fit/Fill/Zoom controls. Added synthetic UI and Android hierarchy tests. No VLC dependency.
 - Current CI pending; no APK. Revisit upstream layout when Media3 is upgraded.
+
+
+## 2026-11-21 — Fullscreen overlay test isolation
+- Repeated Android 15 CI runs showed the accessibility tree for the Compose header could change during Media3 controller visibility callbacks, even after its button activated successfully. CI #147 passed 42/43; the only remaining error was a timing-sensitive exit-label lookup. The dedicated fullscreen composable test checks both accessible labels and reversible state, so the player integration now stops after proving action activation changes fullscreen state. It retains auto-hide and tap-restore coverage.
+- The unrelated metadata fixture failure from #146 did not recur in #147. CI #148 tests subtitle-zoom implementation; no APK.
