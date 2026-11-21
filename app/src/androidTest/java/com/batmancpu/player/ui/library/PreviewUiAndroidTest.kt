@@ -45,7 +45,31 @@ class PreviewUiAndroidTest {
             find(predicate)?.let { return it }
             SystemClock.sleep(100)
         }
-        error("Synthetic interface node did not appear")
+        error("Synthetic interface node did not appear; active window: ${activeWindowSummary()}")
+    }
+
+    /**
+     * Include a short synthetic accessibility snapshot on failure so a missing label can be
+     * distinguished from a window/lifecycle problem in CI without uploading user media.
+     */
+    private fun activeWindowSummary(): String {
+        val root = automation.rootInActiveWindow ?: return "none"
+        val entries = mutableListOf<String>()
+        fun visit(node: AccessibilityNodeInfo, depth: Int) {
+            if (entries.size >= 60 || depth > 14) return
+            val label = node.text?.toString()?.take(80)
+            val description = node.contentDescription?.toString()?.take(80)
+            if (!label.isNullOrBlank() || !description.isNullOrBlank()) {
+                entries += "${node.className}[text=$label, description=$description]"
+            }
+            for (index in 0 until node.childCount) {
+                val child = node.getChild(index) ?: continue
+                visit(child, depth + 1)
+                if (entries.size >= 60) break
+            }
+        }
+        visit(root, 0)
+        return "package=${root.packageName}, class=${root.className}, labels=${entries.joinToString(limit = 60)}"
     }
 
     private fun text(value: String) = awaitNode { it.text?.toString() == value }

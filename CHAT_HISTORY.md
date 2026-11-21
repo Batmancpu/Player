@@ -250,3 +250,7 @@ CI #102 passed: Android 15 tests 20/20, including the production v1-to-v3 migrat
 
 ## 2026-11-21 — Remove a folder without deleting files
 The user reported that the app did not offer a way to remove its selected folder. Added a confirmed remove-from-Player action that deletes only Player's index/cache and persisted SAF grant. The dialog states that the original videos/subtitles remain untouched; a retry action handles cleanup failures. CI #104 passed; the operation also clears app-private resume state, and grant cleanup now survives lifecycle cancellation. CI #105 is checking the confirm/cancel UI and resume cleanup. This will be included in the one final phone checklist.
+
+
+## 2026-11-21 continuation — defer the installable APK until integration is ready
+The user clarified that they do not want an APK at each step; continue the full app and provide one integrated APK to test. CI #105 reported three synthetic accessibility label lookups timing out in existing UI coverage plus the new remove-folder flow, while storage/playback/schema checks passed. Added a bounded active-window accessibility snapshot for CI #106. Next: diagnose the CI tree and fix the actual mismatch. No installable APK or Release was created; real OPPO evidence remains pending.

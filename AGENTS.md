@@ -212,3 +212,6 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-21 — Added a confirmed “Remove folder from Player” action that clears Player's Room index and persisted read-only SAF grant, with retry feedback if access cleanup fails. Original media remain untouched. CI #103 / 44888950131 passed the exact Room v3 schema follow-up: Android 15 20/20, unit/build/schema gates; no signed APK or Release. CI #104 / 44890135563 passed: Android 15 instrumentation 20/20, folder grant/order failure unit cases, debug/unit build and schema checks. A follow-up now clears app-private resume positions and adds UI confirmation coverage; CI #105 pending. Next: verify this follow-up, then continue metadata and Glass integration.
+
+
+- 2026-11-21 — CI #105 failed three synthetic UI label lookups (Shows, Home, and Manage); Room, playback, SAF and unit/build checks passed. Added a bounded synthetic-window accessibility snapshot to make the next failure diagnostic. No app behavior or APK changed. CI #106 pending. Next: inspect the emitted tree and fix the actual UI/test mismatch.

@@ -839,3 +839,11 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 - CI #104 / 44890135563 passed: Android 15 instrumentation 20/20, unit/build, and Room v1/v2/v3 schema validation. The new folder-access tests passed for grant release order and failed-release recovery.
 - Tightened removal: once confirmed, clear the app-private resume-position preferences as well as the Room library/match cache. Persisted grant reconciliation now runs in a non-cancellable section so lifecycle cancellation cannot leave stale SAF access. Original videos/subtitles remain untouched.
 - Added a UI integration test that checks the explanation, verifies cancel makes no call, and verifies confirmation invokes removal once; added resume-state cleanup coverage. CI #105 pending. No Release APK or versionCode change.
+
+
+## 2026-11-21 — Diagnose synthetic UI accessibility failures
+
+- CI #105 / 44890893488 passed Room, SAF, playback, metadata-cache and unit/build/schema checks, but all three PreviewUiAndroidTest cases timed out waiting for text nodes (Shows, Home, and Manage). The new removal/resume storage behavior itself passed its Android checks.
+- Added a bounded accessibility-tree snapshot to the synthetic UI test timeout message. This will reveal whether CI is seeing the expected Compose window with changed labels, a different active window, or an empty tree. The test fixture uses only synthetic media names; no user files are read or logged.
+- Diagnostic instrumentation only; no product UI, versionCode, APK signing or Release change. CI #106 pending.
+- Next: inspect the active-window snapshot and fix the underlying UI or query before proceeding with metadata integration.
