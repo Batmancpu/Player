@@ -591,3 +591,7 @@ CI #184's only failure was a test helper choosing a duplicate static Movies head
 
 ## 2026-11-21 — Production Glass CI regression follow-up
 User asked to continue the integrated app through completion and the final efficiency review without pauses for intermediate installs. CI #206 reported three defects after production Glass was added: dock selection wasn't detected by accessibility, the switch state wasn't explicit, and the added row displaced folder actions. The focused fix adds selected semantics and localized On/Off announcements, moves the appearance setting after existing Manage actions, and makes tests scroll to it. Android CI is the verification gate; no APK is produced per step. Continue implementation after the test passes.
+
+
+## 2026-11-21 — CI #207 accessibility follow-up
+CI #207 compiled the code and ran 51 Android 15 tests; two assertions failed. The Manage-sheet scrollable column did not appear as an accessibility scroll action, and selected tab state was still not associated with its item label. Added a safe gesture fallback to the synthetic test, explicit merged descriptions for tab labels and richer test diagnostics. Run #208 is pending. Continue implementation after resolving the regression; no APK at this step.

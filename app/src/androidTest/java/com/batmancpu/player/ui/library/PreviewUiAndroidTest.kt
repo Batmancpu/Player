@@ -124,7 +124,7 @@ class PreviewUiAndroidTest {
     private fun clickLastClickableLabel(label: String) {
         var target: AccessibilityNodeInfo? = null
         fun visit(node: AccessibilityNodeInfo) {
-            if (node.text?.toString() == label) {
+            if (node.text?.toString() == label || node.contentDescription?.toString() == label) {
                 var clickable: AccessibilityNodeInfo? = node
                 while (clickable != null && !clickable.isClickable) clickable = clickable.parent
                 if (clickable != null) target = clickable
@@ -140,8 +140,10 @@ class PreviewUiAndroidTest {
         while (SystemClock.uptimeMillis() < deadline &&
             find { it.contentDescription?.toString() == "Liquid Glass effects" } == null
         ) {
-            if (!scrollForwardOnSmallestScrollable()) break
-            SystemClock.sleep(100)
+            if (!scrollForwardOnSmallestScrollable()) {
+                if (!swipeUpFromVisibleSheetText()) break
+            }
+            SystemClock.sleep(150)
         }
     }
 
@@ -614,7 +616,10 @@ class PreviewUiAndroidTest {
             assertTrue("Movies selection filters the catalogue", awaitCondition(3_000) {
                 find { it.text?.toString() == "Aurora" } != null && find { it.text?.toString() == "North Star" } == null
             })
-            assertTrue("Movies tab exposes selected semantics", hasSelectedSemanticsOnLabelOrParent("Movies"))
+            assertTrue(
+                "Movies tab exposes selected semantics; ${activeWindowSummary()}",
+                hasSelectedSemanticsOnLabelOrParent("Movies"),
+            )
 
             clickLastClickableLabel("Shows")
             assertTrue("Shows selection filters the catalogue", awaitCondition(3_000) {

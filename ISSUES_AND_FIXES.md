@@ -536,7 +536,7 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 
 
 ### R-036 — Production Glass semantics and Manage-sheet reachability
-- **Status:** Code correction committed/pending Android 15 CI after failures in run #206 / 44955812963.
-- **Evidence:** Three failures in a 51-test run: selected dock destination not discoverable through the test's Android accessibility hierarchy, Glass switch not readable via `isChecked`, and new settings content pushed the Forget-folder action below the initial visible sheet area.
-- **Fix under verification:** Add explicit selected semantics and localized state announcements; move the Glass control below existing Manage actions; test it via scroll while retaining the original folder-removal flow.
-- **Next:** Confirm all three regressions in full CI and inspect updated screenshots. No handset observation or Glass performance claim.
+- **Status:** Follow-up fix is pending CI #208 after failures in #206 / 44955812963 and #207 / 44957235967.
+- **Evidence:** #206 had three failures in 51 tests: selected dock destination not discoverable, switch state not readable via `isChecked`, and setting displaced Forget-folder. In #207 the setting remained offscreen without an accessibility scroll action and Movies selected state remained unassociated with its label.
+- **Fix under verification:** Explicit selected semantics/content descriptions and localized switch state; keep Glass after existing Manage actions; use the safe screen-bounded gesture fallback when Compose exposes no scroll accessibility action.
+- **Next:** Confirm these regressions in full CI and inspect screenshots. No handset observation or Glass performance claim.
