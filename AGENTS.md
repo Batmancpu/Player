@@ -286,3 +286,7 @@ A live-tree audit found commit 9200aaeed66c08eb30f29b27d9d8713f8afe5c67 changed 
 
 ## Recent agent changes — 2026-11-21
 CI #126 / 44906299456 passed the actual selector source: Android 15 instrumentation (including audio selector open/dismiss), unit/build, Room schema and privacy checks. New Phase 5 foundation captures each discovered file's opaque immediate parent document ID and adds a deterministic same-parent subtitle matcher for exact names and common language/forced suffixes. Synthetic JVM tests cover sibling isolation, unsupported extensions, opaque IDs and result bounds. Not yet persisted through Room or attached to playback. No user APK/Release. Next: verify this scan/matcher slice in CI, then add a Room v4 migration for parent IDs before enabling sidecar playback.
+
+
+## Recent agent changes — 2026-11-21
+CI #127 / 44907206092 Android 15 integration passed. The JVM/build job caught a faulty cap-test fixture: twelve generated subtitle names did not match the movie, so expected results were invalid; matcher behavior was correct. Updated the fixture to use multiple valid matching sidecars. This corrective test-only commit awaits CI. Next: verify full CI, then persist parent IDs with Room v4; no user APK/Release.

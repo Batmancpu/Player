@@ -988,3 +988,10 @@ CI #126 / 44906299456 passed against commit fdbcd895dfa7f25e5f3b3843c3d58020f8f1
 New work captures the opaque immediate parent document ID at the point the scanner enumerates a child; it never decodes IDs or treats a display name as a path. A pure local matcher selects only supported subtitle suffixes next to the video under the same parent, supports exact stems plus constrained language/forced/SDH suffixes, returns deterministic capped results, and refuses candidates without known parent identity. Tests cover folder isolation, filename near-misses, unsupported .sub sidecars, opaque ID behavior and bounds.
 
 Verification: pending CI for this scanner/matcher change. Parent ID is not yet stored in Room and sidecars are not yet attached to Media3; that is the next schema migration/integration slice. No user APK or Release.
+
+
+## 2026-11-21 — Sidecar matcher test fixture correction
+
+CI #127 / 44907206092: Android 15 instrumentation passed, including scanner traversal. Unit verification failed only in `LocalSubtitleMatcherTest.capsSubtitleCandidates`: the test constructed files named `Film.1.srt` through `Film.12.srt`, none of which satisfy the matcher's exact/language suffix rules for `Film.mp4`. The assertion expected eight matches from unrelated synthetic names. Corrected the fixture to use twelve distinct document identities with a valid `Film.en.srt` stem so the result cap is actually exercised. No production code change.
+
+Next: run full CI on the correction, then continue with the Room parent-ID migration. No APK/Release.

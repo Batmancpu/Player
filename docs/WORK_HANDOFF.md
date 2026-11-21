@@ -202,3 +202,6 @@ A live-tree audit found commit 9200aaeed66c08eb30f29b27d9d8713f8afe5c67 changed 
 
 ## 2026-11-21 — selector green; sidecar foundation
 CI #126 / 44906299456 passed Android 15 integration (selector dialog open/dismiss), unit/build, Room schema and privacy. Embedded audio/subtitle selectors are real and tested against the synthetic audio fixture. New scanner foundation captures opaque parent document IDs and same-parent subtitle matching, with bounded deterministic suffix handling/tests; CI pending. It is not persistent yet, so offline-restored documents cannot use sidecars until Room v4 migration is complete. No installable APK. Next: verify CI then persist parent IDs (safe default migration), test v1→v4 preservation, and wire supported sidecars to the local content-only Media3 item. One complete APK later; no device acceptance/FPS claims.
+
+
+CI #127 Android job passed, but its unit test step failed at `LocalSubtitleMatcherTest.capsSubtitleCandidates`. The synthetic names were not valid matches, so the expected eight was wrong; matcher logic is unchanged. A test-only follow-up now uses twelve same-stem subtitle entries to exercise the cap. Verify its full CI before Room v4 parent persistence. No installable APK.

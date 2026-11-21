@@ -41,7 +41,7 @@ class LocalSubtitleMatcherTest {
     @Test
     fun capsSubtitleCandidates() {
         val film = video("movie", "Film.mp4")
-        val candidates = (1..12).map { subtitle("s$it", "Film.$it.srt") }
+        val candidates = (1..12).map { subtitle("s$it", "Film.en.srt") }
 
         assertEquals(8, LocalSubtitleMatcher.forVideo(film, candidates, maxResults = 8).size)
     }
