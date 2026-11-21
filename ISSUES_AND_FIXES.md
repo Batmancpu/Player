@@ -466,3 +466,8 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 
 ### H-033 resolution status — Detail list scroll and metadata confirmation
 - CI #173 passes all Android 15 interaction tests after expanding the details sheet, keeping its LazyColumn scrollable, validating screen bounds for popup controls, and adding an explicit Close path. The metadata screenshot shows the manual Search TMDB action in the sheet. This verifies emulator UI interaction only; OPPO rendering and gestures remain pending.
+
+### H-034 — Glass Lab has no visible return action and dock obscures demo copy (2026-11-21)
+- Evidence: user reported the lab looked broken with a floating bottom bar; CI synthetic screenshot showed text beneath the dock.
+- Fix committed for verification: add a labeled Back to library action, clarify preview-only tab behavior, add a calm bottom fade and scroll-tail clearance.
+- Status: Android UI CI pending; OPPO appearance/performance not measured.

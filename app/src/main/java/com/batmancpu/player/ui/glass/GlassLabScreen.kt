@@ -66,6 +66,7 @@ import dev.chrisbanes.haze.rememberHazeState
 @Composable
 internal fun GlassLabScreen(
     modifier: Modifier = Modifier,
+    onBack: () -> Unit = {},
 ) {
     val hazeState = rememberHazeState()
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
@@ -90,7 +91,13 @@ internal fun GlassLabScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = PlayerSpacing.screenHorizontal),
             ) {
-                Spacer(Modifier.height(22.dp))
+                Spacer(Modifier.height(12.dp))
+
+                TextButton(onClick = onBack) {
+                    Text(stringResource(R.string.glass_lab_back))
+                }
+
+                Spacer(Modifier.height(8.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -226,9 +233,22 @@ internal fun GlassLabScreen(
                     )
                 }
 
-                Spacer(Modifier.height(92.dp))
+                Spacer(Modifier.height(160.dp))
             }
         }
+
+        // Give the floating control plane a calm lower edge and keep demo copy from
+        // competing visually with its labels while content scrolls beneath it.
+        Box(
+            Modifier.align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .height(176.dp)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(Color.Transparent, PlayerPalette.background.copy(alpha = .98f)),
+                    ),
+                ),
+        )
 
         GlassPreviewDock(
             hazeState = hazeState, enabled = glassEnabled, selected = selectedTab,

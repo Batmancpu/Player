@@ -25,3 +25,7 @@ Apple's public material informs original controls and hierarchy, not copied asse
 
 ## Upstream provenance and licence recheck — 2026-11-21
 GitHub now redirects the requested Batmancpu/FCZenith URL to Batmancpu/brrMusic. That repository is a fork of the immediate reference rezapranata089-bit/Zenith; both declare GPL-3.0. Zenith's current GlassNavBar.kt documents GPL-3.0-derived Echo Music structure and vendored floating-tab code, while its renderer tree has separate provenance/licence requirements. These remain visual/design references only; no source code is imported into Player. Player continues using Haze 2.1.0 (Apache-2.0) only in the Glass Lab, not the production catalogue. A synthetic CI screenshot is not evidence of appearance or frame time on OPPO.
+
+
+## Glass Lab usability repair — 2026-11-21 (CI pending)
+The synthetic CI capture showed the preview dock covered demo copy at the lower edge, and the screen had only an implicit Android Back route to exit. Added an explicit “Back to library” action, clearly states that the four tabs only demonstrate selection motion, adds a restrained lower fade behind the dock, and increases scroll-tail spacing so the last demo text can move above the dock. The Haze surface remains bounded and opt-in in this lab only. A synthetic UI test now verifies the back action; CI and handset appearance are pending. This is a usability repair, not a claim that the renderer reproduces Apple's engine or meets OPPO frame-time targets.

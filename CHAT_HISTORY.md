@@ -526,3 +526,6 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 ## 2026-11-21 — User authorized signed checkpoint and continuous batches
 - User asked to produce a signed APK now, continue implementation without waiting for interim phone install checks, and stop only after the complete app and final efficiency/size/performance pass.
 - CI #173 passed 46/46 Android 15 instrumentation plus unit/schema/privacy/identity checks on `7cbff28881332f7da8de418b8b348166885ff857`. First signed checkpoint release workflow is being triggered. README and visual identity batch is complete. Remaining work includes polished Glass Lab/navigation, production player format/subtitle reliability, accessibility, measured performance and final release readiness. Reno10 hardware claims remain unverified until actual device data exists.
+
+## 2026-11-21 — Glass Lab usability work
+- User reported the Glass Lab opened in a broken-looking state and the dock floated awkwardly. Screenshot review confirmed the dock covered demo copy; the screen lacked a visible back action. Added a Back to library control, transparent description of preview-only tabs, lower fade and additional scrolling room. CI pending; keep user-visible Glass in a lab until it is polished and measured.

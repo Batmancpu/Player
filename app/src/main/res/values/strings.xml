@@ -5,7 +5,7 @@
     <string name="glass_lab_kicker">MATERIAL PREVIEW</string>
     <string name="glass_lab_title">Glass preview</string>
     <string name="glass_lab_toggle">Glass</string>
-    <string name="glass_lab_description">A single floating dock over local artwork. Turn effects off to compare the layout.</string>
+    <string name="glass_lab_description">Visual preview only. Tabs demonstrate selection motion; they do not navigate your library. Turn effects off to compare the layout.</string>
     <string name="glass_lab_feature_label">FEATURED COLLECTION</string>
     <string name="glass_lab_feature_title">A world beyond the ordinary</string>
     <string name="glass_lab_artwork_heading">Artwork behind the glass</string>
@@ -94,5 +94,6 @@
     <plurals name="catalogue_episodes"><item quantity="one">%d episode</item><item quantity="other">%d episodes</item></plurals>
     <string name="metadata_open_settings">Metadata and connections</string>
     <string name="catalogue_close_details">Close</string>
+    <string name="glass_lab_back">Back to library</string>
 </resources>
 

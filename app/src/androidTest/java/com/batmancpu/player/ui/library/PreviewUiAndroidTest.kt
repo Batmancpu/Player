@@ -455,8 +455,11 @@ class PreviewUiAndroidTest {
 
     @Test(timeout = 40_000) fun dockTabsFitAndRemainAccessibleWithEffectsDisabled() {
         val activity = launch()
+        val backCount = AtomicInteger(0)
         try {
-            instrumentation.runOnMainSync { activity.setContent { PlayerTheme { GlassLabScreen() } } }
+            instrumentation.runOnMainSync {
+                activity.setContent { PlayerTheme { GlassLabScreen(onBack = { backCount.incrementAndGet() }) } }
+            }
             val labels = listOf("Home", "Movies", "Shows", "Search")
             val bounds = labels.map { label -> Rect().also { text(label).getBoundsInScreen(it) } }
             val displayWidth = context.resources.displayMetrics.widthPixels
@@ -475,6 +478,9 @@ class PreviewUiAndroidTest {
             click(awaitNode { it.contentDescription?.toString() == "Glass effects" })
             labels.forEach { text(it) }
             screenshot("glass-off")
+            text("Back to library")
+            click(text("Back to library"))
+            assertEquals("Preview provides an explicit route back to the library", 1, backCount.get())
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
         }

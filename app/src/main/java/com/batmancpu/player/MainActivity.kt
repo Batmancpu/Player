@@ -88,7 +88,7 @@ class MainActivity : ComponentActivity() {
                         onBack = { showMetadataSettings = false },
                         onOpenCredits = { showMetadataCredits = true },
                     )
-                    showGlassLab -> GlassLabScreen()
+                    showGlassLab -> GlassLabScreen(onBack = { showGlassLab = false })
                     else -> LocalLibraryScreen(
                         libraryModel,
                         onOpenGlassLab = { showGlassLab = true },

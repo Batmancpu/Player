@@ -1292,3 +1292,6 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 
 ## 2026-11-21 — First signed preview checkpoint (release workflow pending)
 - User asked for a signed APK now as a progress checkpoint, then continuous app completion without waiting for phone checks between batches. CI #173 passed 46/46 Android 15 instrumentation, unit tests, schema, privacy and app identity gates on `7cbff28881332f7da8de418b8b348166885ff857`. Details now open expanded, preserve inner scrolling, expose an accessible Close action, and have a tested manual metadata flow; the CI screenshot shows the search action. A `release(test):` main commit now triggers the existing permanent-certificate release workflow. No APK is claimed until GitHub Release assets/signature checks confirm it. Continue Glass/player and final optimization work afterward.
+
+## 2026-11-21 — Glass Lab navigation and dock clarity (verification pending)
+- Added a visible Back to library action wired through MainActivity, labeled the dock as a selection-only preview, added a bottom fade to protect label contrast over the scrollable demo, and increased final content padding so it can clear the dock. Added an Android UI assertion for the return callback. The change is lab-only; production catalogue is unaffected. CI run pending and physical OPPO visuals remain unverified.

@@ -85,3 +85,6 @@ Follow the [six-phase roadmap](docs/ROADMAP.md) for engineering detail. A signed
 
 Player uses original Android code and generated concept artwork. It does not include Apple fonts, symbols, logos or proprietary assets.
 
+
+
+**Glass Lab note:** The current lab is a selection-motion preview with a visible return to the library. Its tabs are not production navigation and the Haze effect remains an experiment; the full tactile Glass design is still in progress.

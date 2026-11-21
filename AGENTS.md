@@ -429,3 +429,6 @@ When the unfiltered library is open, movie titles and series now appear in separ
 
 ## 2026-11-21 — First signed checkpoint authorized
 - User explicitly requested a signed APK checkpoint now, followed by continuous work on later batches without per-batch phone-install pauses. This supersedes earlier historical notes to wait until the fully integrated app before publishing any APK. Android 15 suite 46/46 plus unit/schema/privacy/identity gates passed at CI #173 (source `7cbff28881332f7da8de418b8b348166885ff857`). Trigger a higher-run-number release using only the existing permanent key; do not claim it is published until the release asset and signature checks complete. Continue other batches after publication. Reno10 acceptance and performance remain pending final real-device evidence.
+
+## 2026-11-21 — Glass Lab navigation and lower-edge repair
+- User reported the lab dock looked broken/floating. CI screenshots showed the bottom overlay obscured demo text; the preview had no visible return action. Added an explicit Back to library action, clarified that tabs are only a selection-motion demo, added a restrained lower scrim and more scroll-tail space. A UI test checks exit behavior. CI pending; next inspect the updated screenshot and then continue production Glass/player work. No OPPO visual/performance claim.
