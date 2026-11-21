@@ -1,4 +1,10 @@
 ## Current handoff — 2026-11-21 (latest)
+- README and original concept/synthetic CI artwork are committed on main.
+- CI #156 passed 46/46 Android tests. #158/#159 caught a missing debug-only SyntheticSafProvider; restored. #160/#161 then caught 2 UI scroll failures; #162 reproduced them because the modal consumed vertical drags from nested scrollable content.
+- Main now replaces the nested details Column/LazyColumn with one LazyColumn for title/year, movie/show rows, lazy episode groups and metadata card. CI #163 is the next required verification.
+- User requested a signed checkpoint now and continuous progress in four visible batches without install pauses. The first release workflow #161 was correctly skipped after failing tests. After #163 passes, create a fresh permanent-key release run; continue player work without waiting for phone installation.
+- Latest existing signed release remains v0.1.91. No Reno10 performance/appearance or final acceptance evidence. Preserve app ID/certificate, backup disabled, one read-only SAF tree and no source-media writes.
+-## Current handoff — 2026-11-21 (latest)
 - README/artwork checkpoint is committed; the exact source is current main. CI #156 passed 46/46 Android 15 tests. CI #158/#159 were broken by a dropped debug-only SyntheticSafProvider; restored.
 - CI #160 / https://github.com/Batmancpu/Player/actions/runs/44936109342 compiled and passed 44/46 tests. Only season-detail and metadata-sheet scroll interactions failed because nested content had no accessibility scroll actions. Current main changes the helper to swipe upward from visible sheet content. CI #161 is queued for an older release-trigger commit; it must not count as release evidence if the suite fails. Current correction CI #162 is required.
 - User requested a signed APK now, then continued work, and four substantial batches (<=5) without phone-install pauses. Next: inspect #161, verify #162, then queue a fresh signed release checkpoint after green; continue the larger player/navigation batch without waiting for installation.

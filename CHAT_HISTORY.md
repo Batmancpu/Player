@@ -483,3 +483,9 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 ## 2026-11-21 — CI #160 narrows UI test correction
 - The restored debug provider fixed the playback and SAF failures. CI #160 left two UI failures because nested details sheets exposed no accessibility scroll action; snapshots showed the sheet was still present.
 - Test helper now falls back to an upward gesture starting from the bottom-most visible text node, rather than fixed screen coordinates. The queued #161 release checkpoint contains the older helper, so it is not valid as release evidence; CI #162 must pass before a replacement release trigger.
+
+
+## 2026-11-21 — Refactor detail-sheet scroll after CI #162
+- The attempted test gesture fallback still dismissed the modal. The source's nested vertical scroll column and episode LazyColumn were competing with ModalBottomSheet's drag handling.
+- Refactored the sheet to one LazyColumn containing title/year, movie action or lazy season/episode rows, and metadata card. This fixes scroll ownership rather than adding more coordinate-specific test behavior.
+- CI #163 must verify the behavior. No signed APK has been published from the failed #158–#162 runs.

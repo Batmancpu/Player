@@ -285,38 +285,51 @@ internal fun LocalLibraryContent(
         val lookup = metadataState.takeIf { it.tree == folder.tree && it.titleKey == selected.key }
         val chosenCandidate = lookup?.candidates?.firstOrNull { it.id == selectedCandidateId }
         ModalBottomSheet(onDismissRequest = { selectedKey = null }, containerColor = PlayerPalette.surface) {
-            Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 28.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text(selected.title, style = MaterialTheme.typography.headlineLarge, color = PlayerPalette.textPrimary)
-                Text(selected.year?.toString() ?: stringResource(R.string.catalogue_on_device), color = PlayerPalette.textSecondary)
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 28.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                item(key = "title") {
+                    Text(selected.title, style = MaterialTheme.typography.headlineLarge, color = PlayerPalette.textPrimary)
+                }
+                item(key = "year") {
+                    Text(selected.year?.toString() ?: stringResource(R.string.catalogue_on_device), color = PlayerPalette.textSecondary)
+                }
                 if (!selected.isSeries) {
-                    Text(selected.files.first().displayName, color = PlayerPalette.textSecondary)
-                    Button(onClick = { onPlay(selected.files.first()); selectedKey = null }, modifier = Modifier.fillMaxWidth()) {
-                        Text(stringResource(R.string.catalogue_play))
+                    item(key = "filename") {
+                        Text(selected.files.first().displayName, color = PlayerPalette.textSecondary)
+                    }
+                    item(key = "play") {
+                        Button(onClick = { onPlay(selected.files.first()); selectedKey = null }, modifier = Modifier.fillMaxWidth()) {
+                            Text(stringResource(R.string.catalogue_play))
+                        }
                     }
                 } else {
-                    Text(pluralStringResource(R.plurals.catalogue_episodes, selected.files.size, selected.files.size), color = PlayerPalette.textSecondary)
-                    LazyColumn(Modifier.fillMaxWidth().heightIn(max = 380.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        episodesBySeason.forEach { (season, episodes) ->
-                            item(key = "season-$season") {
+                    item(key = "episode-count") {
+                        Text(pluralStringResource(R.plurals.catalogue_episodes, selected.files.size, selected.files.size), color = PlayerPalette.textSecondary)
+                    }
+                    episodesBySeason.forEach { (season, episodes) ->
+                        item(key = "season-$season") {
+                            Text(
+                                stringResource(R.string.catalogue_season, season),
+                                modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 2.dp),
+                                style = MaterialTheme.typography.labelLarge,
+                                color = PlayerPalette.accentMuted,
+                            )
+                        }
+                        items(episodes, key = { it.first.documentId }) { (file, episode) ->
+                            TextButton(onClick = { onPlay(file); selectedKey = null }, modifier = Modifier.fillMaxWidth()) {
                                 Text(
-                                    stringResource(R.string.catalogue_season, season),
-                                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 2.dp),
-                                    style = MaterialTheme.typography.labelLarge,
-                                    color = PlayerPalette.accentMuted,
+                                    stringResource(R.string.catalogue_episode_label, episode.season, episode.episode),
+                                    modifier = Modifier.fillMaxWidth(),
+                                    color = PlayerPalette.textPrimary,
                                 )
-                            }
-                            items(episodes, key = { it.first.documentId }) { (file, episode) ->
-                                TextButton(onClick = { onPlay(file); selectedKey = null }, modifier = Modifier.fillMaxWidth()) {
-                                    Text(
-                                        stringResource(R.string.catalogue_episode_label, episode.season, episode.episode),
-                                        modifier = Modifier.fillMaxWidth(),
-                                        color = PlayerPalette.textPrimary,
-                                    )
-                                }
                             }
                         }
                     }
                 }
+                item(key = "metadata") {
                 Surface(color = PlayerPalette.background, shape = RoundedCornerShape(22.dp)) {
                     Column(Modifier.fillMaxWidth().padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         Text(stringResource(R.string.metadata_lookup_heading), style = MaterialTheme.typography.labelLarge, color = PlayerPalette.accentMuted)
@@ -427,6 +440,9 @@ internal fun LocalLibraryContent(
                     }
                 }
 
+            }
+        }
+                }
             }
         }
     }

@@ -1250,3 +1250,9 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - CI #160 / https://github.com/Batmancpu/Player/actions/runs/44936109342 passed Kotlin/build, with 44/46 Android tests passing. The restored debug provider fixed the five playback and SAF failures. The remaining two failures were series season 2 and metadata detail controls: Compose's nested sheet content reported no `AccessibilityNodeInfo.ACTION_SCROLL_FORWARD` container.
 - Updated the test helper to try accessibility scrolling first, then start an upward swipe on the lowest visible text node in the active sheet. This avoids fixed screen coordinates that can hit the dismiss area; failure summaries include scrollable state.
 - CI #161 is queued for the preceding code and will not be used as APK evidence if tests fail. This correction is on main; CI #162 must verify it. No release APK from #158–#160.
+
+
+## 2026-11-21 — Unify movie/show details into one lazy scroll surface
+- CI #162 / https://github.com/Batmancpu/Player/actions/runs/44936962977 failed the two long-sheet UI cases again. Logs showed the active window had returned to Pixel Launcher after in-sheet swipes. The outer vertical-scroll Column plus inner height-capped episode LazyColumn allowed ModalBottomSheet to consume the gesture.
+- Rebuilt details as one LazyColumn for title/year, movie action or lazily composed season/episode rows, and the metadata card. This removes nested vertical scroll ownership and retains stable episode keys.
+- Synthetic season-episode selection and manual metadata-confirmation tests exercise the unified scroll container. CI #163 pending. Release workflow #161 correctly skipped signing after failed tests; no APK was published.

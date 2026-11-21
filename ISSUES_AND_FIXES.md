@@ -418,3 +418,11 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - **Root-cause confidence:** High for missing scroll action in this test hierarchy; medium that a swipe initiated on bottom-most visible sheet text correctly targets nested scroll content.
 - **Fix:** Test helper tries scroll actions, then swipes upward from the lowest visible text node, keeping the gesture inside sheet content.
 - **Regression coverage:** Season 2 indexed playback and manual metadata confirmation flow in CI #162.
+
+
+## H-031 — Nested detail-sheet scrolling was intercepted by the modal
+- **Status:** Unified lazy content implemented; CI verification pending.
+- **Evidence:** CI #160/#161 failed season-2 and metadata detail tests after the debug fixture provider was restored. CI #162 logs showed repeated sheet-content swipes ended at Pixel Launcher rather than revealing episode/search controls.
+- **Root-cause confidence:** High. Source had a vertically scrollable Column containing another LazyColumn for episodes, causing the sheet and nested scroll containers to compete for vertical drags.
+- **Fix:** One LazyColumn now owns all title, movie/show episode, and metadata content. Episode rows retain stable keys and lazy composition.
+- **Regression coverage:** Season-2 indexed playback and manual metadata search/confirmation cases in CI #163.
