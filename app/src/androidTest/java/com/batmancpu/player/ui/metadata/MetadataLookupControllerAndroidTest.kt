@@ -69,18 +69,20 @@ class MetadataLookupControllerAndroidTest {
             assertEquals("Aurora", found.candidates.single().title)
 
             controller.confirm(title, found.candidates.single())
-            val confirmed = withTimeout(5_000) { controller.state.first { !it.confirming && it.posterFile != null } }
+            val confirmed = withTimeout(5_000) { controller.state.first { !it.confirming && it.posterFile != null && it.backdropFile != null } }
             assertEquals("Aurora", confirmed.cached?.title)
             assertEquals(1, confirmed.matchedFiles)
-            assertEquals(1, artworkCalls.get())
+            assertEquals("A user-confirmed title may cache one poster and one backdrop", 2, artworkCalls.get())
             assertTrue(confirmed.posterFile?.isFile == true)
+            assertTrue(confirmed.backdropFile?.isFile == true)
             assertEquals("Aurora", OfflineMetadataCache.load(context, tree)[file.documentId]?.title)
             assertNull("Untrusted image paths must not reach the transport", artwork.fetch("https://example.invalid/poster.jpg", TmdbImageSize.POSTER))
-            assertEquals("Invalid routes are rejected locally", 1, artworkCalls.get())
+            assertEquals("Invalid routes are rejected locally", 2, artworkCalls.get())
             settings.disable()
             assertEquals("Confirmed artwork remains readable offline after disabling TMDB", confirmed.posterFile, artwork.cached("/poster_A.jpg", TmdbImageSize.POSTER))
             assertNull("Disabled settings prevent another artwork request", artwork.fetch("/poster_A.jpg", TmdbImageSize.POSTER))
-            assertEquals("Offline cache reads do not call the network", 1, artworkCalls.get())
+            assertEquals("Offline cache reads do not call the network", 2, artworkCalls.get())
+            assertEquals(confirmed.backdropFile, artwork.cached("/backdrop_A.jpg", TmdbImageSize.BACKDROP))
         } finally {
             controller.clear()
             scope.cancel()

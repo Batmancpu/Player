@@ -1,5 +1,7 @@
 ## Status update — 2026-11-21
 
+The working tree extends the offline catalogue detail hero with a locally rendered gradient and optional app-private cached TMDB backdrop. Controller cache lookup is disk-only; a network fetch is possible only after the user confirms a separate metadata match and remains on the approved image CDN, with current byte/dimension/cache bounds. CI #210 passed metadata security/cache integration tests but had five accessibility/UI test failures; this patch is awaiting CI #211. No claim of handset performance or release acceptance.
+
 Phase 2 now includes default-off encrypted TMDB settings, a fixed-origin bounded HTTPS client, manual detail-sheet search/candidate selection/separate confirmation, and offline Room metadata cache. CI #115 / 44896086296 passed the Android 15 UI/client suite, unit tests, build, schema and privacy gates; no network call was made by CI. Artwork cache/display and OPPO network/device behavior remain unverified. The app's INTERNET capability is used only by this opt-in manual flow; scanning and playback remain local.
 
 # Architecture

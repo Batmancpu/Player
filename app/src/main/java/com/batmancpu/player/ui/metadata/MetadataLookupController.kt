@@ -33,6 +33,7 @@ internal data class MetadataLookupUiState(
     val candidates: List<TmdbCandidate> = emptyList(),
     val cached: CachedTmdbMetadata? = null,
     val posterFile: File? = null,
+    val backdropFile: File? = null,
     val matchedFiles: Int = 0,
     val issue: MetadataLookupIssue? = null,
 )
@@ -75,6 +76,7 @@ internal class MetadataLookupController(
                 val searchable = searchTerms(title) != null
                 val cachedMatch = localMatches.singleOrNull()
                 val posterFile = cachedMatch?.posterPath?.let { artworkCache.cached(it, TmdbImageSize.POSTER) }
+                val backdropFile = cachedMatch?.backdropPath?.let { artworkCache.cached(it, TmdbImageSize.BACKDROP) }
                 if (!active(ticket, tree, title)) return@launch
                 mutableState.value = MetadataLookupUiState(
                     tree = tree,
@@ -84,6 +86,7 @@ internal class MetadataLookupController(
                     searchable = searchable,
                     cached = cachedMatch,
                     posterFile = posterFile,
+                    backdropFile = backdropFile,
                     matchedFiles = if (localMatches.size == 1) {
                         fileIds.count { cachedByDocument[it] == localMatches.single() }
                     } else 0,
@@ -181,6 +184,7 @@ internal class MetadataLookupController(
                     confirming = false,
                     cached = metadata.takeIf { stored },
                     posterFile = null,
+                    backdropFile = null,
                     matchedFiles = title.files.size.takeIf { stored } ?: 0,
                     candidates = emptyList(),
                     issue = if (stored) null else MetadataLookupIssue.STALE_LIBRARY,
@@ -189,8 +193,11 @@ internal class MetadataLookupController(
                 val poster = metadata.posterPath?.takeIf { stored }?.let {
                     artworkCache.fetch(it, TmdbImageSize.POSTER)
                 }
-                if (poster != null && active(ticket, tree, title)) {
-                    mutableState.value = mutableState.value.copy(posterFile = poster)
+                val backdrop = metadata.backdropPath?.takeIf { stored }?.let {
+                    artworkCache.fetch(it, TmdbImageSize.BACKDROP)
+                }
+                if ((poster != null || backdrop != null) && active(ticket, tree, title)) {
+                    mutableState.value = mutableState.value.copy(posterFile = poster, backdropFile = backdrop)
                 }
             } catch (cancelled: CancellationException) {
                 throw cancelled

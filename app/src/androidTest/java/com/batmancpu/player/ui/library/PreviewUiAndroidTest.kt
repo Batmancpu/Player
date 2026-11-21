@@ -76,7 +76,8 @@ class PreviewUiAndroidTest {
             val label = node.text?.toString()?.take(80)
             val description = node.contentDescription?.toString()?.take(80)
             if (!label.isNullOrBlank() || !description.isNullOrBlank()) {
-                entries += "${node.className}[text=$label, description=$description, selected=${node.isSelected}, state=${node.stateDescription}, scrollable=${node.isScrollable}]"
+                val bounds = Rect().also(node::getBoundsInScreen)
+                entries += "${node.className}[text=$label, description=$description, bounds=$bounds, selected=${node.isSelected}, checked=${node.isChecked}, state=${node.stateDescription}, scrollable=${node.isScrollable}]"
             }
             for (index in 0 until node.childCount) {
                 val child = node.getChild(index) ?: continue
@@ -138,7 +139,7 @@ class PreviewUiAndroidTest {
     private fun revealGlassSetting() {
         val deadline = SystemClock.uptimeMillis() + 4_000
         while (SystemClock.uptimeMillis() < deadline &&
-            find { it.contentDescription?.toString() == "Liquid Glass effects" } == null
+            find { it.contentDescription?.toString()?.startsWith("Liquid Glass effects,") == true } == null
         ) {
             if (!scrollForwardOnSmallestScrollable()) {
                 if (!swipeUpFromVisibleSheetText()) break
@@ -191,7 +192,19 @@ class PreviewUiAndroidTest {
         val target = candidates
             .filter { it.first.centerY() in sheetContentTop..safeBottom }
             .maxByOrNull { it.first.bottom }
-            ?: return false
+        if (target == null) {
+            // LazyColumn may keep offscreen virtual descendants in the accessibility tree. If
+            // none are currently safe to anchor on, swipe inside the known bottom-sheet body.
+            if (handleBounds.isEmpty || handleBounds.bottom >= safeBottom) return false
+            val startY = (safeBottom - (36 * metrics.density).toInt()).coerceAtLeast(sheetContentTop + 1)
+            val endY = (startY - (260 * metrics.density).toInt()).coerceAtLeast(sheetContentTop + (48 * metrics.density).toInt())
+            if (endY >= startY) return false
+            val centerX = metrics.widthPixels / 2
+            ParcelFileDescriptor.AutoCloseInputStream(
+                automation.executeShellCommand("input swipe $centerX $startY $centerX $endY 300"),
+            ).use { it.readBytes() }
+            return true
+        }
         val fromX = target.first.centerX()
         val fromY = target.first.centerY().coerceAtMost(safeBottom)
         val distance = (180 * metrics.density).toInt()
@@ -315,23 +328,22 @@ class PreviewUiAndroidTest {
             install(activity)
             click(text("Manage"))
             revealGlassSetting()
-            val glassSwitch = awaitNode { it.contentDescription?.toString() == "Liquid Glass effects" }
-            assertEquals("Glass starts enabled with an announced state", context.getString(com.batmancpu.player.R.string.settings_glass_on), glassSwitch.stateDescription?.toString())
+            val glassSwitch = awaitNode { it.contentDescription?.toString()?.startsWith("Liquid Glass effects,") == true }
+            assertTrue("Glass starts enabled with native checked state", glassSwitch.isChecked)
             click(glassSwitch)
             assertTrue("Glass off preference is saved", awaitCondition(3_000) {
                 !preferences.getBoolean(com.batmancpu.player.ui.glass.PlayerUiSettingsStore.GLASS_ENABLED_KEY, true)
             })
             assertTrue("Glass off state is announced", awaitCondition(3_000) {
-                find { it.contentDescription?.toString() == "Liquid Glass effects" }?.stateDescription?.toString() == context.getString(com.batmancpu.player.R.string.settings_glass_off)
+                find { it.contentDescription?.toString()?.startsWith("Liquid Glass effects,") == true }?.let { !it.isChecked } == true
             })
             instrumentation.runOnMainSync { activity.finish() }
             activity = launch()
             install(activity)
             click(text("Manage"))
             revealGlassSetting()
-            assertEquals("Glass off preference survives screen/activity recreation",
-                context.getString(com.batmancpu.player.R.string.settings_glass_off),
-                awaitNode { it.contentDescription?.toString() == "Liquid Glass effects" }.stateDescription?.toString())
+            assertFalse("Glass off preference survives screen/activity recreation",
+                awaitNode { it.contentDescription?.toString()?.startsWith("Liquid Glass effects,") == true }.isChecked)
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
             preferences.edit().clear().commit()
@@ -384,6 +396,10 @@ class PreviewUiAndroidTest {
             screenshot("search")
             click(text("Aurora"))
             text("Aurora.2022.mp4")
+            val detailArtwork = awaitNode { it.contentDescription?.toString() == "Title artwork for Aurora" }
+            val detailArtworkBounds = Rect()
+            detailArtwork.getBoundsInScreen(detailArtworkBounds)
+            assertTrue("Title details use a cinematic landscape hero", detailArtworkBounds.width() > detailArtworkBounds.height())
             screenshot("details")
             click(text("Close"))
             assertTrue("Close returns to the library without removing its item", awaitCondition(2_000) {
@@ -564,7 +580,7 @@ class PreviewUiAndroidTest {
                 activity.setContent { PlayerTheme { GlassLabScreen(onBack = { backCount.incrementAndGet() }) } }
             }
             val labels = listOf("Home", "Movies", "Shows", "Search")
-            val bounds = labels.map { label -> Rect().also { text(label).getBoundsInScreen(it) } }
+            val bounds = labels.map { label -> Rect().also { awaitNode { it.contentDescription?.toString() == label }.getBoundsInScreen(it) } }
             val displayWidth = context.resources.displayMetrics.widthPixels
             val displayHeight = context.resources.displayMetrics.heightPixels
             val density = context.resources.displayMetrics.density
@@ -573,13 +589,13 @@ class PreviewUiAndroidTest {
             val lowestLabelGapDp = (displayHeight - bounds.maxOf { it.bottom }) / density
             assertTrue("Dock labels should sit near the bottom safe area, gap=$lowestLabelGapDp dp", lowestLabelGapDp in 0f..120f)
             screenshot("glass-on")
-            click(text("Movies"))
+            clickLastClickableLabel("Movies")
             assertTrue(
                 "Selected tab semantics did not update",
                 awaitCondition(3_000) { hasSelectedSemanticsOnLabelOrParent("Movies") },
             )
             click(awaitNode { it.contentDescription?.toString() == "Glass effects" })
-            labels.forEach { text(it) }
+            labels.forEach { label -> awaitNode { it.contentDescription?.toString() == label } }
             screenshot("glass-off")
             text("Back to library")
             click(text("Back to library"))
@@ -610,11 +626,11 @@ class PreviewUiAndroidTest {
                 }
             }
             assertTrue(awaitCondition(3_000) { find { it.text?.toString() == "Aurora" } != null })
-            val placeholderArtwork = awaitNode {
-                it.contentDescription?.toString() == "Artwork placeholder for Aurora"
-            }
+            val titleNode = awaitNode { it.text?.toString() == "Aurora" }
+            var cardNode: AccessibilityNodeInfo? = titleNode
+            while (cardNode != null && !cardNode.isClickable) cardNode = cardNode.parent
             val artworkBounds = Rect()
-            placeholderArtwork.getBoundsInScreen(artworkBounds)
+            checkNotNull(cardNode) { "The title must remain accessible on its clickable card" }.getBoundsInScreen(artworkBounds)
             assertTrue("Offline poster artwork uses a portrait composition", artworkBounds.height() >= artworkBounds.width() * 1.4f)
             assertTrue("Home is selected initially", hasSelectedSemanticsOnLabelOrParent("Home"))
 

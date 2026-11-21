@@ -29,8 +29,10 @@ import coil3.compose.AsyncImage
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.focus.FocusRequester
@@ -335,21 +337,56 @@ internal fun LocalLibraryContent(
                 contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 28.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                item(key = "title") {
-                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            selected.title,
-                            modifier = Modifier.weight(1f),
-                            style = MaterialTheme.typography.headlineLarge,
-                            color = PlayerPalette.textPrimary,
-                        )
-                        TextButton(onClick = { selectedKey = null }) {
-                            Text(stringResource(R.string.catalogue_close_details))
+                item(key = "hero") {
+                    val artworkDescription = stringResource(
+                        if (lookup?.backdropFile == null) R.string.catalogue_detail_placeholder_description
+                        else R.string.catalogue_detail_artwork_description,
+                        selected.title,
+                    )
+                    val heroPalette = listOf(Color(0xFF26344A), Color(0xFF45364A), Color(0xFF24433D), Color(0xFF514033))
+                    val heroColor = heroPalette[selected.key.hashCode().ushr(1) % heroPalette.size]
+                    Box(
+                        Modifier.fillMaxWidth().height(218.dp).clip(RoundedCornerShape(26.dp)),
+                    ) {
+                        if (lookup?.backdropFile != null) {
+                            AsyncImage(
+                                model = lookup.backdropFile,
+                                contentDescription = artworkDescription,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize(),
+                            )
+                        } else {
+                            Box(
+                                Modifier.fillMaxSize()
+                                    .background(Brush.linearGradient(listOf(heroColor, PlayerPalette.background)))
+                                    .semantics { contentDescription = artworkDescription },
+                            )
+                            Text(
+                                selected.title.take(1).uppercase(),
+                                modifier = Modifier.align(Alignment.Center),
+                                style = MaterialTheme.typography.displayLarge,
+                                color = Color.White.copy(alpha = .24f),
+                            )
+                        }
+                        Box(Modifier.fillMaxSize().background(
+                            Brush.verticalGradient(listOf(Color.Black.copy(alpha = .10f), Color.Transparent, Color.Black.copy(alpha = .82f))),
+                        ))
+                        TextButton(
+                            onClick = { selectedKey = null },
+                            modifier = Modifier.align(Alignment.TopEnd).padding(8.dp),
+                        ) { Text(stringResource(R.string.catalogue_close_details), color = Color.White) }
+                        Column(
+                            Modifier.align(Alignment.BottomStart).fillMaxWidth().padding(18.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                        ) {
+                            Text(selected.title, style = MaterialTheme.typography.headlineLarge, color = Color.White, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                            Text(
+                                selected.year?.toString() ?: lookup?.cached?.year?.toString() ?: stringResource(R.string.catalogue_on_device),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.White.copy(alpha = .82f),
+                            )
                         }
                     }
-                }
-                item(key = "year") {
-                    Text(selected.year?.toString() ?: stringResource(R.string.catalogue_on_device), color = PlayerPalette.textSecondary)
                 }
                 if (!selected.isSeries) {
                     item(key = "filename") {
@@ -534,7 +571,10 @@ internal fun LocalLibraryContent(
                             uiSettings.setGlassEnabled(enabled)
                         },
                         modifier = Modifier.semantics {
-                            contentDescription = glassDescription
+                            // Switch state is announced through the native checked property;
+                            // include a concise localized state in its label for services that
+                            // do not expose Compose's custom stateDescription on Android 15.
+                            contentDescription = "$glassDescription, $glassStateDescription"
                             stateDescription = glassStateDescription
                         },
                     )
@@ -577,7 +617,6 @@ private fun LocalTitleCard(
         title.files.mapNotNull { cachedMetadataByDocumentId[it.documentId] }
             .distinctBy { it.tmdbId to it.mediaType }.singleOrNull()
     }
-    val placeholderArtworkDescription = stringResource(R.string.catalogue_artwork_placeholder_description, title.title)
     var posterFile by remember(title.key, metadata?.posterPath) { mutableStateOf<File?>(null) }
     LaunchedEffect(metadata?.posterPath, posterRefreshKey) {
         posterFile = if (metadata?.posterPath != null && artworkCache != null) {
@@ -589,7 +628,9 @@ private fun LocalTitleCard(
             if (posterFile != null) {
                 AsyncImage(
                     model = posterFile,
-                    contentDescription = metadata?.let { stringResource(R.string.metadata_lookup_poster_description, it.title) },
+                    // The clickable card's title/year provide its accessible name. Artwork is
+                    // decorative here; a child contentDescription would replace that name.
+                    contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize(),
                 )
@@ -597,14 +638,11 @@ private fun LocalTitleCard(
             } else {
                 Box(
                     Modifier.fillMaxSize()
-                        .background(Brush.linearGradient(listOf(color, PlayerPalette.surface)))
-                        .semantics {
-                            contentDescription = placeholderArtworkDescription
-                        },
+                        .background(Brush.linearGradient(listOf(color, PlayerPalette.surface))),
                 )
                 Text(
                     title.title.take(1).uppercase(),
-                    modifier = Modifier.align(Alignment.Center),
+                    modifier = Modifier.align(Alignment.Center).clearAndSetSemantics {},
                     style = MaterialTheme.typography.displayLarge,
                     color = Color.White.copy(alpha = .25f),
                 )

@@ -546,3 +546,15 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 - **Evidence:** CI #208 found `stringResource` inside the dock semantics lambda; CI #209 found the same in the offline poster semantics lambda. Neither run reached instrumentation.
 - **Fix:** Resolve each localized label in a composable scope and assign its value from the semantics block.
 - **Next:** Verify compilation and run Android tests before claiming accessibility or poster-layout behavior.
+
+
+### R-038 — Android 15 production accessibility semantics and modal scroll
+- **Status:** Focused correction pending CI #211.
+- **Evidence:** CI #210 / 44958625515 compiled and ran 51 Android 15 tests; 46 passed and five failed. The tree showed poster placeholder descriptions replacing clickable card title text; selected tab state was not exposed to Android; a custom Switch `stateDescription` was null even when the native checked state existed; and the sheet test could not safely scroll to a virtualized confirmation action.
+- **Correction:** Make catalogue art decorative, expose title/year through clickable card content, set tab role/label/selected/click in an explicit semantics node, retain native Switch checked state and localized On/Off label, and swipe only inside the visible modal when no suitable semantic scroll node exists. Improve bounds diagnostics.
+- **Next:** Verify on CI #211 and inspect screenshots; do not assert actual TalkBack behavior or OPPO quality from the emulator alone.
+
+### R-039 — Larger detail hero and backdrop caching
+- **Status:** Implemented locally, security regression test added, CI pending.
+- **Behavior:** Detail view now renders a wide title hero using a locally generated gradient immediately; when a cached provider backdrop exists it displays that file. Download is attempted only alongside poster fetch after the user explicitly confirms the match. Uses the existing approved CDN, route/type/dimension/size checks, and no-backup cache.
+- **Next:** Ensure CI validates the two-image mock transport, disabled/offline cache reads, compiled app and synthetic screenshots. No provider live request was made.

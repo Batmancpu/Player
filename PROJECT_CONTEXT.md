@@ -4,7 +4,7 @@ CI #203 verified 50/50 Android 15 navigation/speed tests, unit/build and Room sc
 
 ## Current implementation update — 2026-11-21
 
-CI #203 / 44952898549 passed the navigation and playback-speed baseline: 50/50 Android 15 instrumentation tests, JVM/unit checks, debug app build and Room schemas v1-v4. The current main adds the first bounded Haze Glass dock to production library navigation. Manage exposes a locally persisted on/off toggle; disabling Glass removes Haze source capture and uses the opaque fallback. An activity-recreation test is added and pending CI. This is not full-screen Glass acceptance and has no OPPO rendering or performance evidence. The user requested a single integrated APK after the app and efficiency review; v0.1.174 is only an earlier checkpoint.
+CI #203 / 44952898549 passed the navigation and playback-speed baseline: 50/50 Android 15 instrumentation tests, JVM/unit checks, debug app build and Room schemas v1-v4. Main has a bounded Haze Glass dock in production navigation with a persisted effects-off fallback. CI #210 (51 Android 15 cases) passed 46 and failed five new accessibility/scroll assertions. The current working tree corrects decorative poster semantics, explicit tab selection/click semantics, Glass switch On/Off announcement, and modal scrolling; it also adds a cinematic details hero with a cache-only offline fallback and a backdrop fetched only after explicit TMDB match confirmation. CI #211 is required to verify these changes. This is not full-screen Glass or OPPO performance acceptance. User requested one integrated APK after the app and efficiency review; v0.1.174 is only an older checkpoint.
 
 ## Current development status — 2026-11-21
 

@@ -1,7 +1,7 @@
-## 2026-11-21 progress update — bounded production Glass dock
-- CI #203 / 44952898549 verified navigation and playback speed (50/50 Android 15 instrumentation tests, unit/build and Room v1-v4 schemas).
-- One existing Haze dock is now integrated into the production library as a bounded functional surface. Manage has a locally persisted effects toggle and opaque fallback; disabling it also removes the Haze source. A synthetic activity-recreation test was added; latest verification is pending. This is an initial Glass surface, not the full screen-by-screen Glass phase or measured Reno10 performance.
-- Next: verify safe-area/layout and effects-off screenshots, fix issues, continue subtitle tools and player controls, then complete the measured efficiency/release audit. Produce one integrated signed APK after the requested app work, not at each step.
+## 2026-11-21 progress update — production Glass and title details
+- CI #210 compiled and ran 51 Android 15 tests: 46 passed, 5 UI accessibility/scroll assertions failed. The report identified decorative poster semantics replacing title labels, tab selected-state semantics not reaching Android, Switch checked-state mapping, and a modal gesture helper issue. Focused corrections are in the current working tree; CI #211 must verify them.
+- Production library navigation uses one bounded Haze dock with a persisted effects-off fallback. The title page now has a landscape hero that renders an offline deterministic gradient and can use app-private backdrop artwork only after a separately confirmed TMDB match; artwork still never receives Glass.
+- Remaining work: verify CI/synthetic screenshots, finish subtitle selection/delay and player chrome/accessibility, refine the Glass Lab and production Glass, create Macrobenchmark/Perfetto/release-size checks, then run the final efficiency review and publish one integrated signed APK. No interim APK. Reno10 frame-time/thermal/battery and acceptance evidence remain unavailable.
 
 ## Current implementation update — 2026-11-21
 

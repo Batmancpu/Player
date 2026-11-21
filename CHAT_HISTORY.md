@@ -603,3 +603,9 @@ CI #208 failed before instrumentation because `stringResource` was called inside
 
 ## 2026-11-21 — CI #209 localized poster label compile correction
 CI #209 stopped before Android tests because the new poster accessibility description resolved a string resource inside a non-composable semantics lambda. The value now resolves in LocalTitleCard composable scope. CI #208 had the same issue for the dock label; that is also corrected. The next run verifies both plus the portrait artwork test. No APK yet.
+
+
+## 2026-11-21 — CI #210 failures and integrated detail/accessibility correction
+- CI #210 compiled and ran 51 Android 15 tests, with 46 passing and five new UI assertions failing. Failures involved Switch state surfaced differently by Android, dock selected state, poster art hiding clickable catalogue titles, and scrolling a details-sheet action into safe bounds. Offline library, player decode/resume, SAF, Room and metadata-security tests passed. Artifact screenshots and test reports were inspected.
+- The current correction makes title posters decorative (so card titles remain screen-reader labels), exposes dock tabs through explicit semantics including selected state/click, announces Glass switch state and checks native `isChecked`, and adds an in-modal gesture fallback with accessibility bounds diagnostics. The detail screen gains a wide original gradient hero and uses optional cached TMDB backdrops. A backdrop can only be fetched after the already separate user confirmation; opening details remains offline.
+- Android CI #211 has not yet verified this source. Local `git diff --check` and Android resource XML parse pass; there is no Android SDK in this workspace. No APK or actual OPPO evidence. Next: commit with the context update, inspect CI #211, continue integrated player/subtitle/Glass work and defer the single signed APK until final efficiency analysis.
