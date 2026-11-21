@@ -847,3 +847,11 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 - Added a bounded accessibility-tree snapshot to the synthetic UI test timeout message. This will reveal whether CI is seeing the expected Compose window with changed labels, a different active window, or an empty tree. The test fixture uses only synthetic media names; no user files are read or logged.
 - Diagnostic instrumentation only; no product UI, versionCode, APK signing or Release change. CI #106 pending.
 - Next: inspect the active-window snapshot and fix the underlying UI or query before proceeding with metadata integration.
+
+
+## 2026-11-21 — CI verification of folder-removal follow-up
+
+- CI #105 / 44890893488 reported three synthetic UI lookup timeouts, while Room, playback, SAF and unit/build/schema checks passed. The root cause was not captured in that run.
+- CI #106 / 44891844084 passed: Android 15 instrumentation 22/22, all synthetic UI, folder removal/resume cleanup, Room migration/schema, unit/build/privacy gates. The timeout diagnostic remained unused because the failure did not reproduce. Treat #105 as an intermittent UI-test failure with no confirmed product regression, not as a resolved root-cause finding.
+- Release signing/publication were skipped; no user-installable APK was produced. Actual OPPO behavior and frame-time remain unverified.
+- Next: integrate the opt-in manual TMDB lookup and confirmation path against the offline provider cache, with explicit title/year/type disclosure, strict host/redirect/size controls, cancellation, no automatic queries, and tests. Do not enable networking until that full flow and attribution pass review.

@@ -254,3 +254,6 @@ The user reported that the app did not offer a way to remove its selected folder
 
 ## 2026-11-21 continuation — defer the installable APK until integration is ready
 The user clarified that they do not want an APK at each step; continue the full app and provide one integrated APK to test. CI #105 reported three synthetic accessibility label lookups timing out in existing UI coverage plus the new remove-folder flow, while storage/playback/schema checks passed. Added a bounded active-window accessibility snapshot for CI #106. Next: diagnose the CI tree and fix the actual mismatch. No installable APK or Release was created; real OPPO evidence remains pending.
+
+
+CI #106 / 44891844084 passed after the prior run’s three UI accessibility timeouts failed to reproduce: Android 15 instrumentation 22/22 and the unit/build/schema/privacy gates passed. The active-window diagnostic was retained; no product UI change or installable APK was made. Next engineering task: integrate the explicit opt-in TMDB search, manual match confirmation and offline cached presentation, while keeping all network actions user-triggered.

@@ -215,3 +215,6 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-21 — CI #105 failed three synthetic UI label lookups (Shows, Home, and Manage); Room, playback, SAF and unit/build checks passed. Added a bounded synthetic-window accessibility snapshot to make the next failure diagnostic. No app behavior or APK changed. CI #106 pending. Next: inspect the emitted tree and fix the actual UI/test mismatch.
+
+
+- 2026-11-21 — CI #106 / 44891844084 passed after #105’s three synthetic accessibility lookups timed out: Android 15 instrumentation 22/22, unit/build/schema/privacy gates passed; signing/publication skipped as intended. The #106 timeout tree diagnostic was retained; the flake did not reproduce, so no UI label/root cause change was made. No installable APK. Next: integrate the opt-in TMDB match flow, keeping requests explicit and limited to normalized title/year/type.
