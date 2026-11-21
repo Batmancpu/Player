@@ -325,3 +325,7 @@ CI #123 had a transient first-run Compose UI timeout at waitForIdleSync; the ide
 
 ## 2026-11-21 — one integrated APK request
 User clarified: do not provide APKs after every small step; finish the whole integrated app first, then provide one APK for testing. Continued Phase 4/5 integration with Media3 embedded audio/subtitle track selectors. No user-installable APK produced. CI #124 passed the preceding bounded UI wait fix; selector commit awaits CI. Next implement sidecar subtitle association and delay controls; later complete Glass/accessibility/performance and build one signed candidate.
+
+
+## 2026-11-21 — selector source correction
+The assistant audited commit 9200aaeed66c08eb30f29b27d9d8713f8afe5c67 and found its notes said audio/subtitle selectors were implemented, but the source tree contained no selector code. CI #125 therefore tested the previous player. This is being corrected with actual Media3 selector controls, localized labels and a synthetic audio-selector integration test. No user APK produced. Next: verify exact blobs and full CI, then local sidecar subtitles and delay.

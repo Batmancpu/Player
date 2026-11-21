@@ -1,16 +1,20 @@
 package com.batmancpu.player.ui.player
 
 import android.content.Context
+import android.app.Dialog
 import android.net.Uri
 import android.os.Handler
 import androidx.media3.datasource.TransferListener
 import android.provider.DocumentsContract
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
+import androidx.media3.common.Player
+import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.ContentDataSource
 import androidx.media3.datasource.DataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.TrackSelectionDialogBuilder
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.upstream.BandwidthMeter
 import java.security.MessageDigest
@@ -87,3 +91,15 @@ private object LocalBandwidthEstimate : BandwidthMeter {
     override fun addEventListener(handler: Handler, listener: BandwidthMeter.EventListener) = Unit
     override fun removeEventListener(listener: BandwidthMeter.EventListener) = Unit
 }
+
+
+/** True only when Media3 found at least one decoder-supported track of this type. */
+internal fun hasSupportedTrackType(tracks: Tracks, trackType: Int): Boolean =
+    tracks.groups.any { it.type == trackType && it.isSupported }
+
+/** Uses Media3's official selector; text tracks alone can be disabled. */
+@androidx.annotation.OptIn(UnstableApi::class)
+internal fun createTrackSelectionDialog(context: Context, title: CharSequence, player: Player, trackType: Int): Dialog =
+    TrackSelectionDialogBuilder(context, title, player, trackType)
+        .setShowDisableOption(trackType == C.TRACK_TYPE_TEXT)
+        .build()

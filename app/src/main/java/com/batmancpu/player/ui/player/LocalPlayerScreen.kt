@@ -17,6 +17,8 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.Tracks
+import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.PlayerView
 import kotlinx.coroutines.delay
@@ -33,6 +35,8 @@ internal fun LocalPlayerScreen(
     val checkpoint by rememberUpdatedState(onCheckpoint)
     var isPlaying by remember(target.uri) { mutableStateOf(false) }
     var error by remember(target.uri) { mutableStateOf(false) }
+    var hasAudioTracks by remember(target.uri) { mutableStateOf(false) }
+    var hasSubtitleTracks by remember(target.uri) { mutableStateOf(false) }
     val player = remember(target.uri) {
         createLocalPlayer(context).apply {
             setMediaItem(MediaItem.fromUri(target.uri))
@@ -56,6 +60,10 @@ internal fun LocalPlayerScreen(
         val listener = object : Player.Listener {
             override fun onPlayerError(failure: PlaybackException) { error = true }
             override fun onIsPlayingChanged(value: Boolean) { isPlaying = value }
+            override fun onTracksChanged(tracks: Tracks) {
+                hasAudioTracks = hasSupportedTrackType(tracks, C.TRACK_TYPE_AUDIO)
+                hasSubtitleTracks = hasSupportedTrackType(tracks, C.TRACK_TYPE_TEXT)
+            }
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
                 if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) savedPlayIntent = playWhenReady
             }
@@ -87,15 +95,29 @@ internal fun LocalPlayerScreen(
                 this.player = player
                 setShowNextButton(false)
                 setShowPreviousButton(false)
-                setShowSubtitleButton(true)
+                setShowSubtitleButton(false)
             } },
             update = { it.keepScreenOn = isPlaying },
             modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing),
         )
-        Row(Modifier.align(Alignment.TopStart).fillMaxWidth().background(Color.Black.copy(alpha = .72f))
-            .windowInsetsPadding(WindowInsets.statusBars).padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            TextButton(onClick = onClose) { Text(stringResource(R.string.player_back), color = Color.White) }
-            Text(target.label, color = Color.White, maxLines = 1, modifier = Modifier.weight(1f))
+        val audioTitle = stringResource(R.string.player_audio_tracks)
+        val subtitleTitle = stringResource(R.string.player_subtitle_tracks)
+        Column(Modifier.align(Alignment.TopStart).fillMaxWidth().background(Color.Black.copy(alpha = .72f))
+            .windowInsetsPadding(WindowInsets.statusBars).padding(horizontal = 8.dp, vertical = 4.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = onClose) { Text(stringResource(R.string.player_back), color = Color.White) }
+                Text(target.label, color = Color.White, maxLines = 1, modifier = Modifier.weight(1f))
+            }
+            if (hasAudioTracks || hasSubtitleTracks) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    if (hasAudioTracks) TextButton(onClick = {
+                        createTrackSelectionDialog(context, audioTitle, player, C.TRACK_TYPE_AUDIO).show()
+                    }) { Text(audioTitle, color = Color.White) }
+                    if (hasSubtitleTracks) TextButton(onClick = {
+                        createTrackSelectionDialog(context, subtitleTitle, player, C.TRACK_TYPE_TEXT).show()
+                    }) { Text(subtitleTitle, color = Color.White) }
+                }
+            }
         }
         if (error) {
             Surface(Modifier.align(Alignment.Center).padding(24.dp), shape = MaterialTheme.shapes.large) {

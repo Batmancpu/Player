@@ -110,3 +110,7 @@ Removed unbounded instrumentation waitForIdleSync calls that caused transient CI
 
 ## 2026-11-21 — player controls progress
 The local Media3 player now exposes explicit selectors for supported embedded audio and subtitle tracks; the subtitle selector can disable text rendering. This is source work pending CI and is not a completed phase or device result. Continue with safely associated local sidecar subtitles, subtitle-delay controls and playback polish, then finish cinematic navigation/Glass and prepare one integrated signed APK for phone testing. User requested no interim installable APKs. Actual OPPO acceptance and measured frame/thermal/battery evidence remain pending.
+
+
+## 2026-11-21 — player selector correction
+A live source audit found the prior selector commit was documentation-only; its CI did not test selector code. Corrective source now adds Media3 embedded audio/subtitle selectors and an Android test for the synthetic audio selector; this is unverified pending CI. Continue sidecar subtitle discovery, delay controls and later cinematic/Glass work before creating one integrated installable APK. Phase gates and OPPO acceptance remain open.

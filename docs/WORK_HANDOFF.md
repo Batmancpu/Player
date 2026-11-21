@@ -194,3 +194,7 @@ A test-only follow-up replaces the malformed synthetic PNG with a valid CRC-chec
 
 ## 2026-11-21 continuation — player track controls
 CI #124 / 44904367611 passed for bounded Compose UI waits and catalogue copy on main. Current source adds Media3 audio/subtitle track actions in local playback using the official selector; audio/text actions appear only when supported tracks are present and subtitles can be turned off. The new commit is awaiting CI. No installable APK/Release is created at each commit per user direction; build one complete signed candidate only after the integrated app is ready. Next: verify CI, then sidecar subtitles and subtitle delay. OPPO playback, subtitle rendering, performance, battery and Glass remain unverified; do not claim acceptance/FPS.
+
+
+## 2026-11-21 — selector integration correction
+A live-tree audit found commit 9200aaeed66c08eb30f29b27d9d8713f8afe5c67 changed only documentation; its described selector source/resource changes had not landed. CI #125 Android integration success therefore applies to the prior player. A corrected commit now adds real Media3 audio/subtitle dialogs and test coverage for opening the selector. Verify exact commit blobs and full CI. No interim APK/Release. After green CI continue parent-safe local sidecar subtitles, delay, then overall Glass/accessibility/performance integration. OPPO evidence remains pending.

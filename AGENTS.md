@@ -278,3 +278,7 @@ CI #123 (run 44902997094) attempt 1 had two preview UI timeouts while Instrument
 
 ## Recent agent changes — 2026-11-21
 Media3 embedded audio and subtitle selectors were added to the local playback screen using the official `TrackSelectionDialogBuilder`; unsupported track types remain hidden, subtitles can be disabled, and no media or network path changed. CI #124 / 44904367611 passed Android 15 integration and all unit/build/schema/privacy gates for the prior bounded-wait change. This player-control change is unverified pending CI. No installable APK was produced. Next: inspect this commit's CI, fix any regression, then continue sidecar subtitles and subtitle delay before one integrated candidate.
+
+
+## Recent agent changes — 2026-11-21
+A live-tree audit found commit 9200aaeed66c08eb30f29b27d9d8713f8afe5c67 changed only documentation; its Kotlin/resource changes had not been applied, so CI #125 Android tests covered the old player source. Correcting this with actual embedded Media3 audio/subtitle selector code, localized labels, and an Android 15 test that opens/dismisses the audio selector. No Release APK. Next: verify actual committed file contents and full CI before continuing sidecar subtitle integration.

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.C
 import androidx.media3.common.PlaybackException
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
@@ -48,10 +49,17 @@ class LocalPlaybackAndroidTest {
             assertTrue("No synthetic first frame", frame.await(20, TimeUnit.SECONDS))
             assertNull(failure.get())
             instrumentation.runOnMainSync {
-                assertTrue(reference.get().duration > 0)
-                reference.get().pause()
-                reference.get().seekTo(1000)
-                assertEquals(1000L, reference.get().currentPosition)
+                val player = reference.get()
+                assertTrue(player.duration > 0)
+                assertTrue("Synthetic MP4 must expose embedded audio", hasSupportedTrackType(player.currentTracks, C.TRACK_TYPE_AUDIO))
+                assertFalse("Synthetic MP4 has no subtitles", hasSupportedTrackType(player.currentTracks, C.TRACK_TYPE_TEXT))
+                val selector = createTrackSelectionDialog(activity, "Audio", player, C.TRACK_TYPE_AUDIO)
+                selector.show()
+                assertTrue("Media3 audio selector did not open", selector.isShowing)
+                selector.dismiss()
+                player.pause()
+                player.seekTo(1000)
+                assertEquals(1000L, player.currentPosition)
             }
         } finally {
             instrumentation.runOnMainSync { reference.get()?.release(); activity.finish() }
