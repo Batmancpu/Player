@@ -1055,5 +1055,12 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 
 - CI #134 / 44912378872 failed because the Android emulator's Pixel Launcher entered a system "isn't responding" dialog; five unrelated UI tests then could not see their expected app nodes. CI #133 had passed the same application source. No app assertion or code change was implicated; #135 is the source-changing dock gate.
 - CI #135 / 44912842899 ran 41 Android 15 tests; 40 passed. The dock safe-area/fit and Glass mode assertions passed, but the new selected-state assertion read only the child Text node. Compose publishes selectable state on its parent semantics node, so this was a test-query defect rather than evidence of broken product selection behavior.
-- Corrected the synthetic assertion to walk from the visible label through its accessibility parents and find the selected tab semantics. Re-run Android 15 plus full build/schema/privacy CI before calling this slice verified.
-- No APK/Release. Latest public installable remains v0.1.91. Next: inspect corrected test CI, then continue player and production Glass integration.
+- Corrected the synthetic assertion to walk from the visible label through its accessibility parents and find the selected tab semantics. CI #136 / 44913968127 passed all 41 Android 15 tests, JVM/unit tests, CI-only debug assembly, Room v1-v4 schema regeneration/validation and privacy checks. Signing and Release publication were skipped; no installable APK was produced. Latest public installable remains v0.1.91. Next: continue integrated player controls, navigation, production Glass and accessibility before one final signed APK.
+
+
+## 2026-11-21 — Glass dock correction verified
+
+- CI #136 / 44913968127 completed successfully on commit 2ba9350b1bb2b58eebc02b5382f199d920319e19. Android 15 instrumentation ran all 41 tests with zero failures; the selected-tab assertion now locates semantics on the selectable parent. The earlier #135 failure was a test query issue.
+- The full verify job passed JVM tests, CI-only debug build, exact Room v1-v4 schema export/validation and production privacy checks. Release signing and publication did not run. No installable APK or Release was created.
+- Current installable release remains v0.1.91. User asked for a single APK after the integrated app is ready; do not publish milestone APKs.
+- Next: evaluate stable Media3 options for subtitle offset, then complete player controls/full-screen/resume, catalogue navigation, production Glass surfaces, accessibility and fallback coverage. Actual OPPO visual, codec, battery, thermal and frame-time evidence remains pending.

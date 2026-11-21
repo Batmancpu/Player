@@ -22,9 +22,9 @@ A risk is not a confirmed defect. Record evidence, confidence and status precise
 ## Design-time risks
 
 ### R-011 — Glass Lab dock can appear detached or visually weak
-- **Status:** User-reported on the older installed preview; current-source visual refinement is in CI. CI #135's only product-test failure was an assertion reading the Text child instead of its selected selectable parent; the assertion is corrected and awaiting rerun.
+- **Status:** User-reported on the older installed preview; current-source dock refinement and semantics checks pass Android 15 CI. Actual OPPO visual quality remains unverified.
 - **Evidence:** User said the Glass Lab bottom navigation looked broken/floating. No current v0.1.91 screenshot/device reproduction supplied.
-- **Mitigation in current source:** A restrained source-backed surface edge, selected pill and shadow are added. CI #135 passed dock bounds/safe-area and Glass-mode assertions; selection-state check now traverses the accessibility parent chain. This does not establish target-device visual quality or performance.
+- **Mitigation in current source:** A restrained source-backed surface edge, selected pill and shadow are added. CI #136 passed all 41 Android 15 tests including dock bounds/safe-area, both Glass modes and selected semantics through the accessibility parent chain. This does not establish target-device visual quality or performance.
 - **Next:** review the CI screenshot and obtain actual OPPO visual feedback with the eventual integrated APK.
 
 

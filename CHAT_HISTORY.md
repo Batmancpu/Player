@@ -5,11 +5,11 @@ This file is the durable, accumulating record of important user requests, produc
 **Format:** decision-focused session summaries, not a verbatim export of every message. Preserve the meaning of user requests and reasons behind decisions. Never include private signing files, passwords, base64 secret values, API keys, tokens or other credentials.
 
 ## 2026-11-21 — Glass Lab dock follow-up
-- CI #134 failed from a Pixel Launcher system ANR across five unrelated UI tests; identical source passed #133. CI #135 ran 41 Android tests: 40 passed, including dock bounds, safe area and both Glass modes. The only failure queried selected state on the text child instead of Compose's selectable parent. Updated the test to walk the accessibility parent chain; corrective CI pending.
+- CI #134 failed from a Pixel Launcher system ANR across five unrelated UI tests; identical source passed #133. CI #135 ran 41 Android tests: 40 passed, including dock bounds, safe area and both Glass modes. The only failure queried selected state on the text child instead of Compose's selectable parent. Updated the test to walk the accessibility parent chain; CI #136 / 44913968127 passed all 41 Android 15 tests and the full unit/build/schema/privacy gates. Signing/release steps were skipped.
 
 - User reported that the Glass Lab bottom navigation looked broken/floating in the older installed build. No current OPPO screenshot or latest-source handset report is available, so it remains a user-reported visual issue rather than a reproduced current-source defect.
-- Refined the original dock's material edge, selection highlight and shadow, and added Android UI assertions for safe-area proximity, selected accessibility semantics, tab fit and Glass enabled/disabled. CI pending. No APK/Release.
-- Next: inspect screenshots and test results from Actions, then continue integrated player/Glass/accessibility implementation. The user still wants one installable APK after the whole app is ready.
+- Refined the original dock's material edge, selection highlight and shadow, and added Android UI assertions for safe-area proximity, selected accessibility semantics, tab fit and Glass enabled/disabled. CI #136 verified the dock assertions and both Glass modes in synthetic Android 15 tests. No APK/Release.
+- Next: continue integrated player/Glass/accessibility implementation. The user still wants one installable APK after the whole app is ready.
 
 ## 2026-11-21 — One integrated APK request and local subtitle playback
 
@@ -355,3 +355,8 @@ CI #129 / 44908615223 passed the matcher regression and full schema/build/privac
 
 ## 2026-11-21 — Room v4 migration green
 CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-trip, unit/build/schema/privacy. Added the exact generated v4 schema snapshot from artifact 14709327372; historical schemas remain preserved. Next: local same-parent sidecar attachment and playback tests. No user APK.
+
+## 2026-11-21 — Glass dock assertion verified
+- Corrected accessibility parent-chain check passed in CI #136 / 44913968127; all 41 Android 15 tests, unit/build, Room v1-v4 schema and privacy gates succeeded.
+- No signed APK/Release was created; latest installable remains v0.1.91 per the one-integrated-APK request.
+- Continue the integrated product; actual OPPO visual/performance acceptance is pending.
