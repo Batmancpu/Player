@@ -112,3 +112,8 @@ Artwork uses a fixed unauthenticated TMDB image CDN transport, called only after
 
 ## Catalogue artwork rendering — 2026-11-21
 Library cards first map their indexed document IDs to a single user-confirmed offline metadata row. Only visible lazy cards read the corresponding app-private poster File; Coil decodes that local File with a dark text-contrast scrim. Unmatched/ambiguous/missing artwork retains a local deterministic gradient/glyph fallback. The card path cannot call the network. A poster-state key refreshes after a confirmed download or removal; cached files remain browsable offline.
+
+
+### Subtitle viewport and video resizing
+
+Player exposes Fit, Fill and Zoom resizing through Media3. The app overrides the supported `exo_player_view.xml` layout so `SubtitleView` is a sibling of `exo_content_frame`, rather than a child inside the aspect-ratio frame. This keeps subtitle size/placement tied to the player viewport while the video content is resized or cropped. The layout is a small Apache-2.0 adaptation of Media3's layout; its source and upstream URL are identified in the XML header. Android instrumentation asserts the caption and video frames remain siblings under Zoom. Media3 source references: [PlayerView layout contract](https://github.com/androidx/media/blob/release/libraries/ui/src/main/res/layout/exo_player_view.xml), [SubtitleView API](https://developer.android.com/reference/androidx/media3/ui/SubtitleView). Recheck the override whenever the pinned Media3 version changes.

@@ -404,3 +404,9 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 - The revised chrome test was still too strict: in the test host, it could not rely on a second auto-hide timeout after the fullscreen callback. It now checks the exit action immediately with controls visible; separate UI test covers reversible accessible labels.
 - CI also had one metadata UI test unable to find its synthetic detail sheet while the active window showed app content. Treat as an open test isolation/emulator issue until a rerun confirms it.
 - 41/43 tests passed; no APK. Subtitle zoom separation is next after CI stabilizes.
+
+
+## 2026-11-21 — Separate subtitle viewport and video resize modes
+- The user wants captions/lyrics independent from movie zoom. Review of the pinned Media3 1.11.1 layout showed its SubtitleView was nested inside the resize-managed content frame, so merely switching engines was unnecessary but the current geometry needed correction.
+- Added app's Apache-2.0 attributed layout adaptation with SubtitleView as a sibling overlay and accessible Fit/Fill/Zoom controls. Added synthetic UI and Android hierarchy tests. No VLC dependency.
+- Current CI pending; no APK. Revisit upstream layout when Media3 is upgraded.

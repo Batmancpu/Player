@@ -78,6 +78,10 @@
     <string name="player_back">Back to library</string>
     <string name="player_enter_fullscreen">Full screen</string>
     <string name="player_exit_fullscreen">Exit full screen</string>
+    <string name="player_resize_fit">Fit</string>
+    <string name="player_resize_fill">Fill</string>
+    <string name="player_resize_zoom">Zoom</string>
+    <string name="player_resize_description">Video scaling: %1$s</string>
     <string name="player_audio_tracks">Audio</string>
     <string name="player_subtitle_tracks">Subtitles</string>
     <string name="player_unavailable">This video could not be played</string>

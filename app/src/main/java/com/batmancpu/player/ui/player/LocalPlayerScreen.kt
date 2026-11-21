@@ -23,6 +23,7 @@ import androidx.media3.common.Tracks
 import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.PlayerView
+import androidx.media3.ui.AspectRatioFrameLayout
 import kotlinx.coroutines.delay
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -42,6 +43,7 @@ internal fun LocalPlayerScreen(
     var hasAudioTracks by remember(target.uri) { mutableStateOf(false) }
     var hasSubtitleTracks by remember(target.uri) { mutableStateOf(false) }
     var controlsVisible by remember(target.uri) { mutableStateOf(true) }
+    var resizeMode by remember(target.uri) { mutableIntStateOf(AspectRatioFrameLayout.RESIZE_MODE_FIT) }
     val playerViewRef = remember(target.uri) { arrayOfNulls<PlayerView>(1) }
     val player = remember(target.uri) {
         createLocalPlayer(context).apply {
@@ -109,7 +111,10 @@ internal fun LocalPlayerScreen(
                     controlsVisible = visibility == View.VISIBLE
                 })
             } },
-            update = { it.keepScreenOn = isPlaying },
+            update = {
+                it.keepScreenOn = isPlaying
+                it.setResizeMode(resizeMode)
+            },
             modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing),
         )
         val audioTitle = stringResource(R.string.player_audio_tracks)
@@ -119,6 +124,7 @@ internal fun LocalPlayerScreen(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = onClose) { Text(stringResource(R.string.player_back), color = Color.White) }
                 Text(target.label, color = Color.White, maxLines = 1, modifier = Modifier.weight(1f))
+                PlayerResizeButton(resizeMode) { resizeMode = nextPlayerResizeMode(resizeMode) }
                 PlayerFullscreenButton(isFullScreen) {
                     playerViewRef[0]?.showController()
                     onToggleFullScreen()
@@ -152,4 +158,26 @@ internal fun LocalPlayerScreen(
 internal fun PlayerFullscreenButton(isFullScreen: Boolean, onToggle: () -> Unit) {
     val label = stringResource(if (isFullScreen) R.string.player_exit_fullscreen else R.string.player_enter_fullscreen)
     TextButton(onClick = onToggle, modifier = Modifier.semantics { contentDescription = label }) { Text(label, color = Color.White) }
+}
+
+
+internal fun nextPlayerResizeMode(current: Int): Int = when (current) {
+    AspectRatioFrameLayout.RESIZE_MODE_FIT -> AspectRatioFrameLayout.RESIZE_MODE_FILL
+    AspectRatioFrameLayout.RESIZE_MODE_FILL -> AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+    else -> AspectRatioFrameLayout.RESIZE_MODE_FIT
+}
+
+@Composable
+internal fun PlayerResizeButton(resizeMode: Int, onNext: () -> Unit) {
+    val label = stringResource(
+        when (resizeMode) {
+            AspectRatioFrameLayout.RESIZE_MODE_FILL -> R.string.player_resize_fill
+            AspectRatioFrameLayout.RESIZE_MODE_ZOOM -> R.string.player_resize_zoom
+            else -> R.string.player_resize_fit
+        },
+    )
+    val description = stringResource(R.string.player_resize_description, label)
+    TextButton(onClick = onNext, modifier = Modifier.semantics { contentDescription = description }) {
+        Text(label, color = Color.White)
+    }
 }

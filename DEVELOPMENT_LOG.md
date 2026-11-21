@@ -1138,3 +1138,12 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - The same run reported `PreviewUiAndroidTest.titleMetadataSearchIsManualAndMatchRequiresASecondConfirmation` could not find the synthetic detail sheet; the active window showed the app's connected one-video library. This may be an emulator/activity timing issue or a real test isolation defect. Keep it open and use the next run to determine reproducibility before changing product metadata behavior.
 - Product code unchanged. No signed APK/Release.
 - Verification: change reviewed; next Android 15 CI run pending. Local Gradle/emulator is unavailable. Continue only after recording that run's results.
+
+
+## 2026-11-21 — Subtitle viewport separated from video scaling
+
+- User specifically asked for subtitles to remain separate when a movie is zoomed. The pinned Media3 1.11.1 default player layout nests SubtitleView inside the resize-managed AspectRatioFrameLayout; a Zoom resize can therefore alter the caption viewport along with video framing.
+- Added accessible Fit → Fill → Zoom controls and an app layout override derived from Media3's Apache-2.0 layout. SubtitleView is a sibling overlay at PlayerView bounds; video/artwork continue using the aspect-ratio content frame. Source URL and license are in the XML header and third-party notices.
+- Added synthetic instrumentation for sibling viewport placement and for cycling the three modes. No VLC/LibVLC dependency was added; this resolves the identified behavior without native engine size/battery/licensing changes. LibVLC remains an option only if actual local codec corpus testing demonstrates material Media3 gaps.
+- Verification: source/API reviewed; CI pending. Local Gradle/Android emulator unavailable. No signed APK/Release.
+- Next: inspect CI and screenshots, fix failures, then proceed with subtitle delay after Media3 1.12 stabilizes and continue production Glass/accessibility.

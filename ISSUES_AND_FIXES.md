@@ -322,3 +322,10 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - **Evidence:** `titleMetadataSearchIsManualAndMatchRequiresASecondConfirmation` timed out locating synthetic UI. Failure snapshot showed the active window in the connected one-video library rather than the synthetic test details sheet.
 - **Possible causes:** transient Activity/Compose test setup race or test isolation failure; no product cause established yet.
 - **Next:** rerun and compare active-window snapshot. Do not change metadata production code without reproducible evidence.
+
+
+### R-016 — Subtitle viewport follows video resize frame
+- **Status:** Addressed in source; CI pending; OPPO visual verification unperformed.
+- **Evidence:** Pinned Media3 1.11.1 default `exo_player_view.xml` placed `SubtitleView` inside `AspectRatioFrameLayout` (`exo_content_frame`), so the subtitle viewport shared resize/crop geometry.
+- **Fix:** App's Apache-2.0 layout adaptation moves SubtitleView to a sibling spanning PlayerView; accessible Fit/Fill/Zoom controls target the video frame. Automated test checks sibling hierarchy.
+- **Next:** verify CI, screenshots and later OPPO cue position/legibility. Revalidate layout contract on Media3 upgrade.

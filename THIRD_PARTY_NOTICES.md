@@ -29,3 +29,8 @@ Media3 ExoPlayer and UI 1.11.1, Android Open Source Project/contributors, Apache
 
 ## Coil Compose
 Coil Compose 3.6.3 (Apache-2.0): https://github.com/coil-kt/coil/blob/3.6.3/LICENSE.txt. Used for local app-private artwork File decoding only; no network module. Apache text is already packaged in APACHE_2_0.txt.
+
+
+### Media3 player layout adaptation
+
+`app/src/main/res/layout/exo_player_view.xml` adapts the Media3 UI layout under the Apache License 2.0, moving `SubtitleView` outside the aspect-ratio content frame so captions do not inherit video resize/crop geometry. Original: https://github.com/androidx/media/blob/release/libraries/ui/src/main/res/layout/exo_player_view.xml

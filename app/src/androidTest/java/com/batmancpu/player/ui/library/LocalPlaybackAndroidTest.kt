@@ -12,6 +12,8 @@ import androidx.media3.common.C
 import androidx.media3.common.PlaybackException
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.SubtitleView
 import androidx.test.platform.app.InstrumentationRegistry
 import com.batmancpu.player.MainActivity
 import com.batmancpu.player.ui.player.*
@@ -107,6 +109,22 @@ class LocalPlaybackAndroidTest {
             SyntheticSafProvider.subtitleContents = null
             fixture.delete()
         }
+    }
+
+    @Test fun subtitleViewportIsIndependentFromVideoResizeFrame() {
+        val reference = AtomicReference<PlayerView>()
+        instrumentation.runOnMainSync { reference.set(PlayerView(context)) }
+        val view = reference.get()
+        val videoFrame = view.findViewById<AspectRatioFrameLayout>(androidx.media3.ui.R.id.exo_content_frame)
+        val subtitles = view.findViewById<SubtitleView>(androidx.media3.ui.R.id.exo_subtitles)
+        assertNotNull(videoFrame)
+        assertNotNull(subtitles)
+        assertSame("Video keeps its resize-managed content frame", view, videoFrame.parent)
+        assertSame("Captions use the independent player viewport", view, subtitles.parent)
+        assertNotSame("Caption layout is never nested in the zoomable video frame", videoFrame, subtitles.parent)
+        view.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM)
+        assertEquals(1f, subtitles.scaleX)
+        assertEquals(1f, subtitles.scaleY)
     }
 
     @Test(timeout = 45_000) fun playerOverlayFollowsTransportControllerVisibility() {

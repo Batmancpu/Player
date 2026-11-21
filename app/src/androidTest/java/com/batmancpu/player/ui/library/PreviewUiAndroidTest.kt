@@ -12,6 +12,9 @@ import com.batmancpu.player.MainActivity
 import com.batmancpu.player.ui.glass.GlassLabScreen
 import com.batmancpu.player.ui.metadata.MetadataLookupUiState
 import com.batmancpu.player.ui.player.PlayerFullscreenButton
+import com.batmancpu.player.ui.player.PlayerResizeButton
+import com.batmancpu.player.ui.player.nextPlayerResizeMode
+import androidx.media3.ui.AspectRatioFrameLayout
 import com.batmancpu.player.ui.metadata.TmdbCandidate
 import com.batmancpu.player.ui.library.TmdbMediaType
 import com.batmancpu.player.ui.theme.PlayerTheme
@@ -146,6 +149,28 @@ class PreviewUiAndroidTest {
             assertTrue("Toggle enters immersive mode", fullScreen.value)
             click(text("Exit full screen"))
             assertFalse("Toggle restores normal mode", fullScreen.value)
+        } finally {
+            instrumentation.runOnMainSync { activity.finish() }
+        }
+    }
+
+    @Test(timeout = 20_000) fun videoResizeModesCycleAccessibly() {
+        val activity = launch()
+        val mode = mutableStateOf(AspectRatioFrameLayout.RESIZE_MODE_FIT)
+        try {
+            instrumentation.runOnMainSync {
+                activity.setContent {
+                    PlayerTheme {
+                        PlayerResizeButton(mode.value) { mode.value = nextPlayerResizeMode(mode.value) }
+                    }
+                }
+            }
+            click(text("Fit"))
+            assertEquals(AspectRatioFrameLayout.RESIZE_MODE_FILL, mode.value)
+            click(text("Fill"))
+            assertEquals(AspectRatioFrameLayout.RESIZE_MODE_ZOOM, mode.value)
+            click(text("Zoom"))
+            assertEquals(AspectRatioFrameLayout.RESIZE_MODE_FIT, mode.value)
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
         }
