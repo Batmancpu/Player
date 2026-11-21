@@ -29,3 +29,6 @@ GitHub now redirects the requested Batmancpu/FCZenith URL to Batmancpu/brrMusic.
 
 ## Glass Lab usability repair — 2026-11-21 (CI pending)
 The synthetic CI capture showed the preview dock covered demo copy at the lower edge, and the screen had only an implicit Android Back route to exit. Added an explicit “Back to library” action, clearly states that the four tabs only demonstrate selection motion, adds a restrained lower fade behind the dock, and increases scroll-tail spacing so the last demo text can move above the dock. The Haze surface remains bounded and opt-in in this lab only. A synthetic UI test now verifies the back action; CI and handset appearance are pending. This is a usability repair, not a claim that the renderer reproduces Apple's engine or meets OPPO frame-time targets.
+
+## 2026-11-21 — Haze press response connected to dock controls
+- Shared a single dock interaction source between selectable tabs and the bounded Haze material surface. This activates the already-configured Haze pressed lens/highlight/compression response during touch, while the original spring selection pill remains separate and system reduced-motion policy stays active. The effects-off opaque fallback is unchanged. CI and real-device appearance/performance are pending.

@@ -439,3 +439,6 @@ When the unfiltered library is open, movie titles and series now appear in separ
 - Current main has a Glass Lab navigation/overlay repair committed as `879b19902672d5e2686c628029800f1df6b03c00`; CI #175 is verifying it. Next action: inspect its UI test/screenshot result, then continue player format/subtitle, production Glass, and measured performance work.
 ## 2026-11-21 — Glass Lab compile correction
 - CI #175 failed Kotlin compilation because the new explicit return action used Material3 `TextButton` without importing it. Added the missing import. The signed v0.1.174 release is unaffected; next action is rerun the full CI suite for the Glass Lab patch and inspect its screenshot.
+
+## 2026-11-21 — Haze press response connected to dock controls
+- Shared a single dock interaction source between selectable tabs and the bounded Haze material surface. This activates the already-configured Haze pressed lens/highlight/compression response during touch, while the original spring selection pill remains separate and system reduced-motion policy stays active. The effects-off opaque fallback is unchanged. CI and real-device appearance/performance are pending.

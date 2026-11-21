@@ -38,10 +38,16 @@ internal fun GlassPreviewDock(
     val glyphs = listOf(PlayerGlyph.HOME, PlayerGlyph.MOVIES, PlayerGlyph.SHOWS, PlayerGlyph.SEARCH)
     val labels = listOf(R.string.nav_home, R.string.nav_movies, R.string.nav_shows, R.string.nav_search)
     val dockShape = RoundedCornerShape(30.dp)
+    val dockInteraction = remember { MutableInteractionSource() }
     BoxWithConstraints(
         modifier.widthIn(max = 420.dp).fillMaxWidth().height(76.dp)
             .shadow(14.dp, dockShape, clip = false)
-            .playerGlassSurface(hazeState, enabled, shape = dockShape)
+            .playerGlassSurface(
+                hazeState = hazeState,
+                enabled = enabled,
+                interactionSource = dockInteraction,
+                shape = dockShape,
+            )
             // Bound light-background luminance behind white labels in this always-dark interface.
             .background(Color.Black.copy(alpha = if (enabled) .62f else 0f), dockShape)
             .border(
@@ -62,10 +68,9 @@ internal fun GlassPreviewDock(
             .border(1.dp, Color.White.copy(alpha = .22f), selectionShape))
         Row(Modifier.fillMaxSize().selectableGroup()) {
             glyphs.forEachIndexed { index, glyph ->
-                val interaction = remember { MutableInteractionSource() }
                 Column(
                     Modifier.weight(1f).fillMaxHeight().selectable(
-                        selected = selected == index, role = Role.Tab, interactionSource = interaction,
+                        selected = selected == index, role = Role.Tab, interactionSource = dockInteraction,
                         indication = null, onClick = { onSelected(index) },
                     ).padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
