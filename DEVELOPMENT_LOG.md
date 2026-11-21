@@ -1070,5 +1070,12 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 
 - Added a player top-bar action to hide Android system bars during local playback and restore them on exit. The mode is transient-swipe-reveal, scoped to an active video target, and reset when the target changes; composition disposal restores system bars. Existing pause/checkpoint/release behavior is unchanged.
 - Added accessible state labels for entering and exiting full screen plus an Android Compose interaction test that toggles both ways.
-- Verification: `git diff --check` passes; local Gradle is unavailable. Android CI is pending. No installable APK/Release; keep to the user's single final integrated APK request.
-- Risk/next: Android 15 synthetic test must verify compile and reversible label interaction; actual OEM system-bar behavior on OPPO remains unmeasured. Continue full player, navigation, Glass and accessibility work after CI.
+- Verification: CI #138 / 44915530791 passed all 42 Android 15 instrumentation tests, JVM/unit tests, CI-only debug assembly, Room v1-v4 schema export/validation and privacy checks. Signing/publication were skipped. No installable APK/Release; keep to the user's single final integrated APK request.
+- Actual OEM system-bar behavior on OPPO remains unmeasured. Continue full player, navigation, Glass and accessibility work.
+
+
+## 2026-11-21 — Immersive playback CI verification
+
+- CI #138 / 44915530791 passed the new reversible enter/exit player-toggle Compose test; all 42 Android 15 instrumentation tests completed with zero failures. JVM/unit, CI-only debug build, Room v1-v4 schema export/validation and production privacy gates passed.
+- Signing and Release publication were skipped. No user-installable APK was created; latest public signed Release remains v0.1.91.
+- The Android emulator does not establish OPPO behavior or real-device performance. Continue with player completeness, navigation, production Glass, accessibility/fallback, stable subtitle-offset decision, and offline/thermal/performance review.

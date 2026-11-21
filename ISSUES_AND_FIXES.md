@@ -296,6 +296,7 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 
 
 ### R-012 — Immersive system bars vary by OEM
-- **Status:** Implementation pending Android CI; OPPO behavior unverified.
+- **Status:** Android 15 implementation/tests pass in CI #138; actual OPPO behavior remains unverified.
 - **Change:** Local playback exposes an explicit reversible system-bar toggle and restores bars on exit/composition disposal.
-- **Next:** Confirm Android 15 interaction/lifecycle behavior in CI and verify actual OPPO behavior only with the final integrated APK.
+- **Verification:** CI #138 passed the synthetic enter/exit accessibility state test and all app gates.
+- **Next:** Verify real Android 15 and OPPO window behavior with the single integrated APK; measure whether controls/system bars conflict with video surfaces.
