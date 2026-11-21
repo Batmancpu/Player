@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="metadata_back">Back</string>
+    <string name="metadata_kicker">PLAYER · CONNECTIONS</string>
+    <string name="metadata_title">Connection setup</string>
+    <string name="metadata_description">Prepare your optional TMDB connection for movie and show details. Your local library and playback work without it.</string>
+    <string name="metadata_foundation_note">Artwork and matching are being connected to the library. Saving this connection does not start a library lookup in this build.</string>
+    <string name="metadata_consent_title">Allow TMDB metadata</string>
+    <string name="metadata_consent_description">When enabled, Player may send normalized titles, year and media type directly to api.themoviedb.org and fetch artwork from image.tmdb.org.</string>
+    <string name="metadata_local_boundary">Your videos, subtitles, folder names, file paths and original filenames stay on your device. Disabling metadata keeps your local library available.</string>
+    <string name="metadata_saved_token">Read access token saved</string>
+    <string name="metadata_missing_token">Your TMDB connection</string>
+    <string name="metadata_token_description">Use your own TMDB API Read Access Token. Player encrypts it on this device and excludes it from app backup.</string>
+    <string name="metadata_token_label">API Read Access Token</string>
+    <string name="metadata_token_replace_label">Replace read access token</string>
+    <string name="metadata_token_hint">Paste a token from your TMDB account</string>
+    <string name="metadata_token_retained">Leave this field empty to keep the saved token. Player never displays it again.</string>
+    <string name="metadata_save">Save connection</string>
+    <string name="metadata_saving">Saving connection…</string>
+    <string name="metadata_remove">Remove saved connection</string>
+    <string name="metadata_saved">Connection saved on this device.</string>
+    <string name="metadata_disabled">TMDB metadata disabled.</string>
+    <string name="metadata_cleared">Saved token and metadata consent removed.</string>
+    <string name="metadata_storage_error">Player could not open or save this connection. Metadata is disabled. Remove the saved connection, then enter your token again.</string>
+    <string name="metadata_token_error">Enter a valid API Read Access Token without spaces or line breaks.</string>
+    <string name="metadata_preparing">Opening connection settings…</string>
+</resources>

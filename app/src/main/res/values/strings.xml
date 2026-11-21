@@ -81,5 +81,6 @@
     <string name="player_opening">Opening local video…</string>
     <string name="player_access_error">Folder access may have changed. Reconnect the folder and scan again.</string>
     <plurals name="catalogue_episodes"><item quantity="one">%d episode</item><item quantity="other">%d episodes</item></plurals>
+    <string name="metadata_open_settings">Metadata and connections</string>
 </resources>
 

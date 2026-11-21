@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.batmancpu.player.ui.library.LibraryViewModel
+import com.batmancpu.player.ui.metadata.MetadataSettingsScreen
+import com.batmancpu.player.ui.metadata.MetadataSettingsViewModel
 import com.batmancpu.player.ui.theme.PlayerTheme
 
 class MainActivity : ComponentActivity() {
@@ -38,8 +40,11 @@ class MainActivity : ComponentActivity() {
         }
 
         val libraryModel = ViewModelProvider(this)[LibraryViewModel::class.java]
+        val metadataModel = ViewModelProvider(this)[MetadataSettingsViewModel::class.java]
         setContent {
             var showGlassLab by rememberSaveable { mutableStateOf(false) }
+            var showMetadataSettings by rememberSaveable { mutableStateOf(false) }
+            BackHandler(enabled = showMetadataSettings) { showMetadataSettings = false }
             BackHandler(enabled = showGlassLab) { showGlassLab = false }
 
             val playback by libraryModel.playback.collectAsState()
@@ -53,8 +58,13 @@ class MainActivity : ComponentActivity() {
                         onCheckpoint = { position, play -> libraryModel.checkpoint(target, position, play) },
                         onClose = libraryModel::closePlayback,
                     )
+                    showMetadataSettings -> MetadataSettingsScreen(metadataModel) { showMetadataSettings = false }
                     showGlassLab -> GlassLabScreen()
-                    else -> LocalLibraryScreen(libraryModel, onOpenGlassLab = { showGlassLab = true })
+                    else -> LocalLibraryScreen(
+                        libraryModel,
+                        onOpenGlassLab = { showGlassLab = true },
+                        onOpenMetadataSettings = { showMetadataSettings = true },
+                    )
                 }
                 if (playback.loading) AlertDialog(
                     onDismissRequest = libraryModel::closePlayback,

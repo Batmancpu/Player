@@ -257,3 +257,7 @@ The user clarified that they do not want an APK at each step; continue the full 
 
 
 CI #106 / 44891844084 passed after the prior run’s three UI accessibility timeouts failed to reproduce: Android 15 instrumentation 22/22 and the unit/build/schema/privacy gates passed. The active-window diagnostic was retained; no product UI change or installable APK was made. Next engineering task: integrate the explicit opt-in TMDB search, manual match confirmation and offline cached presentation, while keeping all network actions user-triggered.
+
+
+## 2026-11-21 — Secure metadata settings foundation
+Added a Library Manage entry for metadata/connection settings using a user-owned token stored with Android Keystore AES-GCM in no-backup app-private storage. Consent defaults off, tampered/lost credentials fail closed, and clearing completes even during lifecycle cancellation. No network permission/request or installable APK was added. CI pending. Next: explicit user-initiated matching with approved attribution, bounded transport and offline cache.

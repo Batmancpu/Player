@@ -855,3 +855,11 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 - CI #106 / 44891844084 passed: Android 15 instrumentation 22/22, all synthetic UI, folder removal/resume cleanup, Room migration/schema, unit/build/privacy gates. The timeout diagnostic remained unused because the failure did not reproduce. Treat #105 as an intermittent UI-test failure with no confirmed product regression, not as a resolved root-cause finding.
 - Release signing/publication were skipped; no user-installable APK was produced. Actual OPPO behavior and frame-time remain unverified.
 - Next: integrate the opt-in manual TMDB lookup and confirmation path against the offline provider cache, with explicit title/year/type disclosure, strict host/redirect/size controls, cancellation, no automatic queries, and tests. Do not enable networking until that full flow and attribution pass review.
+
+
+## 2026-11-21 — Encrypted metadata connection settings
+
+- Added a Library Manage entry for the metadata connection screen, backed by Android Keystore AES-256-GCM encryption of the user-provided TMDB Read Access Token in no-backup app-private storage.
+- Consent remains default-off. Invalid tokens are rejected without replacing the saved credential; disabling revokes use across store instances; clearing deletes ciphertext and key even if the screen coroutine is cancelled. The token stays out of saved Compose state and settings UI state. Added Android tests for disabled first-run state, key absence, encrypted persistence/reopen, opt-in, disable/clear cross-instance revocation, tampering/key loss, malformed input, nonce uniqueness and concurrent revocation.
+- This slice adds no INTERNET permission, transport, TMDB request or artwork download. UI explicitly says saving a connection does not start a library lookup in this build. No schema/versionCode/signing/Release change.
+- CI #107 for the preceding documentation update is still running; this commit’s Android 15 tests and credential-store verification are pending CI #108. Next: verify the settings lifecycle and proceed only with explicit manual search/match plus official attribution.

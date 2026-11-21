@@ -35,7 +35,11 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun LocalLibraryScreen(model: LibraryViewModel, onOpenGlassLab: () -> Unit) {
+internal fun LocalLibraryScreen(
+    model: LibraryViewModel,
+    onOpenGlassLab: () -> Unit,
+    onOpenMetadataSettings: () -> Unit = {},
+) {
     val folderState by model.folder.collectAsState()
     val library by model.session.state.collectAsState()
     val snapshot by model.catalogue.collectAsState()
@@ -55,6 +59,7 @@ internal fun LocalLibraryScreen(model: LibraryViewModel, onOpenGlassLab: () -> U
         onChooseFolder = { picker.launch(Uri.parse(folder.tree)) },
         onPlay = model::play,
         onOpenGlassLab = onOpenGlassLab,
+        onOpenMetadataSettings = onOpenMetadataSettings,
         onForgetFolder = model::forgetFolder,
     )
 }
@@ -71,6 +76,7 @@ internal fun LocalLibraryContent(
     onChooseFolder: () -> Unit,
     onPlay: (DiscoveredLocalMedia) -> Unit,
     onOpenGlassLab: () -> Unit,
+    onOpenMetadataSettings: () -> Unit = {},
     onForgetFolder: () -> Unit = {},
 ) {
     val titles = snapshot.takeIf { it.tree == folder.tree }?.titles.orEmpty()
@@ -211,6 +217,9 @@ internal fun LocalLibraryContent(
                 }
                 OutlinedButton(onClick = { confirmForget = true }, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.catalogue_forget_folder))
+                }
+                OutlinedButton(onClick = { settings = false; onOpenMetadataSettings() }, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.metadata_open_settings))
                 }
                 TextButton(onClick = { settings = false; onOpenGlassLab() }, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.catalogue_glass_preview))

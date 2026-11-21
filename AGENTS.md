@@ -218,3 +218,6 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-21 — CI #106 / 44891844084 passed after #105’s three synthetic accessibility lookups timed out: Android 15 instrumentation 22/22, unit/build/schema/privacy gates passed; signing/publication skipped as intended. The #106 timeout tree diagnostic was retained; the flake did not reproduce, so no UI label/root cause change was made. No installable APK. Next: integrate the opt-in TMDB match flow, keeping requests explicit and limited to normalized title/year/type.
+
+
+- 2026-11-21 — Added a reachable metadata-connection screen backed by AES-GCM credential storage in no-backup app storage and Android Keystore; consent defaults off, clear is non-cancellable, and there is still no network permission/client/request. Manage now opens the screen. Android Keystore lifecycle/tamper tests added. CI pending. Next: complete and review explicit TMDB manual matching, official attribution and bounded artwork before enabling HTTP.

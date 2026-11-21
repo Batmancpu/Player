@@ -39,3 +39,9 @@ Room v3 stores provider title/year/overview and validated TMDB image paths separ
 
 ## 2026-11-21 — User-controlled folder removal
 The user can remove the selected tree from Player's library. This operation clears the app-private Room index/cache, resume positions and persisted read-only SAF grant; original media are never changed. It runs through the serialized folder-access manager, and confirmed grant cleanup is not cancelled with the screen lifecycle. A retry path covers failures. CI #104 passed manager/build/schema checks; CI #105 adds UI/resume coverage. No provider-specific phone behavior is claimed.
+
+
+## TMDB use and attribution review — 2026-11-21
+- Official TMDB documentation says developer API access is free for non-commercial projects with source attribution, requires one approved TMDB logo and the notice “This product uses the TMDB API but is not endorsed or certified by TMDB.” Put the notice in an About/Credits area and keep the logo less prominent than Player’s brand. Source: https://developer.themoviedb.org/docs/faq.
+- Official authentication supports the user-owned API Read Access Token as an HTTPS Bearer header: https://developer.themoviedb.org/docs/authentication-application.
+- Current code adds only encrypted local credential/consent settings; it does not add INTERNET permission or issue requests. Before enabling a lookup, include the approved logo/notice, send normalized title/year/media type only, use approved TMDB API/image hosts, and verify cancellation and offline fallback. Never embed a shared API credential.
