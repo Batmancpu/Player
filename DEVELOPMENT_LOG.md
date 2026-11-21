@@ -1106,7 +1106,7 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 
 - CI #142 / 44918375043 ran 43 Android tests; the new player overlay integration passed initial display, auto-hide, tap-to-restore and enter action, then failed because the exit label was checked as the controller timeout elapsed. Other 42 tests passed.
 - The full-screen button calls `PlayerView.showController()` before switching mode. Because controls are designed to auto-hide, the integration test now taps the video again if needed before verifying the accessible exit label. The button also exposes a localized content description. Player view reference is scoped to the media target and cleared during disposal.
-- CI rerun pending. No APK/Release.
+- CI #144 / 44920009659 passed all 43 Android 15 tests. Full verification passed JVM/unit, CI-only debug build, Room v1-v4 schema and privacy checks. Signing/publication skipped; no installable APK or Release.
 
 
 ## 2026-11-21 — Verify exit action after reveal
@@ -1114,3 +1114,10 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - CI #143 / 44919172485 confirmed the earlier 42/43 result: header hiding, tap restore and fullscreen toggle all worked, but the exit-label assertion occurred after the controller auto-hide timer.
 - Updated the integration test to tap the synthetic video if the toolbar has hidden before checking the exit action; this tests the intended reveal flow. Added an explicit localized content description to the button.
 - Rerun Android 15 plus unit/build/schema/privacy gates. No APK or Release.
+
+
+## 2026-11-21 — Playback chrome integration CI success
+
+- Commit f0ce46f984767effe778be2dd6928ee2160ce0dd and CI #144 / 44920009659 passed 43/43 Android 15 tests, including the local Media3/Compose controller visibility path: toolbar appears, auto-hides, returns on tap, and exposes the full-screen exit action after reveal.
+- JVM/unit, CI-only debug build, Room v1-v4 schema and production privacy gates passed. Signing/release steps skipped. No user-installable APK/Release. Latest public signed version remains v0.1.91.
+- Android emulator success does not verify OPPO UI or performance. Continue playback completeness, subtitle offset decision, production catalogue/navigation/Glass, accessibility/fallback, then final-device and performance review before one signed integrated APK.

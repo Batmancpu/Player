@@ -303,7 +303,7 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 
 
 ### R-013 — Persistent player header obscures video
-- **Status:** CI #140/#141 compile errors are fixed. CI #142/#143 passed 42 of 43 tests; both runs showed the exit label check racing the deliberate auto-hide timer after fullscreen entry. The integration test now taps video to reveal controls before verifying the exit action; explicit accessibility description added.
+- **Status:** Fixed and verified in CI #144 / 44920009659 (43/43 Android 15 tests). Actual OPPO behavior remains unverified.
 - **Change:** Tie the Compose title/audio/subtitle header to Media3 controller visibility with a bounded 2.5-second timeout. Tap on video restores the controls and header.
-- **Verification:** CI #142/#143 verified header auto-hide, tap-to-restore and full-screen entry; only the exit-label query timed out as controls hid. The test now re-taps video before asserting the exit label and button description.
+- **Verification:** CI #144 passed auto-hide, tap-to-restore, full-screen callback and accessible exit action after re-reveal. Full JVM/build/schema/privacy gates passed; no APK was signed or published.
 - **Next:** Verify auto-hide/tap on synthetic Android playback; later verify controller layout and subtitle visibility on OPPO.

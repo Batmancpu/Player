@@ -387,3 +387,8 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 
 ## 2026-11-21 — Exit action reveal regression
 - CI #143 again timed out the exit-label assertion after fullscreen entry; transport/title auto-hide and tap restore worked. Updated the test to tap video to reveal controls before checking the exit action, and added an explicit localized accessibility description. Rerun pending; no APK.
+
+
+## 2026-11-21 — Playback chrome verified
+- CI #144 / 44920009659 passed 43/43 Android 15 tests. Synthetic playback verifies title/track overlay auto-hide, video tap reveal, and accessible full-screen action; full JVM/build/schema/privacy gates passed.
+- No signed APK/Release. Continue integrated app work; latest user installable remains v0.1.91.
