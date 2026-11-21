@@ -1345,3 +1345,10 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - Added explicit localized selected/not-selected state descriptions on each production NavigationBarItem and changed the synthetic test to accept that state description or the platform selected flag. This improves the spoken destination state and tests it directly.
 - Verification: source/test change is committed on main; new full CI run is pending. No APK produced and no Reno10 behavior/performance claimed.
 - Next: inspect latest workflow, resolve any test or UI issue, then continue player captions/controls and Glass/performance batches.
+
+
+## 2026-11-21 — Playback speed control and navigation accessibility
+- Navigation follow-up: CI #185 showed correct Home layout/category filtering but no Android `isSelected` flag on the Material3 navigation item. Added localized `Selected` / `Not selected` state descriptions and updated synthetic UI coverage to inspect stateDescription.
+- Added a playback speed menu to the in-player top controls with 0.75×, 1×, 1.25×, 1.5× and 2× choices. It updates Media3 `PlaybackParameters`, tracks speed changes from the player listener, and labels the button for screen readers. Added Android UI coverage that opens the menu, selects 1.5× and checks the callback.
+- Verification: changes committed on main; CI for the current tree is pending. No local Gradle environment was available in this workspace and no physical device test was run. This is not a release APK.
+- Next: inspect CI compile/test results; fix any failures, then continue subtitle usability and production glass/performance work.
