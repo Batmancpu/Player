@@ -1,4 +1,10 @@
 ## Current handoff — 2026-11-21 (latest)
+- Latest navigation changes are on `main`. CI #185 (44951546792) found one accessibility assertion failure after 49 tests; screenshot confirms correct bar layout and category filtering. The issue was the test/platform tree not exposing Material3's selected state with `isSelected`.
+- Added explicit localized selected/not-selected accessibility state descriptions and updated the synthetic assertion. Current head is the source/docs commits after `06e0b3f`; the full CI run for this correction is pending.
+- Continue with offline subtitle/player controls, then production bounded Glass, accessibility/fallback review and measured performance work. Do not publish another APK until the integrated app/performance checkpoint requested by the user. Current available user-test APK: v0.1.174; no OPPO acceptance/performance evidence.
+- Preserve main-only commits, app ID/certificate/version continuity, disabled backup, one read-only SAF tree, and no original media writes, tracking or unauthorized data transfer. Next: inspect newest CI, fix issues, continue substantial batches; final release only after code + efficiency review.
+
+## Current handoff — 2026-11-21 (latest)
 - README/artwork is committed. The user wants a signed APK now, then continued work in four visible batches without installation waits.
 - Details screen changed from nested vertical scrolling to one LazyColumn (`0f8b514`); its first edit carried stale outer closing braces. Corrected immediately in this commit. CI #163 may test the intermediate tree; CI #164 is required for the corrected source.
 - Earlier provider regression is fixed; current automated failures were season-episode and metadata sheet scrolling. Release attempt #161 skipped signing after failed tests. Do not re-trigger release until the corrected detail list passes CI.
