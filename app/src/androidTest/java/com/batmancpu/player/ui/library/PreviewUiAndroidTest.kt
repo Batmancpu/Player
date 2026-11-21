@@ -118,19 +118,51 @@ class PreviewUiAndroidTest {
             for (index in 0 until node.childCount) node.getChild(index)?.let(::visit)
         }
         visit(root)
-        // Prefer the innermost list/sheet so test scrolling cannot swipe-dismiss the sheet.
+        // Prefer the innermost list/sheet so test scrolling cannot move the background catalogue.
         return scrollableNodes.minByOrNull { it.first }?.second
             ?.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD) == true
+    }
+
+    private fun swipeUpFromVisibleSheetText(): Boolean {
+        val root = automation.rootInActiveWindow ?: return false
+        val metrics = context.resources.displayMetrics
+        val candidates = mutableListOf<Pair<Rect, AccessibilityNodeInfo>>()
+        fun visit(node: AccessibilityNodeInfo) {
+            val bounds = Rect()
+            node.getBoundsInScreen(bounds)
+            if ((!node.text.isNullOrBlank() || !node.contentDescription.isNullOrBlank()) &&
+                bounds.width() > 0 && bounds.height() > 0
+            ) candidates += bounds to node
+            for (index in 0 until node.childCount) node.getChild(index)?.let(::visit)
+        }
+        visit(root)
+        // Start on visible sheet content, never in the backdrop or the bottom-sheet dismiss zone.
+        val target = candidates
+            .filter { it.first.centerY() >= metrics.heightPixels / 2 }
+            .maxByOrNull { it.first.bottom }
+            ?: candidates.maxByOrNull { it.first.bottom }
+            ?: return false
+        val fromX = target.first.centerX()
+        val fromY = target.first.centerY()
+        val distance = (160 * metrics.density).toInt()
+        val toY = (fromY - distance).coerceAtLeast(24)
+        if (toY >= fromY) return false
+        ParcelFileDescriptor.AutoCloseInputStream(
+            automation.executeShellCommand("input swipe $fromX $fromY $fromX $toY 300"),
+        ).use { it.readBytes() }
+        return true
     }
 
     private fun revealByScrolling(value: String): AccessibilityNodeInfo {
         repeat(12) {
             find { it.text?.toString() == value }?.let { return it }
-            assertTrue(
-                "No accessible scroll container could reveal $value; ${activeWindowSummary()}",
-                scrollForwardOnSmallestScrollable(),
-            )
-            SystemClock.sleep(100)
+            if (!scrollForwardOnSmallestScrollable()) {
+                assertTrue(
+                    "No visible sheet content could reveal $value; ${activeWindowSummary()}",
+                    swipeUpFromVisibleSheetText(),
+                )
+            }
+            SystemClock.sleep(150)
         }
         return awaitNode { it.text?.toString() == value }
     }

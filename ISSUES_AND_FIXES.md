@@ -410,3 +410,11 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - **Root-cause confidence:** Medium; gesture coordinates could hit the sheet's dismiss area rather than its nested lazy list.
 - **Fix:** Scroll the smallest accessibility node that advertises ACTION_SCROLL_FORWARD; include scrollable state in failure snapshots.
 - **Regression coverage:** Season/episode indexed-play test and metadata confirmation-sheet tests in CI #160.
+
+
+## H-030 — Nested detail sheets do not expose an accessibility scroll action in CI
+- **Status:** Test interaction correction pending verification.
+- **Evidence:** CI #160 failed only the season-episode and metadata confirmation UI tests. Accessibility snapshots showed sheet content present but all exposed nodes reported `scrollable=false`; fixed-coordinate swipes in #158 dismissed the sheet.
+- **Root-cause confidence:** High for missing scroll action in this test hierarchy; medium that a swipe initiated on bottom-most visible sheet text correctly targets nested scroll content.
+- **Fix:** Test helper tries scroll actions, then swipes upward from the lowest visible text node, keeping the gesture inside sheet content.
+- **Regression coverage:** Season 2 indexed playback and manual metadata confirmation flow in CI #162.

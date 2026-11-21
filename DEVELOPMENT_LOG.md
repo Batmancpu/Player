@@ -1244,3 +1244,9 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - The user explicitly requested a signed APK now, then continued development without a phone-install pause. Queued the existing `release(test):` workflow on main, expected run #161 / versionCode 161.
 - Release workflow dependencies require its own Android 15 instrumentation suite plus the repository's manifest/privacy, app identity, signing-certificate and APK signature/hash gates before GitHub Releases publication. The current main code is the restored-provider/accessibility-scroll correction; CI #160 is running and #161 will recheck before signing. The failed #158/#159 runs cannot produce a release.
 - Updated README to link to Releases/latest instead of hard-coding the previous v0.1.91. Final APK hash, certificate and release URL must be added after the workflow reports success. This is a preview checkpoint only; no phone acceptance or Reno10 performance claim.
+
+
+## 2026-11-21 — Use visible sheet content as scroll gesture origin
+- CI #160 / https://github.com/Batmancpu/Player/actions/runs/44936109342 passed Kotlin/build, with 44/46 Android tests passing. The restored debug provider fixed the five playback and SAF failures. The remaining two failures were series season 2 and metadata detail controls: Compose's nested sheet content reported no `AccessibilityNodeInfo.ACTION_SCROLL_FORWARD` container.
+- Updated the test helper to try accessibility scrolling first, then start an upward swipe on the lowest visible text node in the active sheet. This avoids fixed screen coordinates that can hit the dismiss area; failure summaries include scrollable state.
+- CI #161 is queued for the preceding code and will not be used as APK evidence if tests fail. This correction is on main; CI #162 must verify it. No release APK from #158–#160.

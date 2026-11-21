@@ -478,3 +478,8 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 - User wants up to five substantial published batches, no pause for a phone install/check after each, and specifically requested an APK now before continuing. We are using four visible batches with rough planning estimates. Batch 1 is the README and visual identity.
 - Queued a higher-version signed checkpoint using the existing permanent release key/workflow. Full Android tests and signing/privacy checks must pass before the release can publish. Development continues after that release; it is not represented as the final premium app.
 - Next: inspect CI #160 for the restored synthetic SAF provider and safe scroll correction, then the new release workflow. Continue Batch 2 without waiting for the user to install the checkpoint.
+
+
+## 2026-11-21 — CI #160 narrows UI test correction
+- The restored debug provider fixed the playback and SAF failures. CI #160 left two UI failures because nested details sheets exposed no accessibility scroll action; snapshots showed the sheet was still present.
+- Test helper now falls back to an upward gesture starting from the bottom-most visible text node, rather than fixed screen coordinates. The queued #161 release checkpoint contains the older helper, so it is not valid as release evidence; CI #162 must pass before a replacement release trigger.
