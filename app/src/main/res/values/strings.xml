@@ -23,6 +23,8 @@
     <string name="nav_movies">Movies</string>
     <string name="nav_shows">Shows</string>
     <string name="nav_search">Search</string>
+    <string name="nav_item_selected">Selected</string>
+    <string name="nav_item_not_selected">Not selected</string>
 
     <string name="folder_setup_kicker">YOUR LIBRARY</string>
     <string name="folder_setup_title">Your films.\nYour space.</string>
