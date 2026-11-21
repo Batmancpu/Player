@@ -435,3 +435,8 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 ## 2026-11-21 — Playback chrome behavior fix
 - CI #151 confirmed the player header remained visible even after a real `isPlaying=true` callback. This was a product issue, not the earlier synthetic startup race.
 - Added an explicit 2.5-second Compose timeout synchronized with Media3. It hides the controller and header while playing; pausing preserves controls; revealing them restarts the timeout. CI pending; no APK.
+
+
+## 2026-11-21 — Timer interaction behavior
+- CI #152 passed all 46 Android 15 tests, including new season grouping and subtitle/zoom cases.
+- The Compose playback chrome timeout now restarts after seeks, track changes, resize selection and fullscreen action; pause holds controls open. CI #153 verifies the hide behavior, and the interaction refinement is queued.

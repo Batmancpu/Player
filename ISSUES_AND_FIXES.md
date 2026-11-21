@@ -359,3 +359,10 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - **Risk:** Raw codec/release suffixes made the episode list difficult to scan and provided no season hierarchy. The parser currently does not infer episode title text.
 - **Fix:** Group existing parsed episode records by season and show zero-padded season/episode labels; retain original document identity for playback. No external metadata request is made.
 - **Next:** Verify Android UI and accessibility in CI; later integrate episode titles only from confirmed metadata without guessing.
+
+
+### R-013 — Persistent player header obscures video (interaction refinement)
+- **Status:** Explicit timeout added; CI pending for interaction resets.
+- **Change:** Reset the 2.5-second header/controller timer after seeks, track changes, resize mode changes and fullscreen action. Paused playback retains controls.
+- **Verification:** CI #152's 46/46 suite passed before the interaction-reset change; CI #153 tests the explicit timer.
+- **Next:** Verify all interaction paths, then continue integrated player work.

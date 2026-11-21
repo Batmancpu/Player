@@ -1188,3 +1188,11 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - Added a Compose-owned 2.5-second timeout keyed by player, header visibility and active playback. When it expires, the app explicitly calls `PlayerView.hideController()` and hides its Compose title/track overlay. A pause cancels the timeout, and a video tap/controller reveal or fullscreen action makes controls visible and restarts it.
 - Media3's own controller timeout remains aligned at 2.5 seconds. Verification pending CI; no APK/Release.
 - Next: verify active-playback hide, tap restore, pause retention, fullscreen activation, and all library tests. Then inspect season-grouped series UI run.
+
+
+## 2026-11-21 — Playback chrome interaction timer
+
+- CI #152 / 44931933805 passed all 46 Android 15 instrumentation tests, including season grouping, exact episode selection, local subtitle viewport and resize mode cycle. Full unit/build/schema/privacy job is still completing.
+- The explicit Compose-owned hide timer now restarts on seeks/position discontinuity, track changes, resize mode selection and fullscreen action. It pauses while playback is paused and starts again when playback resumes. This avoids hiding the overlay mid-interaction.
+- Verification of the new timer is pending CI #153; no signed APK/Release.
+- Next: inspect #153/#154 results, then continue player controls, subtitle delay decision and production Glass.

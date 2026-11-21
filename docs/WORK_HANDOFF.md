@@ -247,3 +247,7 @@ Series sheets now group episodes under Season headings and use Sxx · Exx labels
 
 ### Playback chrome regression (2026-11-21)
 CI #151 confirmed the Compose player header remained visible after Media3 reported active playback. Source now includes a matching explicit 2.5-second Compose timeout that hides both PlayerView controls and header; paused playback keeps controls visible. CI pending. No APK.
+
+
+### Verified catalogue update
+CI #152 / 44931933805 passed all 46 Android 15 tests, including local season grouping, exact indexed episode playback, caption/video sibling layout and Fit/Fill/Zoom cycling. Full unit/schema/privacy job completion was pending at last check. Player timeout interaction resets are being tested in #153 and follow-up.

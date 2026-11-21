@@ -45,6 +45,7 @@ internal fun LocalPlayerScreen(
     var hasAudioTracks by remember(target.uri) { mutableStateOf(false) }
     var hasSubtitleTracks by remember(target.uri) { mutableStateOf(false) }
     var controlsVisible by remember(target.uri) { mutableStateOf(true) }
+    var chromeInteractionEpoch by remember(target.uri) { mutableIntStateOf(0) }
     var resizeMode by remember(target.uri) { mutableIntStateOf(AspectRatioFrameLayout.RESIZE_MODE_FIT) }
     val playerViewRef = remember(target.uri) { arrayOfNulls<PlayerView>(1) }
     val player = remember(target.uri) {
@@ -73,7 +74,15 @@ internal fun LocalPlayerScreen(
                 isPlaying = value
                 playingChanged(value)
             }
+            override fun onPositionDiscontinuity(
+                oldPosition: androidx.media3.common.Player.PositionInfo,
+                newPosition: androidx.media3.common.Player.PositionInfo,
+                reason: Int,
+            ) {
+                chromeInteractionEpoch++
+            }
             override fun onTracksChanged(tracks: Tracks) {
+                chromeInteractionEpoch++
                 hasAudioTracks = hasSupportedTrackType(tracks, C.TRACK_TYPE_AUDIO)
                 hasSubtitleTracks = hasSupportedTrackType(tracks, C.TRACK_TYPE_TEXT)
             }
@@ -103,7 +112,7 @@ internal fun LocalPlayerScreen(
             }
         }
     }
-    LaunchedEffect(player, controlsVisible, isPlaying) {
+    LaunchedEffect(player, controlsVisible, isPlaying, chromeInteractionEpoch) {
         if (controlsVisible && isPlaying) {
             delay(PLAYER_CHROME_AUTO_HIDE_MS)
             playerViewRef[0]?.hideController()
@@ -136,18 +145,24 @@ internal fun LocalPlayerScreen(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = onClose) { Text(stringResource(R.string.player_back), color = Color.White) }
                 Text(target.label, color = Color.White, maxLines = 1, modifier = Modifier.weight(1f))
-                PlayerResizeButton(resizeMode) { resizeMode = nextPlayerResizeMode(resizeMode) }
+                PlayerResizeButton(resizeMode) {
+                    resizeMode = nextPlayerResizeMode(resizeMode)
+                    chromeInteractionEpoch++
+                }
                 PlayerFullscreenButton(isFullScreen) {
                     playerViewRef[0]?.showController()
+                    chromeInteractionEpoch++
                     onToggleFullScreen()
                 }
             }
             if (hasAudioTracks || hasSubtitleTracks) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     if (hasAudioTracks) TextButton(onClick = {
+                        chromeInteractionEpoch++
                         createTrackSelectionDialog(context, audioTitle, player, C.TRACK_TYPE_AUDIO).show()
                     }) { Text(audioTitle, color = Color.White) }
                     if (hasSubtitleTracks) TextButton(onClick = {
+                        chromeInteractionEpoch++
                         createTrackSelectionDialog(context, subtitleTitle, player, C.TRACK_TYPE_TEXT).show()
                     }) { Text(subtitleTitle, color = Color.White) }
                 }

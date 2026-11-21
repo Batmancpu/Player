@@ -377,3 +377,8 @@ Series detail sheets now group episodes beneath localized Season headings and di
 ## 2026-11-21 — Explicit playback chrome timeout
 
 CI #151 / 44931701605 waited for confirmed Media3 isPlaying yet the title/track header remained visible, reproducing the timeout defect during active playback. Added a Compose-owned 2.5-second hide timeout that explicitly hides Media3 controls and the Compose header while playing; pause keeps controls available, and controller visibility changes restart the timeout. Android 15 verification pending. No APK. Next: confirm hide/reveal and pause behavior, then finish season-grouped catalogue CI.
+
+
+## 2026-11-21 — Playback timer resets on interactions
+
+The explicit 2.5-second header/controller timeout now restarts after seeking, track changes, resize mode selection and fullscreen actions; pause still keeps controls visible. CI #152 passed all 46 Android 15 tests, including season grouping and exact episode selection. CI #153 tests the explicit hide timer; this interaction-reset update is queued for verification. No APK. Next: validate both runs and continue player polish.
