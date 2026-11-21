@@ -10,6 +10,7 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.Player
 import androidx.media3.common.Tracks
+import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.ContentDataSource
 import androidx.media3.datasource.DataSource
@@ -18,6 +19,7 @@ import androidx.media3.ui.TrackSelectionDialogBuilder
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.upstream.BandwidthMeter
 import java.security.MessageDigest
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -28,6 +30,14 @@ internal data class LocalPlaybackTarget(
     val label: String,
     val positionMs: Long = 0,
     val playWhenReady: Boolean = true,
+    val sidecarSubtitles: List<LocalPlaybackSubtitle> = emptyList(),
+)
+internal data class LocalPlaybackSubtitle(
+    val documentId: String,
+    val parentDocumentId: String,
+    val displayName: String,
+    val mimeType: String,
+    val uri: String,
 )
 internal data class LocalPlaybackState(
     val target: LocalPlaybackTarget? = null,
@@ -36,7 +46,14 @@ internal data class LocalPlaybackState(
 )
 
 internal object LocalPlaybackAccess {
-    suspend fun resolve(context: Context, tree: String, documentId: String, label: String): LocalPlaybackTarget =
+    suspend fun resolve(
+        context: Context,
+        tree: String,
+        documentId: String,
+        label: String,
+        parentDocumentId: String = "",
+        sidecarCandidates: List<LocalPlaybackSubtitle> = emptyList(),
+    ): LocalPlaybackTarget =
         withContext(Dispatchers.IO) {
             val root = Uri.parse(tree)
             require(root.scheme == "content" && root.authority == "com.android.externalstorage.documents" && DocumentsContract.isTreeUri(root))
@@ -49,10 +66,97 @@ internal object LocalPlaybackAccess {
             if (!DocumentsContract.isChildDocument(context.contentResolver, parent, document)) {
                 throw SecurityException("Document is outside the selected folder")
             }
-            LocalPlaybackTarget(tree, documentId, document.toString(), label,
-                ResumePositions.load(context, tree, documentId))
+            val safeSidecars = if (parentDocumentId.isBlank()) emptyList() else try {
+                resolveSidecars(context, root, parentDocumentId, documentId, sidecarCandidates)
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                emptyList()
+            }
+            LocalPlaybackTarget(
+                tree, documentId, document.toString(), label,
+                ResumePositions.load(context, tree, documentId),
+                sidecarSubtitles = safeSidecars,
+            )
         }
+
+    /** Revalidate candidates against a fresh immediate-child listing; stale items never block video playback. */
+    private fun resolveSidecars(
+        context: Context,
+        tree: Uri,
+        parentDocumentId: String,
+        videoDocumentId: String,
+        candidates: List<LocalPlaybackSubtitle>,
+    ): List<LocalPlaybackSubtitle> {
+        if (candidates.isEmpty() || candidates.size > MAX_SIDECARS) return emptyList()
+        val resolver = context.contentResolver
+        val rootId = DocumentsContract.getTreeDocumentId(tree)
+        val parentUri = DocumentsContract.buildDocumentUriUsingTree(tree, parentDocumentId)
+        val rootUri = DocumentsContract.buildDocumentUriUsingTree(tree, rootId)
+        if (parentDocumentId != rootId && !DocumentsContract.isChildDocument(resolver, rootUri, parentUri)) return emptyList()
+        val expected = candidates
+            .filter { it.parentDocumentId == parentDocumentId }
+            .mapNotNull { candidate ->
+                subtitleMimeType(candidate.displayName)?.let { mime -> candidate.documentId to (candidate to mime) }
+            }.toMap()
+        if (expected.isEmpty()) return emptyList()
+        val found = LinkedHashMap<String, LocalPlaybackSubtitle>()
+        var videoIsImmediateChild = false
+        val children = DocumentsContract.buildChildDocumentsUriUsingTree(tree, parentDocumentId)
+        resolver.query(
+            children,
+            arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+                DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+                DocumentsContract.Document.COLUMN_MIME_TYPE),
+            null, null, null,
+        )?.use { cursor ->
+            val idColumn = cursor.getColumnIndex(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
+            val nameColumn = cursor.getColumnIndex(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
+            val mimeColumn = cursor.getColumnIndex(DocumentsContract.Document.COLUMN_MIME_TYPE)
+            if (idColumn < 0 || nameColumn < 0 || mimeColumn < 0) return emptyList()
+            var visited = 0
+            while (cursor.moveToNext() && visited++ < MAX_PARENT_CHILDREN &&
+                (found.size < expected.size || !videoIsImmediateChild)) {
+                val id = cursor.getString(idColumn) ?: continue
+                if (id == videoDocumentId) videoIsImmediateChild = true
+                val (candidate, expectedMime) = expected[id] ?: continue
+                val name = cursor.getString(nameColumn) ?: continue
+                val actualType = cursor.getString(mimeColumn) ?: continue
+                if (actualType == DocumentsContract.Document.MIME_TYPE_DIR ||
+                    name != candidate.displayName || subtitleMimeType(name) != expectedMime) continue
+                val uri = DocumentsContract.buildDocumentUriUsingTree(tree, id)
+                if (!DocumentsContract.isChildDocument(resolver, parentUri, uri)) continue
+                found[id] = candidate.copy(mimeType = expectedMime, uri = uri.toString())
+            }
+            if (visited >= MAX_PARENT_CHILDREN && (found.size < expected.size || !videoIsImmediateChild)) return emptyList()
+        } ?: return emptyList()
+        if (!videoIsImmediateChild) return emptyList()
+        return candidates.mapNotNull { found[it.documentId] }.distinctBy { it.documentId }.take(MAX_SIDECARS)
+    }
+
+    private const val MAX_SIDECARS = 8
+    private const val MAX_PARENT_CHILDREN = 10_000
 }
+
+private fun subtitleMimeType(displayName: String): String? = when (displayName.substringAfterLast('.', "").lowercase()) {
+    "srt" -> "application/x-subrip"
+    "vtt" -> "text/vtt"
+    "ass", "ssa" -> "text/x-ssa"
+    "ttml" -> "application/ttml+xml"
+    else -> null
+}
+
+@androidx.annotation.OptIn(UnstableApi::class)
+internal fun createLocalMediaItem(target: LocalPlaybackTarget): MediaItem =
+    MediaItem.Builder()
+        .setUri(target.uri)
+        .setSubtitleConfigurations(target.sidecarSubtitles.map { subtitle ->
+            MediaItem.SubtitleConfiguration.Builder(Uri.parse(subtitle.uri))
+                .setMimeType(subtitle.mimeType)
+                .setLabel(subtitle.displayName)
+                .build()
+        })
+        .build()
 
 internal object ResumePositions {
     private fun key(tree: String, id: String): String = MessageDigest.getInstance("SHA-256")

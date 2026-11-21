@@ -302,3 +302,8 @@ CI #129 / 44908615223 passed the matcher root-locale regression and all Android 
 
 ## Recent agent changes — 2026-11-21
 CI #130 / 44909463881 passed Android 15 migration/persistence, unit/build, Room v1-v4 schema validation and privacy gates. Committed the exact KSP-generated v4 snapshot from artifact 14709327372; v1-v3 remain unchanged. Room v4 persists opaque SAF parent IDs with safe defaults for old rows. Next: validate and attach only bounded same-parent sidecar URIs to the content-only Media3 item, then test external SRT playback. No signed candidate/APK.
+
+
+## 2026-11-21 continuation — local sidecar playback
+
+Attached only freshly revalidated same-parent subtitle URIs to local Media3 playback (SRT/VTT/ASS/SSA/TTML); stale provider results fail closed for subtitles while keeping video playback. Added synthetic Media3 SRT decode/selector coverage. Local Gradle unavailable (no wrapper or system Gradle); CI is pending. No APK/Release. Next: inspect CI, then subtitle delay/reset and integrated player/Glass/accessibility before one final APK.

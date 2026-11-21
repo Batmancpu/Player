@@ -1,3 +1,11 @@
+## Current handoff — 2026-11-21 (latest)
+- Main is 55fbaac5c23ca020950b404146af1445ef9eb916 with Room v4 schema snapshot committed; CI #131 / 44910215554 passed.
+- Latest signed Release remains v0.1.91 (versionCode 91). User requests one complete app before the next install APK; do not publish milestone APKs.
+- Latest completed phone evidence is user-reported v0.1.79: four video titles/year parsed, library retained after airplane-mode restart, and folder switching worked. The newer v0.1.91 catalogue/player/Glass preview is not accepted or performance-tested on OPPO.
+- Current source change attaches only fresh, exact same-parent SRT/VTT/ASS/SSA/TTML local content URIs to Media3 and adds synthetic external-SRT decode/selector coverage. It is being prepared for CI; no Release APK.
+- Next exact action: inspect Android, JVM/build, schema and privacy gates; repair failures in small commits. Then add subtitle delay/reset and finish player, catalogue/navigation, original Glass Lab repair, accessibility/fallback and battery/performance review. Only after one integrated build is ready should CI publish a signed APK for the broad phone checklist.
+- Preserve app ID, release certificate, increasing versionCode, one read-only SAF root, disabled backup and no source-media writes. Do not claim phone/performance evidence without OPPO evidence.
+
 ## Current handoff — 2026-11-21
 - User wants the whole integrated experience before receiving one phone-test APK. Do not publish milestone APKs/releases.
 - Latest base: e6a64b0a7526ce3f2c1e6ddd0b7cf2eb0ae72a18. CI #123 / 44902997094 attempt 2 passed Android 15 tests plus JVM/build/schema/privacy checks; attempt 1's Compose tests timed out inside waitForIdleSync, the same code passed on retry. No signed Release.

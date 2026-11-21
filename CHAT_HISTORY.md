@@ -4,6 +4,13 @@ This file is the durable, accumulating record of important user requests, produc
 
 **Format:** decision-focused session summaries, not a verbatim export of every message. Preserve the meaning of user requests and reasons behind decisions. Never include private signing files, passwords, base64 secret values, API keys, tokens or other credentials.
 
+## 2026-11-21 — One integrated APK request and local subtitle playback
+
+- User clarified: do not create an installable APK at each engineering step; complete the integrated app and then produce one APK for the broad phone test.
+- Live main was verified at Room v4 schema commit 55fbaac; CI #131 passed, and latest signed Release remains v0.1.91. No new Release was made.
+- Implemented local same-parent sidecar attachment in the working checkout: a fresh bounded immediate-child provider query confirms the video and exact candidate subtitle remain together; only supported text subtitle types are attached through read-only content URIs. Synthetic fixture exercises Media3 external SRT and selectors. CI has not yet verified this integration. Local Gradle is unavailable.
+- Next: commit directly on main, inspect CI and fix failures; continue subtitle delay/reset, cinematic navigation, original Glass and accessibility/performance. Device acceptance remains pending; build one signed APK only after integrated completion.
+
 ## 2026-11-14 — Project bootstrap, product scope, folder setup and release continuity
 
 ### Project origin and working method

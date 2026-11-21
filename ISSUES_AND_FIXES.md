@@ -21,6 +21,12 @@ A risk is not a confirmed defect. Record evidence, confidence and status precise
 
 ## Design-time risks
 
+### R-010 — Persisted subtitle sibling identity can become stale
+- **Status:** Mitigated in current source; CI verification pending.
+- **Risk:** A document may be moved, renamed or replaced after the offline scan, and stale parent IDs alone must not make it eligible for playback.
+- **Mitigation:** Playback revalidates the video and each exact subtitle ID/name through a fresh bounded immediate-child SAF listing under the recorded parent. Missing provider access drops sidecars while preserving video playback. Synthetic Android tests exercise external SRT decoding; actual OEM behavior remains unverified.
+
+
 ### R-001 — Haze 2.1.0 toolchain alignment
 - **Status:** Open.
 - **Risk:** Haze 2.1.0 updates Kotlin to 2.4.21 and Compose Multiplatform to 1.12.2.

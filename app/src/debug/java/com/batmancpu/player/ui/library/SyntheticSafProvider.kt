@@ -15,12 +15,13 @@ import java.util.concurrent.TimeUnit
 class SyntheticSafProvider : ContentProvider() {
     companion object {
         @Volatile var playbackFile: File? = null
+        @Volatile var subtitleContents: ByteArray? = null
         @Volatile var blocked = false
         @Volatile var cursorClosed = false
         @Volatile var entered = CountDownLatch(1)
         @Volatile var cancelled = CountDownLatch(1)
         fun reset() {
-            playbackFile = null; blocked = false; cursorClosed = false
+            playbackFile = null; subtitleContents = null; blocked = false; cursorClosed = false
             entered = CountDownLatch(1); cancelled = CountDownLatch(1)
         }
     }
@@ -42,8 +43,17 @@ class SyntheticSafProvider : ContentProvider() {
         }.apply { addRow(arrayOf("Synthetic")) }
     }
     override fun openFile(uri: Uri, mode: String): ParcelFileDescriptor {
-        require(mode == "r" && uri.path == "/video")
-        return ParcelFileDescriptor.open(checkNotNull(playbackFile), ParcelFileDescriptor.MODE_READ_ONLY)
+        require(mode == "r")
+        return when (uri.path) {
+            "/video" -> ParcelFileDescriptor.open(checkNotNull(playbackFile), ParcelFileDescriptor.MODE_READ_ONLY)
+            "/subtitle" -> {
+                val bytes = checkNotNull(subtitleContents)
+                val pipe = ParcelFileDescriptor.createPipe()
+                ParcelFileDescriptor.AutoCloseOutputStream(pipe[1]).use { it.write(bytes) }
+                pipe[0]
+            }
+            else -> error("Synthetic provider only serves owned test fixtures")
+        }
     }
     override fun insert(uri: Uri, values: ContentValues?): Uri? = error("Read only")
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?) = error("Read only")

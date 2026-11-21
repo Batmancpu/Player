@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Tracks
@@ -39,7 +38,7 @@ internal fun LocalPlayerScreen(
     var hasSubtitleTracks by remember(target.uri) { mutableStateOf(false) }
     val player = remember(target.uri) {
         createLocalPlayer(context).apply {
-            setMediaItem(MediaItem.fromUri(target.uri))
+            setMediaItem(createLocalMediaItem(target))
             seekTo(target.positionMs)
             prepare()
         }

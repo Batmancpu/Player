@@ -2,7 +2,6 @@ package com.batmancpu.player.ui.library
 
 import android.content.Intent
 import android.net.Uri
-import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.C
 import androidx.media3.common.PlaybackException
@@ -29,6 +28,7 @@ class LocalPlaybackAndroidTest {
         instrumentation.context.assets.open("synthetic-video.mp4").use { input -> fixture.outputStream().use { output -> input.copyTo(output) } }
         SyntheticSafProvider.reset()
         SyntheticSafProvider.playbackFile = fixture
+        SyntheticSafProvider.subtitleContents = "1\n00:00:00,000 --> 00:00:02,000\nSynthetic local subtitle\n".toByteArray()
         val frame = CountDownLatch(1)
         val failure = AtomicReference<String?>()
         val reference = AtomicReference<ExoPlayer>()
@@ -43,7 +43,15 @@ class LocalPlaybackAndroidTest {
                     override fun onRenderedFirstFrame() { frame.countDown() }
                     override fun onPlayerError(error: PlaybackException) { failure.set(error.errorCodeName); frame.countDown() }
                 })
-                player.setMediaItem(MediaItem.fromUri("content://com.batmancpu.player.synthetic/video"))
+                player.setMediaItem(createLocalMediaItem(LocalPlaybackTarget(
+                    tree = "synthetic-tree", documentId = "synthetic-video",
+                    uri = "content://com.batmancpu.player.synthetic/video", label = "Synthetic",
+                    sidecarSubtitles = listOf(LocalPlaybackSubtitle(
+                        documentId = "synthetic-subtitle", parentDocumentId = "synthetic-parent",
+                        displayName = "Synthetic.en.srt", mimeType = "application/x-subrip",
+                        uri = "content://com.batmancpu.player.synthetic/subtitle",
+                    )),
+                )))
                 player.prepare(); player.play()
             }
             assertTrue("No synthetic first frame", frame.await(20, TimeUnit.SECONDS))
@@ -52,11 +60,15 @@ class LocalPlaybackAndroidTest {
                 val player = reference.get()
                 assertTrue(player.duration > 0)
                 assertTrue("Synthetic MP4 must expose embedded audio", hasSupportedTrackType(player.currentTracks, C.TRACK_TYPE_AUDIO))
-                assertFalse("Synthetic MP4 has no subtitles", hasSupportedTrackType(player.currentTracks, C.TRACK_TYPE_TEXT))
+                assertTrue("Synthetic local SRT sidecar was not decoded", hasSupportedTrackType(player.currentTracks, C.TRACK_TYPE_TEXT))
                 val selector = createTrackSelectionDialog(activity, "Audio", player, C.TRACK_TYPE_AUDIO)
                 selector.show()
                 assertTrue("Media3 audio selector did not open", selector.isShowing)
                 selector.dismiss()
+                val subtitleSelector = createTrackSelectionDialog(activity, "Subtitles", player, C.TRACK_TYPE_TEXT)
+                subtitleSelector.show()
+                assertTrue("Media3 subtitle selector did not open", subtitleSelector.isShowing)
+                subtitleSelector.dismiss()
                 player.pause()
                 player.seekTo(1000)
                 assertEquals(1000L, player.currentPosition)
@@ -64,6 +76,7 @@ class LocalPlaybackAndroidTest {
         } finally {
             instrumentation.runOnMainSync { reference.get()?.release(); activity.finish() }
             SyntheticSafProvider.playbackFile = null
+            SyntheticSafProvider.subtitleContents = null
             fixture.delete()
         }
     }

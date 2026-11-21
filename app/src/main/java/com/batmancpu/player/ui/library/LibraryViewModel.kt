@@ -18,6 +18,7 @@ import com.batmancpu.player.ui.player.LocalPlaybackState
 import com.batmancpu.player.ui.player.LocalPlaybackTarget
 import com.batmancpu.player.ui.player.LocalPlaybackAccess
 import com.batmancpu.player.ui.player.ResumePositions
+import com.batmancpu.player.ui.player.LocalPlaybackSubtitle
 import com.batmancpu.player.ui.metadata.MetadataLookupController
 import com.batmancpu.player.ui.metadata.MetadataSettingsStore
 import com.batmancpu.player.ui.metadata.TmdbCandidate
@@ -79,7 +80,19 @@ internal class LibraryViewModel(application: Application) : AndroidViewModel(app
         mutablePlayback.value = LocalPlaybackState(loading = true)
         viewModelScope.launch {
             try {
-                val target = LocalPlaybackAccess.resolve(getApplication(), selected.tree, canonical.documentId, canonical.displayName)
+                val siblings = LocalSubtitleMatcher.forVideo(canonical, session.state.value.media).map {
+                    LocalPlaybackSubtitle(
+                        documentId = it.documentId,
+                        parentDocumentId = it.parentDocumentId,
+                        displayName = it.displayName,
+                        mimeType = "",
+                        uri = "",
+                    )
+                }
+                val target = LocalPlaybackAccess.resolve(
+                    getApplication(), selected.tree, canonical.documentId, canonical.displayName,
+                    canonical.parentDocumentId, siblings,
+                )
                 if (ticket == playbackGeneration && folder.value.folder?.tree == selected.tree) {
                     mutablePlayback.value = LocalPlaybackState(target = target)
                 }

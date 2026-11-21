@@ -1018,3 +1018,12 @@ Verification pending. Playback has not been attached to sidecars yet. No Release
 CI #130 / 44909463881 passed the Android 15 migration and offline persistence tests, JVM/build, Room schema and privacy gates. The v1→v4 migration preserves the old media row and supplies the empty parent default; the offline index round-trip test retains the scanned parent ID. Retrieved the generated Room schema artifact (14709327372) and committed exact v4 JSON snapshot; historical v1-v3 snapshots are unchanged. The workflow validates field order and default and now includes v4 in the uploaded schema artifact.
 
 Next: validate same-tree sidecar candidates into bounded local subtitle configurations and test Media3 playback using the synthetic read-only provider. No Release APK or device-performance claim.
+
+
+## 2026-11-21 — SAF sidecar subtitles attached to local Media3 playback
+
+- Added a playback subtitle descriptor and MediaItem builder for bounded SRT/VTT/ASS/SSA/TTML sidecars. Candidates come only from the offline index's same-parent filename matcher.
+- At play time, the app revalidates the persisted read-only tree grant, verifies the video is still an immediate child of its recorded parent, then queries a fresh bounded listing (10,000 rows maximum) and attaches only exact candidate document IDs/names still present as files in that parent. A stale/unavailable sidecar/provider failure is skipped without blocking video playback. No paths, bytes, upload, or writes are introduced.
+- Synthetic Android integration fixture now serves a local SRT beside its owned MP4 fixture, asserts Media3 exposes a text track and opens/dismisses both audio and subtitle selectors. The debug-only provider remains unexported and read-only.
+- Verification: source/privacy reviewed; local Gradle verification unavailable because this checkout has no Gradle wrapper and no system Gradle. CI pending after direct-main commit. No signed APK/Release. Online retrieval and subtitle delay/reset are not yet implemented.
+- Next: run full CI, fix actual compiler/instrumentation failures, then implement local subtitle delay/reset and complete integrated player/navigation/Glass/accessibility work. Keep final APK deferred until the integrated app is ready.

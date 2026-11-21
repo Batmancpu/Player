@@ -10,7 +10,7 @@ Current main adds explicit Android backup exclusions for the legacy mode and And
 
 # Canonical project context and handoff
 
-Last reviewed: 2026-11-15 (UTC)
+Last reviewed: 2026-11-21 (UTC)
 Repository: [Batmancpu/Player](https://github.com/Batmancpu/Player)
 Working title: **Player** (temporary; the user will rename it later)
 Current branch: `main` (only branch; no open PRs)
