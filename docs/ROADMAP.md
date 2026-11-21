@@ -164,3 +164,8 @@ The user requested a signed APK checkpoint now and wants implementation to conti
 
 ## 2026-11-21 — CI playback test timing correction
 - CI #180's synthetic video is 30 seconds, longer than the test's 20-second wait from position zero. Start at 29 seconds; retain the post-completion timer assertion. No OPPO evidence is implied.
+
+## 2026-11-21 — End-of-playback resume handling verified
+- CI #182 / 44949435610 passed all 48 Android 15 instrumentation tests, unit tests, build and Room v1-v4 schema verification, including the near-end synthetic playback test and delayed checkpoint assertion.
+- CI #180/#181 failures were test timing issues against a 30-second synthetic fixture; #181 also had a Pixel Launcher ANR. Release-only checks were skipped in #182.
+- Continue Phase 5 subtitle tools and the planned production navigation/Glass work. No OPPO acceptance or FPS evidence is claimed.

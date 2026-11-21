@@ -461,3 +461,8 @@ When the unfiltered library is open, movie titles and series now appear in separ
 ## 2026-11-21 — Tighten playback completion test timing
 - CI #180 compiled the app and ran 47 Android tests; only the new completion test failed because the workflow-generated synthetic video is 30 seconds but the test waited just 20 seconds from its beginning. This was a test setup timeout, not a product assertion.
 - Start the synthetic test at 29 seconds and preserve its additional wait across the five-second checkpoint interval. CI #181 verifies the checkpoint guard; the timing correction is also queued for CI.
+
+## 2026-11-21 — Completed-playback resume fix verified
+- CI #180 compiled and ran 47 tests but the new natural-completion case waited 20 seconds from the start of the CI-generated 30-second fixture. CI #181 also used that old test setup and had a Pixel Launcher ANR that disrupted unrelated UI cases.
+- CI #182 / 44949435610 verified the corrected 29-second start: all 48 Android 15 instrumentation tests passed, along with unit tests, build and Room v1-v4 schema checks. Release-only signing/manifest checks were skipped on this development push.
+- Natural completion checkpoints zero/paused; periodic, lifecycle and disposal saves preserve that state. Next: continue subtitle controls and production navigation/Glass; keep final handset acceptance and performance evidence pending.

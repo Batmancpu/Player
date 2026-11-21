@@ -501,3 +501,8 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 ## 2026-11-21 — Resolve long-fixture timeout in completion test
 - CI #180: 47 tests ran; the new playback test timed out waiting for the workflow-generated 30-second fixture to end after starting at zero. This is a harness timing defect.
 - The test now starts from 29,000 ms and retains the five-second checkpoint follow-up assertion. CI pending.
+
+## 2026-11-21 — Completed playback resumes from the beginning
+- Failure history: CI #180/#181 used a 20-second wait from the start of a 30-second synthetic clip. CI #181 also surfaced Pixel Launcher ANR dialogs that caused unrelated UI test failures.
+- Resolution: start the synthetic integration case at 29 seconds and verify the post-completion five-second checkpoint. CI #182 / 44949435610 passed all 48 Android 15 tests, plus unit/build and Room v1-v4 checks.
+- Release-only signing/manifest gates were skipped for the normal push. Continue subtitle and production Glass work; phone acceptance remains pending.

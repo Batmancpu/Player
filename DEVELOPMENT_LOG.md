@@ -1323,3 +1323,8 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 ## 2026-11-21 — Synthetic completion test timeout correction
 - CI #180 / 44948650139 passed compilation and ran 47 Android tests; the new natural-end case timed out because its owned synthetic H.264 fixture is deliberately 30 seconds long and the test started at zero with a 20-second wait.
 - Updated the test target to start at 29,000 ms, leaving enough time for the player to prepare and reach natural completion, then wait over the five-second checkpoint interval. This is a test timing correction; CI #181 verifies source checkpoint normalization, and the updated test awaits the next run.
+
+## 2026-11-21 — Completed-video resume checkpoint verified
+- CI #180 / 44948650139 exposed a test setup timeout (20-second wait versus the generated 30-second video). CI #181 / 44949160303 still had that old fixture position and also encountered a Pixel Launcher ANR affecting unrelated UI cases.
+- CI #182 / 44949435610 passed all 48 Android 15 instrumentation tests after seeking the fixture to 29 seconds; unit tests, application build and Room schema v1-v4 validation also passed. Signed-release-only checks were not run.
+- The STATE_ENDED checkpoint is now zero/paused across natural-end, periodic, Activity-pause and disposal saves. Continue with subtitle control work and production presentation; real OPPO acceptance/performance is still pending.

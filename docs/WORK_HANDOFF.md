@@ -367,3 +367,8 @@ The unfiltered library uses horizontal Movies and TV Shows shelves; text search 
 ## 2026-11-21 — Playback completion test timing fix
 - CI #180 failed only because its 30-second synthetic video exceeded the test's 20-second completion wait. The product compiled, and the failure occurred at the test's natural-end wait.
 - The test now seeks to 29 seconds and still waits over one periodic checkpoint interval. CI verification pending.
+
+## 2026-11-21 — Completed-video reopen fix verified (CI #182)
+- CI #180 timed out because its 20-second test wait was shorter than the generated 30-second test video; CI #181 repeated that stale test and the Android 15 emulator also showed a Pixel Launcher ANR.
+- CI #182 / 44949435610 passed the corrected full 48-test Android 15 suite, unit tests, build and Room v1-v4 schema checks. Release-only signing/manifest checks were skipped on this ordinary push.
+- The completed playback checkpoint remains zero/paused through the five-second timer and other lifecycle saves. Next: Phase 5 subtitle controls, then production navigation/Glass and the performance batch.
