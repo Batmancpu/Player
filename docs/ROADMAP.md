@@ -21,6 +21,10 @@ Main now has exact Room v1/v2 schema history, the default-off normalized metadat
 
 Status: implementation order approved 2026-11-14 and testing cadence updated 2026-11-21. This document supersedes the older ten-phase breakdown and remains the engineering sequence. The user now wants one integrated APK after the complete app is ready, not separate test releases or phone pauses after each phase. Historical details and technical rationale remain in PROJECT_CONTEXT.md, CHAT_HISTORY.md, docs/ARCHITECTURE.md and docs/DECISIONS.md.
 
+## Current progress — 2026-11-21
+
+The player has local Media3 playback, title and episode navigation, track selection, sidecar caption rendering outside the video zoom frame, resize modes, fullscreen/auto-hide, resume handling and playback speed. Production library navigation is connected to one bounded Haze dock with an effects-off fallback. CI #206 found three accessibility/layout regressions in that first production integration; their fixes are on main pending CI. The remaining work includes robust subtitle selection/delay, production player control-surface design, accessibility review, release-like size/performance analysis and a single integrated signed test APK. Reno10 frame timing/thermal/battery results and phone acceptance must remain unknown until measured on-device.
+
 ## Completion and phone-test rule
 
 Use the six phases below as a staged engineering plan, with automated CI after focused main commits. Do not stop for a phone install or publish an installable APK after each phase. Continue integration independently while the user is away. Once the complete catalogue/player/Glass experience is implemented, tested and documented as one coherent app, produce one signed Release APK with the permanent certificate and a complete phone-test checklist. Fix findings from that final test with higher-version updates. Never claim OPPO acceptance, FPS, thermal or battery results without device evidence. Keep AGENTS.md and DEVELOPMENT_LOG.md current on every change, preserve small main-only commits, and keep the Obtainium update chain intact.

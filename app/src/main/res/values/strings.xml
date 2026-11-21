@@ -102,5 +102,7 @@
     <string name="settings_glass_title">Liquid Glass</string>
     <string name="settings_glass_description">Use the animated glass navigation dock. Turn it off for a solid, low-effect dock.</string>
     <string name="settings_glass_accessibility">Liquid Glass effects</string>
+    <string name="settings_glass_on">On</string>
+    <string name="settings_glass_off">Off</string>
 </resources>
 

@@ -587,3 +587,7 @@ CI #184's only failure was a test helper choosing a duplicate static Movies head
 
 ## 2026-11-21 — Glass settings compile correction
 - CI #205 caught a missing `contentDescription` import for the new Liquid Glass settings switch. Fixed the import; instrumentation did not start. Full CI for the corrected production dock is pending. No APK.
+
+
+## 2026-11-21 — Production Glass CI regression follow-up
+User asked to continue the integrated app through completion and the final efficiency review without pauses for intermediate installs. CI #206 reported three defects after production Glass was added: dock selection wasn't detected by accessibility, the switch state wasn't explicit, and the added row displaced folder actions. The focused fix adds selected semantics and localized On/Off announcements, moves the appearance setting after existing Manage actions, and makes tests scroll to it. Android CI is the verification gate; no APK is produced per step. Continue implementation after the test passes.

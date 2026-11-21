@@ -76,7 +76,7 @@ class PreviewUiAndroidTest {
             val label = node.text?.toString()?.take(80)
             val description = node.contentDescription?.toString()?.take(80)
             if (!label.isNullOrBlank() || !description.isNullOrBlank()) {
-                entries += "${node.className}[text=$label, description=$description, scrollable=${node.isScrollable}]"
+                entries += "${node.className}[text=$label, description=$description, selected=${node.isSelected}, state=${node.stateDescription}, scrollable=${node.isScrollable}]"
             }
             for (index in 0 until node.childCount) {
                 val child = node.getChild(index) ?: continue
@@ -133,6 +133,16 @@ class PreviewUiAndroidTest {
         }
         automation.rootInActiveWindow?.let(::visit)
         assertTrue("No clickable navigation item for $label", target?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true)
+    }
+
+    private fun revealGlassSetting() {
+        val deadline = SystemClock.uptimeMillis() + 4_000
+        while (SystemClock.uptimeMillis() < deadline &&
+            find { it.contentDescription?.toString() == "Liquid Glass effects" } == null
+        ) {
+            if (!scrollForwardOnSmallestScrollable()) break
+            SystemClock.sleep(100)
+        }
     }
 
     private fun scrollForwardOnSmallestScrollable(): Boolean {
@@ -302,18 +312,24 @@ class PreviewUiAndroidTest {
         try {
             install(activity)
             click(text("Manage"))
+            revealGlassSetting()
             val glassSwitch = awaitNode { it.contentDescription?.toString() == "Liquid Glass effects" }
-            assertTrue("Glass starts enabled", glassSwitch.isChecked)
+            assertEquals("Glass starts enabled with an announced state", context.getString(com.batmancpu.player.R.string.settings_glass_on), glassSwitch.stateDescription?.toString())
             click(glassSwitch)
             assertTrue("Glass off preference is saved", awaitCondition(3_000) {
                 !preferences.getBoolean(com.batmancpu.player.ui.glass.PlayerUiSettingsStore.GLASS_ENABLED_KEY, true)
+            })
+            assertTrue("Glass off state is announced", awaitCondition(3_000) {
+                find { it.contentDescription?.toString() == "Liquid Glass effects" }?.stateDescription?.toString() == context.getString(com.batmancpu.player.R.string.settings_glass_off)
             })
             instrumentation.runOnMainSync { activity.finish() }
             activity = launch()
             install(activity)
             click(text("Manage"))
-            assertFalse("Glass off preference survives screen/activity recreation",
-                awaitNode { it.contentDescription?.toString() == "Liquid Glass effects" }.isChecked)
+            revealGlassSetting()
+            assertEquals("Glass off preference survives screen/activity recreation",
+                context.getString(com.batmancpu.player.R.string.settings_glass_off),
+                awaitNode { it.contentDescription?.toString() == "Liquid Glass effects" }.stateDescription?.toString())
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
             preferences.edit().clear().commit()

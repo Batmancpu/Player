@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
@@ -502,22 +503,6 @@ internal fun LocalLibraryContent(
             Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 28.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(stringResource(R.string.catalogue_settings), style = MaterialTheme.typography.headlineMedium, color = PlayerPalette.textPrimary)
                 Text(folder.label, color = PlayerPalette.textSecondary)
-                val glassDescription = stringResource(R.string.settings_glass_accessibility)
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                        Text(stringResource(R.string.settings_glass_title), color = PlayerPalette.textPrimary)
-                        Text(stringResource(R.string.settings_glass_description), color = PlayerPalette.textSecondary,
-                            style = MaterialTheme.typography.bodySmall)
-                    }
-                    Switch(
-                        checked = glassEnabled,
-                        onCheckedChange = { enabled ->
-                            glassEnabled = enabled
-                            uiSettings.setGlassEnabled(enabled)
-                        },
-                        modifier = Modifier.semantics { contentDescription = glassDescription },
-                    )
-                }
                 Button(onClick = { settings = false; scanAction() }, enabled = !loading, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(if (library.isScanning) R.string.library_scan_cancel else R.string.library_scan_start))
                 }
@@ -534,6 +519,26 @@ internal fun LocalLibraryContent(
                     Text(stringResource(R.string.catalogue_glass_preview))
                 }
                 Text(stringResource(R.string.catalogue_glass_note), color = PlayerPalette.textTertiary, style = MaterialTheme.typography.bodySmall)
+                val glassDescription = stringResource(R.string.settings_glass_accessibility)
+                val glassStateDescription = stringResource(if (glassEnabled) R.string.settings_glass_on else R.string.settings_glass_off)
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                        Text(stringResource(R.string.settings_glass_title), color = PlayerPalette.textPrimary)
+                        Text(stringResource(R.string.settings_glass_description), color = PlayerPalette.textSecondary,
+                            style = MaterialTheme.typography.bodySmall)
+                    }
+                    Switch(
+                        checked = glassEnabled,
+                        onCheckedChange = { enabled ->
+                            glassEnabled = enabled
+                            uiSettings.setGlassEnabled(enabled)
+                        },
+                        modifier = Modifier.semantics {
+                            contentDescription = glassDescription
+                            stateDescription = glassStateDescription
+                        },
+                    )
+                }
             }
         }
     }

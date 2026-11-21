@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextOverflow
@@ -77,7 +78,10 @@ internal fun PlayerGlassDock(
                     Modifier.weight(1f).fillMaxHeight().selectable(
                         selected = selected == index, role = Role.Tab, interactionSource = dockInteraction,
                         indication = null, onClick = { onSelected(index) },
-                    ).semantics { stateDescription = selectionDescription }.padding(4.dp),
+                    ).semantics(mergeDescendants = true) {
+                        this.selected = selected == index
+                        stateDescription = selectionDescription
+                    }.padding(4.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
                 ) {

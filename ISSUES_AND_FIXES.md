@@ -533,3 +533,10 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 
 ## 2026-11-21 — Glass switch import failure
 CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `contentDescription` was unresolved. Added the semantics import. No tests or release gates ran; re-run pending.
+
+
+### R-036 — Production Glass semantics and Manage-sheet reachability
+- **Status:** Code correction committed/pending Android 15 CI after failures in run #206 / 44955812963.
+- **Evidence:** Three failures in a 51-test run: selected dock destination not discoverable through the test's Android accessibility hierarchy, Glass switch not readable via `isChecked`, and new settings content pushed the Forget-folder action below the initial visible sheet area.
+- **Fix under verification:** Add explicit selected semantics and localized state announcements; move the Glass control below existing Manage actions; test it via scroll while retaining the original folder-removal flow.
+- **Next:** Confirm all three regressions in full CI and inspect updated screenshots. No handset observation or Glass performance claim.
