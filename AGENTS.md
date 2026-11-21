@@ -242,3 +242,6 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-21 — CI #113 repeated the Credits UI failure: the synthetic device did not expose a scroll-forward accessibility action for Compose's vertically scrolling settings column. Moved About and credits near the top of Connection Settings so the required attribution is discoverable immediately; restored a simple visible-action UI assertion. CI #114 covers transport plus the previous viewport test; this correction triggers another run. No APK/Release. Next: complete TMDB manual search/match flow and verify bounded art caching separately.
+
+
+- 2026-11-21 — CI #115 / 44896086296 passed Android 15 instrumentation plus unit/build/schema/privacy gates for TMDB transport and Credits discoverability. Integrated explicit detail-sheet search, user-selected result plus separate confirmation, current-tree validation, fail-closed credential recheck and Room cached offline details. Added only the opt-in flow's INTERNET permission and updated manifest permission tests; source scan/playback remain local. CI for this integration is pending. No signed/user-installable APK or Release. Next: implement bounded TMDB artwork caching/rendering and offline/accessibility tests; wait for one complete integrated app before requesting phone installation.

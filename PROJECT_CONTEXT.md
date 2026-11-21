@@ -1,4 +1,8 @@
-## Current offline preview — published
+## Current development status — 2026-11-21
+
+Main includes an opt-in manual TMDB search and match flow: encrypted user token, fixed-origin bounded API client, explicit detail-sheet search, separate candidate confirmation, and offline Room cache. CI #115 / 44896086296 passed Android 15 UI/client tests and verification gates; no real provider request, signed APK or Release was produced. Artwork caching/rendering, integrated glass and target-device testing remain in progress. INTERNET permission is used only for the explicit opted-in flow; library scans/playback remain local. The latest user-installable Release remains signed v0.1.91. User's v0.1.79 folder/offline checks are confirmed; later UI/playback and target-device performance are unverified.
+
+## Historical offline preview status — published
 
 Latest signed Release remains [v0.1.91](https://github.com/Batmancpu/Player/releases/tag/v0.1.91), versionCode 91, APK SHA-256 `7c9ff8287405be9b1f607259608d84a256e5aed1fcc4cea24e3f9b882dd05e17`. The user confirmed v0.1.79 scanned four correctly named/year-parsed videos, retained the library offline and switched folders. Newer catalogue, playback and Glass preview remain untested on OPPO. CI #97, #98 and #99 passed 17/17 Android 15 tests and all build/schema/manifest/signing/certificate gates. Room v1/v2 are committed; v2 SHA-256 is `6d2a1dd422834f5cadf3e6c4292aed393bf2a784adc3cef1108ba9975c0bd4fe`.
 
@@ -395,11 +399,11 @@ Added “Remove folder from Player” with confirmation, Room index/cache cleanu
 
 
 ## Current continuation state — 2026-11-21
-Latest CI #108 / 44893247270 passed after commit 7501006: Android 15 instrumentation 30/30, unit/build, and Room v1/v2/v3 schema/privacy gates. Metadata and connections is reachable from Library Manage. A user-supplied TMDB Read Access Token is encrypted using Android Keystore AES-GCM in no-backup app-private storage; consent is default-off, clear/disable are fail-closed, and no INTERNET permission or request exists yet. No user-installable APK or Release was produced. Next is the explicit manual search/match UX plus approved TMDB logo/notice in About/Credits, before any HTTP integration. The full six-phase app is still in development; actual OPPO acceptance and device performance remain unverified.
+CI #115 / 44896086296 passed the metadata client and Credits screen. Main now includes the fixed-host client plus explicit manual search/candidate confirmation and offline Room cache; the integrated UI/permission/test change is pending CI. The token remains Keystore-encrypted in no-backup app-private storage, with consent off by default and clear/disable fail-closed. No APK/Release was published. Next: complete bounded artwork cache/rendering. The six-phase app, OPPO acceptance and device performance remain unfinished.
 
 
 ### TMDB attribution milestone — 2026-11-21
-The About/Credits screen now displays TMDB's official approved blue gradient logo at the original aspect ratio and the exact required non-endorsement notice. Player's name is more prominent; the only outbound action is a manual link. The asset is not yet tied to a network client. No INTERNET permission or provider lookup exists. CI #110 pending.
+The About/Credits screen displays TMDB's approved logo and exact required non-endorsement notice. The bounded client and explicit lookup are now integrated; automated transport tests use synthetic data only. No live provider request, APK or Release has been made. Artwork cache/display and actual OPPO behavior remain pending.
 
 
 ### Credits compile follow-up — 2026-11-21

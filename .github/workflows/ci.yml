@@ -256,7 +256,7 @@ jobs:
             echo "APK SHA-256: ${hash}"
             echo "Certificate SHA-256: 4D:2F:17:89:ED:27:D3:96:13:35:FE:36:45:64:55:BD:9A:31:0B:0D:CD:F4:1E:8C:CC:92:53:98:33:9E:80:BF"
             echo
-            echo "OFFLINE LIBRARY + PLAYBACK PREVIEW: searchable movie/show grid, title/episode details, built-in local Media3 playback with pause/seek/private resume, clearer scan feedback and a single-surface Glass preview dock. Includes background-safe SAF/index fix. One selected read-only local folder, offline Room persistence; no INTERNET, broad storage, source-media writes or backup."
+            echo "OFFLINE LIBRARY + PLAYBACK PREVIEW: searchable movie/show grid, title/episode details, built-in local Media3 playback with pause/seek/private resume, clearer scan feedback and a single-surface Glass preview dock. Includes background-safe SAF/index fix. One selected read-only local folder, offline Room persistence; optional direct TMDB requests require explicit opt-in and manual title search; no broad storage, source-media writes or backup."
             echo
             echo "Optional next phone check when available: update without uninstalling, search a movie, open details and Play video; pause/seek, return/reopen and check resume; try airplane mode and folder switching. Compare Glass preview on/off. No file deletion is required."
             echo "Full checklist: https://github.com/Batmancpu/Player/blob/main/docs/PHASE1_PHONE_TEST.md"

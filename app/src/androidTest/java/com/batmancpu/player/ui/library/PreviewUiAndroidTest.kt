@@ -6,9 +6,13 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.mutableStateOf
 import androidx.test.platform.app.InstrumentationRegistry
 import com.batmancpu.player.MainActivity
 import com.batmancpu.player.ui.glass.GlassLabScreen
+import com.batmancpu.player.ui.metadata.MetadataLookupUiState
+import com.batmancpu.player.ui.metadata.TmdbCandidate
+import com.batmancpu.player.ui.library.TmdbMediaType
 import com.batmancpu.player.ui.theme.PlayerTheme
 import android.os.ParcelFileDescriptor
 import java.util.concurrent.atomic.AtomicInteger
@@ -171,6 +175,57 @@ class PreviewUiAndroidTest {
             click(text("Remove folder from Player"))
             click(text("Remove from Player"))
             assertEquals("Only explicit confirmation starts removal", 1, forgotten.get())
+        } finally {
+            instrumentation.runOnMainSync { activity.finish() }
+        }
+    }
+
+    @Test(timeout = 30_000) fun titleMetadataSearchIsManualAndMatchRequiresASecondConfirmation() {
+        val activity = launch()
+        val file = DiscoveredLocalMedia("movie-A", "Aurora.2022.mp4", LocalMediaKind.VIDEO)
+        val lookup = mutableStateOf(
+            MetadataLookupUiState(
+                tree = "synthetic-tree",
+                titleKey = "file:movie-A",
+                settingsEnabled = true,
+                credentialConfigured = true,
+                searchable = true,
+            ),
+        )
+        val searches = AtomicInteger()
+        val confirmations = AtomicInteger()
+        try {
+            instrumentation.runOnMainSync {
+                activity.setContent {
+                    PlayerTheme {
+                        LocalLibraryContent(
+                            LocalFolder("synthetic-tree", "Synthetic local folder"),
+                            LibrarySessionState(tree = "synthetic-tree", media = listOf(file), hasCompletedScan = true),
+                            CatalogueSnapshot("synthetic-tree", LocalCatalogue.build(listOf(file))),
+                            onScan = {}, onCancel = {}, scanStillRunning = { false }, onChooseFolder = {},
+                            onPlay = {}, onOpenGlassLab = {}, metadataState = lookup.value,
+                            onPrepareMetadata = {},
+                            onSearchMetadata = {
+                                searches.incrementAndGet()
+                                lookup.value = lookup.value.copy(
+                                    candidates = listOf(
+                                        TmdbCandidate(42, TmdbMediaType.MOVIE, "Aurora", 2022, "Synthetic result description", "/poster.jpg", null),
+                                    ),
+                                )
+                            },
+                            onConfirmMetadata = { _, _ -> confirmations.incrementAndGet() },
+                        )
+                    }
+                }
+            }
+            click(text("Aurora"))
+            assertEquals("Opening details must not initiate an external lookup", 0, searches.get())
+            click(text("Search TMDB"))
+            assertEquals(1, searches.get())
+            click(text("Synthetic result description"))
+            assertEquals("Selecting a candidate is not confirmation", 0, confirmations.get())
+            click(text("Confirm movie match"))
+            assertEquals("The selected provider result needs a separate confirmation tap", 1, confirmations.get())
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
         }

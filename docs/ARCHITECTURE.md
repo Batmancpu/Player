@@ -1,6 +1,6 @@
 ## Status update — 2026-11-21
 
-Phase 2 persistence groundwork adds a provider metadata table (Room v3) separate from SAF identities, with user-confirmed joins. CI #102 / 44888106152 passed Android 15 instrumentation 20/20, production v1-to-v3 migration, cache reconciliation and exact schema validation; generated v3 JSON is committed. No network transport or INTERNET permission exists in this slice; the actual OPPO candidate/performance remains unverified.
+Phase 2 now includes default-off encrypted TMDB settings, a fixed-origin bounded HTTPS client, manual detail-sheet search/candidate selection/separate confirmation, and offline Room metadata cache. CI #115 / 44896086296 passed the Android 15 UI/client suite, unit tests, build, schema and privacy gates; no network call was made by CI. Artwork cache/display and OPPO network/device behavior remain unverified. The app's INTERNET capability is used only by this opt-in manual flow; scanning and playback remain local.
 
 # Architecture
 
@@ -84,7 +84,7 @@ Unit tests and FOSS/debug CI build are required at each milestone. Real-device v
 ## Binding premium design and privacy details (2026-11-14)
 - `docs/DESIGN_SYSTEM_AND_PERFORMANCE.md`: official OPPO hardware, cinematic design tokens, per-screen functional Glass surfaces, true accessible slider semantics, 60-Hz/optional-120-Hz benchmarks and opaque/reduced-motion fallbacks.
 - `docs/UPSTREAM_AND_PRIVACY.md`: vetted GitHub repository/source reuse/licence obligations, malicious upstream instruction protections and minimum external network/data-egress policy.
-- Current `app/src/main/AndroidManifest.xml` retains `android:allowBackup="false"` and references explicit legacy plus Android 12+ cloud/device-transfer exclusion resources. CI #99 passed source/XML and compiled-manifest verification for the configured Android backup modes. Phase 1 requires no INTERNET permission. Android 16 QPR2 cross-platform transfer is not configured: there is no iOS Player counterpart or real identifiers.
+- Current app manifest retains allowBackup=false and explicit legacy plus Android 12+ cloud/device-transfer exclusion resources. The only added runtime capability is INTERNET for the explicit opt-in TMDB flow; no broad storage/media permission exists. CI validates the permission allowlist and configured backup modes. Scanning and playback stay local/offline-capable. Android 16 QPR2 cross-platform transfer is not configured: no iOS Player counterpart or genuine identifiers exist.
 
 
 ## Phase 1 lifecycle implementation — 2026-11-14

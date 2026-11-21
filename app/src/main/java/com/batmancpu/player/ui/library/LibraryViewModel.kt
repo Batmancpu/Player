@@ -18,6 +18,10 @@ import com.batmancpu.player.ui.player.LocalPlaybackState
 import com.batmancpu.player.ui.player.LocalPlaybackTarget
 import com.batmancpu.player.ui.player.LocalPlaybackAccess
 import com.batmancpu.player.ui.player.ResumePositions
+import com.batmancpu.player.ui.metadata.MetadataLookupController
+import com.batmancpu.player.ui.metadata.MetadataSettingsStore
+import com.batmancpu.player.ui.metadata.TmdbCandidate
+import com.batmancpu.player.ui.metadata.TmdbClient
 
 internal data class FolderUiState(
     val folder: LocalFolder? = null,
@@ -46,6 +50,22 @@ internal class LibraryViewModel(application: Application) : AndroidViewModel(app
     val catalogue = session.state.map { it.tree to it.media }.distinctUntilChanged().map { (tree, media) ->
         withContext(Dispatchers.Default) { CatalogueSnapshot(tree, LocalCatalogue.build(media)) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CatalogueSnapshot())
+    private val metadataSettings = MetadataSettingsStore(application)
+    private val metadataLookupController = MetadataLookupController(
+        context = application,
+        scope = viewModelScope,
+        settings = metadataSettings,
+        client = TmdbClient(metadataSettings),
+        currentTree = { folder.value.folder?.tree },
+        isCurrentTitle = ::isCurrentTitle,
+    )
+    val metadataLookup = metadataLookupController.state
+    fun prepareMetadata(title: LocalTitle) = metadataLookupController.prepare(title)
+    fun searchMetadata(title: LocalTitle) = metadataLookupController.search(title)
+    fun confirmMetadata(title: LocalTitle, candidate: TmdbCandidate) = metadataLookupController.confirm(title, candidate)
+    fun removeMetadata(title: LocalTitle) = metadataLookupController.remove(title)
+    fun clearMetadata() = metadataLookupController.clear()
+
     private val mutablePlayback = MutableStateFlow(LocalPlaybackState())
     val playback = mutablePlayback.asStateFlow()
     private var playbackGeneration = 0L
@@ -112,6 +132,15 @@ internal class LibraryViewModel(application: Application) : AndroidViewModel(app
                     FolderUiState(busy = false, error = true, forgetFailed = true)
             }
         }
+    }
+
+    private fun isCurrentTitle(tree: String, title: LocalTitle): Boolean {
+        if (folder.value.folder?.tree != tree) return false
+        val current = session.state.value
+        if (current.tree != tree) return false
+        val activeTitle = LocalCatalogue.build(current.media).firstOrNull { it.key == title.key } ?: return false
+        return activeTitle.files.map { it.documentId to it.displayName } ==
+            title.files.map { it.documentId to it.displayName }
     }
 
     private fun updateFolder(action: suspend () -> LocalFolder?) {

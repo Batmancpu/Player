@@ -4,7 +4,7 @@
     <string name="metadata_kicker">PLAYER · CONNECTIONS</string>
     <string name="metadata_title">Connection setup</string>
     <string name="metadata_description">Prepare your optional TMDB connection for movie and show details. Your local library and playback work without it.</string>
-    <string name="metadata_foundation_note">Artwork and matching are being connected to the library. Saving this connection does not start a library lookup in this build.</string>
+    <string name="metadata_foundation_note">Each search is started by you from a title. Player sends only its normalized title, year and media type. Results are saved only after you confirm a match.</string>
     <string name="metadata_consent_title">Allow TMDB metadata</string>
     <string name="metadata_consent_description">When enabled, Player may send normalized titles, year and media type directly to api.themoviedb.org and fetch artwork from image.tmdb.org.</string>
     <string name="metadata_local_boundary">Your videos, subtitles, folder names, file paths and original filenames stay on your device. Disabling metadata keeps your local library available.</string>
@@ -29,4 +29,23 @@
     <string name="metadata_credits_logo_description">The Movie Database (TMDB) logo</string>
     <string name="metadata_credits_notice">This product uses the TMDB API but is not endorsed or certified by TMDB.</string>
     <string name="metadata_credits_link">Visit TMDB</string>
+    <string name="metadata_lookup_heading">OPTIONAL ONLINE DETAILS</string>
+    <string name="metadata_lookup_explanation">Search is manual. Only the normalized title, year and movie or series type are sent. Player never searches automatically or sends your filename, folder or video.</string>
+    <string name="metadata_lookup_search">Search TMDB</string>
+    <string name="metadata_lookup_searching">Searching TMDB…</string>
+    <string name="metadata_lookup_setup_required">Connect your own TMDB token and enable metadata in Manage before searching.</string>
+    <string name="metadata_lookup_open_settings">Open connection settings</string>
+    <string name="metadata_lookup_unsafe_title">This filename does not provide a safe movie or series title to search.</string>
+    <string name="metadata_lookup_no_results">No matching titles were found. You can refine the filename locally and rescan.</string>
+    <string name="metadata_lookup_unauthorized">TMDB rejected the saved token. Check the token in connection settings.</string>
+    <string name="metadata_lookup_rate_limited">TMDB is limiting requests. Wait a while before trying again.</string>
+    <string name="metadata_lookup_unavailable">TMDB could not be reached. Your local library is still available.</string>
+    <string name="metadata_lookup_invalid_response">TMDB returned data Player could not safely read.</string>
+    <string name="metadata_lookup_stale">This library changed. Close the details and open the title again before matching.</string>
+    <string name="metadata_lookup_local_error">Player could not read or save the local metadata cache.</string>
+    <string name="metadata_lookup_matched">CONFIRMED TMDB DETAILS</string>
+    <string name="metadata_lookup_matched_files">Matched %1$d of %2$d local videos</string>
+    <string name="metadata_lookup_remove">Remove this TMDB match</string>
+    <string name="metadata_lookup_confirm_movie">Confirm movie match</string>
+    <string name="metadata_lookup_confirm_series">Link this show to all %1$d episodes</string>
 </resources>

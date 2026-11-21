@@ -42,8 +42,9 @@ class ReleaseManifestTest(unittest.TestCase):
     def test_rejects_missing_explicit_backup_rule_resources(self):
         self.assertNotEqual(0, self.check_apk("false", backup_rules=False).returncode)
 
-    def test_rejects_network_permissions_debug_provider_and_stale_version(self):
-        self.assertNotEqual(0, self.check_apk("false", permission="android.permission.INTERNET").returncode)
+    def test_allows_only_consent_gated_internet_and_rejects_other_permissions(self):
+        self.assertEqual(0, self.check_apk("false", permission="android.permission.INTERNET").returncode)
+        self.assertNotEqual(0, self.check_apk("false", permission="android.permission.ACCESS_NETWORK_STATE").returncode)
         self.assertNotEqual(0, self.check_apk("false", provider=True).returncode)
         self.assertNotEqual(0, self.check_apk("false", version=4).returncode)
         self.assertEqual(0, self.check_apk("false", permission="com.batmancpu.player.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION").returncode)

@@ -913,3 +913,12 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 - CI #113 / 44895567876 passed compilation but repeated the one Android UI failure. The attempted test-only scroll helper could not locate an accessibility scroll action in the Compose settings surface, so no scroll occurred.
 - Moved the About and credits action directly below the connection-settings introduction. It is now immediately visible, easier to discover and still opens the local attribution screen. Removed the ineffective helper and restored a direct synthetic tap/assertion.
 - CI #114 covers the earlier test fix; this source change triggers a follow-up run. No installable APK or Release. Next: verify the accessibility/attribution screen and continue the explicit TMDB search, candidate selection, confirmation and offline-display flow.
+
+
+## 2026-11-21 — Integrate manual metadata search and confirmed offline match
+
+- CI #115 / 44896086296 passed after commit 5a467f2: Android 15 instrumentation and UI tests, JVM unit tests, app build, Room schemas and privacy checks. No signed/user-installable APK or Release was created.
+- Added a lookup controller scoped to the currently selected tree/title. Opening title details reads only local settings/cache; it never searches. A visible Search TMDB button is available only for safe parsed movie/series names when the user enabled metadata and supplied a token. The request uses normalized title/year/type only, the fixed TMDB API host, no redirects and bounded/cancellable transport.
+- Search results require selecting one candidate and tapping a second confirmation. Confirm validates the current title/tree and still-enabled credential before writing provider metadata and matches for the selected movie or all episodes in that series to Room. Users can remove the match; cached details work offline.
+- Added synthetic Android controller and UI tests for no request on opening details, manual dispatch, separate confirmation, and cached offline persistence. Expanded the release manifest allowlist and unit regression to permit only the required INTERNET permission plus the AndroidX dynamic receiver permission; no broad media/storage permission was added. No API secret is bundled. Scan, rescan, startup, scroll and local playback do not call the provider.
+- Updated privacy, architecture, roadmap, project context and handoff. CI pending. Artwork downloading/rendering, real OPPO provider traffic, Glass polish and performance remain outstanding; no user APK until the integrated app is ready.
