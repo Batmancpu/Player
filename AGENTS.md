@@ -402,3 +402,6 @@ When the unfiltered library is open, movie titles and series now appear in separ
 
 ## 2026-11-21 — Details sheet gesture reliability
 - Disabled swipe-to-dismiss on the long movie/show details sheet and added a labeled Close action so vertical swipes scroll its single lazy list; Android back and outside-tap dismissal remain available. Android 15 CI verification is pending; next action is rerun all gates and inspect the release signing checks.
+
+## 2026-11-21 — Android test swipe correction
+- CI #165 identified that the fallback instrumented swipe began near Android's bottom home-gesture area, returning the test to Launcher before sheet content could be checked. Constrain synthetic swipes to visible sheet text above the system gesture region. Restore Material3's normal sheet drag/nested-scroll handling; keep the explicit accessible Close action. CI verification is pending; next rerun Android 15 instrumentation and release gates.

@@ -498,3 +498,6 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 ## 2026-11-21 — User asked for continuous completion and visible work batches
 - User clarified that CI failures are ours to fix; do not pause for routine phone checks between implementation batches. Requested a signed APK checkpoint now, then continued work toward the premium local-first app and final performance/size/efficiency pass.
 - Current issue: CI #164 had 45/46 tests pass; manual metadata search could not scroll the long details sheet. Added sheet scroll/dismiss fix with Close control; verification pending. No Reno10 measurements may be claimed without actual device evidence.
+
+## 2026-11-21 — Android test swipe correction
+- CI #165 identified that the fallback instrumented swipe began near Android's bottom home-gesture area, returning the test to Launcher before sheet content could be checked. Constrain synthetic swipes to visible sheet text above the system gesture region. Restore Material3's normal sheet drag/nested-scroll handling; keep the explicit accessible Close action. CI verification is pending; next rerun Android 15 instrumentation and release gates.

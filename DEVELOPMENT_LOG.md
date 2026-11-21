@@ -1265,3 +1265,6 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 
 ## 2026-11-21 — Details sheet scroll recovery (verification pending)
 - Android 15 CI #164 passed 45/46 instrumentation tests; the manual TMDB search UI test could not reach the button because a short upward scroll dismissed the modal. Changed the details sheet to ignore swipe dismissal and added an accessible Close button while retaining system back/outside dismissal. The single LazyColumn still owns long episode and metadata scrolling. Added the English string resource. CI verification is pending; no APK is published from this change yet.
+
+## 2026-11-21 — Android test swipe correction
+- CI #165 identified that the fallback instrumented swipe began near Android's bottom home-gesture area, returning the test to Launcher before sheet content could be checked. Constrain synthetic swipes to visible sheet text above the system gesture region. Restore Material3's normal sheet drag/nested-scroll handling; keep the explicit accessible Close action. CI verification is pending; next rerun Android 15 instrumentation and release gates.

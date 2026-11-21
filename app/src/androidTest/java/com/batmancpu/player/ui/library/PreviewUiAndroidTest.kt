@@ -126,26 +126,30 @@ class PreviewUiAndroidTest {
     private fun swipeUpFromVisibleSheetText(): Boolean {
         val root = automation.rootInActiveWindow ?: return false
         val metrics = context.resources.displayMetrics
+        val safeTop = metrics.heightPixels / 3
+        // Stay clear of Android's bottom gesture/navigation region: an upward swipe there can
+        // leave the app and make a sheet-scroll test look like a product dismissal bug.
+        val safeBottom = metrics.heightPixels - (96 * metrics.density).toInt()
         val candidates = mutableListOf<Pair<Rect, AccessibilityNodeInfo>>()
         fun visit(node: AccessibilityNodeInfo) {
             val bounds = Rect()
             node.getBoundsInScreen(bounds)
             if ((!node.text.isNullOrBlank() || !node.contentDescription.isNullOrBlank()) &&
-                bounds.width() > 0 && bounds.height() > 0
+                bounds.width() > 0 && bounds.height() > 0 && bounds.bottom <= safeBottom
             ) candidates += bounds to node
             for (index in 0 until node.childCount) node.getChild(index)?.let(::visit)
         }
         visit(root)
-        // Start on visible sheet content, never in the backdrop or the bottom-sheet dismiss zone.
+        // Start on visible sheet content in the safe central area, never the home-gesture zone.
         val target = candidates
-            .filter { it.first.centerY() >= metrics.heightPixels / 2 }
+            .filter { it.first.centerY() in safeTop..safeBottom }
             .maxByOrNull { it.first.bottom }
-            ?: candidates.maxByOrNull { it.first.bottom }
+            ?: candidates.filter { it.first.centerY() < safeBottom }.maxByOrNull { it.first.bottom }
             ?: return false
         val fromX = target.first.centerX()
-        val fromY = target.first.centerY()
-        val distance = (160 * metrics.density).toInt()
-        val toY = (fromY - distance).coerceAtLeast(24)
+        val fromY = target.first.centerY().coerceAtMost(safeBottom)
+        val distance = (180 * metrics.density).toInt()
+        val toY = (fromY - distance).coerceAtLeast(safeTop)
         if (toY >= fromY) return false
         ParcelFileDescriptor.AutoCloseInputStream(
             automation.executeShellCommand("input swipe $fromX $fromY $fromX $toY 300"),

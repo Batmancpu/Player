@@ -439,3 +439,6 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - Evidence: CI #164 (#44938064931), Android 15 instrumentation 45/46 passed; the metadata manual-search flow failed while scrolling to the Search TMDB action. The failure snapshot showed the catalogue after the sheet had closed.
 - Fix committed for verification: disable sheet swipe dismissal for this long-content details sheet and provide an accessible Close action; Android back and outside-tap continue to close it.
 - Status: CI verification pending. Do not publish a release candidate until the full test, manifest/privacy and signing gates pass.
+
+## 2026-11-21 — Android test swipe correction
+- CI #165 identified that the fallback instrumented swipe began near Android's bottom home-gesture area, returning the test to Launcher before sheet content could be checked. Constrain synthetic swipes to visible sheet text above the system gesture region. Restore Material3's normal sheet drag/nested-scroll handling; keep the explicit accessible Close action. CI verification is pending; next rerun Android 15 instrumentation and release gates.
