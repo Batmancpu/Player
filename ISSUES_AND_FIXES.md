@@ -536,7 +536,7 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 
 
 ### R-036 — Production Glass semantics and Manage-sheet reachability
-- **Status:** Follow-up fix is pending CI #208 after failures in #206 / 44955812963 and #207 / 44957235967.
+- **Status:** Accessibility follow-up is pending CI #209 after #206/#207 UI failures and #208 compile failure.
 - **Evidence:** #206 had three failures in 51 tests: selected dock destination not discoverable, switch state not readable via `isChecked`, and setting displaced Forget-folder. In #207 the setting remained offscreen without an accessibility scroll action and Movies selected state remained unassociated with its label.
 - **Fix under verification:** Explicit selected semantics/content descriptions and localized switch state; keep Glass after existing Manage actions; use the safe screen-bounded gesture fallback when Compose exposes no scroll accessibility action.
-- **Next:** Confirm these regressions in full CI and inspect screenshots. No handset observation or Glass performance claim.
+- **Next:** Confirm all regressions in full CI and inspect screenshots. CI #208 did not reach tests; its compile error was a composable string lookup inside the semantics lambda and is corrected by computing the localized label earlier. No handset observation or Glass performance claim.

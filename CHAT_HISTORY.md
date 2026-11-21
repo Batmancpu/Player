@@ -595,3 +595,7 @@ User asked to continue the integrated app through completion and the final effic
 
 ## 2026-11-21 — CI #207 accessibility follow-up
 CI #207 compiled the code and ran 51 Android 15 tests; two assertions failed. The Manage-sheet scrollable column did not appear as an accessibility scroll action, and selected tab state was still not associated with its item label. Added a safe gesture fallback to the synthetic test, explicit merged descriptions for tab labels and richer test diagnostics. Run #208 is pending. Continue implementation after resolving the regression; no APK at this step.
+
+
+## 2026-11-21 — CI #208 compile correction and portrait offline artwork
+CI #208 failed before instrumentation because `stringResource` was called inside a non-composable semantics lambda. The dock now resolves the label in composable scope. The offline artwork card is also being adjusted to a portrait 2:3 poster with an original title initial and an accessible description; its bounds are covered by an Android UI assertion. CI #209 is pending. No APK is produced during this integrated work.

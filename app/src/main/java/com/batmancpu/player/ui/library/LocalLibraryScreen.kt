@@ -584,7 +584,7 @@ private fun LocalTitleCard(
         } else null
     }
     Card(onClick = onClick, shape = RoundedCornerShape(22.dp), colors = CardDefaults.cardColors(containerColor = PlayerPalette.surface)) {
-        Box(Modifier.fillMaxWidth().height(158.dp)) {
+        Box(Modifier.fillMaxWidth().aspectRatio(2f / 3f)) {
             if (posterFile != null) {
                 AsyncImage(
                     model = posterFile,
@@ -594,7 +594,19 @@ private fun LocalTitleCard(
                 )
                 Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color.Transparent, Color.Black.copy(alpha = .78f)))))
             } else {
-                Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(color, PlayerPalette.surface))))
+                Box(
+                    Modifier.fillMaxSize()
+                        .background(Brush.linearGradient(listOf(color, PlayerPalette.surface)))
+                        .semantics {
+                            contentDescription = stringResource(R.string.catalogue_artwork_placeholder_description, title.title)
+                        },
+                )
+                Text(
+                    title.title.take(1).uppercase(),
+                    modifier = Modifier.align(Alignment.Center),
+                    style = MaterialTheme.typography.displayLarge,
+                    color = Color.White.copy(alpha = .25f),
+                )
                 PlayerGlyphIcon(
                     if (title.isSeries) PlayerGlyph.SHOWS else PlayerGlyph.MOVIES, null,
                     modifier = Modifier.align(Alignment.Center), size = 38.dp, tint = Color.White.copy(alpha = .7f),

@@ -23,7 +23,7 @@ Status: implementation order approved 2026-11-14 and testing cadence updated 202
 
 ## Current progress — 2026-11-21
 
-The player has local Media3 playback, title and episode navigation, track selection, sidecar caption rendering outside the video zoom frame, resize modes, fullscreen/auto-hide, resume handling and playback speed. Production library navigation is connected to one bounded Haze dock with an effects-off fallback. CI #206 found three accessibility/layout regressions in that first production integration; their fixes are on main pending CI. The remaining work includes robust subtitle selection/delay, production player control-surface design, accessibility review, release-like size/performance analysis and a single integrated signed test APK. Reno10 frame timing/thermal/battery results and phone acceptance must remain unknown until measured on-device.
+The player has local Media3 playback, title and episode navigation, track selection, sidecar caption rendering outside the video zoom frame, resize modes, fullscreen/auto-hide, resume handling and playback speed. Production library navigation is connected to one bounded Haze dock with an effects-off fallback. CI #206/#207 exposed accessibility/layout regressions; CI #208 stopped before tests due to a composable string lookup inside a semantics lambda. That compile fix and portrait offline poster art with bounds coverage are queued for CI #209. The remaining work includes robust subtitle selection/delay, production player control-surface design, accessibility review, release-like size/performance analysis and a single integrated signed test APK. Reno10 frame timing/thermal/battery results and phone acceptance must remain unknown until measured on-device.
 
 ## Completion and phone-test rule
 

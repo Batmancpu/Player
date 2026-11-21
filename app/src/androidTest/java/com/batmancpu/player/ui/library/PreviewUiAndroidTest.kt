@@ -610,6 +610,12 @@ class PreviewUiAndroidTest {
                 }
             }
             assertTrue(awaitCondition(3_000) { find { it.text?.toString() == "Aurora" } != null })
+            val placeholderArtwork = awaitNode {
+                it.contentDescription?.toString() == "Artwork placeholder for Aurora"
+            }
+            val artworkBounds = Rect()
+            placeholderArtwork.getBoundsInScreen(artworkBounds)
+            assertTrue("Offline poster artwork uses a portrait composition", artworkBounds.height() >= artworkBounds.width() * 1.4f)
             assertTrue("Home is selected initially", hasSelectedSemanticsOnLabelOrParent("Home"))
 
             clickLastClickableLabel("Movies")

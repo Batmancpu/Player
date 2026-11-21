@@ -75,6 +75,7 @@ internal fun PlayerGlassDock(
                 val selectionDescription = stringResource(
                     if (selected == index) R.string.nav_item_selected else R.string.nav_item_not_selected,
                 )
+                val tabLabel = stringResource(labels[index])
                 Column(
                     Modifier.weight(1f).fillMaxHeight().selectable(
                         selected = selected == index, role = Role.Tab, interactionSource = dockInteraction,
@@ -82,13 +83,13 @@ internal fun PlayerGlassDock(
                     ).semantics(mergeDescendants = true) {
                         this.selected = selected == index
                         stateDescription = selectionDescription
-                        contentDescription = stringResource(labels[index])
+                        contentDescription = tabLabel
                     }.padding(4.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
                 ) {
                     PlayerGlyphIcon(glyph, null, size = 22.dp, tint = Color.White)
-                    Text(stringResource(labels[index]), color = Color.White,
+                    Text(tabLabel, color = Color.White,
                         style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }

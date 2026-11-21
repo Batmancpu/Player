@@ -64,6 +64,7 @@
     <string name="catalogue_clear_search">Clear search and filters</string>
     <string name="catalogue_local_note">Titles come from your filenames. Optional TMDB artwork and matching do not affect your offline library or playback.</string>
     <string name="catalogue_on_device">On this device</string>
+    <string name="catalogue_artwork_placeholder_description">Artwork placeholder for %1$s</string>
     <string name="catalogue_local_video">Local video</string>
     <string name="catalogue_play">Play video</string>
     <string name="catalogue_season">Season %1$d</string>
