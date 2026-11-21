@@ -1328,3 +1328,9 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - CI #180 / 44948650139 exposed a test setup timeout (20-second wait versus the generated 30-second video). CI #181 / 44949160303 still had that old fixture position and also encountered a Pixel Launcher ANR affecting unrelated UI cases.
 - CI #182 / 44949435610 passed all 48 Android 15 instrumentation tests after seeking the fixture to 29 seconds; unit tests, application build and Room schema v1-v4 validation also passed. Signed-release-only checks were not run.
 - The STATE_ENDED checkpoint is now zero/paused across natural-end, periodic, Activity-pause and disposal saves. Continue with subtitle control work and production presentation; real OPPO acceptance/performance is still pending.
+
+## 2026-11-21 — Functional library destinations
+- Added a persistent bottom `NavigationBar` with Home/Movies/Shows/Search. Home retains poster shelves; Movies and Shows filter the existing Room-derived catalogue; Search selects the search destination, focuses the local field and shows local-only prompt/results.
+- Replaced duplicate type chips with the four destinations. Changing destinations dismisses the details sheet; leaving Search clears its query; the accessible selected-tab semantics are provided by Material3.
+- Added an Android 15 synthetic-library test for all destinations, title filtering and Search field focus. CI pending.
+- This intentionally establishes navigation behavior before bounded Haze is placed in production; Glass remains a later rendering phase. Next: validate CI and fix failures before continuing player/subtitle polish.

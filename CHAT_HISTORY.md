@@ -556,3 +556,7 @@ CI #180's 30-second synthetic video made the new 20-second natural-end wait time
 
 ## 2026-11-21 — Completed playback checkpoint verified
 The corrected near-end synthetic fixture passed in CI #182 / 44949435610. All 48 Android 15 instrumentation tests, unit tests, app build and Room schema v1-v4 verification passed. Earlier #180/#181 attempts timed out against the 30-second fixture; #181 also had a Pixel Launcher ANR. No signed artifact was produced by this normal push.
+
+## 2026-11-21 — Home, Movies, Shows and Search destinations
+- Started the production navigation batch. The library bottom bar now switches real catalogue state: Home shelves, movie-only results, series-only results and focused local search. Search results remain on-device.
+- Added UI instrumentation for the destination state and behavior; CI pending. The solid nav is a functional foundation, with bounded Glass still reserved for the later Glass phase.

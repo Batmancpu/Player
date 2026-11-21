@@ -132,3 +132,6 @@ The previous CI attempt timed out because the synthetic fixture lasts 30 seconds
 
 ## 2026-11-21 — Player completion checkpoint CI evidence
 CI #182 / 44949435610 passed the 48-case Android 15 instrumentation suite, unit tests, application build, and Room v1-v4 schema checks for the end-of-playback checkpoint fix. CI #180/#181 are retained in the failure history: the test originally waited 20 seconds for a 30-second fixture, and #181's emulator also displayed a Pixel Launcher ANR. Physical OPPO playback and performance remain unverified.
+
+## 2026-11-21 — Local catalogue destination behavior
+The Compose presentation layer now exposes Home, Movies, Shows and Search destinations over the existing local Room catalogue state. Destination state controls the movie/series filter, Search focuses the local query field, and Home preserves the shelves. The solid Material3 navigation bar retains accessibility semantics while production Glass remains deferred. Android 15 test pending.

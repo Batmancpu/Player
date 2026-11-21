@@ -40,3 +40,6 @@ Haze docs: https://chrisbanes.github.io/haze/2.1.0/effects/glass/ ; https://chri
 
 ## Acceptance
 Every UI slice: design tokens/screen states, screenshot or reproducible description, automated tests, optimized build + measured performance where possible, accessibility/fallback checks and actual CPH2531 test report. Zero device evidence = unverified. **Phase 1 must remain functional with Glass disabled; full production Glass arrives in Phase 6.**
+
+## 2026-11-21 — Navigation implementation status
+The local catalogue now has real Home/Movies/Shows/Search destinations backed by the selected folder's local index. Home displays the movie/series shelves, Movies and Shows filter results, and Search opens the local title field. This is currently a solid Compose bar with accessible Material3 tab semantics; bounded Glass will be added only in its later phase after these behaviors and performance fallbacks are verified. Android test pending.

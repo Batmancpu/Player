@@ -432,3 +432,6 @@ Artwork behavior is verified by CI #122 and #123 attempt 2. CI #123 attempt 1 hi
 
 ## 2026-11-21 — Completed playback checkpoint verification
 The synthetic near-end playback regression test and delayed periodic-save assertion passed in Android 15 CI #182 / 44949435610 (48 instrumentation tests total). Unit tests, build and Room v1-v4 validation passed. Earlier CI #180/#181 failures were due to the 30-second fixture exceeding the 20-second wait; #181 additionally hit a Pixel Launcher ANR. Release-only privacy/signing steps were skipped for this development push.
+
+## 2026-11-21 — Functional catalogue destinations
+Production navigation now switches among Home shelves, movie results, series results and focused local Search, all backed by the indexed local catalogue. Android 15 tests are pending; Glass remains lab-only pending final production design/performance integration.

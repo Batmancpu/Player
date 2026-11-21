@@ -506,3 +506,7 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - Failure history: CI #180/#181 used a 20-second wait from the start of a 30-second synthetic clip. CI #181 also surfaced Pixel Launcher ANR dialogs that caused unrelated UI test failures.
 - Resolution: start the synthetic integration case at 29 seconds and verify the post-completion five-second checkpoint. CI #182 / 44949435610 passed all 48 Android 15 tests, plus unit/build and Room v1-v4 checks.
 - Release-only signing/manifest gates were skipped for the normal push. Continue subtitle and production Glass work; phone acceptance remains pending.
+
+## 2026-11-21 — Real catalogue navigation replaces demo-only tabs
+- The production library now has functional Home/Movies/Shows/Search destinations; category tabs filter actual indexed titles and Search focuses local-only title search.
+- Android 15 instrumentation checks content filtering, selected state and search focus. Verification pending. Existing Glass Lab remains a visual renderer preview; production Glass has not been enabled.

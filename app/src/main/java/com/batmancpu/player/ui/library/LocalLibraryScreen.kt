@@ -10,7 +10,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,6 +30,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -137,7 +138,13 @@ internal fun LocalLibraryContent(
     val matchingLibrary = library.takeIf { it.tree == folder.tree }
     val loading = matchingLibrary == null || library.isLoading || snapshot.tree != folder.tree
     var query by rememberSaveable { mutableStateOf("") }
-    var filter by rememberSaveable { mutableStateOf(CatalogueFilter.ALL) }
+    var selectedDestination by rememberSaveable { mutableIntStateOf(0) }
+    val filter = when (selectedDestination) {
+        1 -> CatalogueFilter.MOVIES
+        2 -> CatalogueFilter.SERIES
+        else -> CatalogueFilter.ALL
+    }
+    val searchFocusRequester = remember { FocusRequester() }
     var selectedKey by rememberSaveable { mutableStateOf<String?>(null) }
     var settings by rememberSaveable { mutableStateOf(false) }
     var confirmForget by rememberSaveable { mutableStateOf(false) }
@@ -167,17 +174,48 @@ internal fun LocalLibraryContent(
             scope.launch { snackbar.showSnackbar(started) }
         }
     }
+    val destinations = listOf(
+        PlayerGlyph.HOME to R.string.nav_home,
+        PlayerGlyph.MOVIES to R.string.nav_movies,
+        PlayerGlyph.SHOWS to R.string.nav_shows,
+        PlayerGlyph.SEARCH to R.string.nav_search,
+    )
     Scaffold(
         containerColor = PlayerPalette.background,
         contentColor = PlayerPalette.textPrimary,
         snackbarHost = { SnackbarHost(snackbar) },
         contentWindowInsets = WindowInsets.safeDrawing,
+        bottomBar = {
+            NavigationBar(containerColor = PlayerPalette.surface, tonalElevation = 0.dp) {
+                destinations.forEachIndexed { index, (glyph, label) ->
+                    NavigationBarItem(
+                        selected = selectedDestination == index,
+                        onClick = {
+                            selectedDestination = index
+                            selectedKey = null
+                            if (index == 3) {
+                                searchFocusRequester.requestFocus()
+                            } else {
+                                query = ""
+                                focus.clearFocus()
+                            }
+                        },
+                        icon = { PlayerGlyphIcon(glyph, null, size = 22.dp) },
+                        label = { Text(stringResource(label), maxLines = 1) },
+                        alwaysShowLabel = true,
+                    )
+                }
+            }
+        },
     ) { padding ->
         Column(Modifier.fillMaxSize().padding(padding).padding(horizontal = 20.dp)) {
             Row(Modifier.fillMaxWidth().padding(top = 16.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
                     Text(stringResource(R.string.catalogue_kicker), style = MaterialTheme.typography.labelSmall, color = PlayerPalette.accentMuted)
-                    Text(stringResource(R.string.catalogue_title), style = MaterialTheme.typography.headlineLarge)
+                    Text(
+                        stringResource(if (selectedDestination == 3) R.string.nav_search else R.string.catalogue_title),
+                        style = MaterialTheme.typography.headlineLarge,
+                    )
                 }
                 TextButton(onClick = { settings = true }) { Text(stringResource(R.string.catalogue_manage)) }
             }
@@ -195,21 +233,10 @@ internal fun LocalLibraryContent(
                 value = query, onValueChange = { query = it }, singleLine = true,
                 label = { Text(stringResource(R.string.catalogue_search)) },
                 leadingIcon = { PlayerGlyphIcon(PlayerGlyph.SEARCH, null) },
-                modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(24.dp),
+                modifier = Modifier.fillMaxWidth().focusRequester(searchFocusRequester),
+                shape = RoundedCornerShape(24.dp),
             )
-            Row(Modifier.fillMaxWidth().padding(vertical = 12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Row(Modifier.weight(1f).horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CatalogueFilter.entries.forEach { choice ->
-                    FilterChip(selected = filter == choice, onClick = { filter = choice }, label = {
-                        Text(stringResource(when (choice) {
-                            CatalogueFilter.ALL -> R.string.catalogue_all
-                            CatalogueFilter.MOVIES -> R.string.nav_movies
-                            CatalogueFilter.SERIES -> R.string.nav_shows
-                        }))
-                    })
-                }
-                }
-            }
+            Spacer(Modifier.height(12.dp))
             when {
                 library.isScanning -> {
                     LinearProgressIndicator(Modifier.fillMaxWidth())
@@ -225,7 +252,15 @@ internal fun LocalLibraryContent(
                 Column(Modifier.fillMaxWidth().padding(vertical = 40.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     Text(stringResource(if (titles.isEmpty()) R.string.library_index_empty else R.string.catalogue_no_matches), style = MaterialTheme.typography.titleLarge)
                     if (titles.isEmpty()) Button(onClick = ::scanAction) { Text(stringResource(R.string.library_scan_start)) }
-                    else TextButton(onClick = { query = ""; filter = CatalogueFilter.ALL }) { Text(stringResource(R.string.catalogue_clear_search)) }
+                    else TextButton(onClick = { query = ""; selectedDestination = 0; focus.clearFocus() }) { Text(stringResource(R.string.catalogue_clear_search)) }
+                }
+            } else if (selectedDestination == 3 && query.isBlank()) {
+                Box(Modifier.fillMaxWidth().padding(vertical = 40.dp), contentAlignment = Alignment.Center) {
+                    Text(
+                        stringResource(R.string.catalogue_search_prompt),
+                        color = PlayerPalette.textSecondary,
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
                 }
             } else if (query.isBlank() && filter == CatalogueFilter.ALL) {
                 LazyColumn(

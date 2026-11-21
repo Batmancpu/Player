@@ -372,3 +372,8 @@ The unfiltered library uses horizontal Movies and TV Shows shelves; text search 
 - CI #180 timed out because its 20-second test wait was shorter than the generated 30-second test video; CI #181 repeated that stale test and the Android 15 emulator also showed a Pixel Launcher ANR.
 - CI #182 / 44949435610 passed the corrected full 48-test Android 15 suite, unit tests, build and Room v1-v4 schema checks. Release-only signing/manifest checks were skipped on this ordinary push.
 - The completed playback checkpoint remains zero/paused through the five-second timer and other lifecycle saves. Next: Phase 5 subtitle controls, then production navigation/Glass and the performance batch.
+
+## 2026-11-21 — Production library navigation pass (CI pending)
+- The library now has functional Home, Movies, Shows and Search bottom destinations. Home shows grouped shelves, Movies/Shows apply the real title filter, and Search focuses the offline search field and presents a clear prompt when empty.
+- Added Android 15 navigation/selected-semantics/search-focus instrumentation. The bar is plain Compose for this behavior pass; production Glass remains deferred to Phase 6.
+- Next: inspect CI screenshots/tests, fix any issue, then continue subtitle controls and the final Glass/performance work.

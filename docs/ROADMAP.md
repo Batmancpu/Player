@@ -169,3 +169,8 @@ The user requested a signed APK checkpoint now and wants implementation to conti
 - CI #182 / 44949435610 passed all 48 Android 15 instrumentation tests, unit tests, build and Room v1-v4 schema verification, including the near-end synthetic playback test and delayed checkpoint assertion.
 - CI #180/#181 failures were test timing issues against a 30-second synthetic fixture; #181 also had a Pixel Launcher ANR. Release-only checks were skipped in #182.
 - Continue Phase 5 subtitle tools and the planned production navigation/Glass work. No OPPO acceptance or FPS evidence is claimed.
+
+## 2026-11-21 — Functional library navigation implementation
+- Added Home, Movies, Shows and Search destinations for the local catalogue. Movie and series destinations use the same real parsed Room catalogue; Home keeps both shelves and Search focuses local title search.
+- Replaced redundant type chips. Search has an empty prompt, and tab selection uses Material3 semantics. CI pending; OPPO layout/accessibility still needs end-of-app validation.
+- The production bar is currently a solid fallback; bounded Glass is still scheduled for Phase 6 after navigation works.

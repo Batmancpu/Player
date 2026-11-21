@@ -466,3 +466,8 @@ When the unfiltered library is open, movie titles and series now appear in separ
 - CI #180 compiled and ran 47 tests but the new natural-completion case waited 20 seconds from the start of the CI-generated 30-second fixture. CI #181 also used that old test setup and had a Pixel Launcher ANR that disrupted unrelated UI cases.
 - CI #182 / 44949435610 verified the corrected 29-second start: all 48 Android 15 instrumentation tests passed, along with unit tests, build and Room v1-v4 schema checks. Release-only signing/manifest checks were skipped on this development push.
 - Natural completion checkpoints zero/paused; periodic, lifecycle and disposal saves preserve that state. Next: continue subtitle controls and production navigation/Glass; keep final handset acceptance and performance evidence pending.
+
+## 2026-11-21 — Production library navigation batch started
+- Added real Home, Movies, Shows and Search destinations to the offline library. Movies/Shows tabs filter indexed titles, Search focuses the local title field, and Home shows the grouped shelves. An actually empty library still shows its existing scan action before the Search prompt.
+- The production bar remains solid Compose while navigation and semantics are validated. Bounded Glass stays in its lab until the planned Glass phase.
+- Automated Android 15 navigation coverage is added; CI pending. Next: fix any navigation/test issue, then continue Phase 5 caption tools and production Glass/performance batches.

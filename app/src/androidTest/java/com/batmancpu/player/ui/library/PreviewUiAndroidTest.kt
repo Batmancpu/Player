@@ -112,6 +112,21 @@ class PreviewUiAndroidTest {
         assertTrue("No clickable ancestor", target?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true)
     }
 
+
+    private fun clickLastClickableLabel(label: String) {
+        var target: AccessibilityNodeInfo? = null
+        fun visit(node: AccessibilityNodeInfo) {
+            if (node.text?.toString() == label) {
+                var clickable: AccessibilityNodeInfo? = node
+                while (clickable != null && !clickable.isClickable) clickable = clickable.parent
+                if (clickable != null) target = clickable
+            }
+            for (index in 0 until node.childCount) node.getChild(index)?.let(::visit)
+        }
+        automation.rootInActiveWindow?.let(::visit)
+        assertTrue("No clickable navigation item for $label", target?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true)
+    }
+
     private fun scrollForwardOnSmallestScrollable(): Boolean {
         val root = automation.rootInActiveWindow ?: return false
         val scrollableNodes = mutableListOf<Pair<Int, AccessibilityNodeInfo>>()
@@ -481,6 +496,51 @@ class PreviewUiAndroidTest {
             text("Back to library")
             click(text("Back to library"))
             assertEquals("Preview provides an explicit route back to the library", 1, backCount.get())
+        } finally {
+            instrumentation.runOnMainSync { activity.finish() }
+        }
+    }
+
+    @Test(timeout = 35_000) fun productionNavigationOpensHomeMoviesShowsAndSearch() {
+        val activity = launch()
+        val files = listOf(
+            DiscoveredLocalMedia("movie-A", "Aurora.2022.mp4", LocalMediaKind.VIDEO),
+            DiscoveredLocalMedia("episode-A", "North.Star.S01E01.mkv", LocalMediaKind.VIDEO),
+        )
+        try {
+            instrumentation.runOnMainSync {
+                activity.setContent {
+                    PlayerTheme {
+                        LocalLibraryContent(
+                            LocalFolder("synthetic-tree", "Synthetic local folder"),
+                            LibrarySessionState(tree = "synthetic-tree", media = files, hasCompletedScan = true),
+                            CatalogueSnapshot("synthetic-tree", LocalCatalogue.build(files)),
+                            onScan = {}, onCancel = {}, scanStillRunning = { false }, onChooseFolder = {},
+                            onPlay = {}, onOpenGlassLab = {},
+                        )
+                    }
+                }
+            }
+            assertTrue(awaitCondition(3_000) { find { it.text?.toString() == "Aurora" } != null })
+            assertTrue("Home is selected initially", hasSelectedSemanticsOnLabelOrParent("Home"))
+
+            clickLastClickableLabel("Movies")
+            assertTrue("Movies selection filters the catalogue", awaitCondition(3_000) {
+                find { it.text?.toString() == "Aurora" } != null && find { it.text?.toString() == "North Star" } == null
+            })
+            assertTrue("Movies tab exposes selected semantics", hasSelectedSemanticsOnLabelOrParent("Movies"))
+
+            clickLastClickableLabel("Shows")
+            assertTrue("Shows selection filters the catalogue", awaitCondition(3_000) {
+                find { it.text?.toString() == "North Star" } != null && find { it.text?.toString() == "Aurora" } == null
+            })
+            assertTrue("Shows tab exposes selected semantics", hasSelectedSemanticsOnLabelOrParent("Shows"))
+
+            clickLastClickableLabel("Search")
+            assertTrue("Search destination focuses the accessible title field", awaitCondition(3_000) {
+                find { it.className?.toString()?.contains("EditText") == true }?.isFocused == true
+            })
+            assertTrue("Search tab exposes selected semantics", hasSelectedSemanticsOnLabelOrParent("Search"))
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
         }
