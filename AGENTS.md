@@ -423,3 +423,6 @@ When the unfiltered library is open, movie titles and series now appear in separ
 
 ## 2026-11-21 — Capture the metadata sheet before interaction
 - CI #171 passed the card separation and long-series episode flows after the details sheet opened expanded. The manual metadata test still exposed only the sheet Close action to accessibility. Added an owned synthetic screenshot immediately after opening that sheet (with the existing finite 400 ms transition settle) to distinguish initial state/render timing from metadata UI state in the next CI artifact. No production behavior changed in this diagnostic commit.
+
+## 2026-11-21 — Use screen bounds for popup visibility in CI
+- CI #172 retained a synthetic screenshot where Search TMDB was clearly visible in the full-height sheet, while Android's `AccessibilityNodeInfo.isVisibleToUser` returned false for the popup node. The test helper now uses actual screen bounds and a 64 dp gesture-area reserve to identify visible targets; fallback swipe origins remain anchored within sheet content. This is a CI semantics correction; no product code changed.

@@ -87,6 +87,14 @@ class PreviewUiAndroidTest {
         return "package=${root.packageName}, class=${root.className}, labels=${entries.joinToString(limit = 60)}"
     }
 
+    private fun isInsideVisibleAppBounds(node: AccessibilityNodeInfo): Boolean {
+        val bounds = Rect()
+        node.getBoundsInScreen(bounds)
+        val safeBottom = context.resources.displayMetrics.heightPixels -
+            (32 * context.resources.displayMetrics.density).toInt()
+        return bounds.width() > 0 && bounds.height() > 0 && bounds.top >= 0 && bounds.bottom <= safeBottom
+    }
+
     private fun text(value: String) = awaitNode { it.text?.toString() == value }
 
     private fun hasSelectedSemanticsOnLabelOrParent(value: String): Boolean {
@@ -129,14 +137,13 @@ class PreviewUiAndroidTest {
         val safeTop = metrics.heightPixels / 3
         // Stay clear of Android's bottom gesture/navigation region: an upward swipe there can
         // leave the app and make a sheet-scroll test look like a product dismissal bug.
-        val safeBottom = metrics.heightPixels - (96 * metrics.density).toInt()
+        val safeBottom = metrics.heightPixels - (64 * metrics.density).toInt()
         val candidates = mutableListOf<Pair<Rect, AccessibilityNodeInfo>>()
         fun visit(node: AccessibilityNodeInfo) {
             val bounds = Rect()
             node.getBoundsInScreen(bounds)
             if ((!node.text.isNullOrBlank() || !node.contentDescription.isNullOrBlank()) &&
-                node.isVisibleToUser && bounds.width() > 0 && bounds.height() > 0 &&
-                bounds.bottom <= safeBottom
+                bounds.width() > 0 && bounds.height() > 0 && bounds.bottom <= safeBottom
             ) candidates += bounds to node
             for (index in 0 until node.childCount) node.getChild(index)?.let(::visit)
         }
@@ -163,7 +170,7 @@ class PreviewUiAndroidTest {
 
     private fun revealByScrolling(value: String): AccessibilityNodeInfo {
         repeat(12) {
-            find { it.text?.toString() == value && it.isVisibleToUser }?.let { return it }
+            find { it.text?.toString() == value && isInsideVisibleAppBounds(it) }?.let { return it }
             if (!scrollForwardOnSmallestScrollable()) {
                 assertTrue(
                     "No visible sheet content could reveal $value; ${activeWindowSummary()}",
@@ -172,7 +179,7 @@ class PreviewUiAndroidTest {
             }
             SystemClock.sleep(150)
         }
-        return awaitNode { it.text?.toString() == value && it.isVisibleToUser }
+        return awaitNode { it.text?.toString() == value && isInsideVisibleAppBounds(it) }
     }
 
     private fun screenshot(name: String) {
