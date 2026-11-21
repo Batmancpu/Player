@@ -253,3 +253,10 @@ CI90 / 43678768709 passed the full Android15 integration suite including the cor
 - **Regression evidence:** seven focused Python tests passed locally. CI #99 / 43740997631 passed all 17 Android 15 integration tests, the full Python script suite, debug/release builds, schema validation, compiled manifest check (`allowBackup=false`, both rules referenced, no unexpected permissions/debug provider), APK signature and pinned permanent certificate. VersionCode99 APK SHA-256 `29f3945c4c8aa5e1501e90a3f05ad5de7685d7acc543821bb3fc74e57f9296fb` is CI-only; release publishing was skipped. No app runtime, permission, network, schema or signing identity changed.
 - **Remaining limit:** Android 16 QPR2 cross-platform transfer needs real iOS bundle ID/Team ID/content version. There is no iOS Player target; that mode is not claimed as excluded and no placeholder IDs are used.
 - **Next:** keep actual OEM transfer behavior unverified. Continue independent privacy work on explicit opt-in/destinations; do not add persistent credentials or HTTP until their design/tests pass.
+
+
+## H-024 — Room v3 schema and offline metadata reconciliation
+- **Status:** Verification pending CI.
+- **Change:** Room v3 adds provider metadata keyed by TMDB ID/type and keeps local SAF document matches separate. The v2→v3 migration is explicit; cache visibility requires a user-confirmed binding; stale associations are removed after a successful rescan.
+- **Risk:** A malformed generated schema, migration mismatch, or cache row surviving the final reference would compromise offline correctness. Android tests exercise v1→v3 migration, unknown document rejection, unsafe image path rejection and stale metadata cleanup; CI validates the exported v3 snapshot.
+- **Next:** Review CI tests and exact generated schema artifact, commit the validated snapshot, then mark resolved.

@@ -385,3 +385,6 @@ CI #99 / 43740997631 completed successfully. Android 15 instrumentation reports 
 
 ## 2026-11-21 — Final APK cadence
 The user wants a single integrated signed APK only after the complete app is ready, with no routine phone install pauses during development. CI remains the verification gate; normal development no longer uploads debug APK artifacts or prepares release signing. Explicit candidate builds use the permanent certificate and publish only at the final phone-test milestone. No OPPO acceptance or performance claim is implied.
+
+## 2026-11-21 — Room v3 provider metadata foundation
+A focused Phase 2 database slice is on main: cached TMDB metadata is keyed separately from SAF identity and is exposed only after a user-confirmed mapping. The explicit v2→v3 migration, v1→v3 migration test, cache tests and generated-schema CI validation are in progress. This is not a network-enabled or user-facing metadata feature yet. No APK should be distributed until one complete integrated candidate is ready.

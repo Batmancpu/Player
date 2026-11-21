@@ -1,3 +1,13 @@
+## Current handoff — 2026-11-21
+
+- Main-only development continues. CI #101 / run 44887278786 passed, including Android 15 instrumentation, after the CI policy change. The latest public APK remains signed v0.1.91; no new user installable APK is produced during intermediate implementation.
+- User confirmed v0.1.79 selected-folder scanning, title/year recognition, airplane-mode persistence and folder switching. v0.1.91 preview and actual OPPO behavior/performance are not confirmed; Phase 1 is not accepted.
+- Current main adds a Room v3 offline TMDB metadata cache foundation with an explicit migration and test coverage. Metadata is visible only through user-confirmed document matches. CI for this change is pending; inspect and commit the generated v3 schema artifact only after validation.
+- No network permission or HTTP integration is added yet. Preserve one read-only SAF tree, disabled backup, no source-media writes/uploads, no telemetry, the application ID and signing certificate.
+- Next: verify the migration/instrumentation/schema gate, then implement and test explicit opt-in lookup, manual match UX, artwork caching/attribution and offline presentation as integrated slices. Publish one signed candidate only after the complete app is ready; provide one final OPPO checklist and keep handset acceptance/performance pending until reported.
+
+---
+
 ## Current handoff — 2026-11-15
 
 - Live GitHub confirms `main` is the only branch; there are no open PRs. Implementation commit `20a3bceb2fac31cf381bcb265a4424e35cf3fe8f` passed CI #99 / 43740997631. Latest signed Release remains [v0.1.91](https://github.com/Batmancpu/Player/releases/tag/v0.1.91), versionCode 91, APK SHA-256 `7c9ff8287405be9b1f607259608d84a256e5aed1fcc4cea24e3f9b882dd05e17`. Preserve application ID and permanent certificate.

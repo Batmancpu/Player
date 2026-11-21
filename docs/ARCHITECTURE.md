@@ -1,3 +1,7 @@
+## Status update — 2026-11-21
+
+Phase 2 persistence groundwork now adds a provider metadata table (Room v3) separate from SAF document identities, with user-confirmed joins. Explicit 2→3 migration and automated cache reconciliation tests are pending CI. No network transport or INTERNET permission exists in this slice; the actual OPPO candidate/performance remains unverified.
+
 # Architecture
 
 Status (2026-11-15): the one-tree offline SAF/Room library passed automated tests; user confirmed v0.1.79 behavior on OPPO. The newer catalogue/details/local Media3 preview in signed v0.1.91 remains untested on OPPO. Room v1/v2 snapshots and manual-match migration are committed; CI #99 / 43740997631 passed 17 Android 15 integration tests, schema/build/manifest/signing/certificate gates and all Python regressions. Explicit legacy Android and Android 12+ cloud/device-transfer exclusions cover all app-data domains; H-023 is resolved for configured Android modes. Its versionCode99 artifact is CI-only. No HTTP client or network permission is implemented. H-021/H-022/H-023 are resolved. Package identity and permanent signing remain unchanged.

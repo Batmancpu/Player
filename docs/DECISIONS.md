@@ -153,3 +153,7 @@ Latest user requests substantial usable progress and permits further independent
 **Accepted:** Continue the six engineering phases with automated CI, without routine user phone-install gates. Do not upload intermediate debug APK artifacts or sign a candidate for ordinary commits. When the complete integrated app is ready, create one signed GitHub Release APK and provide a full test checklist. A final verified candidate may then receive higher-version fixes from the user's report.
 **Reason:** User wants to conserve testing effort and install only after the whole polished app is ready. CI may still compile internal debug/test APKs to execute Android instrumentation; these are not distributed as user test builds.
 **Constraints:** Preserve the existing app ID, permanent certificate, strictly increasing versionCode, one-folder SAF/privacy behavior and all design/performance acceptance rules. Never state phone performance/acceptance without OPPO evidence.
+
+
+### D-032 — Keep provider metadata separate from local document identity (Accepted)
+Provider metadata is cached by TMDB ID/media type and joined to a SAF document only after an explicit user confirmation. Automatic matching never mutates an override. Full successful rescans clean stale document bindings and unreferenced provider rows transactionally. This design adds no network or credential permission by itself; it makes no metadata visible until the explicit match exists.

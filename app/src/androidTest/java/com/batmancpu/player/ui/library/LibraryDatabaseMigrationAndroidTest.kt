@@ -15,18 +15,18 @@ import org.junit.Test
 /**
  * Builds an actual v1 SQLite database from the committed Room schema, then
  * opens it with the production Room builder so Room executes and validates
- * the real v1-to-v2 migration. This deliberately avoids MigrationTestHelper:
+ * the real v1-to-v3 migration chain. This deliberately avoids MigrationTestHelper:
  * Room 2.8.5's bundled schema serializers crash in the Android test runtime.
  */
 class LibraryDatabaseMigrationAndroidTest {
     private val instrumentation get() = InstrumentationRegistry.getInstrumentation()
     private val context get() = instrumentation.targetContext
-    private val databaseName = "player-library-v1-to-v2-test.db"
+    private val databaseName = "player-library-v1-to-v3-test.db"
     private val schemaAsset =
         "com.batmancpu.player.ui.library.PlayerLibraryDatabase/1.json"
 
     @Test
-    fun v1MediaSurvivesAndManualOverrideTableWorksAfterMigration() = runBlocking {
+    fun v1MediaSurvivesAndProviderMetadataTableWorksAfterMigration() = runBlocking {
         context.deleteDatabase(databaseName)
         val file = context.getDatabasePath(databaseName)
         file.parentFile?.mkdirs()
@@ -37,7 +37,10 @@ class LibraryDatabaseMigrationAndroidTest {
                 context,
                 PlayerLibraryDatabase::class.java,
                 databaseName,
-            ).addMigrations(PlayerLibraryDatabase.MIGRATION_1_2).build()
+            ).addMigrations(
+                PlayerLibraryDatabase.MIGRATION_1_2,
+                PlayerLibraryDatabase.MIGRATION_2_3,
+            ).build()
             try {
                 val indexed = upgraded.mediaDao().forTree("synthetic-tree").single()
                 assertEquals("movie-1", indexed.documentId)
@@ -56,6 +59,13 @@ class LibraryDatabaseMigrationAndroidTest {
                     confirmed,
                     upgraded.manualTmdbMatchDao().forDocument("synthetic-tree", "movie-1"),
                 )
+
+                val metadata = CachedTmdbMetadata(
+                    123L, "MOVIE", "Example Movie", 2020, "Offline description",
+                    "/poster.jpg", null, 1_700_000_000_000L,
+                )
+                upgraded.cachedTmdbMetadataDao().upsert(metadata)
+                assertEquals(metadata, upgraded.cachedTmdbMetadataDao().forContent(123L, "MOVIE"))
             } finally {
                 upgraded.close()
             }
@@ -101,3 +111,4 @@ class LibraryDatabaseMigrationAndroidTest {
         }
     }
 }
+

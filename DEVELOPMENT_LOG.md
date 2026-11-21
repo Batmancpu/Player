@@ -815,3 +815,12 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 - CI still compiles/runs debug instrumentation binaries for regression coverage, but no longer uploads the intermediate debug APK artifact. Release signing and the installable signed APK artifact are limited to an explicit release-candidate request (workflow dispatch with publish enabled or the controlled `release(test):` commit). Only publish that candidate after complete-app readiness.
 - The existing `com.batmancpu.player` identity, permanent certificate, versionCode policy, privacy boundaries and main-only workflow are preserved. Current latest published Release remains v0.1.91; no new user test APK is produced by this policy commit.
 - Verification: pending CI on this workflow change. Next continue the opt-in TMDB/artwork integration and later premium UI/player phases without phone-install pauses; request the user’s one test only after the integrated app candidate is ready.
+
+
+## 2026-11-21 — Offline provider metadata cache foundation
+
+- Extended the Room database from v2 to v3 with `cached_tmdb_metadata`, keyed only by provider TMDB ID and media type. Added an explicit 2→3 migration; v1→2 remains unchanged.
+- Metadata is exposed to a selected library only through an explicit per-document match. Confirmation validates provider identity, bounded text/image paths, and indexed video identities inside a transaction. Successful full rescans remove stale bindings and orphan provider metadata; failed/cancelled scans retain the existing index.
+- Added Android instrumentation for the v1→v3 production migration, visibility only after explicit confirmation, rejection of unknown document IDs/unsafe artwork paths, and stale-cache cleanup. CI now validates and uploads exact v1/v2/v3 schema snapshots.
+- No network request, INTERNET permission, credential flow, source-media write or downloadable APK is part of this change. Verification pending CI; generated schema v3 must be inspected and committed from the CI artifact.
+- Next: pass CI and inspect schema output; continue user-controlled metadata lookup, attribution, and integrated presentation before preparing one complete phone-test APK.

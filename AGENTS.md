@@ -207,3 +207,5 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-21 — User clarified the test APK should arrive once, after the complete integrated app is ready. CI now keeps automated unit/instrumentation builds but does not upload intermediate debug artifacts or prepare release signing on ordinary pushes. Signed APK assembly/upload/publication is limited to an explicitly requested `release(test):` candidate. No user phone test is requested per development step. Continue integration until the polished app is ready; then publish one signed APK for the complete phone checklist.
+
+- 2026-11-21 — Added Room schema v3 for bounded offline TMDB provider metadata, an explicit 2→3 migration, cache binding/reconciliation tests and CI schema checks. Metadata remains unrequested until a user confirms a match; this slice adds no HTTP, permission, credential UI, or APK. Verification: CI pending. Next: inspect CI and exact generated schema artifact, then continue the explicit opt-in lookup integration.

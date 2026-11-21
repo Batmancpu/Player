@@ -239,3 +239,6 @@ After publishing v0.1.91, began a focused schema-only update: Room/KSP exports v
 
 ## 2026-11-21 — One complete-app test APK
 The user clarified that they want the whole app built before receiving an installable test APK. Continue all six engineering phases and CI autonomously; do not ask for phone checks or publish APKs after each step. Updated CI to withhold intermediate debug artifacts and only sign/upload a Release candidate for an explicit candidate request. The single final candidate must preserve the permanent signing identity and include a complete OPPO checklist.
+
+## 2026-11-21 — Continue without per-step APKs
+The user reiterated that an APK should not be produced after every step. Keep implementing and validating the integrated app; prepare one signed APK when the full experience is ready. The Room v3 offline metadata-cache foundation is the current development slice, with automated migration/cache/schema checks and no device acceptance claim.

@@ -1,3 +1,9 @@
+## Current implementation update — 2026-11-21
+
+Room schema v3 adds offline provider metadata records keyed by TMDB ID/type, with a separate document-to-provider match table. The migration preserves v1/v2 and metadata becomes visible in a library only after explicit user confirmation. Android tests and CI schema v3 checks are being added now. This is persistence groundwork, not a completed TMDB integration: no lookup UI, HTTP, INTERNET permission, artwork fetch, attribution or Phase 2 acceptance yet. The candidate APK policy remains one integrated complete app; CI checks continue without distributing intermediate APKs.
+
+---
+
 ## Current implementation status — 2026-11-15
 
 The user-reported v0.1.79 checks on OPPO CPH2531 confirm four movie/video titles with years, selected-folder use, library persistence after airplane-mode restart and folder switching. Cancellation feedback was unclear; Glass Lab looked broken in that version. The newer offline catalogue/details, local Media3 playback/resume, scan feedback and Glass preview are in signed v0.1.91, but that preview and its performance remain untested on OPPO. Phase 1 is not accepted.
