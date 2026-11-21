@@ -922,3 +922,9 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 - Search results require selecting one candidate and tapping a second confirmation. Confirm validates the current title/tree and still-enabled credential before writing provider metadata and matches for the selected movie or all episodes in that series to Room. Users can remove the match; cached details work offline.
 - Added synthetic Android controller and UI tests for no request on opening details, manual dispatch, separate confirmation, and cached offline persistence. Expanded the release manifest allowlist and unit regression to permit only the required INTERNET permission plus the AndroidX dynamic receiver permission; no broad media/storage permission was added. No API secret is bundled. Scan, rescan, startup, scroll and local playback do not call the provider.
 - Updated privacy, architecture, roadmap, project context and handoff. CI pending. Artwork downloading/rendering, real OPPO provider traffic, Glass polish and performance remain outstanding; no user APK until the integrated app is ready.
+
+
+## 2026-11-21 — Fix metadata controller test import
+
+- CI #116 / 44898155397 compiled production code but failed before Android instrumentation because the new controller Android test omitted the import for OfflineMetadataCache; its subsequent unresolved title-property diagnostic was a consequence of that missing symbol.
+- Added the explicit library-package import. No application behavior or permission changed. No signed/user-installable APK or Release was produced. Follow-up CI must run the controller/UI and privacy-manifest tests before this integrated slice is verified.

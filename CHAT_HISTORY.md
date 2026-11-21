@@ -295,3 +295,8 @@ CI #113 showed that the synthetic Android accessibility root did not expose a sc
 ## 2026-11-21 — Manual TMDB matching integration
 
 After green CI #115 for the bounded transport and Credits route, integrated explicit search from title details, selection of one provider candidate and separate confirmation into Room. Controller verifies the currently selected SAF tree/title and current credential consent; cached provider data is available offline and a manual unmatch action is included. Search is never triggered by scan, startup, browse or playback. Manifest now includes the narrow install-time INTERNET permission for this user-opt-in stage; no broad storage permission, shared API key, backend or source-media write is added. Added synthetic Android controller/UI tests and updated manifest/privacy gates. No signed/user-installable APK or Release was produced. Current CI pending; next is bounded artwork cache/display and offline/accessibility verification.
+
+
+## 2026-11-21 — Fix metadata test compile error
+
+CI #116 compiled production code, then failed compiling the new Android controller test because it referenced OfflineMetadataCache without importing it. Added the missing import; no app behavior, permission or APK changed. Follow-up CI still needs to verify instrumentation and manifest privacy checks.

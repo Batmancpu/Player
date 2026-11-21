@@ -245,3 +245,6 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-21 — CI #115 / 44896086296 passed Android 15 instrumentation plus unit/build/schema/privacy gates for TMDB transport and Credits discoverability. Integrated explicit detail-sheet search, user-selected result plus separate confirmation, current-tree validation, fail-closed credential recheck and Room cached offline details. Added only the opt-in flow's INTERNET permission and updated manifest permission tests; source scan/playback remain local. CI for this integration is pending. No signed/user-installable APK or Release. Next: implement bounded TMDB artwork caching/rendering and offline/accessibility tests; wait for one complete integrated app before requesting phone installation.
+
+
+- 2026-11-21 — CI #116 / 44898155397 stopped at Android test compilation because MetadataLookupControllerAndroidTest referenced OfflineMetadataCache without importing its ui.library package; the secondary unresolved property was compiler fallout. Added the missing test import. Production sources compiled; instrumentation and manifest verification still need rerunning. No APK/Release. Next: check the follow-up CI, fix any real integration failures, then proceed to bounded artwork cache/display.

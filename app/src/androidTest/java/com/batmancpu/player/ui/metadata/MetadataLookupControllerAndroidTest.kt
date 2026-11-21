@@ -6,6 +6,7 @@ import com.batmancpu.player.ui.library.DiscoveredLocalMedia
 import com.batmancpu.player.ui.library.LocalCatalogue
 import com.batmancpu.player.ui.library.LocalMediaKind
 import com.batmancpu.player.ui.library.OfflineLibraryIndex
+import com.batmancpu.player.ui.library.OfflineMetadataCache
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.CoroutineScope
