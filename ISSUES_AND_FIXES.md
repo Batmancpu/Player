@@ -426,3 +426,11 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - **Root-cause confidence:** High. Source had a vertically scrollable Column containing another LazyColumn for episodes, causing the sheet and nested scroll containers to compete for vertical drags.
 - **Fix:** One LazyColumn now owns all title, movie/show episode, and metadata content. Episode rows retain stable keys and lazy composition.
 - **Regression coverage:** Season-2 indexed playback and manual metadata search/confirmation cases in CI #163.
+
+
+## H-032 — Detail-sheet refactor retained stale block closures
+- **Status:** Removed; CI verification pending.
+- **Evidence:** Source review after `0f8b514` showed the old outer Column/Modal/if closing braces were carried into the new metadata item, duplicating the replacement structure.
+- **Root-cause confidence:** Confirmed source-edit mistake. CI has not yet established whether the intermediate commit compiled.
+- **Fix:** Remove the obsolete outer closures; retain the metadata Surface and new LazyColumn/Modal/selected-state closures.
+- **Regression coverage:** Kotlin compilation and Android 15 UI tests in CI #164.

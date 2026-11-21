@@ -489,3 +489,8 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 - The attempted test gesture fallback still dismissed the modal. The source's nested vertical scroll column and episode LazyColumn were competing with ModalBottomSheet's drag handling.
 - Refactored the sheet to one LazyColumn containing title/year, movie action or lazy season/episode rows, and metadata card. This fixes scroll ownership rather than adding more coordinate-specific test behavior.
 - CI #163 must verify the behavior. No signed APK has been published from the failed #158–#162 runs.
+
+
+## 2026-11-21 — Fix a stale closure in the detail-sheet refactor
+- Review after `0f8b514` caught old outer closing braces left inside the new metadata item. They would prevent compilation.
+- Removed the duplicate closures before treating the scroll refactor as verified. CI #164 must compile and run the tests; no APK/release is considered until then.

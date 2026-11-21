@@ -439,9 +439,6 @@ internal fun LocalLibraryContent(
                         }
                     }
                 }
-
-            }
-        }
                 }
             }
         }

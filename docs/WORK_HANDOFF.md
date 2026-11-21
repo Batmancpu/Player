@@ -1,4 +1,9 @@
 ## Current handoff — 2026-11-21 (latest)
+- README/artwork is committed. The user wants a signed APK now, then continued work in four visible batches without installation waits.
+- Details screen changed from nested vertical scrolling to one LazyColumn (`0f8b514`); its first edit carried stale outer closing braces. Corrected immediately in this commit. CI #163 may test the intermediate tree; CI #164 is required for the corrected source.
+- Earlier provider regression is fixed; current automated failures were season-episode and metadata sheet scrolling. Release attempt #161 skipped signing after failed tests. Do not re-trigger release until the corrected detail list passes CI.
+- Latest signed release v0.1.91; no OPPO acceptance or performance evidence. Preserve package identity/certificate, disabled backup, single read-only SAF tree and no source media writes.
+-## Current handoff — 2026-11-21 (latest)
 - README and original concept/synthetic CI artwork are committed on main.
 - CI #156 passed 46/46 Android tests. #158/#159 caught a missing debug-only SyntheticSafProvider; restored. #160/#161 then caught 2 UI scroll failures; #162 reproduced them because the modal consumed vertical drags from nested scrollable content.
 - Main now replaces the nested details Column/LazyColumn with one LazyColumn for title/year, movie/show rows, lazy episode groups and metadata card. CI #163 is the next required verification.

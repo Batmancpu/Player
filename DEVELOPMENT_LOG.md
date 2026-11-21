@@ -1256,3 +1256,9 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - CI #162 / https://github.com/Batmancpu/Player/actions/runs/44936962977 failed the two long-sheet UI cases again. Logs showed the active window had returned to Pixel Launcher after in-sheet swipes. The outer vertical-scroll Column plus inner height-capped episode LazyColumn allowed ModalBottomSheet to consume the gesture.
 - Rebuilt details as one LazyColumn for title/year, movie action or lazily composed season/episode rows, and the metadata card. This removes nested vertical scroll ownership and retains stable episode keys.
 - Synthetic season-episode selection and manual metadata-confirmation tests exercise the unified scroll container. CI #163 pending. Release workflow #161 correctly skipped signing after failed tests; no APK was published.
+
+
+## 2026-11-21 — Correct detail-sheet refactor closure structure
+- Source review after commit `0f8b514` found that the extracted metadata block still carried the old outer Column/Modal closures, duplicating the new LazyColumn/Modal closures. This would fail Kotlin compilation; CI #163 was queued for the intermediate source.
+- Removed only those stale braces, retaining the metadata-card and new one-LazyColumn hierarchy. The correction is in this commit. Verification is pending CI #164.
+- No APK was produced. Next: confirm source compilation, then run season/metadata UI interactions and complete gates before release.
