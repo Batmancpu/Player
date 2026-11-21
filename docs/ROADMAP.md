@@ -188,3 +188,9 @@ The user requested a signed APK checkpoint now and wants implementation to conti
 ## 2026-11-21 progress update — playback controls
 - Production library navigation now announces selected destination state for accessibility. CI #185 surfaced the issue; explicit state descriptions and regression coverage are committed, awaiting a new CI result.
 - Added local Media3 playback rate choices (0.75×–2×) and synthetic UI coverage. Next: CI verification, remaining subtitle/player control polish, bounded Glass and release-like performance/size checks. Final user-device acceptance and Reno10 performance evidence remain separate gates.
+
+
+## 2026-11-21 verification update — navigation and playback controls
+- CI #203 / 44952898549 passed 50/50 Android 15 instrumentation tests, unit tests, app build and Room v1-v4 schema export. This verifies the production navigation selected-state announcements and local playback-speed menu selection.
+- Release-specific signing, manifest and certificate jobs were skipped on the development push. No APK or release was produced. OPPO device experience and performance remain unverified.
+- Next engineering slice: address the user's Glass Lab dock report, continue subtitle/player controls, then production Glass and the final efficiency/performance review before one integrated signed APK.

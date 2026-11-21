@@ -1352,3 +1352,9 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - Added a playback speed menu to the in-player top controls with 0.75×, 1×, 1.25×, 1.5× and 2× choices. It updates Media3 `PlaybackParameters`, tracks speed changes from the player listener, and labels the button for screen readers. Added Android UI coverage that opens the menu, selects 1.5× and checks the callback.
 - Verification: changes committed on main; CI for the current tree is pending. No local Gradle environment was available in this workspace and no physical device test was run. This is not a release APK.
 - Next: inspect CI compile/test results; fix any failures, then continue subtitle usability and production glass/performance work.
+
+
+## 2026-11-21 — Navigation accessibility and playback speed verified
+- CI #203 / 44952898549 completed successfully on current main. All 50 Android 15 instrumentation tests passed, including the selected navigation state assertion and playback-speed menu selection. Unit tests, debug build and Room schemas v1-v4 verification also passed.
+- Release signing, production-manifest and release-certificate checks were correctly skipped because this was a regular development push; no APK or release was created. This does not represent OPPO device or performance verification.
+- Next: investigate and refine the Glass Lab dock based on the synthetic screenshot and user's report, then continue subtitle/player work and final efficiency review.

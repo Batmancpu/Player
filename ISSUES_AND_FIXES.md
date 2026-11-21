@@ -519,3 +519,8 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 ## 2026-11-21 — Navigation selection reporting and playback speed
 - CI #185 failed one Android 15 assertion because Material3's selected navigation destination was not represented as `AccessibilityNodeInfo.isSelected`. The catalogue screen and movie filter passed. Production items now expose explicit selected/not-selected state descriptions; the updated synthetic assertion is pending CI.
 - Added an accessible Media3 playback-speed menu (0.75×, 1×, 1.25×, 1.5×, 2×) and a synthetic selection test. Build/test verification pending; no APK or Reno10 performance result.
+
+
+## 2026-11-21 — Navigation accessibility fix and playback-speed test verified
+- CI #203 / 44952898549 passed the new explicit navigation selected-state test and playback-speed interaction; full suite 50/50, JVM unit tests/build/Room schemas all green.
+- Prior selected-state failure was in the Android accessibility representation of Material3's selected item; adding an explicit `stateDescription` fixed the regression. No release-only gates or handset tests ran on this development push.
