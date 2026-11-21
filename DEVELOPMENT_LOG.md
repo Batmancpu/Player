@@ -906,3 +906,10 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 - CI #112 / 44895129158 compiled successfully and ran the Android 15 suite, where one Credits UI test failed because “About and credits” sits below the initial viewport in the scrollable settings screen. The failure was a test setup issue, not a missing app control.
 - Updated the synthetic UI helper to scroll the active screen until the requested label is exposed, then tap the Credits action. This models the actual user path and preserves assertions for the TMDB logo and notice.
 - CI #113 contains the bounded TMDB transport groundwork and will also exercise the previous UI test; this fix triggers a follow-up CI run. No APK/Release was produced. Next: verify green UI tests and continue the full manual metadata search/match flow.
+
+
+## 2026-11-21 — Surface About and credits in the settings header
+
+- CI #113 / 44895567876 passed compilation but repeated the one Android UI failure. The attempted test-only scroll helper could not locate an accessibility scroll action in the Compose settings surface, so no scroll occurred.
+- Moved the About and credits action directly below the connection-settings introduction. It is now immediately visible, easier to discover and still opens the local attribution screen. Removed the ineffective helper and restored a direct synthetic tap/assertion.
+- CI #114 covers the earlier test fix; this source change triggers a follow-up run. No installable APK or Release. Next: verify the accessibility/attribution screen and continue the explicit TMDB search, candidate selection, confirmation and offline-display flow.

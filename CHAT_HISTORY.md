@@ -285,3 +285,8 @@ Added the fixed HTTPS API policy/client and synthetic tests for safe normalized 
 ## 2026-11-21 — Credits test viewport fix
 
 CI #112 found that the synthetic UI test attempted to locate the Credits action below the initial viewport without scrolling. Added a scroll-to-visible helper to the test and retained the actual tap and attribution assertions. No app control or network policy change; no APK/Release. CI #113 is running; follow with the broader explicit manual metadata flow.
+
+
+## 2026-11-21 — Make Credits immediately visible
+
+CI #113 showed that the synthetic Android accessibility root did not expose a scroll-forward action for the settings content, so a test-only scroll helper could not reveal the offscreen Credits link. Moved About and credits under the settings intro and returned the test to a direct tap. This improves discoverability and verifies the actual route. No APK/Release; follow-up CI pending.

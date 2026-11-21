@@ -239,3 +239,6 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-21 — CI #112 exposed a Credits UI test that searched below the visible scroll position; implementation was intact. Updated the synthetic test to scroll the settings surface until the Credits action is visible before tapping. CI #113 verifies the TMDB transport and existing Credits path; this test correction triggers a follow-up run. No APK or Release. Next: complete manual search/confirmation UI and offline metadata presentation.
+
+
+- 2026-11-21 — CI #113 repeated the Credits UI failure: the synthetic device did not expose a scroll-forward accessibility action for Compose's vertically scrolling settings column. Moved About and credits near the top of Connection Settings so the required attribution is discoverable immediately; restored a simple visible-action UI assertion. CI #114 covers transport plus the previous viewport test; this correction triggers another run. No APK/Release. Next: complete TMDB manual search/match flow and verify bounded art caching separately.

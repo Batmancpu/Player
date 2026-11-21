@@ -80,16 +80,6 @@ class PreviewUiAndroidTest {
         assertTrue("No clickable ancestor", target?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true)
     }
 
-    private fun revealText(value: String): AccessibilityNodeInfo {
-        repeat(12) {
-            find { it.text?.toString() == value }?.let { return it }
-            val scrollable = find { it.isScrollable } ?: return@repeat
-            if (!scrollable.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)) return@repeat
-            instrumentation.waitForIdleSync()
-        }
-        return awaitNode { it.text?.toString() == value }
-    }
-
     private fun screenshot(name: String) {
         instrumentation.waitForIdleSync()
         SystemClock.sleep(400) // Let the finite sheet/selection transition finish.
@@ -207,7 +197,7 @@ class PreviewUiAndroidTest {
                     }
                 }
             }
-            click(revealText("About and credits"))
+            click(text("About and credits"))
             assertEquals(1, opened.get())
             instrumentation.runOnMainSync {
                 activity.setContent { PlayerTheme { com.batmancpu.player.ui.metadata.MetadataCreditsScreen(onBack = {}) } }

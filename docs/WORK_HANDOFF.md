@@ -33,6 +33,10 @@ CI #103 / 44888950131 passed after the exact generated Room v3 schema commit (20
 
 CI #112 compiled and then failed one synthetic Android UI case because its search for “About and credits” did not scroll the settings screen to that offscreen action. The UI action is present; the test now scrolls to it before tapping. CI #113 verifies client groundwork and repeats the existing suite; the correction triggers the next run. No APK/Release. Continue manual title search → candidate → explicit confirm and offline cache presentation; keep phone testing until one integrated build is ready.
 
+## 2026-11-21 — Credits discoverability correction
+
+CI #113 repeated the Credits accessibility failure because the synthetic device did not expose the Compose scroll action. The About and credits button now appears below the settings introduction, visible immediately; the UI test taps it directly. CI #114 includes the earlier helper attempt; follow-up CI will verify this corrected layout. No APK/Release.
+
 ## Historical handoff snapshots (superseded)
 
 # Historical Codex handoff — 2026-11-14

@@ -112,6 +112,9 @@ internal fun MetadataSettingsContent(
                 Text(stringResource(R.string.metadata_title), style = MaterialTheme.typography.displayMedium)
                 Text(stringResource(R.string.metadata_description), style = MaterialTheme.typography.bodyLarge, color = PlayerPalette.textSecondary)
             }
+            TextButton(onClick = { token = ""; focus.clearFocus(); onOpenCredits() }) {
+                Text(stringResource(R.string.metadata_open_credits))
+            }
             if (state.loading && !state.settings.credentialConfigured) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     CircularProgressIndicator()
@@ -192,9 +195,6 @@ internal fun MetadataSettingsContent(
                 )
             }
             Text(stringResource(R.string.metadata_foundation_note), style = MaterialTheme.typography.bodySmall, color = PlayerPalette.textTertiary)
-            TextButton(onClick = { token = ""; focus.clearFocus(); onOpenCredits() }) {
-                Text(stringResource(R.string.metadata_open_credits))
-            }
             Spacer(Modifier.height(12.dp))
         }
     }
