@@ -160,3 +160,7 @@ User tested v0.1.79: folder/offline retention/switching work, media called audio
 
 ## 2026-11-21 — immediate artwork follow-up
 Follow-up commit adds a localized poster accessibility description referenced by the Compose view; CI #119 for artwork is still in progress. Verify both runs and update docs with their exact result before continuing.
+
+
+## 2026-11-21 — artwork test fixture fix
+A test-only follow-up replaces the malformed synthetic PNG with a valid CRC-checked PNG. Verify CI #119, #120 and this follow-up run before continuing.

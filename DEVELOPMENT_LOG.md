@@ -943,3 +943,7 @@ Added Coil Compose 3.6.3 Apache-2.0 for app-private local Files only; no Coil ne
 
 ## 2026-11-21 — poster accessibility resource follow-up
 Added the missing localized TalkBack content description required by the confirmed artwork UI. CI #119 is building the feature commit; this follow-up will receive its own build. No release APK.
+
+
+## 2026-11-21 — synthetic artwork fixture
+Static PNG chunk/CRC validation found the first test image fixture was malformed; replaced it with a valid 1×1 RGBA image. This is test-only; no app behavior change. CI runs #119/#120 pending. No release APK.

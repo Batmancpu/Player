@@ -259,3 +259,7 @@ User wants one complete APK, not installable milestone APKs. Artwork is fetched 
 
 ## 2026-11-21 — artwork accessibility label
 Added a localized content description for the confirmed cached poster. The artwork feature commit is building in CI #119; this resource-only follow-up is needed for Compose/AAPT and TalkBack. Next inspect both Actions runs, fix failures, continue app integration. No APK produced.
+
+
+## 2026-11-21 — synthetic poster fixture correction
+Replaced the synthetic PNG test fixture with a CRC-valid 1×1 RGBA PNG after local chunk validation. Artwork CI #119/#120 are still pending. Next verify their result, then continue integration; no installable APK.

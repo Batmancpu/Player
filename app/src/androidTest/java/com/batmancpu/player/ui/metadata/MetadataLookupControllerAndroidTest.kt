@@ -46,7 +46,7 @@ class MetadataLookupControllerAndroidTest {
         val artwork = TmdbArtworkCache(context, settings, TmdbArtworkTransport { uri ->
             artworkCalls.incrementAndGet()
             assertEquals("image.tmdb.org", uri.host)
-            TmdbArtworkResponse(200, Base64.decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/nXcAAAAASUVORK5CYII=", Base64.DEFAULT), "image/png")
+            TmdbArtworkResponse(200, Base64.decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNQaLjwHwAEpAJw/IFNkwAAAABJRU5ErkJggg==", Base64.DEFAULT), "image/png")
         }, testNamespace = suffix)
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
         val controller = MetadataLookupController(
