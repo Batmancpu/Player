@@ -1,20 +1,24 @@
 package com.batmancpu.player.ui.player
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import com.batmancpu.player.R
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import android.view.View
+import com.batmancpu.player.R
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.media3.common.PlaybackException
@@ -49,7 +53,7 @@ internal fun LocalPlayerScreen(
     var controlsVisible by remember(target.uri) { mutableStateOf(true) }
     var chromeInteractionEpoch by remember(target.uri) { mutableIntStateOf(0) }
     var resizeMode by remember(target.uri) { mutableIntStateOf(AspectRatioFrameLayout.RESIZE_MODE_FIT) }
-    val playerViewRef = remember(target.uri) { arrayOfNulls<PlayerView>(1) }
+    var isScrubbing by remember(target.uri) { mutableStateOf(false) }
     val player = remember(target.uri) {
         createLocalPlayer(context).apply {
             setMediaItem(createLocalMediaItem(target))
@@ -84,7 +88,6 @@ internal fun LocalPlayerScreen(
                     // A completed item should start from the beginning when opened again.
                     savedPlayIntent = false
                     checkpoint(0L, false)
-                    playerViewRef[0]?.showController()
                     controlsVisible = true
                     chromeInteractionEpoch++
                 }
@@ -122,7 +125,6 @@ internal fun LocalPlayerScreen(
             saveCurrentCheckpoint(savedPlayIntent)
             lifecycle.removeObserver(observer)
             player.removeListener(listener)
-            playerViewRef[0] = null
             player.release()
         }
     }
@@ -134,25 +136,17 @@ internal fun LocalPlayerScreen(
             }
         }
     }
-    LaunchedEffect(player, controlsVisible, isPlaying, chromeInteractionEpoch) {
-        if (controlsVisible && isPlaying) {
+    LaunchedEffect(player, controlsVisible, isPlaying, isScrubbing, chromeInteractionEpoch) {
+        if (controlsVisible && isPlaying && !isScrubbing) {
             delay(PLAYER_CHROME_AUTO_HIDE_MS)
-            playerViewRef[0]?.hideController()
             controlsVisible = false
         }
     }
     Box(Modifier.fillMaxSize().background(Color.Black)) {
         AndroidView(
             factory = { viewContext -> PlayerView(viewContext).apply {
-                playerViewRef[0] = this
                 this.player = player
-                setShowNextButton(false)
-                setShowPreviousButton(false)
-                setShowSubtitleButton(false)
-                setControllerShowTimeoutMs(PLAYER_CHROME_AUTO_HIDE_MS.toInt())
-                setControllerVisibilityListener(PlayerView.ControllerVisibilityListener { visibility ->
-                    controlsVisible = visibility == View.VISIBLE
-                })
+                setUseController(false)
             } },
             update = {
                 it.keepScreenOn = isPlaying
@@ -160,6 +154,16 @@ internal fun LocalPlayerScreen(
             },
             modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing),
         )
+        Box(Modifier.fillMaxSize().pointerInput(controlsVisible, chromeInteractionEpoch) {
+            detectTapGestures {
+                if (!controlsVisible) {
+                    controlsVisible = true
+                    chromeInteractionEpoch++
+                } else {
+                    chromeInteractionEpoch++
+                }
+            }
+        })
         val audioTitle = stringResource(R.string.player_audio_tracks)
         val subtitleTitle = stringResource(R.string.player_subtitle_tracks)
         if (controlsVisible) Column(Modifier.align(Alignment.TopStart).fillMaxWidth().background(Color.Black.copy(alpha = .72f))
@@ -172,7 +176,7 @@ internal fun LocalPlayerScreen(
                     chromeInteractionEpoch++
                 }
                 PlayerFullscreenButton(isFullScreen) {
-                    playerViewRef[0]?.showController()
+                    controlsVisible = true
                     chromeInteractionEpoch++
                     onToggleFullScreen()
                 }
@@ -195,6 +199,24 @@ internal fun LocalPlayerScreen(
                 }
             }
         }
+        if (controlsVisible) {
+            PlayerTransportControls(
+                modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth(),
+                player = player,
+                controlsVisible = controlsVisible,
+                isPlaying = isPlaying,
+                onScrubbingChanged = { isScrubbing = it },
+                onPlayPause = {
+                    if (player.isPlaying) player.pause() else player.play()
+                    chromeInteractionEpoch++
+                },
+                onSeekBy = { delta ->
+                    val end = player.duration.takeIf { it > 0L && it != C.TIME_UNSET } ?: Long.MAX_VALUE
+                    player.seekTo((player.currentPosition + delta).coerceIn(0L, end))
+                    chromeInteractionEpoch++
+                },
+            )
+        }
         if (error) {
             Surface(Modifier.align(Alignment.Center).padding(24.dp), shape = MaterialTheme.shapes.large) {
                 Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -205,6 +227,89 @@ internal fun LocalPlayerScreen(
             }
         }
     }
+}
+
+@Composable
+private fun PlayerTransportControls(
+    modifier: Modifier,
+    player: Player,
+    controlsVisible: Boolean,
+    isPlaying: Boolean,
+    onScrubbingChanged: (Boolean) -> Unit,
+    onPlayPause: () -> Unit,
+    onSeekBy: (Long) -> Unit,
+) {
+    var positionMs by remember(player) { mutableLongStateOf(player.currentPosition.coerceAtLeast(0L)) }
+    var durationMs by remember(player) {
+        mutableLongStateOf(player.duration.takeIf { it > 0L && it != C.TIME_UNSET } ?: 0L)
+    }
+    var scrubPositionMs by remember(player) { mutableLongStateOf(positionMs) }
+    var isScrubbing by remember(player) { mutableStateOf(false) }
+    LaunchedEffect(player, controlsVisible, isScrubbing) {
+        while (controlsVisible && !isScrubbing) {
+            positionMs = player.currentPosition.coerceAtLeast(0L)
+            durationMs = player.duration.takeIf { it > 0L && it != C.TIME_UNSET } ?: 0L
+            delay(250)
+        }
+    }
+    val playLabel = stringResource(if (isPlaying) R.string.player_pause else R.string.player_play)
+    val seekBack = stringResource(R.string.player_seek_back)
+    val seekForward = stringResource(R.string.player_seek_forward)
+    val duration = durationMs.coerceAtLeast(0L)
+    val safePosition = positionMs.coerceIn(0L, duration.coerceAtLeast(0L))
+    val positionLabel = stringResource(R.string.player_position)
+    val positionValue = stringResource(
+        R.string.player_position_value,
+        formatPlaybackTime(safePosition),
+        formatPlaybackTime(duration),
+    )
+    val playbackStateLabel = stringResource(if (isPlaying) R.string.player_playing else R.string.player_paused)
+    Column(modifier.background(Color.Black.copy(alpha = .76f), RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+        .windowInsetsPadding(WindowInsets.navigationBars).padding(horizontal = 24.dp, vertical = 12.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text(formatPlaybackTime(safePosition), color = Color.White, style = MaterialTheme.typography.labelMedium)
+            Slider(
+                value = safePosition.toFloat(),
+                onValueChange = {
+                    if (!isScrubbing) onScrubbingChanged(true)
+                    isScrubbing = true
+                    scrubPositionMs = it.toLong().coerceIn(0L, duration)
+                },
+                onValueChangeFinished = {
+                    val finalPosition = scrubPositionMs.coerceIn(0L, duration)
+                    player.seekTo(finalPosition)
+                    positionMs = finalPosition
+                    isScrubbing = false
+                    onScrubbingChanged(false)
+                },
+                valueRange = 0f..duration.coerceAtLeast(1L).toFloat(),
+                enabled = duration > 0L,
+                modifier = Modifier.weight(1f).semantics {
+                    contentDescription = positionLabel
+                    stateDescription = positionValue
+                },
+            )
+            Text(formatPlaybackTime(duration), color = Color.White, style = MaterialTheme.typography.labelMedium)
+        }
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+            TextButton(onClick = { onSeekBy(-10_000L) }, modifier = Modifier.semantics { contentDescription = seekBack }) { Text("−10", color = Color.White) }
+            Button(onClick = onPlayPause, modifier = Modifier.semantics {
+                contentDescription = playLabel
+                role = Role.Button
+                stateDescription = playbackStateLabel
+            }) { Text(if (isPlaying) "Ⅱ" else "▶") }
+            TextButton(onClick = { onSeekBy(10_000L) }, modifier = Modifier.semantics { contentDescription = seekForward }) { Text("+10", color = Color.White) }
+        }
+    }
+}
+
+internal fun formatPlaybackTime(positionMs: Long): String {
+    val seconds = positionMs.coerceAtLeast(0L) / 1_000L
+    val hours = seconds / 3_600L
+    val minutes = (seconds % 3_600L) / 60L
+    val remainder = seconds % 60L
+    return if (hours > 0L) "%d:%02d:%02d".format(hours, minutes, remainder)
+    else "%d:%02d".format(minutes, remainder)
 }
 
 

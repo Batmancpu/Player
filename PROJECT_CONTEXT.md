@@ -1,6 +1,8 @@
 ## Current implementation update — 2026-11-21
 
-CI #203 verified 50/50 Android 15 navigation/speed tests, unit/build and Room schemas. The next change adds a bounded Haze dock to production library navigation plus a private persisted on/off preference and opaque fallback. CI #205 caught a missing Compose `contentDescription` import before instrumentation; it is fixed and the full rerun is pending. No APK, OPPO performance or thermal evidence. One integrated signed candidate remains scheduled after all app features and the efficiency review.
+CI #214 / 44961886974 passed 51/51 Android 15 integration tests and the full unit/build/Room v1-v4/privacy workflow for main SHA `4aa127595ec164dbfdd9ba71d2a2e08169ca27eb`; release-only work skipped normally. Emulator details and Glass-on captures were inspected; target OPPO behavior/performance remains unknown. The current unverified working change replaces generic native Media3 chrome with accessible Compose play/pause, ±10-second seek and a timestamped seek slider, with auto-hide suspended while scrubbing. User explicitly wants a single integrated signed test APK only after remaining features and a final efficiency review; no interim APK. Next: commit with context docs, verify Android 15 CI, then continue captions, player/Glass polish and performance automation.
+
+Production navigation now uses a bounded Haze dock with a persisted effects-off fallback; the offline title hero can display only previously confirmed, app-private cached artwork. CI #214 validated all 51 Android 15 integration cases and build/schema/privacy gates. The current unverified change replaces native playback chrome with the Compose-owned accessible seek/play transport. No APK from this change, and no OPPO performance/thermal evidence. One integrated signed candidate remains deferred until all app features and the final efficiency review.
 
 ## Current implementation update — 2026-11-21
 

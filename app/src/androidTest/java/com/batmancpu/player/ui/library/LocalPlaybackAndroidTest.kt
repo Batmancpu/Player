@@ -154,6 +154,9 @@ class LocalPlaybackAndroidTest {
                 }
             }
             assertTrue("Player header should appear with transport controls", awaitText("Synthetic feature", true))
+            assertTrue("Compose transport should expose play/pause", awaitText("Pause", true))
+            assertTrue("Compose transport should expose a seek slider", awaitText("Playback position", true))
+            assertTrue("Compose transport should expose a forward seek", awaitText("Seek forward 10 seconds", true))
             assertTrue("Synthetic video should begin before the auto-hide check", playbackStarted.await(15, TimeUnit.SECONDS))
             assertTrue("Header should auto-hide during active playback", awaitText("Synthetic feature", false, 8_000))
             val metrics = context.resources.displayMetrics
@@ -190,6 +193,12 @@ class LocalPlaybackAndroidTest {
         assertEquals(0L to false, playbackResumeCheckpoint(Player.STATE_ENDED, 98_765L, true))
         assertEquals(4321L to true, playbackResumeCheckpoint(Player.STATE_READY, 4321L, true))
         assertEquals(0L to false, playbackResumeCheckpoint(Player.STATE_BUFFERING, -12L, false))
+    }
+
+    @Test fun playbackTimeFormattingHandlesLongMediaAndNegativePositions() {
+        assertEquals("0:00", formatPlaybackTime(-10L))
+        assertEquals("1:05", formatPlaybackTime(65_999L))
+        assertEquals("1:02:03", formatPlaybackTime(3_723_000L))
     }
 
     @Test fun resumePositionsAreScopedToFolderAndDocument() = runBlocking {

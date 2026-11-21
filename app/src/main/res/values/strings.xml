@@ -104,6 +104,14 @@
     <string name="catalogue_close_details">Close</string>
     <string name="glass_lab_back">Back to library</string>
     <string name="player_speed_accessibility">Playback speed %1$s</string>
+    <string name="player_play">Play</string>
+    <string name="player_pause">Pause</string>
+    <string name="player_seek_back">Seek back 10 seconds</string>
+    <string name="player_seek_forward">Seek forward 10 seconds</string>
+    <string name="player_position">Playback position</string>
+    <string name="player_position_value">%1$s of %2$s</string>
+    <string name="player_playing">Playing</string>
+    <string name="player_paused">Paused</string>
     <string name="settings_glass_title">Liquid Glass</string>
     <string name="settings_glass_description">Use the animated glass navigation dock. Turn it off for a solid, low-effect dock.</string>
     <string name="settings_glass_accessibility">Liquid Glass effects</string>
