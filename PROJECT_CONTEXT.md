@@ -400,3 +400,7 @@ Latest CI #108 / 44893247270 passed after commit 7501006: Android 15 instrumenta
 
 ### TMDB attribution milestone — 2026-11-21
 The About/Credits screen now displays TMDB's official approved blue gradient logo at the original aspect ratio and the exact required non-endorsement notice. Player's name is more prominent; the only outbound action is a manual link. The asset is not yet tied to a network client. No INTERNET permission or provider lookup exists. CI #110 pending.
+
+
+### Credits compile follow-up — 2026-11-21
+CI #110 / 44894615964 reported a malformed quote in the Credits button callback and an unresolved verticalScroll import. Both source fixes are on main; CI #111/#112 are verifying. No user-installable APK or Release was produced.

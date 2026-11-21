@@ -230,3 +230,6 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-21 — Corrected an escaped-quote source typo in the new TMDB Credits button before its build completed. The change affects only the settings-screen callback and is queued for CI #111; no APK or Release. Next: verify Credits UI/route and continue manual search/match integration.
+
+
+- 2026-11-21 — CI #110 / 44894615964 exposed two Credits compile errors: an escaped quote in the button callback and the wrong verticalScroll package. The quote is fixed in #111; this commit fixes the Compose import. CI #112 pending. No APK/Release. Next: verify the full Credits UI suite before implementing manual metadata search.

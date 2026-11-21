@@ -885,3 +885,9 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 
 - Source review caught an extra escaped quote in the MetadataSettingsScreen Credits click lambda after commit b102860; corrected it to a valid Kotlin string literal before depending on CI output. The app behavior remains: clear the transient token, clear focus, open local Credits.
 - CI #110 may report the original commit; verify CI #111 for the corrected head. No installable APK or Release. Next: verify new credits UI tests and continue manual search/match integration.
+
+
+## 2026-11-21 — Fix Credits screen compile errors
+
+- CI #110 / 44894615964 failed at Kotlin compilation with an escaped quote in the settings Credits callback and an unresolved verticalScroll import from androidx.compose.foundation.layout. The callback was corrected in commit a9e9196; this commit imports verticalScroll from androidx.compose.foundation. Other diagnostics were parser fallout from the quote error.
+- CI #111 covers the callback correction; CI #112 will verify both fixes and the Credits UI assertions. No installable APK or Release. Next: inspect #112 and continue the manual search/match feature after green verification.

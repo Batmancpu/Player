@@ -272,3 +272,6 @@ Added Player's About/Credits route, the official approved TMDB logo converted at
 
 
 Credits screen follow-up: source review caught and corrected a Kotlin quoting typo in the button callback. CI #110 is for the preceding commit; CI #111 must verify the corrected source and new UI assertions. No APK/Release was made.
+
+
+CI #110 failed before tests at Kotlin compile: an escaped quote in the Credits callback and an incorrect verticalScroll import. The callback fix is on main and the import is now corrected; CI #111/#112 verify the changes. No installable APK/Release was produced.

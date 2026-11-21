@@ -175,3 +175,7 @@ Provider metadata is cached by TMDB ID/media type and joined to a SAF document o
 **Engineering choice:** provide a dedicated About/Credits page before the first TMDB request. Use an official approved TMDB asset without changing aspect ratio/color and include the exact non-endorsement notice. Keep Player's identity more prominent. External navigation is user-tapped only.
 
 **Evidence:** official TMDB FAQ requires an approved logo, source notice and placement in About/Credits: https://developer.themoviedb.org/docs/faq. The official blue gradient logo linked from TMDB branding was retrieved; SVG SHA-256 d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b, PNG conversion SHA-256 80ed9c889db93fdb384b3cc208d59e5697b2a5015a95ff7416e191c83248094b. UI tests added; CI #110 pending. No metadata fetch or INTERNET permission is enabled by this decision.
+
+
+### D-035 implementation verification addendum — 2026-11-21
+The first Credits UI build failed in CI #110 on a Kotlin string-escaping typo and wrong foundation import; both are corrected on main, with CI #111/#112 pending. No app permission/network behavior changed and no installable APK was created.
