@@ -1,4 +1,10 @@
 ## Current handoff — 2026-11-21 (latest)
+- On `main`, the library now has functional Home/Movies/Shows/Search navigation with explicit screen-reader selection state. CI #185's failure was accessibility reporting; it did not fail category filtering or layout.
+- A Media3 playback-speed menu now offers 0.75×, 1×, 1.25×, 1.5× and 2×, with accessible labeling and a synthetic selection test. Current code and docs are committed; a fresh CI result is not yet visible.
+- Continue subtitle/player polish, then bounded production Glass, fallbacks/accessibility and efficiency review. The user requested one integrated APK after app work and the efficiency pass; don't emit stepwise APKs. v0.1.174 remains an earlier test checkpoint. Device acceptance, Reno10 performance and thermal evidence are pending.
+- Preserve app ID/certificate/version continuity, disabled backup, one read-only SAF tree, no media writes/tracking/upload. Main only. Next: locate CI for head; fix compile/test issues, continue product batches and leave final physical-device acceptance clearly pending.
+
+## Current handoff — 2026-11-21 (latest)
 - Latest navigation changes are on `main`. CI #185 (44951546792) found one accessibility assertion failure after 49 tests; screenshot confirms correct bar layout and category filtering. The issue was the test/platform tree not exposing Material3's selected state with `isSelected`.
 - Added explicit localized selected/not-selected accessibility state descriptions and updated the synthetic assertion. Current head is the source/docs commits after `06e0b3f`; the full CI run for this correction is pending.
 - Continue with offline subtitle/player controls, then production bounded Glass, accessibility/fallback review and measured performance work. Do not publish another APK until the integrated app/performance checkpoint requested by the user. Current available user-test APK: v0.1.174; no OPPO acceptance/performance evidence.
