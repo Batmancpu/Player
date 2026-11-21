@@ -454,3 +454,6 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 
 ## 2026-11-21 — Constrain gestures to the sheet content
 - CI #169: disabling Material3 sheet gestures left the modal open but prevented the test from advancing the inner LazyColumn to the second season; this setting is not suitable for the product. Restored default sheet behavior. Instrumentation now anchors fallback swipes below the actual sheet drag handle and above the Android Home gesture region, using only visible targets. The explicit Close action remains. CI verification pending.
+
+## 2026-11-21 — Expand details sheet for reliable inner scrolling
+- CI #170 showed the short partially expanded sheet gave competing gestures to the parent and its long LazyColumn. Open details with skipPartiallyExpanded = true so the sheet is full-height and the list owns its vertical content scrolling; retain default drag dismissal and the visible Close control. The UI test now verifies Close returns to the catalogue and checks horizontal card bounds without requiring wrapped titles to share the same text baseline. CI verification pending.

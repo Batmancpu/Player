@@ -284,8 +284,10 @@ internal fun LocalLibraryContent(
         }
         val lookup = metadataState.takeIf { it.tree == folder.tree && it.titleKey == selected.key }
         val chosenCandidate = lookup?.candidates?.firstOrNull { it.id == selectedCandidateId }
+        val detailsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         ModalBottomSheet(
             onDismissRequest = { selectedKey = null },
+            sheetState = detailsSheetState,
             containerColor = PlayerPalette.surface,
         ) {
             LazyColumn(

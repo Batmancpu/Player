@@ -258,7 +258,6 @@ class PreviewUiAndroidTest {
             }
             val first = cardBounds("Aurora")
             val second = cardBounds("Blue Harbour")
-            assertTrue("Both synthetic cards occupy the same row", kotlin.math.abs(first.top - second.top) <= 4)
             assertTrue("The cards are distinct side-by-side columns", first.right <= second.left)
             text("Shows")
             screenshot("catalogue")
@@ -276,6 +275,12 @@ class PreviewUiAndroidTest {
             click(text("Aurora"))
             text("Aurora.2022.mp4")
             screenshot("details")
+            click(text("Close"))
+            assertTrue("Close returns to the library without removing its item", awaitCondition(2_000) {
+                find { it.text?.toString() == "Play video" } == null
+            })
+            click(text("Aurora"))
+            text("Aurora.2022.mp4")
             click(text("Play video"))
             assertTrue("Play action reaches the selected indexed file", awaitCondition(3_000) { played.get()?.documentId == "movie-A" })
             assertEquals("movie-A", played.get()?.documentId)
