@@ -327,3 +327,8 @@ CI #136 / 44913968127 passed all 41 Android 15 instrumentation tests after the d
 ## 2026-11-21 — Immersive local playback control
 
 Added a reversible full-screen system-bar toggle to local video playback with distinct accessible labels; immersive mode is scoped to active playback and system bars are restored on exit/disposal. Android Compose regression passed. CI #138 / 44915530791 passed all 42 Android 15 tests plus JVM/unit/build, Room v1-v4 schema and privacy gates. No installable APK; signing/publication skipped. Next: continue integrated player and production Glass/accessibility work; keep final APK deferred.
+
+
+## 2026-11-21 — Playback chrome auto-hide
+
+Player's title/track overlay now follows Media3 controller visibility and uses a 2.5-second timeout so video is not permanently covered. Expanded the owned synthetic clip to ten seconds and added an Android playback UI regression for hide, tap-to-restore and accessible full-screen action. CI pending. Next: inspect Android CI and fix any surface/controller lifecycle issue; no Release APK.

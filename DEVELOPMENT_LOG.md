@@ -1079,3 +1079,11 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - CI #138 / 44915530791 passed the new reversible enter/exit player-toggle Compose test; all 42 Android 15 instrumentation tests completed with zero failures. JVM/unit, CI-only debug build, Room v1-v4 schema export/validation and production privacy gates passed.
 - Signing and Release publication were skipped. No user-installable APK was created; latest public signed Release remains v0.1.91.
 - The Android emulator does not establish OPPO behavior or real-device performance. Continue with player completeness, navigation, production Glass, accessibility/fallback, stable subtitle-offset decision, and offline/thermal/performance review.
+
+
+## 2026-11-21 — Player chrome visibility and transport integration
+
+- Connected PlayerView's visibility callback to the Compose title/track overlay; set a 2.5-second controller timeout. The overlay hides with the transport, preserving video area, and reappears when the video is tapped. Playback controls themselves remain Media3-owned.
+- Extended the test-only synthetic H.264/AAC fixture from 3s to 10s so the auto-hide/tap regression has time to observe the hidden state before playback ends. Added an Android 15 integration that renders LocalPlayerScreen, waits for auto-hide, taps the synthetic video, and invokes the full-screen action by accessibility. Test-only video remains generated at CI time.
+- Verification: `git diff --check` passes; local Gradle unavailable. Android CI pending. No installable APK/Release.
+- Next: inspect controller/surface lifecycle result, then continue polished playback, catalogue navigation, production Glass, accessibility, and offline/device review.

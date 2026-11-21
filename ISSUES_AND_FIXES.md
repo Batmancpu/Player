@@ -300,3 +300,9 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - **Change:** Local playback exposes an explicit reversible system-bar toggle and restores bars on exit/composition disposal.
 - **Verification:** CI #138 passed the synthetic enter/exit accessibility state test and all app gates.
 - **Next:** Verify real Android 15 and OPPO window behavior with the single integrated APK; measure whether controls/system bars conflict with video surfaces.
+
+
+### R-013 — Persistent player header obscures video
+- **Status:** Fix and Android integration regression pending CI.
+- **Change:** Tie the Compose title/audio/subtitle header to Media3 controller visibility with a bounded 2.5-second timeout. Tap on video restores the controls and header.
+- **Next:** Verify auto-hide/tap on synthetic Android playback; later verify controller layout and subtitle visibility on OPPO.

@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import com.batmancpu.player.R
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.media3.common.PlaybackException
@@ -38,6 +39,7 @@ internal fun LocalPlayerScreen(
     var error by remember(target.uri) { mutableStateOf(false) }
     var hasAudioTracks by remember(target.uri) { mutableStateOf(false) }
     var hasSubtitleTracks by remember(target.uri) { mutableStateOf(false) }
+    var controlsVisible by remember(target.uri) { mutableStateOf(true) }
     val player = remember(target.uri) {
         createLocalPlayer(context).apply {
             setMediaItem(createLocalMediaItem(target))
@@ -97,13 +99,15 @@ internal fun LocalPlayerScreen(
                 setShowNextButton(false)
                 setShowPreviousButton(false)
                 setShowSubtitleButton(false)
+                setControllerShowTimeoutMs(2_500)
+                setControllerVisibilityListener { visibility -> controlsVisible = visibility == View.VISIBLE }
             } },
             update = { it.keepScreenOn = isPlaying },
             modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing),
         )
         val audioTitle = stringResource(R.string.player_audio_tracks)
         val subtitleTitle = stringResource(R.string.player_subtitle_tracks)
-        Column(Modifier.align(Alignment.TopStart).fillMaxWidth().background(Color.Black.copy(alpha = .72f))
+        if (controlsVisible) Column(Modifier.align(Alignment.TopStart).fillMaxWidth().background(Color.Black.copy(alpha = .72f))
             .windowInsetsPadding(WindowInsets.statusBars).padding(horizontal = 8.dp, vertical = 4.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = onClose) { Text(stringResource(R.string.player_back), color = Color.White) }

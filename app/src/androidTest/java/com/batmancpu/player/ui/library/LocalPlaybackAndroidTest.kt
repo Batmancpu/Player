@@ -2,6 +2,11 @@ package com.batmancpu.player.ui.library
 
 import android.content.Intent
 import android.net.Uri
+import android.os.ParcelFileDescriptor
+import android.os.SystemClock
+import android.view.accessibility.AccessibilityNodeInfo
+import androidx.activity.compose.setContent
+import androidx.compose.runtime.mutableStateOf
 import androidx.media3.common.Player
 import androidx.media3.common.C
 import androidx.media3.common.PlaybackException
@@ -10,6 +15,7 @@ import androidx.media3.ui.PlayerView
 import androidx.test.platform.app.InstrumentationRegistry
 import com.batmancpu.player.MainActivity
 import com.batmancpu.player.ui.player.*
+import com.batmancpu.player.ui.theme.PlayerTheme
 import java.io.File
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
@@ -22,6 +28,28 @@ import org.junit.Test
 class LocalPlaybackAndroidTest {
     private val instrumentation get() = InstrumentationRegistry.getInstrumentation()
     private val context get() = instrumentation.targetContext
+    private val automation get() = instrumentation.uiAutomation
+
+    private fun containsText(value: String): Boolean {
+        fun visit(node: AccessibilityNodeInfo): Boolean {
+            if (node.text?.toString() == value || node.contentDescription?.toString() == value) return true
+            for (index in 0 until node.childCount) {
+                val child = node.getChild(index) ?: continue
+                if (visit(child)) return true
+            }
+            return false
+        }
+        return automation.rootInActiveWindow?.let(::visit) == true
+    }
+
+    private fun awaitText(value: String, expected: Boolean, timeoutMs: Long = 8_000): Boolean {
+        val deadline = SystemClock.uptimeMillis() + timeoutMs
+        while (SystemClock.uptimeMillis() < deadline) {
+            if (containsText(value) == expected) return true
+            SystemClock.sleep(50)
+        }
+        return containsText(value) == expected
+    }
 
     @Test(timeout = 30_000) fun contentOnlyEngineRendersOwnedH264Fixture() {
         val fixture = File(context.cacheDir, "synthetic-video.mp4")
@@ -77,6 +105,57 @@ class LocalPlaybackAndroidTest {
             instrumentation.runOnMainSync { reference.get()?.release(); activity.finish() }
             SyntheticSafProvider.playbackFile = null
             SyntheticSafProvider.subtitleContents = null
+            fixture.delete()
+        }
+    }
+
+    @Test(timeout = 45_000) fun playerOverlayFollowsTransportControllerVisibility() {
+        val fixture = File(context.cacheDir, "synthetic-player-overlay.mp4")
+        instrumentation.context.assets.open("synthetic-video.mp4").use { input -> fixture.outputStream().use { output -> input.copyTo(output) } }
+        SyntheticSafProvider.reset()
+        SyntheticSafProvider.playbackFile = fixture
+        val fullScreen = mutableStateOf(false)
+        val activity = instrumentation.startActivitySync(Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+        try {
+            instrumentation.runOnMainSync {
+                activity.setContent {
+                    PlayerTheme {
+                        LocalPlayerScreen(
+                            LocalPlaybackTarget(
+                                tree = "synthetic-tree", documentId = "synthetic-video",
+                                uri = "content://com.batmancpu.player.synthetic/video", label = "Synthetic feature",
+                            ),
+                            activity.lifecycle,
+                            onCheckpoint = { _, _ -> },
+                            onClose = {},
+                            isFullScreen = fullScreen.value,
+                            onToggleFullScreen = { fullScreen.value = !fullScreen.value },
+                        )
+                    }
+                }
+            }
+            assertTrue("Player header should appear with transport controls", awaitText("Synthetic feature", true))
+            assertTrue("Header should auto-hide with transport controls", awaitText("Synthetic feature", false, 10_000))
+            val metrics = context.resources.displayMetrics
+            ParcelFileDescriptor.AutoCloseInputStream(
+                automation.executeShellCommand("input tap ${metrics.widthPixels / 2} ${metrics.heightPixels / 2}"),
+            ).use { it.readBytes() }
+            assertTrue("Touching the video restores the header", awaitText("Synthetic feature", true, 4_000))
+            assertTrue("Full-screen action is reachable", awaitText("Full screen", true, 2_000))
+            fun findLabel(current: AccessibilityNodeInfo?): AccessibilityNodeInfo? {
+                if (current == null) return null
+                if (current.text?.toString() == "Full screen") return current
+                for (index in 0 until current.childCount) findLabel(current.getChild(index))?.let { return it }
+                return null
+            }
+            var button = findLabel(automation.rootInActiveWindow)
+            while (button != null && !button.isClickable) button = button.parent
+            assertTrue("Full-screen control can be activated", button?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true)
+            assertTrue("Toggle enters full-screen state", fullScreen.value)
+            assertTrue("Exit control remains accessible", awaitText("Exit full screen", true, 2_000))
+        } finally {
+            instrumentation.runOnMainSync { activity.finish() }
+            SyntheticSafProvider.playbackFile = null
             fixture.delete()
         }
     }
