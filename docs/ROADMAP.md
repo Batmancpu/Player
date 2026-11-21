@@ -137,3 +137,6 @@ CI #130 / 44909463881 passed Android 15 migration/offline persistence, JVM/build
 
 
 **Playback format research (2026-11-21):** DEC-021 keeps Media3 primary while target-device local corpus coverage is unmeasured. Official docs support common containers but device decoder availability determines codecs. LibVLC (LGPLv2 engine) is a candidate fallback only after measured failures and package/performance/license review. No universal format promise.
+
+
+**Catalogue presentation (2026-11-21):** The default library now groups movies and TV series into horizontal poster shelves; search and type filters use the adaptive grid. This is still the local catalogue milestone, not final Apple TV-inspired polish. CI pending; OPPO scrolling and performance unmeasured.

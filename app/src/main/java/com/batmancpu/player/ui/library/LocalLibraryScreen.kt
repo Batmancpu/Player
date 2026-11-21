@@ -14,6 +14,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -141,6 +142,8 @@ internal fun LocalLibraryContent(
     var settings by rememberSaveable { mutableStateOf(false) }
     var confirmForget by rememberSaveable { mutableStateOf(false) }
     val results = remember(titles, query, filter) { LocalCatalogue.search(titles, query, filter) }
+    val movieShelf = remember(results) { results.filterNot(LocalTitle::isSeries) }
+    val seriesShelf = remember(results) { results.filter(LocalTitle::isSeries) }
     val selected = titles.firstOrNull { it.key == selectedKey }
     var selectedCandidateId by rememberSaveable(selectedKey) { mutableStateOf<Long?>(null) }
     LaunchedEffect(folder.tree, selected?.key) {
@@ -223,6 +226,39 @@ internal fun LocalLibraryContent(
                     Text(stringResource(if (titles.isEmpty()) R.string.library_index_empty else R.string.catalogue_no_matches), style = MaterialTheme.typography.titleLarge)
                     if (titles.isEmpty()) Button(onClick = ::scanAction) { Text(stringResource(R.string.library_scan_start)) }
                     else TextButton(onClick = { query = ""; filter = CatalogueFilter.ALL }) { Text(stringResource(R.string.catalogue_clear_search)) }
+                }
+            } else if (query.isBlank() && filter == CatalogueFilter.ALL) {
+                LazyColumn(
+                    contentPadding = PaddingValues(top = 16.dp, bottom = 24.dp),
+                    verticalArrangement = Arrangement.spacedBy(26.dp),
+                ) {
+                    if (movieShelf.isNotEmpty()) {
+                        item(key = "shelf-movies") {
+                            CatalogueShelf(
+                                title = R.string.nav_movies,
+                                titles = movieShelf,
+                                cachedMetadataByDocumentId = cachedMetadataByDocumentId,
+                                artworkCache = artworkCache,
+                                posterRefreshKey = posterRefreshKey,
+                                onSelect = { focus.clearFocus(); selectedKey = it.key },
+                            )
+                        }
+                    }
+                    if (seriesShelf.isNotEmpty()) {
+                        item(key = "shelf-series") {
+                            CatalogueShelf(
+                                title = R.string.catalogue_shelf_series,
+                                titles = seriesShelf,
+                                cachedMetadataByDocumentId = cachedMetadataByDocumentId,
+                                artworkCache = artworkCache,
+                                posterRefreshKey = posterRefreshKey,
+                                onSelect = { focus.clearFocus(); selectedKey = it.key },
+                            )
+                        }
+                    }
+                    item(key = "catalogue-local-note") {
+                        Text(stringResource(R.string.catalogue_local_note), color = PlayerPalette.textTertiary, style = MaterialTheme.typography.bodySmall)
+                    }
                 }
             } else {
                 LazyVerticalGrid(
@@ -497,4 +533,26 @@ private tailrec fun Context.activity(): ComponentActivity? = when (this) {
     is ComponentActivity -> this
     is ContextWrapper -> if (baseContext === this) null else baseContext.activity()
     else -> null
+}
+
+
+@Composable
+private fun CatalogueShelf(
+    title: Int,
+    titles: List<LocalTitle>,
+    cachedMetadataByDocumentId: Map<String, CachedTmdbMetadata>,
+    artworkCache: TmdbArtworkCache?,
+    posterRefreshKey: File?,
+    onSelect: (LocalTitle) -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Text(stringResource(title), style = MaterialTheme.typography.titleLarge, color = PlayerPalette.textPrimary)
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+            items(titles, key = { it.key }) { item ->
+                Box(Modifier.width(156.dp)) {
+                    LocalTitleCard(item, cachedMetadataByDocumentId, artworkCache, posterRefreshKey) { onSelect(item) }
+                }
+            }
+        }
+    }
 }

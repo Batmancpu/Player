@@ -1204,3 +1204,11 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - Reviewed VideoLAN's official Android README: LibVLC offers broader codec/container coverage; its Android engine is LGPLv2 while the VLC Android app is GPLv2-or-later (de facto GPLv3). [Source](https://github.com/videolan/vlc-android/blob/master/README.md).
 - Decision DEC-021: retain Media3 as primary to preserve AndroidX integration and avoid adding native ABI/APK/memory/thermal/licensing cost without evidence. User requested broad formats; compatibility must be measured on a representative local-file corpus, not inferred from marketing lists.
 - Next: include codec/container diagnostics in final OPPO checklist; only compare LibVLC if a real local media sample fails on Media3. No dependency or permission change.
+
+
+## 2026-11-21 — Cinematic home shelves
+
+- Replaced the default all-library grid with separate horizontal Movies and TV Shows poster shelves. Search results and explicit Movies/Shows filters continue to use the adaptive grid for dense browsing.
+- Reuses the same indexed LocalTitleCard and private offline artwork cache; card selection retains the same detail sheet and playback identity. No network, image or manifest changes.
+- Existing synthetic catalogue UI checks still assert side-by-side movie cards, search, details, and playback. CI pending; no signed APK/Release.
+- Next: inspect screenshot and instrumentation on phone-sized Android; tune spacing and card crop within the documented performance budget.

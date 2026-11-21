@@ -372,3 +372,10 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - **Status:** Open; no claim of universal format support.
 - **Evidence:** Media3 supports common containers but uses Android platform decoders by default; official docs state sample format support is device dependent. LibVLC is a viable broader candidate but adds native engine and LGPL obligations.
 - **Next:** Create a local representative corpus including container, video codec/profile, audio codec, subtitle format and resolution; exercise the final signed app on OPPO and record decoder errors. Only run LibVLC comparison if material gaps appear. Preserve local-only SAF access and measure APK/memory/battery/thermal before adoption.
+
+
+### R-022 — Flat default grid lacked cinematic collection hierarchy
+- **Status:** Improved in source; CI pending.
+- **Change:** Default catalogue displays separate Movies and TV Shows horizontal shelves. Search and explicit type filters keep the adaptive grid.
+- **Constraints:** No change to local-only indexing, cached artwork, network behavior or selected-document identity.
+- **Next:** Verify shelf scrolling/selection/search and synthetic screenshots across phone widths.

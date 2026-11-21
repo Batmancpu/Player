@@ -387,3 +387,8 @@ The explicit 2.5-second header/controller timeout now restarts after seeking, tr
 ## 2026-11-21 — Playback engine research: Media3 vs LibVLC
 
 Recorded DEC-021 after reviewing official Media3 format/codec guidance and VideoLAN's Android engine/license README. Keep Media3 primary pending a local OPPO corpus; if real decoder gaps remain, compare a pinned LibVLC artifact for APK size, ABI, licensing, subtitle, hardware decode, thermal and battery impact. No new engine dependency or network route added. Next: complete the current UI/CI work, then validate a representative local file matrix on target hardware when the integrated build is ready.
+
+
+## 2026-11-21 — Movie and TV shelves on the local home catalogue
+
+When the unfiltered library is open, movie titles and series now appear in separate horizontal poster shelves; explicit filters and search retain the adaptive grid. All rows still use only cached local artwork and offline filename/index data. CI pending; no network or APK changes. Next: verify shelf scrolling, search, series selection and small-screen card bounds.

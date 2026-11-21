@@ -65,6 +65,7 @@
     <string name="catalogue_play">Play video</string>
     <string name="catalogue_season">Season %1$d</string>
     <string name="catalogue_episode_label">S%1$02d · E%2$02d</string>
+    <string name="catalogue_shelf_series">TV Shows</string>
     <string name="catalogue_settings">Library settings</string>
     <string name="catalogue_forget_folder">Remove folder from Player</string>
     <string name="catalogue_forget_title">Remove this library?</string>

@@ -255,3 +255,7 @@ CI #152 / 44931933805 passed all 46 Android 15 tests, including local season gro
 
 ### Engine choice
 DEC-021 records Media3 as primary and LibVLC as a measured fallback candidate. Media3's format list is not a guarantee of device codec support; target local corpus testing remains pending. Do not add another engine until failures, license obligations, package size, battery and thermal effects are measured.
+
+
+### Default catalogue shelves
+The unfiltered library uses horizontal Movies and TV Shows shelves; text search and explicit type filters retain the grid. Cards still resolve from the local index and app-private artwork only. CI pending.
