@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
+        <!-- Synthetic SAF fixture is debug-only; keep it out of every release variant. -->
+        <provider
+            android:name="com.batmancpu.player.ui.library.SyntheticSafProvider"
+            android:authorities="${applicationId}.synthetic"
+            android:exported="false" />
         <activity
             android:name="com.batmancpu.player.ui.library.PreviewTestActivity"
             android:exported="false" />

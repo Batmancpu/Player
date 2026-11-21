@@ -75,7 +75,7 @@ class PreviewUiAndroidTest {
             val label = node.text?.toString()?.take(80)
             val description = node.contentDescription?.toString()?.take(80)
             if (!label.isNullOrBlank() || !description.isNullOrBlank()) {
-                entries += "${node.className}[text=$label, description=$description]"
+                entries += "${node.className}[text=$label, description=$description, scrollable=${node.isScrollable}]"
             }
             for (index in 0 until node.childCount) {
                 val child = node.getChild(index) ?: continue
@@ -104,20 +104,33 @@ class PreviewUiAndroidTest {
         assertTrue("No clickable ancestor", target?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true)
     }
 
-    private fun swipeUp() {
-        val metrics = context.resources.displayMetrics
-        val centerX = metrics.widthPixels / 2
-        val fromY = metrics.heightPixels * 7 / 10
-        val toY = metrics.heightPixels * 6 / 10
-        ParcelFileDescriptor.AutoCloseInputStream(
-            automation.executeShellCommand("input swipe $centerX $fromY $centerX $toY 300"),
-        ).use { it.readBytes() }
+    private fun scrollForwardOnSmallestScrollable(): Boolean {
+        val root = automation.rootInActiveWindow ?: return false
+        val scrollableNodes = mutableListOf<Pair<Int, AccessibilityNodeInfo>>()
+        fun visit(node: AccessibilityNodeInfo) {
+            if (node.isScrollable && node.actionList.any {
+                    it.id == AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD.id
+                }) {
+                val bounds = Rect()
+                node.getBoundsInScreen(bounds)
+                scrollableNodes += (bounds.width() * bounds.height()) to node
+            }
+            for (index in 0 until node.childCount) node.getChild(index)?.let(::visit)
+        }
+        visit(root)
+        // Prefer the innermost list/sheet so test scrolling cannot swipe-dismiss the sheet.
+        return scrollableNodes.minByOrNull { it.first }?.second
+            ?.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD) == true
     }
 
-    private fun revealBySwiping(value: String): AccessibilityNodeInfo {
-        repeat(8) {
+    private fun revealByScrolling(value: String): AccessibilityNodeInfo {
+        repeat(12) {
             find { it.text?.toString() == value }?.let { return it }
-            swipeUp()
+            assertTrue(
+                "No accessible scroll container could reveal $value; ${activeWindowSummary()}",
+                scrollForwardOnSmallestScrollable(),
+            )
+            SystemClock.sleep(100)
         }
         return awaitNode { it.text?.toString() == value }
     }
@@ -251,8 +264,8 @@ class PreviewUiAndroidTest {
             text("Season 1")
             text("S01 · E01")
             text("S01 · E02")
-            revealBySwiping("Season 2")
-            click(revealBySwiping("S02 · E01"))
+            revealByScrolling("Season 2")
+            click(revealByScrolling("S02 · E01"))
             assertTrue(
                 "Episode button must play its indexed document",
                 awaitCondition(3_000) { played.get()?.documentId == "episode-s2e1" },
@@ -335,11 +348,11 @@ class PreviewUiAndroidTest {
             }
             click(text("Aurora"))
             assertEquals("Opening details must not initiate an external lookup", 0, searches.get())
-            click(revealBySwiping("Search TMDB"))
+            click(revealByScrolling("Search TMDB"))
             assertEquals(1, searches.get())
-            click(revealBySwiping("Synthetic result description"))
+            click(revealByScrolling("Synthetic result description"))
             assertEquals("Selecting a candidate is not confirmation", 0, confirmations.get())
-            click(revealBySwiping("Confirm movie match"))
+            click(revealByScrolling("Confirm movie match"))
             assertEquals("The selected provider result needs a separate confirmation tap", 1, confirmations.get())
         } finally {
             instrumentation.runOnMainSync { activity.finish() }

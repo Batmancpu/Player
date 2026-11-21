@@ -395,3 +395,18 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - **Root cause:** The test-host substitution did not match this line because its long one-line Intent expression differed from the other references.
 - **Fix:** The fullscreen controller integration now launches the debug-only `PreviewTestActivity`.
 - **Regression coverage:** CI #158 must compile and execute the Android 15 integration suite.
+
+
+## H-028 — Debug test host edit removed synthetic SAF fixture provider
+- **Status:** Restored; CI verification pending.
+- **Evidence:** CI #158 Android test report: five failures were consistent with a provider returning null cursors or a missing playback file. Comparing manifests at `11faca5` and `62dbc67` confirmed that adding PreviewTestActivity replaced (rather than extended) the existing debug manifest and removed SyntheticSafProvider registration.
+- **Root cause confidence:** Confirmed from the manifest diff and exact error behavior.
+- **Fix:** Restore the non-exported synthetic provider declaration alongside the debug-only test activity. Both remain in `src/debug` and are absent from release.
+- **Regression coverage:** All player fixture and SAF cursor tests in CI #160.
+
+## H-029 — Season details test can swipe-dismiss its modal while seeking an off-screen episode
+- **Status:** Changed to accessibility scrolling; CI verification pending.
+- **Evidence:** CI #158 diagnostics showed the series details modal was no longer present after repeated shell swipe gestures, so the test searched the underlying library window.
+- **Root-cause confidence:** Medium; gesture coordinates could hit the sheet's dismiss area rather than its nested lazy list.
+- **Fix:** Scroll the smallest accessibility node that advertises ACTION_SCROLL_FORWARD; include scrollable state in failure snapshots.
+- **Regression coverage:** Season/episode indexed-play test and metadata confirmation-sheet tests in CI #160.

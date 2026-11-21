@@ -1232,3 +1232,9 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - Added one original generated concept banner and two Android 15 CI screenshots from synthetic data. The README explicitly labels concept art and CI captures and disclaims OPPO performance evidence.
 - Reviewed the screenshot artifact from CI #156 (46 Android 15 tests, zero failures) before selecting images. No app source, dependency, permission, APK or Release changed in this documentation/artwork slice. CI #158 for test-host repair is in progress.
 - Next: verify #158; complete README batch checkpoint, then create the signed APK the user requested while continuing the remaining product work.
+
+
+## 2026-11-21 — Restore debug SAF test provider and safe season-sheet scrolling
+- CI #158 / https://github.com/Batmancpu/Player/actions/runs/44934756101 compiled, then failed 6 of 46 Android tests. Five failures were caused by the test-host manifest change overwriting the existing debug-only `SyntheticSafProvider` declaration. This produced Media3 `ERROR_CODE_IO_FILE_NOT_FOUND` and null cursor results in the SAF tests. Restored that provider beside the new debug-only Activity; neither is included in release.
+- The series-detail case's diagnostics showed the sheet was gone after repeated swipe gestures. Replaced gesture-coordinate scrolling with an accessibility `ACTION_SCROLL_FORWARD` against the smallest scrollable container; failures now report scrollable nodes for diagnosis.
+- The README-only CI #159 may still run the broken intermediate source; CI #160 will verify the provider and accessibility scroll correction. No APK has been published from the failing runs. Next: inspect #159 and #160, repair any reproducible issues, then create the requested signed checkpoint only after green gates.

@@ -466,3 +466,9 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 - User wants no more than five substantial published checkpoints and continuous work between them, without APK-install waits after each. Approximate ranges were shared for four batches; they are planning estimates, not guarantees.
 - User also explicitly asked for an APK now, then continued development. This supersedes the earlier wait-until-final-only APK timing for this request, while preserving the permanent application ID/signing key and higher versionCode. Package only after the current source passes CI.
 - Began batch 1: refreshed README and added original generated concept artwork plus labelled synthetic Android 15 CI screenshots. No claim that these concept/CI images represent an OPPO device or finished production Glass.
+
+
+## 2026-11-21 — CI #158 fixture regression diagnosis and correction
+- CI #158 passed Kotlin compilation but 6/46 Android tests failed. I traced five playback/SAF failures to my test-host change overwriting the pre-existing debug manifest entry for SyntheticSafProvider; restored both debug-only entries.
+- The season test's scroll gestures could dismiss the details sheet, leaving the underlying library in the active window. Changed test interaction to accessibility scroll actions on the smallest nested container.
+- CI #159 was already running the broken intermediate source; CI #160 is required for verification. The APK remains withheld until a full green source gate.
