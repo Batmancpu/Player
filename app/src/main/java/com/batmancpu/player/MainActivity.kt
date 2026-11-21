@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.batmancpu.player.ui.library.LibraryViewModel
+import com.batmancpu.player.ui.metadata.MetadataCreditsScreen
 import com.batmancpu.player.ui.metadata.MetadataSettingsScreen
 import com.batmancpu.player.ui.metadata.MetadataSettingsViewModel
 import com.batmancpu.player.ui.theme.PlayerTheme
@@ -44,8 +45,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             var showGlassLab by rememberSaveable { mutableStateOf(false) }
             var showMetadataSettings by rememberSaveable { mutableStateOf(false) }
-            BackHandler(enabled = showMetadataSettings) { showMetadataSettings = false }
-            BackHandler(enabled = showGlassLab) { showGlassLab = false }
+            var showMetadataCredits by rememberSaveable { mutableStateOf(false) }
+            BackHandler(enabled = showMetadataCredits || showMetadataSettings || showGlassLab) {
+                when {
+                    showMetadataCredits -> showMetadataCredits = false
+                    showMetadataSettings -> showMetadataSettings = false
+                    showGlassLab -> showGlassLab = false
+                }
+            }
 
             val playback by libraryModel.playback.collectAsState()
             BackHandler(enabled = playback.target != null || playback.loading || playback.failed) { libraryModel.closePlayback() }
@@ -58,7 +65,12 @@ class MainActivity : ComponentActivity() {
                         onCheckpoint = { position, play -> libraryModel.checkpoint(target, position, play) },
                         onClose = libraryModel::closePlayback,
                     )
-                    showMetadataSettings -> MetadataSettingsScreen(metadataModel) { showMetadataSettings = false }
+                    showMetadataCredits -> MetadataCreditsScreen(onBack = { showMetadataCredits = false })
+                    showMetadataSettings -> MetadataSettingsScreen(
+                        metadataModel,
+                        onBack = { showMetadataSettings = false },
+                        onOpenCredits = { showMetadataCredits = true },
+                    )
                     showGlassLab -> GlassLabScreen()
                     else -> LocalLibraryScreen(
                         libraryModel,

@@ -224,3 +224,6 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-21 — CI #108 / 44893247270 passed the secure metadata-settings integration: Android 15 instrumentation 30/30, unit tests, debug/release build, Room schema and privacy checks. No INTERNET permission, signing, APK artifact or Release was produced; only test and Room-schema artifacts. The official TMDB logo was retrieved from its approved asset URL for later in-app Credits; no API integration exists yet. Next: implement explicit manual search/match UI, exact attribution and bounded/cancellable transport, then artwork cache.
+
+
+- 2026-11-21 — Added a dedicated About/Credits screen with TMDB's approved logo at the original aspect ratio and exact required non-endorsement notice; Player remains more prominent. Settings links to Credits; back navigation and synthetic Android UI coverage added. No network permission/request/APK change. CI #110 pending. Next: implement manual match flow with normalized title/year/type and bounded cancellation-safe transport.

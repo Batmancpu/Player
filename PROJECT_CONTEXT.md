@@ -396,3 +396,7 @@ Added “Remove folder from Player” with confirmation, Room index/cache cleanu
 
 ## Current continuation state — 2026-11-21
 Latest CI #108 / 44893247270 passed after commit 7501006: Android 15 instrumentation 30/30, unit/build, and Room v1/v2/v3 schema/privacy gates. Metadata and connections is reachable from Library Manage. A user-supplied TMDB Read Access Token is encrypted using Android Keystore AES-GCM in no-backup app-private storage; consent is default-off, clear/disable are fail-closed, and no INTERNET permission or request exists yet. No user-installable APK or Release was produced. Next is the explicit manual search/match UX plus approved TMDB logo/notice in About/Credits, before any HTTP integration. The full six-phase app is still in development; actual OPPO acceptance and device performance remain unverified.
+
+
+### TMDB attribution milestone — 2026-11-21
+The About/Credits screen now displays TMDB's official approved blue gradient logo at the original aspect ratio and the exact required non-endorsement notice. Player's name is more prominent; the only outbound action is a manual link. The asset is not yet tied to a network client. No INTERNET permission or provider lookup exists. CI #110 pending.

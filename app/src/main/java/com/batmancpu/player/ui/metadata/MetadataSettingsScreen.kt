@@ -55,9 +55,13 @@ import com.batmancpu.player.ui.theme.PlayerPalette
 import com.batmancpu.player.ui.theme.PlayerSpacing
 
 @Composable
-internal fun MetadataSettingsScreen(model: MetadataSettingsViewModel, onBack: () -> Unit) {
+internal fun MetadataSettingsScreen(
+    model: MetadataSettingsViewModel,
+    onBack: () -> Unit,
+    onOpenCredits: () -> Unit = {},
+) {
     val state by model.state.collectAsState()
-    MetadataSettingsContent(state, model::save, model::disable, model::clear, onBack)
+    MetadataSettingsContent(state, model::save, model::disable, model::clear, onBack, onOpenCredits)
 }
 
 /** Stateless persisted state; an unsaved token belongs only to this composition. */
@@ -68,6 +72,7 @@ internal fun MetadataSettingsContent(
     onDisable: () -> Unit,
     onClear: () -> Unit,
     onBack: () -> Unit,
+    onOpenCredits: () -> Unit = {},
 ) {
     // Do not use rememberSaveable: a password must never enter the activity bundle.
     var token by remember { mutableStateOf("") }
@@ -187,6 +192,9 @@ internal fun MetadataSettingsContent(
                 )
             }
             Text(stringResource(R.string.metadata_foundation_note), style = MaterialTheme.typography.bodySmall, color = PlayerPalette.textTertiary)
+            TextButton(onClick = { token = \"\"; focus.clearFocus(); onOpenCredits() }) {
+                Text(stringResource(R.string.metadata_open_credits))
+            }
             Spacer(Modifier.height(12.dp))
         }
     }

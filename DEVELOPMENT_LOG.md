@@ -871,3 +871,11 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 - CI produced Android test results and the Room schema review artifact only. Signing/publication steps were not requested; no user-installable APK or Release was produced and versionCode/signing identity did not change.
 - Fetched the current approved TMDB blue gradient logo asset directly from the URL linked by TMDB's official branding documentation; the SVG SHA-256 is d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b. A local PNG conversion was inspected at original aspect ratio; logo still needs to be added to the app's Credits screen before any TMDB API/data use.
 - Next: implement user-triggered TMDB search, manual match confirmation to Room, About/Credits with the approved logo and notice, allowlisted/cancellable transport, then separately bounded artwork caching/display. Keep network calls disabled until all pieces are integrated and tested.
+
+
+## 2026-11-21 — Add provider credits before TMDB data use
+
+- Added an About/Credits route reachable from metadata settings. It uses TMDB's approved blue gradient logo asset from the official logo link, converted SVG→PNG without changing aspect ratio or colors (source SVG SHA-256 d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b; PNG SHA-256 80ed9c889db93fdb384b3cc208d59e5697b2a5015a95ff7416e191c83248094b).
+- Credits show Player more prominently and display the exact official notice: “This product uses the TMDB API but is not endorsed or certified by TMDB.” The only outbound action is a user-tapped link to themoviedb.org. No request/client/INTERNET permission exists yet.
+- Added Android UI coverage for the Credits button, logo accessibility label and notice. No versionCode, database, signing, Release or user-installable APK change. CI #110 pending.
+- Next: complete the explicit search→candidate→user-confirmed Room match interaction with fixed TMDB destinations, cancellation/size bounds and no automatic requests; add INTERNET only with that integrated feature.

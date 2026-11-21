@@ -24,4 +24,9 @@
     <string name="metadata_storage_error">Player could not open or save this connection. Metadata is disabled. Remove the saved connection, then enter your token again.</string>
     <string name="metadata_token_error">Enter a valid API Read Access Token without spaces or line breaks.</string>
     <string name="metadata_preparing">Opening connection settings…</string>
+    <string name="metadata_open_credits">About and credits</string>
+    <string name="metadata_credits_title">Metadata credits</string>
+    <string name="metadata_credits_logo_description">The Movie Database (TMDB) logo</string>
+    <string name="metadata_credits_notice">This product uses the TMDB API but is not endorsed or certified by TMDB.</string>
+    <string name="metadata_credits_link">Visit TMDB</string>
 </resources>

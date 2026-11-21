@@ -176,6 +176,40 @@ class PreviewUiAndroidTest {
         }
     }
 
+    @Test(timeout = 25_000) fun metadataSettingsOpenCreditsAndShowTheRequiredAttribution() {
+        val activity = launch()
+        val opened = AtomicInteger(0)
+        try {
+            instrumentation.runOnMainSync {
+                activity.setContent {
+                    PlayerTheme {
+                        com.batmancpu.player.ui.metadata.MetadataSettingsContent(
+                            state = com.batmancpu.player.ui.metadata.MetadataSettingsUiState(
+                                settings = com.batmancpu.player.ui.metadata.MetadataSettingsState(),
+                                loading = false,
+                            ),
+                            onSave = { _, _ -> },
+                            onDisable = {},
+                            onClear = {},
+                            onBack = {},
+                            onOpenCredits = { opened.incrementAndGet() },
+                        )
+                    }
+                }
+            }
+            click(text("About and credits"))
+            assertEquals(1, opened.get())
+            instrumentation.runOnMainSync {
+                activity.setContent { PlayerTheme { com.batmancpu.player.ui.metadata.MetadataCreditsScreen(onBack = {}) } }
+            }
+            text("Player")
+            text("This product uses the TMDB API but is not endorsed or certified by TMDB.")
+            assertNotNull(awaitNode { it.contentDescription?.toString() == "The Movie Database (TMDB) logo" })
+        } finally {
+            instrumentation.runOnMainSync { activity.finish() }
+        }
+    }
+
     @Test(timeout = 40_000) fun dockTabsFitAndRemainAccessibleWithEffectsDisabled() {
         val activity = launch()
         try {

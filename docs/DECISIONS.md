@@ -169,3 +169,9 @@ Provider metadata is cached by TMDB ID/media type and joined to a SAF document o
 **Evidence:** Android 15 instrumentation tests cover fresh default-off state/key absence, encryption/reopen, opt-in, cross-instance disable/clear, tampered ciphertext/key loss, malformed/oversized tokens, nonce uniqueness and concurrent revocation. CI #108 / 44893247270 passed 30/30 Android instrumentation plus unit/build/schema/privacy checks. The app still has no INTERNET permission or TMDB client/request, and no installable APK was produced.
 
 **Next gate:** finish explicit one-title search/manual match and About/Credits approved logo plus exact notice; audit fixed API/CDN hosts, TLS, cancellation, response/size bounds and opt-out rechecks before adding INTERNET. Preserve offline playback/library when metadata is off.
+
+
+### D-035 — Show official TMDB credit before using provider data (2026-11-21)
+**Engineering choice:** provide a dedicated About/Credits page before the first TMDB request. Use an official approved TMDB asset without changing aspect ratio/color and include the exact non-endorsement notice. Keep Player's identity more prominent. External navigation is user-tapped only.
+
+**Evidence:** official TMDB FAQ requires an approved logo, source notice and placement in About/Credits: https://developer.themoviedb.org/docs/faq. The official blue gradient logo linked from TMDB branding was retrieved; SVG SHA-256 d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b, PNG conversion SHA-256 80ed9c889db93fdb384b3cc208d59e5697b2a5015a95ff7416e191c83248094b. UI tests added; CI #110 pending. No metadata fetch or INTERNET permission is enabled by this decision.
