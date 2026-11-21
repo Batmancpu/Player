@@ -190,15 +190,12 @@ internal fun LocalLibraryContent(
         bottomBar = {
             NavigationBar(containerColor = PlayerPalette.surface, tonalElevation = 0.dp) {
                 destinations.forEachIndexed { index, (glyph, label) ->
+                    val selectionDescription = stringResource(
+                        if (selectedDestination == index) R.string.nav_item_selected else R.string.nav_item_not_selected,
+                    )
                     NavigationBarItem(
                         selected = selectedDestination == index,
-                        modifier = Modifier.semantics {
-                            stateDescription = if (selectedDestination == index) {
-                                stringResource(R.string.nav_item_selected)
-                            } else {
-                                stringResource(R.string.nav_item_not_selected)
-                            }
-                        },
+                        modifier = Modifier.semantics { stateDescription = selectionDescription },
                         onClick = {
                             selectedDestination = index
                             selectedKey = null
