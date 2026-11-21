@@ -274,3 +274,7 @@ CI #122 (run 44902258363) passed Android 15 tests/screenshots, unit/build, Room 
 
 ## 2026-11-21 — flaky UI wait and catalogue copy fix
 CI #123 (run 44902997094) attempt 1 had two preview UI timeouts while Instrumentation.waitForIdleSync blocked; artwork offline/disable test passed. Attempt 2 of identical source passed Android 15 plus unit/build/schema/privacy. The failure was flaky, not an app assertion. Current change replaces global unbounded idling calls with bounded accessibility polling and async callback waits, and corrects Phase 1-era note saying artwork is disabled. CI pending. No installable APK/Release; continue player/Glass integration once green.
+
+
+## Recent agent changes — 2026-11-21
+Media3 embedded audio and subtitle selectors were added to the local playback screen using the official `TrackSelectionDialogBuilder`; unsupported track types remain hidden, subtitles can be disabled, and no media or network path changed. CI #124 / 44904367611 passed Android 15 integration and all unit/build/schema/privacy gates for the prior bounded-wait change. This player-control change is unverified pending CI. No installable APK was produced. Next: inspect this commit's CI, fix any regression, then continue sidecar subtitles and subtitle delay before one integrated candidate.

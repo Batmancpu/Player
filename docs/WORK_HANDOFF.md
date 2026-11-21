@@ -190,3 +190,7 @@ Follow-up commit adds a localized poster accessibility description referenced by
 
 ## 2026-11-21 — artwork test fixture fix
 A test-only follow-up replaces the malformed synthetic PNG with a valid CRC-checked PNG. Verify CI #119, #120 and this follow-up run before continuing.
+
+
+## 2026-11-21 continuation — player track controls
+CI #124 / 44904367611 passed for bounded Compose UI waits and catalogue copy on main. Current source adds Media3 audio/subtitle track actions in local playback using the official selector; audio/text actions appear only when supported tracks are present and subtitles can be turned off. The new commit is awaiting CI. No installable APK/Release is created at each commit per user direction; build one complete signed candidate only after the integrated app is ready. Next: verify CI, then sidecar subtitles and subtitle delay. OPPO playback, subtitle rendering, performance, battery and Glass remain unverified; do not claim acceptance/FPS.

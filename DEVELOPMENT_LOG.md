@@ -959,3 +959,16 @@ CI #122 / 44902258363 passed both Android 15 UI/instrumentation plus synthetic s
 
 ## 2026-11-21 — CI #123 retry and bounded synthetic UI waits
 CI #123 / 44902997094 attempt 1: Android tests showed PreviewUi catalogue detail timeout inside Instrumentation.waitForIdleSync at AccessibilityNodeInfo polling, cascading to the next test; MetadataLookupController artwork offline/disable checks passed. Attempt 2 with identical source passed both Android 15 test job and separate unit/debug build, Room schema, privacy gates. No release signing/Release. To remove indefinite global-idle waits, instrumentation now polls accessibility snapshots every 50–100 ms with finite deadlines and polls callback state; swipe/screenshots retain explicit bounded delays. Also revised old library note to reflect optional TMDB artwork/matching while affirming local offline use. CI pending. No phone FPS/performance claim.
+
+
+## 2026-11-21 — Embedded player track selection
+
+**Change:** Added audio and subtitle track actions to the local player chrome. Actions are shown only after Media3 reports at least one supported track of that type. The official Media3 `TrackSelectionDialogBuilder` presents track names; text tracks include an explicit disable option, while audio cannot be disabled accidentally. Removed the duplicate PlayerView subtitle toggle. No source media is changed and no network access is used. Added localized string resources.
+
+**Reason:** The current player exposed a subtitle toggle but no clear audio-track selector. Embedded track selection is part of the approved local-player scope and is needed before sidecar subtitles and delay controls can be integrated.
+
+**Research:** [AndroidX Media3 TrackSelectionDialogBuilder](https://developer.android.com/reference/androidx/media3/ui/TrackSelectionDialogBuilder), checked 2026-11-21. The builder accepts a Player and a Media3 track type and supports the disable option.
+
+**Verification:** Prior main commit 800d88e1bb512ba8b08729d77d887496dd6131f6 passed CI #124 / 44904367611 (Android 15 integration, unit tests/build, Room schema and privacy gates). This new player UI change has not yet run through CI. No release build or user APK was requested or produced.
+
+**Next:** Verify CI for the track selector, then implement/test local sidecar subtitle association and user-adjustable subtitle delay without modifying source files.

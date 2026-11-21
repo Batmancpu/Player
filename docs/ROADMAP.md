@@ -106,3 +106,7 @@ CI #122 passed the poster card change and all existing Android 15/UI, unit, sche
 
 ## 2026-11-21 — accessibility copy and bounded test waits
 Removed unbounded instrumentation waitForIdleSync calls that caused transient CI #123 preview timeout; the exact previous source passed attempt 2. Tests now poll accessibility and callbacks with finite deadlines. Corrected library note to state TMDB artwork/matching are optional and local use remains offline. Follow-up CI pending.
+
+
+## 2026-11-21 — player controls progress
+The local Media3 player now exposes explicit selectors for supported embedded audio and subtitle tracks; the subtitle selector can disable text rendering. This is source work pending CI and is not a completed phase or device result. Continue with safely associated local sidecar subtitles, subtitle-delay controls and playback polish, then finish cinematic navigation/Glass and prepare one integrated signed APK for phone testing. User requested no interim installable APKs. Actual OPPO acceptance and measured frame/thermal/battery evidence remain pending.

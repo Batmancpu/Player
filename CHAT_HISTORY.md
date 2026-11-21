@@ -321,3 +321,7 @@ CI #122 passed Android 15 UI/screenshots, JVM/build, Room-schema and privacy che
 
 ## 2026-11-21 — bounded Compose test waits
 CI #123 had a transient first-run Compose UI timeout at waitForIdleSync; the identical second attempt passed the entire Android 15 suite plus build/schema/privacy. The poster offline test passed both attempts. Removed unbounded idling in UI instrumentation in favor of deadline polling and fixed stale copy saying artwork was disabled. No APK/Release; CI for helper/copy fix pending.
+
+
+## 2026-11-21 — one integrated APK request
+User clarified: do not provide APKs after every small step; finish the whole integrated app first, then provide one APK for testing. Continued Phase 4/5 integration with Media3 embedded audio/subtitle track selectors. No user-installable APK produced. CI #124 passed the preceding bounded UI wait fix; selector commit awaits CI. Next implement sidecar subtitle association and delay controls; later complete Glass/accessibility/performance and build one signed candidate.
