@@ -577,6 +577,7 @@ private fun LocalTitleCard(
         title.files.mapNotNull { cachedMetadataByDocumentId[it.documentId] }
             .distinctBy { it.tmdbId to it.mediaType }.singleOrNull()
     }
+    val placeholderArtworkDescription = stringResource(R.string.catalogue_artwork_placeholder_description, title.title)
     var posterFile by remember(title.key, metadata?.posterPath) { mutableStateOf<File?>(null) }
     LaunchedEffect(metadata?.posterPath, posterRefreshKey) {
         posterFile = if (metadata?.posterPath != null && artworkCache != null) {
@@ -598,7 +599,7 @@ private fun LocalTitleCard(
                     Modifier.fillMaxSize()
                         .background(Brush.linearGradient(listOf(color, PlayerPalette.surface)))
                         .semantics {
-                            contentDescription = stringResource(R.string.catalogue_artwork_placeholder_description, title.title)
+                            contentDescription = placeholderArtworkDescription
                         },
                 )
                 Text(

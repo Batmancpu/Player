@@ -540,3 +540,9 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 - **Evidence:** #206 had three failures in 51 tests: selected dock destination not discoverable, switch state not readable via `isChecked`, and setting displaced Forget-folder. In #207 the setting remained offscreen without an accessibility scroll action and Movies selected state remained unassociated with its label.
 - **Fix under verification:** Explicit selected semantics/content descriptions and localized switch state; keep Glass after existing Manage actions; use the safe screen-bounded gesture fallback when Compose exposes no scroll accessibility action.
 - **Next:** Confirm all regressions in full CI and inspect screenshots. CI #208 did not reach tests; its compile error was a composable string lookup inside the semantics lambda and is corrected by computing the localized label earlier. No handset observation or Glass performance claim.
+
+### R-037 — Resolve localized descriptions outside Compose semantics lambdas
+- **Status:** Two compile-time failures corrected; Android CI #210 pending.
+- **Evidence:** CI #208 found `stringResource` inside the dock semantics lambda; CI #209 found the same in the offline poster semantics lambda. Neither run reached instrumentation.
+- **Fix:** Resolve each localized label in a composable scope and assign its value from the semantics block.
+- **Next:** Verify compilation and run Android tests before claiming accessibility or poster-layout behavior.

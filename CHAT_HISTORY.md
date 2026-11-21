@@ -599,3 +599,7 @@ CI #207 compiled the code and ran 51 Android 15 tests; two assertions failed. Th
 
 ## 2026-11-21 — CI #208 compile correction and portrait offline artwork
 CI #208 failed before instrumentation because `stringResource` was called inside a non-composable semantics lambda. The dock now resolves the label in composable scope. The offline artwork card is also being adjusted to a portrait 2:3 poster with an original title initial and an accessible description; its bounds are covered by an Android UI assertion. CI #209 is pending. No APK is produced during this integrated work.
+
+
+## 2026-11-21 — CI #209 localized poster label compile correction
+CI #209 stopped before Android tests because the new poster accessibility description resolved a string resource inside a non-composable semantics lambda. The value now resolves in LocalTitleCard composable scope. CI #208 had the same issue for the dock label; that is also corrected. The next run verifies both plus the portrait artwork test. No APK yet.

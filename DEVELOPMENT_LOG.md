@@ -1387,3 +1387,8 @@ CI #207 / 44957235967 compiled the app and completed all 51 Android 15 instrumen
 ## 2026-11-21 — Correct tab-label scope and refine offline poster proportions
 
 CI #208 / 44957854614 stopped at `PlayerGlassDock.kt:85`: `stringResource` was invoked inside a non-composable semantics lambda, so no Android tests ran. Compute each localized tab label in the surrounding composable scope and reuse it for label text and merged accessibility description. In the same pending batch, replace square offline poster placeholders with portrait 2:3 layouts, original title-initial artwork and a screen-reader description; add an Android bounds regression. Local `git diff --check` and strings XML parsing pass; CI #209 is pending. No release APK or real-device visual/performance evidence. Next: verify the previous accessibility fixes, new poster bounds, and all existing Android/JVM/schema/privacy gates; inspect generated screenshots and continue player/subtitle work.
+
+
+## 2026-11-21 — Move poster accessibility label into composable scope
+
+CI #209 / 44958254084 failed Kotlin compilation at `LocalLibraryScreen.kt:601`: the new title-specific poster `contentDescription` called `stringResource` inside a non-composable `semantics` lambda. `LocalTitleCard` now resolves the localized string in composable scope and only assigns the value inside the semantics block. Local `git diff --check` passed. The Android suite never ran and no APK was generated. CI #210 pending, including the prior dock and scrolling fixes plus portrait poster bounds. Next: inspect the full Android/JVM/schema/privacy result and screenshots; continue integrated player controls.
