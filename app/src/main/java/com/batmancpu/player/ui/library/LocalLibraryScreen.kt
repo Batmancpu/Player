@@ -286,7 +286,6 @@ internal fun LocalLibraryContent(
         val chosenCandidate = lookup?.candidates?.firstOrNull { it.id == selectedCandidateId }
         ModalBottomSheet(
             onDismissRequest = { selectedKey = null },
-            sheetGesturesEnabled = false,
             containerColor = PlayerPalette.surface,
         ) {
             LazyColumn(

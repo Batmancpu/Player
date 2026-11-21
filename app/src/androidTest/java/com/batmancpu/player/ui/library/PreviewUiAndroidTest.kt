@@ -141,11 +141,14 @@ class PreviewUiAndroidTest {
             for (index in 0 until node.childCount) node.getChild(index)?.let(::visit)
         }
         visit(root)
-        // Start on visible sheet content in the safe central area, never the home-gesture zone.
+        // Anchor the gesture to the actual modal sheet, then stay clear of both its drag
+        // handle and Android's bottom Home gesture area.
+        val handleBounds = Rect()
+        find { it.contentDescription?.toString() == "Close sheet" }?.getBoundsInScreen(handleBounds)
+        val sheetContentTop = maxOf(safeTop, handleBounds.bottom + (24 * metrics.density).toInt())
         val target = candidates
-            .filter { it.first.centerY() in safeTop..safeBottom }
+            .filter { it.first.centerY() in sheetContentTop..safeBottom }
             .maxByOrNull { it.first.bottom }
-            ?: candidates.filter { it.first.centerY() < safeBottom }.maxByOrNull { it.first.bottom }
             ?: return false
         val fromX = target.first.centerX()
         val fromY = target.first.centerY().coerceAtMost(safeBottom)

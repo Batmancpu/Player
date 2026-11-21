@@ -510,3 +510,6 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 
 ## 2026-11-21 — Keep long details content scrollable
 - CI #168 showed that restoring ModalBottomSheet drag gestures closes the details sheet during the vertical gesture needed to reveal the metadata action. In CI #166, the same movie metadata and multi-season episode interactions passed with sheet gestures disabled. The details sheet therefore keeps drag-to-dismiss disabled and provides an explicit labeled Close action; system Back and outside tap remain supported. Instrumentation now waits for visible targets and keeps swipe starts out of Android's Home gesture zone. CI verification pending.
+
+## 2026-11-21 — Constrain gestures to the sheet content
+- CI #169: disabling Material3 sheet gestures left the modal open but prevented the test from advancing the inner LazyColumn to the second season; this setting is not suitable for the product. Restored default sheet behavior. Instrumentation now anchors fallback swipes below the actual sheet drag handle and above the Android Home gesture region, using only visible targets. The explicit Close action remains. CI verification pending.
