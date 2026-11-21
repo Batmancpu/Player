@@ -114,3 +114,7 @@ The local Media3 player now exposes explicit selectors for supported embedded au
 
 ## 2026-11-21 — player selector correction
 A live source audit found the prior selector commit was documentation-only; its CI did not test selector code. Corrective source now adds Media3 embedded audio/subtitle selectors and an Android test for the synthetic audio selector; this is unverified pending CI. Continue sidecar subtitle discovery, delay controls and later cinematic/Glass work before creating one integrated installable APK. Phase gates and OPPO acceptance remain open.
+
+
+## 2026-11-21 — Phase 5 sidecar foundation
+CI #126 verified embedded Media3 audio selector integration. New source propagates opaque SAF parent identity from immediate-child enumeration and matches only supported same-parent subtitle names with deterministic bounds; scanner and matcher tests are pending CI. This is foundation only: Room still needs a non-destructive migration to persist parent IDs, and playback still needs validated local subtitle URIs. Continue both before calling sidecar support integrated. No interim APK.

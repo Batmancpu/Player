@@ -282,3 +282,7 @@ Media3 embedded audio and subtitle selectors were added to the local playback sc
 
 ## Recent agent changes — 2026-11-21
 A live-tree audit found commit 9200aaeed66c08eb30f29b27d9d8713f8afe5c67 changed only documentation; its Kotlin/resource changes had not been applied, so CI #125 Android tests covered the old player source. Correcting this with actual embedded Media3 audio/subtitle selector code, localized labels, and an Android 15 test that opens/dismisses the audio selector. No Release APK. Next: verify actual committed file contents and full CI before continuing sidecar subtitle integration.
+
+
+## Recent agent changes — 2026-11-21
+CI #126 / 44906299456 passed the actual selector source: Android 15 instrumentation (including audio selector open/dismiss), unit/build, Room schema and privacy checks. New Phase 5 foundation captures each discovered file's opaque immediate parent document ID and adds a deterministic same-parent subtitle matcher for exact names and common language/forced suffixes. Synthetic JVM tests cover sibling isolation, unsupported extensions, opaque IDs and result bounds. Not yet persisted through Room or attached to playback. No user APK/Release. Next: verify this scan/matcher slice in CI, then add a Room v4 migration for parent IDs before enabling sidecar playback.

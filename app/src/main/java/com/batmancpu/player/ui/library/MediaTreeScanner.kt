@@ -38,6 +38,8 @@ internal data class DiscoveredLocalMedia(
     val documentId: String,
     val displayName: String,
     val kind: LocalMediaKind,
+    /** Opaque SAF parent ID captured during immediate-child enumeration. */
+    val parentDocumentId: String = "",
 )
 
 /**
@@ -95,6 +97,7 @@ internal class MediaTreeScanner(
                             documentId = entry.documentId,
                             displayName = entry.displayName,
                             kind = kind,
+                            parentDocumentId = parentId,
                         ),
                     )
                 }

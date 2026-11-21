@@ -329,3 +329,7 @@ User clarified: do not provide APKs after every small step; finish the whole int
 
 ## 2026-11-21 — selector source correction
 The assistant audited commit 9200aaeed66c08eb30f29b27d9d8713f8afe5c67 and found its notes said audio/subtitle selectors were implemented, but the source tree contained no selector code. CI #125 therefore tested the previous player. This is being corrected with actual Media3 selector controls, localized labels and a synthetic audio-selector integration test. No user APK produced. Next: verify exact blobs and full CI, then local sidecar subtitles and delay.
+
+
+## 2026-11-21 — Phase 5 sidecar foundation
+CI #126 / 44906299456 passed Android 15 selector testing and all unit/build/schema/privacy gates. Work continues on local sidecar subtitles: scanner now captures the opaque parent document ID and a pure matcher limits candidates to supported subtitle files in that exact directory, including bounded language/forced suffix matching. New tests check no sibling-folder bleed and no opaque ID/path guessing. Pending CI; no persistence or playback attachment until Room v4 is safely migrated. No APK produced for this step.

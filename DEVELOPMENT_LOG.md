@@ -979,3 +979,12 @@ CI #123 / 44902997094 attempt 1: Android tests showed PreviewUi catalogue detail
 A follow-up inspection of the live commit tree showed that commit 9200aaeed66c08eb30f29b27d9d8713f8afe5c67 recorded selector notes but did not contain the intended Kotlin/resource diffs; its CI Android test exercised the previous app source. This was an implementation workflow error, not a product defect. The correction now adds supported-track detection, Media3 audio/text selection dialogs, localized labels, and instrumentation that checks the synthetic file's audio track and opens/dismisses the audio dialog. Track text can be disabled; audio cannot.
 
 Verification: change is unverified until its own CI completes. CI #125 Android job passed but does not verify selector source because it was absent. No user APK or Release was built/published. Next: verify fetched Git blobs match expected source changes, inspect CI, then continue sidecar subtitles.
+
+
+## 2026-11-21 — SAF parent identity for sidecar subtitles
+
+CI #126 / 44906299456 passed against commit fdbcd895dfa7f25e5f3b3843c3d58020f8f14b48: Android 15 integration (including Media3 audio selector open/dismiss), unit/build, Room schema and privacy gates. The earlier selector correction is verified.
+
+New work captures the opaque immediate parent document ID at the point the scanner enumerates a child; it never decodes IDs or treats a display name as a path. A pure local matcher selects only supported subtitle suffixes next to the video under the same parent, supports exact stems plus constrained language/forced/SDH suffixes, returns deterministic capped results, and refuses candidates without known parent identity. Tests cover folder isolation, filename near-misses, unsupported .sub sidecars, opaque ID behavior and bounds.
+
+Verification: pending CI for this scanner/matcher change. Parent ID is not yet stored in Room and sidecars are not yet attached to Media3; that is the next schema migration/integration slice. No user APK or Release.

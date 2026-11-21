@@ -44,6 +44,10 @@ class MediaTreeScannerTest {
             listOf(LocalMediaKind.VIDEO, LocalMediaKind.VIDEO, LocalMediaKind.SUBTITLE),
             results.map { it.kind },
         )
+        assertEquals(
+            listOf("root", "series", "series"),
+            results.map { it.parentDocumentId },
+        )
     }
 
     @Test
