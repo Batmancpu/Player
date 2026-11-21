@@ -227,3 +227,6 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-21 — Added a dedicated About/Credits screen with TMDB's approved logo at the original aspect ratio and exact required non-endorsement notice; Player remains more prominent. Settings links to Credits; back navigation and synthetic Android UI coverage added. No network permission/request/APK change. CI #110 pending. Next: implement manual match flow with normalized title/year/type and bounded cancellation-safe transport.
+
+
+- 2026-11-21 — Corrected an escaped-quote source typo in the new TMDB Credits button before its build completed. The change affects only the settings-screen callback and is queued for CI #111; no APK or Release. Next: verify Credits UI/route and continue manual search/match integration.

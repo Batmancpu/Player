@@ -879,3 +879,9 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 - Credits show Player more prominently and display the exact official notice: “This product uses the TMDB API but is not endorsed or certified by TMDB.” The only outbound action is a user-tapped link to themoviedb.org. No request/client/INTERNET permission exists yet.
 - Added Android UI coverage for the Credits button, logo accessibility label and notice. No versionCode, database, signing, Release or user-installable APK change. CI #110 pending.
 - Next: complete the explicit search→candidate→user-confirmed Room match interaction with fixed TMDB destinations, cancellation/size bounds and no automatic requests; add INTERNET only with that integrated feature.
+
+
+## 2026-11-21 — Correct Credits callback syntax
+
+- Source review caught an extra escaped quote in the MetadataSettingsScreen Credits click lambda after commit b102860; corrected it to a valid Kotlin string literal before depending on CI output. The app behavior remains: clear the transient token, clear focus, open local Credits.
+- CI #110 may report the original commit; verify CI #111 for the corrected head. No installable APK or Release. Next: verify new credits UI tests and continue manual search/match integration.

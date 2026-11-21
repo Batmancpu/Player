@@ -192,7 +192,7 @@ internal fun MetadataSettingsContent(
                 )
             }
             Text(stringResource(R.string.metadata_foundation_note), style = MaterialTheme.typography.bodySmall, color = PlayerPalette.textTertiary)
-            TextButton(onClick = { token = \"\"; focus.clearFocus(); onOpenCredits() }) {
+            TextButton(onClick = { token = ""; focus.clearFocus(); onOpenCredits() }) {
                 Text(stringResource(R.string.metadata_open_credits))
             }
             Spacer(Modifier.height(12.dp))

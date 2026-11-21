@@ -269,3 +269,6 @@ Commit 7501006 added Library Manage → Metadata and connections, encrypted user
 
 ## 2026-11-21 — TMDB attribution screen integrated
 Added Player's About/Credits route, the official approved TMDB logo converted at its original aspect ratio, and the exact required non-endorsement notice. The logo is visually secondary to Player; visiting TMDB is a manual link. Synthetic Android UI coverage added. No TMDB data is requested and no INTERNET permission or installable APK was added. CI #110 pending; next is manual search/matching with the privacy-limited request contract.
+
+
+Credits screen follow-up: source review caught and corrected a Kotlin quoting typo in the button callback. CI #110 is for the preceding commit; CI #111 must verify the corrected source and new UI assertions. No APK/Release was made.
