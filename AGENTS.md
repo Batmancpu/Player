@@ -236,3 +236,6 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-21 — Added fixed HTTPS TMDB request policy/client plus unit and synthetic Android transport/privacy/cancellation tests. Requests remain unreachable from the app UI and INTERNET permission is absent; no APK or Release. CI #113 will verify compilation and tests after #112's Credits fixes. Next: connect explicit detail-sheet search, user-confirmed Room matches and offline metadata display, then add network permission only with the complete user-facing flow.
+
+
+- 2026-11-21 — CI #112 exposed a Credits UI test that searched below the visible scroll position; implementation was intact. Updated the synthetic test to scroll the settings surface until the Credits action is visible before tapping. CI #113 verifies the TMDB transport and existing Credits path; this test correction triggers a follow-up run. No APK or Release. Next: complete manual search/confirmation UI and offline metadata presentation.

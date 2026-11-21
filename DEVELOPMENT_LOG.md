@@ -899,3 +899,10 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 - Added a bounded, redirect-disabled HTTPS transport with 10-second connect and 15-second read limits, 1 MiB JSON cap, at most 20 search results, typed failures, generic headers, and cancellation-triggered disconnect. Search terms carry normalized title/year/type only; no filename, folder URI, episode number, subtitle, or media bytes are sent.
 - Added JVM request-policy cases and synthetic Android transport/client tests for consent gates, origin/path constraints, response bounds, credential revocation, typed errors, cancellation and connection cleanup. No real network access is used in tests.
 - INTERNET permission and UI dispatch remain absent, so the client cannot be invoked by app users yet. No APK artifact or Release was produced intentionally. CI #113 pending; #112 still verifies the prior Credits repair. Next: integrate the manual search → candidate → explicit match confirmation path into title details and read the cache offline, then add INTERNET permission only with that complete flow and passing privacy gates.
+
+
+## 2026-11-21 — Make Credits UI test scroll to its action
+
+- CI #112 / 44895129158 compiled successfully and ran the Android 15 suite, where one Credits UI test failed because “About and credits” sits below the initial viewport in the scrollable settings screen. The failure was a test setup issue, not a missing app control.
+- Updated the synthetic UI helper to scroll the active screen until the requested label is exposed, then tap the Credits action. This models the actual user path and preserves assertions for the TMDB logo and notice.
+- CI #113 contains the bounded TMDB transport groundwork and will also exercise the previous UI test; this fix triggers a follow-up CI run. No APK/Release was produced. Next: verify green UI tests and continue the full manual metadata search/match flow.

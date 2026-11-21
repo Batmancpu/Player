@@ -280,3 +280,8 @@ CI #110 failed before tests at Kotlin compile: an escaped quote in the Credits c
 ## 2026-11-21 — Bounded TMDB client groundwork
 
 Added the fixed HTTPS API policy/client and synthetic tests for safe normalized search, bounded responses, explicit consent/credential checks, cancellation and redirect rejection. The UI still cannot dispatch lookups and INTERNET permission is still absent. No installable APK or Release was produced, following the user's preference to receive one integrated build when ready. CI #113 pending; next integrate manual matching and offline cache presentation before enabling network permission.
+
+
+## 2026-11-21 — Credits test viewport fix
+
+CI #112 found that the synthetic UI test attempted to locate the Credits action below the initial viewport without scrolling. Added a scroll-to-visible helper to the test and retained the actual tap and attribution assertions. No app control or network policy change; no APK/Release. CI #113 is running; follow with the broader explicit manual metadata flow.

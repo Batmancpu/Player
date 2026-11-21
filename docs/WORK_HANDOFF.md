@@ -29,6 +29,10 @@ CI #103 / 44888950131 passed after the exact generated Room v3 schema commit (20
 - CI #113 is pending after CI #112 verifies the Credits compile repair. Next: wire explicit detail-sheet search/candidate confirmation to Room and cached offline metadata; only then add INTERNET permission and verify complete end-to-end behavior.
 - User requested one integrated app APK when the app is ready; do not publish per-step APKs. Latest signed Release remains v0.1.91. OPPO phone acceptance, Glass behavior and device performance remain unverified.
 
+## 2026-11-21 — Credits test correction
+
+CI #112 compiled and then failed one synthetic Android UI case because its search for “About and credits” did not scroll the settings screen to that offscreen action. The UI action is present; the test now scrolls to it before tapping. CI #113 verifies client groundwork and repeats the existing suite; the correction triggers the next run. No APK/Release. Continue manual title search → candidate → explicit confirm and offline cache presentation; keep phone testing until one integrated build is ready.
+
 ## Historical handoff snapshots (superseded)
 
 # Historical Codex handoff — 2026-11-14
