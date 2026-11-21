@@ -251,7 +251,7 @@ internal fun GlassLabScreen(
                 ),
         )
 
-        GlassPreviewDock(
+        PlayerGlassDock(
             hazeState = hazeState, enabled = glassEnabled, selected = selectedTab,
             onSelected = { selectedTab = it },
             modifier = Modifier.align(Alignment.BottomCenter)

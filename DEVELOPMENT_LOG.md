@@ -1358,3 +1358,11 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - CI #203 / 44952898549 completed successfully on current main. All 50 Android 15 instrumentation tests passed, including the selected navigation state assertion and playback-speed menu selection. Unit tests, debug build and Room schemas v1-v4 verification also passed.
 - Release signing, production-manifest and release-certificate checks were correctly skipped because this was a regular development push; no APK or release was created. This does not represent OPPO device or performance verification.
 - Next: investigate and refine the Glass Lab dock based on the synthetic screenshot and user's report, then continue subtitle/player work and final efficiency review.
+
+
+## 2026-11-21 — First production Glass navigation dock (CI pending)
+- Starting from CI #203 / 44952898549 (50/50 Android 15 tests, unit/build and Room v1-v4 schemas green), moved the bounded Haze dock into the real Home/Movies/Shows/Search scaffold. The library content is registered as a Haze source only while effects are enabled; only the dock is blurred. Turning Glass off removes the source as well as the Glass effect, so the fallback avoids capture work. Poster and video content are not glass layers.
+- Added a user setting in Manage to switch Glass off. Preference is stored locally in private SharedPreferences and survives activity recreation; the off mode uses the existing opaque PlayerGlassSurface fallback. The dock provides explicit selected/not-selected semantics and retains real catalogue navigation. Renamed the component to PlayerGlassDock and encapsulated persistence in PlayerUiSettingsStore.
+- Added Android 15 synthetic coverage that disables the effect, verifies local persistence through activity recreation, and cleans up its test preference. Existing production navigation test covers tab behavior and selection.
+- Verification: CI pending; no Android SDK/Gradle wrapper is available in this workspace. No OPPO rendering, frame-time, memory, thermal or battery evidence.
+- Next: inspect CI and generated catalogue screenshots for bottom inset/overlap and Haze behavior; correct any issues before moving to subtitle controls and the final performance/release pass.

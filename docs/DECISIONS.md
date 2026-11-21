@@ -94,6 +94,8 @@ CI build/test success and OPPO handset validation must be reported separately.
 **Reason:** The user explicitly prioritised a useful working product over further visual experiments. Haze dependencies and lab work are retained but must not dictate the functional architecture.
 
 
+**Implementation status (2026-11-21):** The functional navigation baseline and player speed control passed CI #203. Following the user’s direction to continue toward the full app, the shared Haze dock is now integrated as the first bounded production Glass surface; library Manage has a persistent off switch and solid fallback, and disabled mode detaches the source. This does not mark the broader Glass phase accepted; CI and Reno10 frame/thermal measurements are pending.
+
 ### D-019 — Stable self-managed Android release signing
 **Status:** Accepted  
 **Decision:** Use one long-lived RSA 2048 Android release keystore with a validity of 10,000 days and alias player-release. Generate it locally on the user's Android device; keep a separate offline backup. Never commit the private keystore or passwords. Store the base64 keystore and passwords only in GitHub Actions repository secrets. CI signs a release APK with the same key on every main-branch build and verifies its certificate; debug APKs are labelled CI-only. Use the monotonically increasing GitHub Actions run number as versionCode.  

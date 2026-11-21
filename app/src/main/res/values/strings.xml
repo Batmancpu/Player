@@ -99,5 +99,8 @@
     <string name="catalogue_close_details">Close</string>
     <string name="glass_lab_back">Back to library</string>
     <string name="player_speed_accessibility">Playback speed %1$s</string>
+    <string name="settings_glass_title">Liquid Glass</string>
+    <string name="settings_glass_description">Use the animated glass navigation dock. Turn it off for a solid, low-effect dock.</string>
+    <string name="settings_glass_accessibility">Liquid Glass effects</string>
 </resources>
 

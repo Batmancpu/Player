@@ -31,7 +31,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
@@ -42,6 +41,8 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.batmancpu.player.R
+import com.batmancpu.player.ui.glass.PlayerGlassDock
+import com.batmancpu.player.ui.glass.PlayerUiSettingsStore
 import com.batmancpu.player.ui.icons.PlayerGlyph
 import com.batmancpu.player.ui.icons.PlayerGlyphIcon
 import com.batmancpu.player.ui.theme.PlayerPalette
@@ -51,6 +52,8 @@ import com.batmancpu.player.ui.metadata.TmdbCandidate
 import com.batmancpu.player.ui.metadata.MetadataSettingsStore
 import com.batmancpu.player.ui.metadata.TmdbArtworkCache
 import com.batmancpu.player.ui.metadata.TmdbImageSize
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -154,6 +157,9 @@ internal fun LocalLibraryContent(
     val movieShelf = remember(results) { results.filterNot(LocalTitle::isSeries) }
     val seriesShelf = remember(results) { results.filter(LocalTitle::isSeries) }
     val selected = titles.firstOrNull { it.key == selectedKey }
+    val context = LocalContext.current
+    val uiSettings = remember(context) { PlayerUiSettingsStore(context) }
+    var glassEnabled by rememberSaveable { mutableStateOf(uiSettings.glassEnabled()) }
     var selectedCandidateId by rememberSaveable(selectedKey) { mutableStateOf<Long?>(null) }
     LaunchedEffect(folder.tree, selected?.key) {
         selectedCandidateId = null
@@ -176,45 +182,36 @@ internal fun LocalLibraryContent(
             scope.launch { snackbar.showSnackbar(started) }
         }
     }
-    val destinations = listOf(
-        PlayerGlyph.HOME to R.string.nav_home,
-        PlayerGlyph.MOVIES to R.string.nav_movies,
-        PlayerGlyph.SHOWS to R.string.nav_shows,
-        PlayerGlyph.SEARCH to R.string.nav_search,
-    )
+    val hazeState = rememberHazeState()
+    val glassSource = if (glassEnabled) Modifier.hazeSource(state = hazeState) else Modifier
     Scaffold(
         containerColor = PlayerPalette.background,
         contentColor = PlayerPalette.textPrimary,
         snackbarHost = { SnackbarHost(snackbar) },
         contentWindowInsets = WindowInsets.safeDrawing,
         bottomBar = {
-            NavigationBar(containerColor = PlayerPalette.surface, tonalElevation = 0.dp) {
-                destinations.forEachIndexed { index, (glyph, label) ->
-                    val selectionDescription = stringResource(
-                        if (selectedDestination == index) R.string.nav_item_selected else R.string.nav_item_not_selected,
-                    )
-                    NavigationBarItem(
-                        selected = selectedDestination == index,
-                        modifier = Modifier.semantics { stateDescription = selectionDescription },
-                        onClick = {
-                            selectedDestination = index
-                            selectedKey = null
-                            if (index == 3) {
-                                searchFocusRequester.requestFocus()
-                            } else {
-                                query = ""
-                                focus.clearFocus()
-                            }
-                        },
-                        icon = { PlayerGlyphIcon(glyph, null, size = 22.dp) },
-                        label = { Text(stringResource(label), maxLines = 1) },
-                        alwaysShowLabel = true,
-                    )
-                }
-            }
+            PlayerGlassDock(
+                hazeState = hazeState,
+                enabled = glassEnabled,
+                selected = selectedDestination,
+                onSelected = { index ->
+                    selectedDestination = index
+                    selectedKey = null
+                    if (index == 3) {
+                        searchFocusRequester.requestFocus()
+                    } else {
+                        query = ""
+                        focus.clearFocus()
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .windowInsetsPadding(WindowInsets.navigationBars)
+                    .padding(horizontal = 18.dp, vertical = 8.dp),
+            )
         },
     ) { padding ->
-        Column(Modifier.fillMaxSize().padding(padding).padding(horizontal = 20.dp)) {
+        Column(Modifier.fillMaxSize().padding(padding).padding(horizontal = 20.dp).then(glassSource)) {
             Row(Modifier.fillMaxWidth().padding(top = 16.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
                     Text(stringResource(R.string.catalogue_kicker), style = MaterialTheme.typography.labelSmall, color = PlayerPalette.accentMuted)
@@ -504,6 +501,22 @@ internal fun LocalLibraryContent(
             Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 28.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(stringResource(R.string.catalogue_settings), style = MaterialTheme.typography.headlineMedium, color = PlayerPalette.textPrimary)
                 Text(folder.label, color = PlayerPalette.textSecondary)
+                val glassDescription = stringResource(R.string.settings_glass_accessibility)
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                        Text(stringResource(R.string.settings_glass_title), color = PlayerPalette.textPrimary)
+                        Text(stringResource(R.string.settings_glass_description), color = PlayerPalette.textSecondary,
+                            style = MaterialTheme.typography.bodySmall)
+                    }
+                    Switch(
+                        checked = glassEnabled,
+                        onCheckedChange = { enabled ->
+                            glassEnabled = enabled
+                            uiSettings.setGlassEnabled(enabled)
+                        },
+                        modifier = Modifier.semantics { contentDescription = glassDescription },
+                    )
+                }
                 Button(onClick = { settings = false; scanAction() }, enabled = !loading, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(if (library.isScanning) R.string.library_scan_cancel else R.string.library_scan_start))
                 }

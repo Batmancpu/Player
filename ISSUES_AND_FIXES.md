@@ -524,3 +524,8 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 ## 2026-11-21 — Navigation accessibility fix and playback-speed test verified
 - CI #203 / 44952898549 passed the new explicit navigation selected-state test and playback-speed interaction; full suite 50/50, JVM unit tests/build/Room schemas all green.
 - Prior selected-state failure was in the Android accessibility representation of Material3's selected item; adding an explicit `stateDescription` fixed the regression. No release-only gates or handset tests ran on this development push.
+
+
+## 2026-11-21 — Production Glass dock integration (verification pending)
+- CI #203 passed 50/50 Android 15 tests for the functional navigation and speed control baseline. Integrated the existing Haze dock as one bounded production surface, with a persisted private settings toggle and opaque fallback. Disabling effects detaches the Haze source.
+- Added a synthetic test for disabling Glass and preserving the setting through activity recreation. Await CI and inspect safe-area screenshot; actual CPH2531 blur, frame time, heat and battery remain unverified.

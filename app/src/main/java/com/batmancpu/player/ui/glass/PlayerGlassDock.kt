@@ -18,6 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.draw.shadow
@@ -28,7 +30,7 @@ import dev.chrisbanes.haze.HazeState
 
 /** One bounded material surface; selection is a lightweight original spring pill. */
 @Composable
-internal fun GlassPreviewDock(
+internal fun PlayerGlassDock(
     hazeState: HazeState,
     enabled: Boolean,
     selected: Int,
@@ -68,11 +70,15 @@ internal fun GlassPreviewDock(
             .border(1.dp, Color.White.copy(alpha = .22f), selectionShape))
         Row(Modifier.fillMaxSize().selectableGroup()) {
             glyphs.forEachIndexed { index, glyph ->
+                val selectionDescription = stringResource(
+                    if (selected == index) R.string.nav_item_selected else R.string.nav_item_not_selected,
+                )
                 Column(
                     Modifier.weight(1f).fillMaxHeight().selectable(
                         selected = selected == index, role = Role.Tab, interactionSource = dockInteraction,
                         indication = null, onClick = { onSelected(index) },
-                    ).padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally,
+                    ).semantics { stateDescription = selectionDescription }.padding(4.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
                 ) {
                     PlayerGlyphIcon(glyph, null, size = 22.dp, tint = Color.White)

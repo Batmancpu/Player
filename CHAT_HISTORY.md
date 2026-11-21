@@ -578,3 +578,8 @@ CI #184's only failure was a test helper choosing a duplicate static Movies head
 ## 2026-11-21 — Navigation and playback-speed CI result
 - CI #203 passed all 50 Android 15 instrumentation tests, unit/build and Room v1-v4 schema checks. The current tree includes explicit tab-selection accessibility state and a local Media3 playback-speed selector.
 - Release signing/privacy gates were skipped for this normal commit; no intermediate APK was generated. Continue the Glass/player batches until the integrated app and efficiency review are ready.
+
+
+## 2026-11-21 — Production library Glass dock starts
+- After CI #203 passed (50/50 Android 15 tests and unit/build/schema checks), integrated the existing bounded Haze navigation material into the real library. Manage includes a persistent local Glass toggle; off mode removes Haze source capture and uses the solid fallback. The bar keeps the four real local catalogue destinations.
+- Added synthetic activity-recreation coverage. This change awaits CI; no handset performance claim or APK. User’s Glass Lab report remains a placement/experience item to verify from the new capture and later OPPO use.

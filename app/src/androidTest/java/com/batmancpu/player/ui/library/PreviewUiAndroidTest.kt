@@ -276,6 +276,50 @@ class PreviewUiAndroidTest {
         }
     }
 
+    @Test(timeout = 40_000) fun productionGlassCanBeDisabledAndPreferenceSurvivesReopen() {
+        val preferences = context.getSharedPreferences(
+            com.batmancpu.player.ui.glass.PlayerUiSettingsStore.PREFERENCES_NAME,
+            android.content.Context.MODE_PRIVATE,
+        )
+        preferences.edit().clear().commit()
+        val files = listOf(DiscoveredLocalMedia("movie-A", "Aurora.2022.mp4", LocalMediaKind.VIDEO))
+        fun install(activity: PreviewTestActivity) {
+            instrumentation.runOnMainSync {
+                activity.setContent {
+                    PlayerTheme {
+                        LocalLibraryContent(
+                            LocalFolder("synthetic-tree", "Synthetic local folder"),
+                            LibrarySessionState(tree = "synthetic-tree", media = files, hasCompletedScan = true),
+                            CatalogueSnapshot("synthetic-tree", LocalCatalogue.build(files)),
+                            onScan = {}, onCancel = {}, scanStillRunning = { false }, onChooseFolder = {},
+                            onPlay = {}, onOpenGlassLab = {},
+                        )
+                    }
+                }
+            }
+        }
+        var activity = launch()
+        try {
+            install(activity)
+            click(text("Manage"))
+            val glassSwitch = awaitNode { it.contentDescription?.toString() == "Liquid Glass effects" }
+            assertTrue("Glass starts enabled", glassSwitch.isChecked)
+            click(glassSwitch)
+            assertTrue("Glass off preference is saved", awaitCondition(3_000) {
+                !preferences.getBoolean(com.batmancpu.player.ui.glass.PlayerUiSettingsStore.GLASS_ENABLED_KEY, true)
+            })
+            instrumentation.runOnMainSync { activity.finish() }
+            activity = launch()
+            install(activity)
+            click(text("Manage"))
+            assertFalse("Glass off preference survives screen/activity recreation",
+                awaitNode { it.contentDescription?.toString() == "Liquid Glass effects" }.isChecked)
+        } finally {
+            instrumentation.runOnMainSync { activity.finish() }
+            preferences.edit().clear().commit()
+        }
+    }
+
     @Test(timeout = 45_000) fun catalogueSearchDetailsAndPlayUseIndexedIdentity() {
         val activity = launch()
         val files = listOf(
