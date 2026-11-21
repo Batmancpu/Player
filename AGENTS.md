@@ -372,3 +372,8 @@ CI #150 / 44924204549 failed only the auto-hide test despite the 30-second media
 ## 2026-11-21 — Season-grouped series details
 
 Series detail sheets now group episodes beneath localized Season headings and display stable Sxx · Exx labels instead of release filenames. Playback still uses the exact indexed document ID. Added a synthetic UI test with out-of-order episodes across two seasons. CI pending; no media/network changes and no APK. Next: verify ordering, accessibility and exact episode identity, then continue playback and production Glass work.
+
+
+## 2026-11-21 — Explicit playback chrome timeout
+
+CI #151 / 44931701605 waited for confirmed Media3 isPlaying yet the title/track header remained visible, reproducing the timeout defect during active playback. Added a Compose-owned 2.5-second hide timeout that explicitly hides Media3 controls and the Compose header while playing; pause keeps controls available, and controller visibility changes restart the timeout. Android 15 verification pending. No APK. Next: confirm hide/reveal and pause behavior, then finish season-grouped catalogue CI.

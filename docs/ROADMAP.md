@@ -131,3 +131,6 @@ CI #130 / 44909463881 passed Android 15 migration/offline persistence, JVM/build
 
 
 **Catalogue detail update (2026-11-21):** Series details now group local parsed episodes by season and present compact episode numbers; the underlying document IDs remain the playback identity. This is a filename-derived grouping only. Episode titles and artwork still require explicit, confirmed metadata matching. CI pending.
+
+
+**Playback chrome correction (2026-11-21):** CI #151 reproduced the header staying visible after Media3 reported active playback. An explicit Compose timeout now hides the PlayerView controller and header together while playing, retains controls when paused and restarts on reveal. Verification pending.

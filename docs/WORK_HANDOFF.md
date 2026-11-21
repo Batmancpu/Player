@@ -243,3 +243,7 @@ CI #150 failed one player test; CI #149 passed the same 45-test source. The test
 
 ### Catalogue series detail update
 Series sheets now group episodes under Season headings and use Sxx · Exx labels from the local parser. The exact indexed document ID is preserved for playback. Synthetic Android test covers ordering and selection; CI pending.
+
+
+### Playback chrome regression (2026-11-21)
+CI #151 confirmed the Compose player header remained visible after Media3 reported active playback. Source now includes a matching explicit 2.5-second Compose timeout that hides both PlayerView controls and header; paused playback keeps controls visible. CI pending. No APK.

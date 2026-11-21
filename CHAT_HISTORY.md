@@ -430,3 +430,8 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 ## 2026-11-21 — Season-grouped series sheet
 - User requested a polished cinematic catalogue. Series details now show localized season headers and concise Sxx · Exx episode rows rather than release filenames, using the local parser only.
 - A synthetic Android interaction test verifies out-of-order season grouping and that tapping S02 · E01 plays its exact indexed document. CI pending. No APK.
+
+
+## 2026-11-21 — Playback chrome behavior fix
+- CI #151 confirmed the player header remained visible even after a real `isPlaying=true` callback. This was a product issue, not the earlier synthetic startup race.
+- Added an explicit 2.5-second Compose timeout synchronized with Media3. It hides the controller and header while playing; pausing preserves controls; revealing them restarts the timeout. CI pending; no APK.

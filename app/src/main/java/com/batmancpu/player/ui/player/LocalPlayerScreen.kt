@@ -103,6 +103,13 @@ internal fun LocalPlayerScreen(
             }
         }
     }
+    LaunchedEffect(player, controlsVisible, isPlaying) {
+        if (controlsVisible && isPlaying) {
+            delay(PLAYER_CHROME_AUTO_HIDE_MS)
+            playerViewRef[0]?.hideController()
+            controlsVisible = false
+        }
+    }
     Box(Modifier.fillMaxSize().background(Color.Black)) {
         AndroidView(
             factory = { viewContext -> PlayerView(viewContext).apply {
@@ -111,7 +118,7 @@ internal fun LocalPlayerScreen(
                 setShowNextButton(false)
                 setShowPreviousButton(false)
                 setShowSubtitleButton(false)
-                setControllerShowTimeoutMs(2_500)
+                setControllerShowTimeoutMs(PLAYER_CHROME_AUTO_HIDE_MS.toInt())
                 setControllerVisibilityListener(PlayerView.ControllerVisibilityListener { visibility ->
                     controlsVisible = visibility == View.VISIBLE
                 })
@@ -186,3 +193,6 @@ internal fun PlayerResizeButton(resizeMode: Int, onNext: () -> Unit) {
         Text(label, color = Color.White)
     }
 }
+
+
+private const val PLAYER_CHROME_AUTO_HIDE_MS = 2_500L
