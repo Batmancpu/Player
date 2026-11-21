@@ -8,7 +8,7 @@ This file is the durable, accumulating record of important user requests, produc
 
 - User clarified: do not create an installable APK at each engineering step; complete the integrated app and then produce one APK for the broad phone test.
 - Live main was verified at Room v4 schema commit 55fbaac; CI #131 passed, and latest signed Release remains v0.1.91. No new Release was made.
-- Implemented local same-parent sidecar attachment in the working checkout: a fresh bounded immediate-child provider query confirms the video and exact candidate subtitle remain together; only supported text subtitle types are attached through read-only content URIs. Synthetic fixture exercises Media3 external SRT and selectors. CI has not yet verified this integration. Local Gradle is unavailable.
+- Implemented local same-parent sidecar attachment in the working checkout: a fresh bounded immediate-child provider query confirms the video and exact candidate subtitle remain together; only supported text subtitle types are attached through read-only content URIs. Synthetic fixture exercises Media3 external SRT and selectors. CI #132 / 44911456180 passed Android 15 41/41 with zero failures, JVM/build, Room v1-v4 schema and privacy gates. CI artifacts were test/schema only; no installable APK was published.
 - Next: commit directly on main, inspect CI and fix failures; continue subtitle delay/reset, cinematic navigation, original Glass and accessibility/performance. Device acceptance remains pending; build one signed APK only after integrated completion.
 
 ## 2026-11-14 — Project bootstrap, product scope, folder setup and release continuity

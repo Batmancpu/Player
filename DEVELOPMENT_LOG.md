@@ -1027,3 +1027,11 @@ Next: validate same-tree sidecar candidates into bounded local subtitle configur
 - Synthetic Android integration fixture now serves a local SRT beside its owned MP4 fixture, asserts Media3 exposes a text track and opens/dismisses both audio and subtitle selectors. The debug-only provider remains unexported and read-only.
 - Verification: source/privacy reviewed; local Gradle verification unavailable because this checkout has no Gradle wrapper and no system Gradle. CI pending after direct-main commit. No signed APK/Release. Online retrieval and subtitle delay/reset are not yet implemented.
 - Next: run full CI, fix actual compiler/instrumentation failures, then implement local subtitle delay/reset and complete integrated player/navigation/Glass/accessibility work. Keep final APK deferred until the integrated app is ready.
+
+
+## 2026-11-21 — Local sidecar playback CI verification
+
+- Commit e43b779467f25d08f84c8f0a971c31ef16002a22 integrates Room v4 parent IDs with playback-time verification and content-only Media3 SRT/VTT/ASS/SSA/TTML subtitle configurations.
+- CI #132 / 44911456180 passed: Android 15 instrumentation 41/41 with zero failures, JVM unit tests, debug/test builds, exported Room v1-v4 schema validation, release-manifest/privacy checks. The synthetic local SRT track was accepted by Media3, and the selector UI opened/dismissed. Android 15 emulator evidence is not OPPO handset acceptance.
+- Workflow artifacts contain Room schema and Android test results only; no installable APK or GitHub Release was produced. The latest public signed APK remains v0.1.91.
+- Next: implement and test local subtitle delay/reset, then improve the integrated playback experience and original Glass/navigation/accessibility. Keep all Release output deferred until the app is complete enough for one comprehensive phone test.
