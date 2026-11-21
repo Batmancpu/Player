@@ -398,6 +398,8 @@ class PreviewUiAndroidTest {
                 }
             }
             click(text("Aurora"))
+            // Capture also provides a finite transition settle before inspecting sheet actions.
+            screenshot("metadata-details")
             assertEquals("Opening details must not initiate an external lookup", 0, searches.get())
             click(revealByScrolling("Search TMDB"))
             assertEquals(1, searches.get())
