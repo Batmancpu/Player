@@ -211,3 +211,6 @@ H-024 found while fixing CI #127's cap test: a blank ISO3 value from Locale.ROOT
 
 
 CI #129 / 44908615223 passed the language-suffix root-locale fix, Android 15 integration, JVM/build, Room v1-v3 and privacy gates. Current source adds Room v4 parent identity with default-empty 3→4 migration and offline index persistence; tests cover old v1 row preservation/default and parent round-trip. Full CI pending. Sidecar playback remains off until v4 and SAF URI validation are green. No APK/Release.
+
+
+CI #130 / 44909463881 fully passed: Android 15 v1→v4 migration + offline parent-ID round-trip, unit/build, schema and privacy gates. Exact generated Room v4 JSON is committed from schema artifact 14709327372; historical v1-v3 remain intact. Next: wire validated same-parent SRT/VTT/SSA/TTML content URIs into Media3 and add synthetic provider end-to-end tests. No APK/Release; OPPO still unverified.

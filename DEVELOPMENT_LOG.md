@@ -1011,3 +1011,10 @@ CI #129 / 44908615223 passed after excluding blank root-locale values from subti
 This change adds a non-null `parentDocumentId` to indexed media with SQL default `''`, Room migration 3→4 using `ALTER TABLE`, and round-trip mapping for successful scans/offline loads. Existing v1 rows migrate without loss and receive the explicit empty value; they gain sidecar associations after a successful rescan. Migration instrumentation now opens v1 through v4 and verifies old media, metadata and defaulted parent identity. CI schema validation preserves exact v1-v3 and checks generated v4 column order/default; generated schema artifact is retained for committing the canonical v4 snapshot.
 
 Verification pending. Playback has not been attached to sidecars yet. No Release/user APK.
+
+
+## 2026-11-21 — Room v4 schema artifact recorded
+
+CI #130 / 44909463881 passed the Android 15 migration and offline persistence tests, JVM/build, Room schema and privacy gates. The v1→v4 migration preserves the old media row and supplies the empty parent default; the offline index round-trip test retains the scanned parent ID. Retrieved the generated Room schema artifact (14709327372) and committed exact v4 JSON snapshot; historical v1-v3 snapshots are unchanged. The workflow validates field order and default and now includes v4 in the uploaded schema artifact.
+
+Next: validate same-tree sidecar candidates into bounded local subtitle configurations and test Media3 playback using the synthetic read-only provider. No Release APK or device-performance claim.

@@ -337,3 +337,7 @@ CI #126 / 44906299456 passed Android 15 selector testing and all unit/build/sche
 
 ## 2026-11-21 — Room v4 sidecar identity
 CI #129 / 44908615223 passed the matcher regression and full schema/build/privacy gates. New work persistently stores the immediate SAF parent document ID in Room v4 with a default-empty additive migration; includes v1→v4 migration and offline round-trip tests. CI pending. Sidecars are not yet attached to the player, and no user APK is produced each step.
+
+
+## 2026-11-21 — Room v4 migration green
+CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-trip, unit/build/schema/privacy. Added the exact generated v4 schema snapshot from artifact 14709327372; historical schemas remain preserved. Next: local same-parent sidecar attachment and playback tests. No user APK.

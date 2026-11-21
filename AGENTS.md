@@ -298,3 +298,7 @@ CI #127 Android integration passed, but CI #127 unit tests exposed a bad cap-tes
 
 ## Recent agent changes — 2026-11-21
 CI #129 / 44908615223 passed the matcher root-locale regression and all Android 15, unit/build, schema/privacy gates. The next slice persists opaque SAF parent IDs in Room with additive schema v4/default-empty migration, preserves historical v1-v3 snapshots, and exercises both v1→v4 migration and offline parent round-trip. This code/schema gate is pending. Sidecar playback remains unwired until migration and secure URI validation pass. No installable APK/Release.
+
+
+## Recent agent changes — 2026-11-21
+CI #130 / 44909463881 passed Android 15 migration/persistence, unit/build, Room v1-v4 schema validation and privacy gates. Committed the exact KSP-generated v4 snapshot from artifact 14709327372; v1-v3 remain unchanged. Room v4 persists opaque SAF parent IDs with safe defaults for old rows. Next: validate and attach only bounded same-parent sidecar URIs to the content-only Media3 item, then test external SRT playback. No signed candidate/APK.
