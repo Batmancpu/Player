@@ -339,3 +339,8 @@ The unfiltered library uses horizontal Movies and TV Shows shelves; text search 
 
 ### Glass Lab usability pass (2026-11-21; CI pending)
 - Current main has an added lab-only patch: visible Back to library route, explicit copy that tabs are selection-only, lower-edge fade and increased end spacing. Instrumentation now checks the back callback. Check the new CI screenshot/test; then continue Glass interaction polish and production player controls. Haze remains a source-backed Compose renderer in a lab, not Apple Liquid Glass and not measured on OPPO.
+
+## 2026-11-21 — Signed APK v0.1.174 verified
+- GitHub Release: https://github.com/Batmancpu/Player/releases/tag/v0.1.174; asset `Player-release-174.apk`, 32,313,420 bytes, versionCode 174, package `com.batmancpu.player`.
+- APK SHA-256: `87d6af82c695ce61a8ca14dd117340086bd085cfe7f2622325152f5e9a1f2eb2`. Permanent certificate SHA-256: `4D:2F:17:89:ED:27:D3:96:13:35:FE:36:45:64:55:BD:9A:31:0B:0D:CD:F4:1E:8C:CC:92:53:98:33:9E:80:BF`. CI #174 passed Android 15 integration and signing/privacy/identity checks. This is a progress checkpoint, not final app acceptance; user does not need to test before the next batch.
+- Current main has a Glass Lab navigation/overlay repair committed as `879b19902672d5e2686c628029800f1df6b03c00`; CI #175 is verifying it. Next action: inspect its UI test/screenshot result, then continue player format/subtitle, production Glass, and measured performance work.
