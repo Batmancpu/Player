@@ -48,7 +48,7 @@ See [storage and privacy rules](docs/UPSTREAM_AND_PRIVACY.md) and [architecture]
 
 The latest signed build is listed on the [Releases page](https://github.com/Batmancpu/Player/releases/latest). Existing signed installs keep the same package and permanent update certificate. These are development checkpoints; the integrated premium app is still in progress.
 
-The user confirmed that v0.1.79 selected a folder, identified four local videos with titles and years, retained the library after an airplane-mode restart, and handled folder switching. Since then, main has gained title shelves, series season grouping, local playback and sidecar subtitle handling. The current source is being expanded and verified in CI; no new signed APK is published in this README update.
+The user confirmed that v0.1.79 selected a folder, identified four local videos with titles and years, retained the library after an airplane-mode restart, and handled folder switching. Since then, main has gained title shelves, series season grouping, local playback and sidecar subtitle handling. The complete Android 15 integration suite and unit, schema, privacy and identity gates passed on main at CI #173. A signed in-place preview checkpoint is now being built by the permanent-key release workflow.
 
 **Glass is still experimental.** Haze 2.1.0 powers the Glass Lab preview only. It is an original Android treatment, not Apple’s Liquid Glass renderer, and the current preview does not yet deliver the requested production-level tactile finish. See the [engine review](docs/GLASS_ENGINE_REVIEW.md).
 
@@ -56,12 +56,12 @@ The user confirmed that v0.1.79 selected a folder, identified four local videos 
 
 The integrated app is being completed in four visible batches. Development continues between checkpoints; there is no phone-install pause after each batch.
 
-1. **README and visual identity** — original concept artwork and honest project overview. This batch is in progress.
+1. **README and visual identity** — original concept artwork and honest project overview. This batch is complete.
 2. **Library and playback completeness** — folder recovery and scan edge cases, playback controls, subtitle workflows and persistent offline behavior.
 3. **Production experience** — coherent movie/show navigation, polished title details, accessible controls, original restrained Glass and non-Glass fallbacks.
 4. **Release readiness** — automated regression coverage, licensing/privacy review, signed update build, and release checklist. Measure frame time, memory and thermal behavior on the Reno10 when physical device data is available; do not infer those results from CI.
 
-Follow the [six-phase roadmap](docs/ROADMAP.md) for engineering detail. A signed APK will be published to GitHub Releases for Obtainium after the requested build is verified. Use only a signed Release APK for installation; CI debug APKs are not for updating the installed app.
+Follow the [six-phase roadmap](docs/ROADMAP.md) for engineering detail. A signed APK will be published to GitHub Releases for Obtainium after the requested build passes the release workflow's test, privacy and permanent-certificate checks. Use only a signed Release APK for installation; CI debug APKs are not for updating the installed app.
 
 ## Project records
 

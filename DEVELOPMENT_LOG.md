@@ -1289,3 +1289,6 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 
 ## 2026-11-21 — Use screen bounds for popup visibility in CI
 - CI #172 retained a synthetic screenshot where Search TMDB was clearly visible in the full-height sheet, while Android's `AccessibilityNodeInfo.isVisibleToUser` returned false for the popup node. The test helper now uses actual screen bounds and a 64 dp gesture-area reserve to identify visible targets; fallback swipe origins remain anchored within sheet content. This is a CI semantics correction; no product code changed.
+
+## 2026-11-21 — First signed preview checkpoint (release workflow pending)
+- User asked for a signed APK now as a progress checkpoint, then continuous app completion without waiting for phone checks between batches. CI #173 passed 46/46 Android 15 instrumentation, unit tests, schema, privacy and app identity gates on `7cbff28881332f7da8de418b8b348166885ff857`. Details now open expanded, preserve inner scrolling, expose an accessible Close action, and have a tested manual metadata flow; the CI screenshot shows the search action. A `release(test):` main commit now triggers the existing permanent-certificate release workflow. No APK is claimed until GitHub Release assets/signature checks confirm it. Continue Glass/player and final optimization work afterward.

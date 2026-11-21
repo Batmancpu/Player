@@ -522,3 +522,7 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 
 ## 2026-11-21 — Use screen bounds for popup visibility in CI
 - CI #172 retained a synthetic screenshot where Search TMDB was clearly visible in the full-height sheet, while Android's `AccessibilityNodeInfo.isVisibleToUser` returned false for the popup node. The test helper now uses actual screen bounds and a 64 dp gesture-area reserve to identify visible targets; fallback swipe origins remain anchored within sheet content. This is a CI semantics correction; no product code changed.
+
+## 2026-11-21 — User authorized signed checkpoint and continuous batches
+- User asked to produce a signed APK now, continue implementation without waiting for interim phone install checks, and stop only after the complete app and final efficiency/size/performance pass.
+- CI #173 passed 46/46 Android 15 instrumentation plus unit/schema/privacy/identity checks on `7cbff28881332f7da8de418b8b348166885ff857`. First signed checkpoint release workflow is being triggered. README and visual identity batch is complete. Remaining work includes polished Glass Lab/navigation, production player format/subtitle reliability, accessibility, measured performance and final release readiness. Reno10 hardware claims remain unverified until actual device data exists.

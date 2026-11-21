@@ -330,3 +330,8 @@ The unfiltered library uses horizontal Movies and TV Shows shelves; text search 
 
 ## 2026-11-21 — Use screen bounds for popup visibility in CI
 - CI #172 retained a synthetic screenshot where Search TMDB was clearly visible in the full-height sheet, while Android's `AccessibilityNodeInfo.isVisibleToUser` returned false for the popup node. The test helper now uses actual screen bounds and a 64 dp gesture-area reserve to identify visible targets; fallback swipe origins remain anchored within sheet content. This is a CI semantics correction; no product code changed.
+
+
+### Signed checkpoint requested; CI #173 green (2026-11-21)
+- User changed the earlier no-interim-APK preference: publish one signed checkpoint now, then keep working through the remaining substantial batches without waiting for a phone install between them. Source SHA `7cbff28881332f7da8de418b8b348166885ff857` passed all 46 Android 15 instrumentation tests and the unit/schema/privacy/identity gate in CI #173. The details sheet now opens fully expanded, with a lazy episode/metadata list, visible Close action and manual metadata test. The CI screenshot confirms the Search TMDB action is on-screen.
+- A `release(test):` commit is being pushed to main to trigger the existing signed build workflow. Verify the created tag/asset, versionCode, package ID and signing fingerprint before sharing the release URL. Last published signed release before this checkpoint: v0.1.91. Continue the Glass Lab/back-navigation and production player polish, then measured optimization; do not wait for interim handset installs. OPPO acceptance and frame-time/thermal evidence still require the actual phone at the final gate.

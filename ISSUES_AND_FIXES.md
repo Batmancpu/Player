@@ -463,3 +463,6 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 
 ## 2026-11-21 — Use screen bounds for popup visibility in CI
 - CI #172 retained a synthetic screenshot where Search TMDB was clearly visible in the full-height sheet, while Android's `AccessibilityNodeInfo.isVisibleToUser` returned false for the popup node. The test helper now uses actual screen bounds and a 64 dp gesture-area reserve to identify visible targets; fallback swipe origins remain anchored within sheet content. This is a CI semantics correction; no product code changed.
+
+### H-033 resolution status — Detail list scroll and metadata confirmation
+- CI #173 passes all Android 15 interaction tests after expanding the details sheet, keeping its LazyColumn scrollable, validating screen bounds for popup controls, and adding an explicit Close path. The metadata screenshot shows the manual Search TMDB action in the sheet. This verifies emulator UI interaction only; OPPO rendering and gestures remain pending.

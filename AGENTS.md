@@ -426,3 +426,6 @@ When the unfiltered library is open, movie titles and series now appear in separ
 
 ## 2026-11-21 — Use screen bounds for popup visibility in CI
 - CI #172 retained a synthetic screenshot where Search TMDB was clearly visible in the full-height sheet, while Android's `AccessibilityNodeInfo.isVisibleToUser` returned false for the popup node. The test helper now uses actual screen bounds and a 64 dp gesture-area reserve to identify visible targets; fallback swipe origins remain anchored within sheet content. This is a CI semantics correction; no product code changed.
+
+## 2026-11-21 — First signed checkpoint authorized
+- User explicitly requested a signed APK checkpoint now, followed by continuous work on later batches without per-batch phone-install pauses. This supersedes earlier historical notes to wait until the fully integrated app before publishing any APK. Android 15 suite 46/46 plus unit/schema/privacy/identity gates passed at CI #173 (source `7cbff28881332f7da8de418b8b348166885ff857`). Trigger a higher-run-number release using only the existing permanent key; do not claim it is published until the release asset and signature checks complete. Continue other batches after publication. Reno10 acceptance and performance remain pending final real-device evidence.

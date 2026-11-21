@@ -194,3 +194,7 @@ Use the user's FCZenith/brrMusic project and immediate rezapranata089-bit/Zenith
 **Plan:** Test user-owned local media examples with codec/container diagnostics on target hardware. For failures, record decoder errors and compare a pinned current LibVLC Android artifact in an isolated benchmark build. Restrict all playback input to the selected persisted SAF tree and verify that no remote URI or network source can be opened. Compare release APK size, memory, battery/thermal behavior, subtitle track controls and SRT/ASS placement before deciding whether to ship. Keep Media3 when its platform-decoder path covers the real corpus.
 
 **Sources:** [Media3 supported formats](https://developer.android.com/media/media3/exoplayer/supported-formats); [VideoLAN VLC for Android README and license](https://github.com/videolan/vlc-android/blob/master/README.md).
+
+
+### DEC-021 research addendum — LibVLC footprint (2026-11-21)
+The official VideoLAN `libvlc-all` Maven package is available for Android; current 3.7.6 all-ABI AAR listings are approximately 88.6 MB before final APK packaging. LibVLC is LGPL 2.1, distinct from the GPL-licensed VLC Android application. This confirms a potentially large size/compliance tradeoff, not that the final APK grows by 88.6 MB. Keep Media3 as the current engine; if the target-device corpus shows material gaps, prototype a pinned arm64-only or split build and measure final APK size, supported formats, replacement/source obligations, startup memory, subtitle positioning and thermal behavior before deciding.

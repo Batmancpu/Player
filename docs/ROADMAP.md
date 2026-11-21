@@ -140,3 +140,7 @@ CI #130 / 44909463881 passed Android 15 migration/offline persistence, JVM/build
 
 
 **Catalogue presentation (2026-11-21):** The default library now groups movies and TV series into horizontal poster shelves; search and type filters use the adaptive grid. This is still the local catalogue milestone, not final Apple TV-inspired polish. CI pending; OPPO scrolling and performance unmeasured.
+
+
+## Updated delivery directive — 2026-11-21
+The user requested a signed APK checkpoint now and wants implementation to continue through the remaining batches without pausing for interim phone installs. This supersedes earlier historical statements that no APK should be published between milestones. CI #173 passed Android 15 instrumentation (46/46), unit, schema, privacy and identity gates on `7cbff28881332f7da8de418b8b348166885ff857`; the next release-triggered run must pass the existing permanent-key signing and asset checks before the APK is called published. Keep actual Reno10 acceptance/performance as final evidence; never infer it from CI.
