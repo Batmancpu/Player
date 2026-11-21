@@ -460,3 +460,9 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 ## 2026-11-21 — Follow-up for CI #157 compile failure
 - CI #157 found one missed `MainActivity` reference in the fullscreen test when synthetic screens were moved to the debug-only host. Corrected the Intent target to `PreviewTestActivity` and recorded H-027.
 - This build failed before running tests. CI #158 is required before further app changes.
+
+
+## 2026-11-21 — User sets visible work batches and requests current APK
+- User wants no more than five substantial published checkpoints and continuous work between them, without APK-install waits after each. Approximate ranges were shared for four batches; they are planning estimates, not guarantees.
+- User also explicitly asked for an APK now, then continued development. This supersedes the earlier wait-until-final-only APK timing for this request, while preserving the permanent application ID/signing key and higher versionCode. Package only after the current source passes CI.
+- Began batch 1: refreshed README and added original generated concept artwork plus labelled synthetic Android 15 CI screenshots. No claim that these concept/CI images represent an OPPO device or finished production Glass.

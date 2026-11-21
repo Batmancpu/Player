@@ -1,51 +1,87 @@
 # Player
 
-> **Working title only.** The display name may change later; the release application ID and signing identity stay fixed. Repository: `Batmancpu/Player`.
+<p align="center">
+  <strong>Your library, on your terms.</strong><br>
+  A private, local-first Android library and player for the films and shows you already own.
+</p>
 
-A local-first Android media library inspired by the cinematic presentation of Apple TV and the refined Liquid Glass interface language of iOS 27.
+<p align="center">
+  <a href="https://github.com/Batmancpu/Player/actions/workflows/ci.yml"><img alt="Android CI" src="https://github.com/Batmancpu/Player/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <img alt="Android" src="https://img.shields.io/badge/Android-29%2B-3DDC84?logo=android&logoColor=white">
+  <img alt="Privacy-first" src="https://img.shields.io/badge/design-local%20first-77BDFB">
+</p>
 
-## Product promise
+<p align="center">
+  <img src="docs/images/player-library-hero.webp" alt="Original concept artwork showing a dark cinematic library with a small floating navigation dock" width="100%">
+</p>
 
-Choose **one local folder**. Player scans only that folder and its descendants, identifies movies and television episodes, retrieves matching artwork and metadata directly from TMDB, caches everything locally, and presents the collection in a carefully crafted Apple-inspired interface.
+<p align="center"><sub>Original concept artwork for Player. It illustrates the visual direction and is not an in-app screenshot.</sub></p>
 
-- Media files remain on the device and are never uploaded to a Player server.
-- No Player backend, media streaming server, account, subscription, advertisement, analytics, or telemetry.
-- TMDB is contacted directly for metadata and artwork only. No video bytes, file paths, folder listings, or document URIs are sent.
-- Previously indexed metadata and artwork remain available offline.
-- The media library is read-only: never move, rename, edit, or delete the user's source files.
-- Local playback is now in scope: tap a movie/episode to play its local file, with audio/subtitle track selection, external subtitle loading/download and subtitle-delay controls planned. Playback remains local-only.
+## What Player is
 
-## Current status
+Player turns **one folder you choose** into a searchable movie and TV library, then plays those files locally. Its goal is a calm, cinematic catalogue with restrained glass controls, while keeping your media and library data on your device.
 
-The latest signed preview is **[Player v0.1.91](https://github.com/Batmancpu/Player/releases/tag/v0.1.91)** (versionCode 91) and updates the existing app through Obtainium without uninstalling. APK SHA-256: `7c9ff8287405be9b1f607259608d84a256e5aed1fcc4cea24e3f9b882dd05e17`. CI #91 passed 15 Android 15 integration tests, JVM/build, signed APK privacy/identity and permanent-certificate checks.
+- **One selected folder.** Android’s Storage Access Framework grants read access to that folder and its descendants. Player does not request all-files access.
+- **Offline library.** Filenames are organized into movies and episodes; the indexed library and confirmed details are stored locally so the collection remains useful offline.
+- **Local playback.** Media3 plays the selected document directly. Device and codec support determines which formats can play. Sidecar subtitles are kept separate from the zoomable video frame.
+- **Optional online metadata.** TMDB matching is user-controlled and manual. When enabled, a search sends only a normalized title, year and media type; no path, folder listing, SAF URI, video or subtitle content is sent.
 
-The offline preview includes one read-only local SAF folder, Room persistence, searchable movie/show browsing, details and basic local Media3 playback with pause/seek/private resume, plus a single-surface Glass Lab dock. The user confirmed on v0.1.79 that four videos were correctly named/year-parsed, the folder persisted in airplane mode and folder switching worked. New preview behavior and remaining permission/cancellation scenarios still need OPPO testing; Phase 1 is not accepted and no FPS/thermal results are claimed. Phase 1 requires no network permission or online metadata. Follow the [short preview checklist](docs/OFFLINE_PREVIEW_TEST.md), [Phase 1 checklist](docs/PHASE1_PHONE_TEST.md), [six-phase roadmap](docs/ROADMAP.md) and [handoff](docs/WORK_HANDOFF.md). Never install a CI-only debug APK as an update. Development uses main only; see [AGENTS.md](AGENTS.md).
+<p align="center">
+  <img src="docs/images/android15-catalogue-test.webp" alt="Player catalogue with synthetic movie titles on an Android 15 test emulator" width="320">
+  &nbsp;&nbsp;
+  <img src="docs/images/glass-lab-test.webp" alt="Experimental Glass Lab screen captured from the Android 15 test emulator" width="320">
+</p>
 
-## Canonical project records
+<p align="center"><sub>Android 15 CI captures using synthetic test data. The Glass Lab is an experiment, not the finished library design; these images do not represent OPPO handset performance.</sub></p>
 
-- [AI agent operating rules](AGENTS.md)
-- [Full product and conversation handoff](PROJECT_CONTEXT.md)
+## Privacy by design
+
+- Your video and subtitle files are never uploaded, renamed, moved, edited or deleted by Player.
+- Access stays within the single folder tree you selected and is read-only.
+- No Player account, media server, cloud library, ads, analytics or telemetry.
+- App backup is disabled.
+- Optional metadata and artwork use approved TMDB destinations only after you enable metadata features; the local library remains available without a connection.
+
+See [storage and privacy rules](docs/UPSTREAM_AND_PRIVACY.md) and [architecture](docs/ARCHITECTURE.md).
+
+## Current development status
+
+The latest signed release is [v0.1.91](https://github.com/Batmancpu/Player/releases/tag/v0.1.91) (versionCode 91). It is an early offline catalogue/playback preview—not the final premium app.
+
+The user confirmed that v0.1.79 selected a folder, identified four local videos with titles and years, retained the library after an airplane-mode restart, and handled folder switching. Since then, main has gained title shelves, series season grouping, local playback and sidecar subtitle handling. The current source is being expanded and verified in CI; no new signed APK is published in this README update.
+
+**Glass is still experimental.** Haze 2.1.0 powers the Glass Lab preview only. It is an original Android treatment, not Apple’s Liquid Glass renderer, and the current preview does not yet deliver the requested production-level tactile finish. See the [engine review](docs/GLASS_ENGINE_REVIEW.md).
+
+## Work plan
+
+The integrated app is being completed in four visible batches. Development continues between checkpoints; there is no phone-install pause after each batch.
+
+1. **README and visual identity** — original concept artwork and honest project overview. This batch is in progress.
+2. **Library and playback completeness** — folder recovery and scan edge cases, playback controls, subtitle workflows and persistent offline behavior.
+3. **Production experience** — coherent movie/show navigation, polished title details, accessible controls, original restrained Glass and non-Glass fallbacks.
+4. **Release readiness** — automated regression coverage, licensing/privacy review, signed update build, and release checklist. Measure frame time, memory and thermal behavior on the Reno10 when physical device data is available; do not infer those results from CI.
+
+Follow the [six-phase roadmap](docs/ROADMAP.md) for engineering detail. A signed APK will be published to GitHub Releases for Obtainium after the requested build is verified. Use only a signed Release APK for installation; CI debug APKs are not for updating the installed app.
+
+## Project records
+
+- [Current handoff](docs/WORK_HANDOFF.md)
+- [Product roadmap](docs/ROADMAP.md)
 - [Architecture](docs/ARCHITECTURE.md)
-- [Architecture decisions](docs/DECISIONS.md)
-- [Step-by-step roadmap](docs/ROADMAP.md)
-- [Device test and crash playbook](docs/DEVICE_TESTING.md)
+- [Design and device-performance requirements](docs/DESIGN_SYSTEM_AND_PERFORMANCE.md)
+- [Storage, network and privacy rules](docs/UPSTREAM_AND_PRIVACY.md)
+- [Glass engine review](docs/GLASS_ENGINE_REVIEW.md)
+- [Phone-test checklist](docs/PHASE1_PHONE_TEST.md)
 - [Development log](DEVELOPMENT_LOG.md)
 - [Known issues and fixes](ISSUES_AND_FIXES.md)
 - [Third-party notices](THIRD_PARTY_NOTICES.md)
-- [Android release signing and update continuity](docs/ANDROID_SIGNING.md)
-- [Chronological project conversation/session log](CHAT_HISTORY.md)
+- [AI-agent operating rules](AGENTS.md)
 
 ## Design references
 
-- [Apple Human Interface Guidelines: Materials](https://developer.apple.com/design/human-interface-guidelines/materials)
-- [Haze 2.1.0 release and Glass API](https://chrisbanes.me/posts/haze-2.1.0/)
-- [FC Zenith LiquidGlass.kt](https://github.com/Batmancpu/FCZenith/blob/main/app/src/main/java/com/music/zenith/ui/components/LiquidGlass.kt)
-- [TMDB developer documentation](https://developer.themoviedb.org/docs/getting-started)
+- [Apple Human Interface Guidelines — Materials](https://developer.apple.com/design/human-interface-guidelines/materials)
+- [Haze Glass documentation](https://chrisbanes.github.io/haze/2.1.0/)
+- [TMDB API documentation](https://developer.themoviedb.org/docs/getting-started)
 
-## Licence
-
-The implementation licence and all third-party licence obligations must be settled and documented before code is copied or distributed. See [DECISIONS.md](docs/DECISIONS.md).
-
-## First Obtainium test APK (2026-11-14)
-The signed first test release is [Player v0.1.51](https://github.com/Batmancpu/Player/releases/tag/v0.1.51), from successful CI run #51. Add this repository URL in Obtainium and install release v0.1.51. After successful first install, publish a higher-version signed test update and verify installation over the prior version; do not count Phase 1 complete until device acceptance tests pass.
+Player uses original Android code and generated concept artwork. It does not include Apple fonts, symbols, logos or proprietary assets.
 

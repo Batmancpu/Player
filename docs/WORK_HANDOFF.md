@@ -1,4 +1,9 @@
 ## Current handoff — 2026-11-21 (latest)
+- README/visual batch added: original concept banner plus labelled synthetic catalogue and Glass Lab captures, and a corrected overview of actual implementation, privacy and limits. The imagery is not handset evidence.
+- Latest source before README batch: `9eadae4057a4ed85c82cd00812ee58a0a114b75d`. CI #156 passed 46/46 Android 15 tests and all verify gates. CI #157 failed Android-test compile due a stale activity reference; corrected at `9eadae4057a4ed85c82cd00812ee58a0a114b75d`. CI #158 / https://github.com/Batmancpu/Player/actions/runs/44934756101 is in progress.
+- User requested 4 substantial progress batches (<=5), continuous work without per-batch installation pauses, and asked for a signed APK now before later work continues. Next exact action: inspect #158, finish README batch and CI verification, then use the existing permanent signing/release workflow for a higher-version checkpoint. Do not ship if the source gate fails.
+- Latest published signed release remains v0.1.91. Preserve app ID/signing certificate, disabled backup, read-only one-tree SAF access and no source media writes. No Reno10 performance data is available; Glass remains a lab preview.
+-## Current handoff — 2026-11-21 (latest)
 - Latest source: `62dbc678ce444de723383423a6963995ddba3d57`. CI #156 passed 46/46 Android 15 cases, plus schema/JVM/privacy/build gates. It produced no installable APK.
 - CI #157 failed before Android tests at `LocalPlaybackAndroidTest.kt:136`, where one fullscreen test retained a deleted MainActivity import/reference after switching synthetic UI tests to the debug-only host. Corrected on main in this follow-up; verification pending.
 - New CI run #158 is the next exact action: verify the Android test host compiles, run all instrumentation tests, inspect screenshots/results and confirm app privacy/build gates. Do not layer further changes until it is green.

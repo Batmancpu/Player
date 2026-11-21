@@ -1225,3 +1225,10 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - CI #157 / https://github.com/Batmancpu/Player/actions/runs/44934245938 failed before tests at Android-test compilation: `LocalPlaybackAndroidTest.kt:136` still referenced `MainActivity::class.java` after its import was removed during the synthetic-host conversion.
 - Corrected that fullscreen controller test to launch `PreviewTestActivity`, matching the rest of the synthetic UI suite. This was a compile-time omission, not an app/runtime defect.
 - No tests ran in #157 and no APK/release was produced. Next: rerun CI #158; inspect test XML and full gates before continuing.
+
+
+## 2026-11-21 — README and visual identity batch started
+- Replaced the stale README overview with an accurate product description, privacy boundaries, current v0.1.91 baseline, known Glass preview limits, current engineering status and four continuing work batches.
+- Added one original generated concept banner and two Android 15 CI screenshots from synthetic data. The README explicitly labels concept art and CI captures and disclaims OPPO performance evidence.
+- Reviewed the screenshot artifact from CI #156 (46 Android 15 tests, zero failures) before selecting images. No app source, dependency, permission, APK or Release changed in this documentation/artwork slice. CI #158 for test-host repair is in progress.
+- Next: verify #158; complete README batch checkpoint, then create the signed APK the user requested while continuing the remaining product work.
