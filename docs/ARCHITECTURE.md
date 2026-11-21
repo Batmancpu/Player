@@ -1,6 +1,6 @@
 ## Status update — 2026-11-21
 
-Phase 2 persistence groundwork now adds a provider metadata table (Room v3) separate from SAF document identities, with user-confirmed joins. Explicit 2→3 migration and automated cache reconciliation tests are pending CI. No network transport or INTERNET permission exists in this slice; the actual OPPO candidate/performance remains unverified.
+Phase 2 persistence groundwork adds a provider metadata table (Room v3) separate from SAF identities, with user-confirmed joins. CI #102 / 44888106152 passed Android 15 instrumentation 20/20, production v1-to-v3 migration, cache reconciliation and exact schema validation; generated v3 JSON is committed. No network transport or INTERNET permission exists in this slice; the actual OPPO candidate/performance remains unverified.
 
 # Architecture
 

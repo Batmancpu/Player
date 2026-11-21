@@ -242,3 +242,7 @@ The user clarified that they want the whole app built before receiving an instal
 
 ## 2026-11-21 — Continue without per-step APKs
 The user reiterated that an APK should not be produced after every step. Keep implementing and validating the integrated app; prepare one signed APK when the full experience is ready. The Room v3 offline metadata-cache foundation is the current development slice, with automated migration/cache/schema checks and no device acceptance claim.
+
+
+## 2026-11-21 — Room v3 foundation verified
+CI #102 passed: Android 15 tests 20/20, including the production v1-to-v3 migration and offline metadata cache cases; unit/build and exported schema validators also passed. The exact generated v3 schema is committed. Release signing/publication were skipped. Development continues toward one complete app APK, with OPPO acceptance/performance still pending actual device evidence.

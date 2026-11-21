@@ -1,6 +1,6 @@
 ## Current implementation update — 2026-11-21
 
-Room schema v3 adds offline provider metadata records keyed by TMDB ID/type, with a separate document-to-provider match table. The migration preserves v1/v2 and metadata becomes visible in a library only after explicit user confirmation. Android tests and CI schema v3 checks are being added now. This is persistence groundwork, not a completed TMDB integration: no lookup UI, HTTP, INTERNET permission, artwork fetch, attribution or Phase 2 acceptance yet. The candidate APK policy remains one integrated complete app; CI checks continue without distributing intermediate APKs.
+Room v3 offline metadata foundation is implemented and CI #102 / 44888106152 passed: Android 15 instrumentation 20/20, v1-to-v3 migration, cache binding/reconciliation tests, unit/build gates and generated v1/v2/v3 schema validation. The exact v3 schema was committed from the artifact (SHA-256 a48bab777b7dcad1f02f0e61a1a936b95f91eca61265a1ede03d7cccbc4450db). This is persistence groundwork, not a completed TMDB integration: no lookup UI, HTTP, INTERNET permission, artwork fetch, attribution or Phase 2 acceptance yet. Release signing/publication were skipped. The candidate APK policy remains one integrated complete app; CI checks continue without distributing intermediate APKs.
 
 ---
 

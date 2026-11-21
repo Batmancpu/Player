@@ -256,7 +256,7 @@ CI90 / 43678768709 passed the full Android15 integration suite including the cor
 
 
 ## H-024 — Room v3 schema and offline metadata reconciliation
-- **Status:** Verification pending CI.
-- **Change:** Room v3 adds provider metadata keyed by TMDB ID/type and keeps local SAF document matches separate. The v2→v3 migration is explicit; cache visibility requires a user-confirmed binding; stale associations are removed after a successful rescan.
-- **Risk:** A malformed generated schema, migration mismatch, or cache row surviving the final reference would compromise offline correctness. Android tests exercise v1→v3 migration, unknown document rejection, unsafe image path rejection and stale metadata cleanup; CI validates the exported v3 snapshot.
-- **Next:** Review CI tests and exact generated schema artifact, commit the validated snapshot, then mark resolved.
+- **Status:** Resolved for schema/migration/cache behavior in CI; provider behavior and OPPO acceptance remain unverified.
+- **Change:** Room v3 adds provider metadata keyed by TMDB ID/type and keeps local SAF document matches separate. The v2-to-v3 migration is explicit; cache visibility requires a user-confirmed binding; stale associations are removed after a successful rescan.
+- **Evidence:** CI #102 / 44888106152 passed 20/20 Android 15 tests, including v1-to-v3 migration, unknown document rejection, unsafe image-path rejection and stale metadata cleanup. CI validated and uploaded v1/v2/v3; the exact generated v3 JSON is committed (SHA-256 a48bab777b7dcad1f02f0e61a1a936b95f91eca61265a1ede03d7cccbc4450db).
+- **Remaining limit:** No live TMDB request or OPPO test is part of this persistence change.
