@@ -35,9 +35,11 @@ internal fun LocalPlayerScreen(
     onClose: () -> Unit,
     isFullScreen: Boolean,
     onToggleFullScreen: () -> Unit,
+    onIsPlayingChanged: (Boolean) -> Unit = {},
 ) {
     val context = LocalContext.current
     val checkpoint by rememberUpdatedState(onCheckpoint)
+    val playingChanged by rememberUpdatedState(onIsPlayingChanged)
     var isPlaying by remember(target.uri) { mutableStateOf(false) }
     var error by remember(target.uri) { mutableStateOf(false) }
     var hasAudioTracks by remember(target.uri) { mutableStateOf(false) }
@@ -67,7 +69,10 @@ internal fun LocalPlayerScreen(
         }
         val listener = object : Player.Listener {
             override fun onPlayerError(failure: PlaybackException) { error = true }
-            override fun onIsPlayingChanged(value: Boolean) { isPlaying = value }
+            override fun onIsPlayingChanged(value: Boolean) {
+                isPlaying = value
+                playingChanged(value)
+            }
             override fun onTracksChanged(tracks: Tracks) {
                 hasAudioTracks = hasSupportedTrackType(tracks, C.TRACK_TYPE_AUDIO)
                 hasSubtitleTracks = hasSupportedTrackType(tracks, C.TRACK_TYPE_TEXT)

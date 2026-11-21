@@ -362,3 +362,8 @@ CI #147 / 44923019327 passed 42/43; the player integration test's final accessib
 ## 2026-11-21 — Longer playback fixture and Media3 placeholders
 
 The caption hierarchy and resize-mode UI tests passed in CI #148 / 44923450336; 44/45 Android tests passed. The single failure was the playback overlay hide assertion with the ten-second synthetic clip. Extended the generated test-only clip to 30 seconds to keep it from reaching ended state during slow emulator setup, and retained Media3 buffering/error placeholders in the custom layout. CI #149 on the prior test correction is running; next: inspect its outcome and run the full suite on this change.
+
+
+## 2026-11-21 — Auto-hide test waits for active playback
+
+CI #150 / 44924204549 failed only the auto-hide test despite the 30-second media fixture; #149 passed the same 45-test source. The assertion could run while Media3 was still idle/buffering, when PlayerView intentionally keeps controls visible. Added an internal playback-state callback and made the synthetic UI test wait for actual isPlaying before asserting auto-hide. Caption hierarchy and Fit/Fill/Zoom tests passed in #148/#150. CI pending. No APK. Next: inspect complete gates and continue integrated app work.

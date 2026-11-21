@@ -235,3 +235,7 @@ CI #147 / 44923019327 passed 42/43; remaining failure was the final fullscreen l
 
 ### CI #148 playback note
 New subtitle/video sibling and Fit/Fill/Zoom tests passed. The 10-second synthetic playback fixture made the existing auto-hide assertion flaky; it now lasts 30 seconds, and the app layout retains Media3 buffering/error placeholders. CI verification pending.
+
+
+### Current auto-hide test synchronization
+CI #150 failed one player test; CI #149 passed the same 45-test source. The test now waits for Media3's active-playback callback before asserting control auto-hide, so slow idle/buffering setup is excluded. Caption/zoom tests passed. CI pending; no APK.

@@ -343,3 +343,11 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - **Evidence:** CI #148 / 44923450336 passed 44/45 tests; only the player header auto-hide assertion failed. The workflow fixture lasted ten seconds and test startup can vary under emulator load.
 - **Mitigation:** Extend test-only fixture to 30 seconds so media cannot reach EOS during the controller timing assertion. Restored Media3 buffering/error placeholders in the custom layout.
 - **Next:** Validate in full Android 15 CI; do not claim OPPO behavior from synthetic playback.
+
+
+### R-018 — Synthetic auto-hide assertion ran before active playback
+- **Status:** Test synchronization added; CI pending.
+- **Evidence:** CI #150 / 44924204549 failed the auto-hide assertion; #149 passed the same 45-test app source. Extending the fixture to 30 seconds did not resolve the variability.
+- **Root cause:** The test did not establish that Media3 had left idle/buffering before expecting the controller to auto-hide; PlayerView may intentionally keep controls visible in idle/non-playing states.
+- **Fix:** Wait on the screen's optional internal isPlaying callback before measuring controller hide. The production callback defaults to no-op.
+- **Next:** Validate all CI gates; if failure repeats after confirmed playback, investigate the actual PlayerView listener path.

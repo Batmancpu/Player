@@ -133,6 +133,7 @@ class LocalPlaybackAndroidTest {
         SyntheticSafProvider.reset()
         SyntheticSafProvider.playbackFile = fixture
         val fullScreen = mutableStateOf(false)
+        val playbackStarted = CountDownLatch(1)
         val activity = instrumentation.startActivitySync(Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)) as MainActivity
         try {
             instrumentation.runOnMainSync {
@@ -148,12 +149,14 @@ class LocalPlaybackAndroidTest {
                             onClose = {},
                             isFullScreen = fullScreen.value,
                             onToggleFullScreen = { fullScreen.value = !fullScreen.value },
+                            onIsPlayingChanged = { if (it) playbackStarted.countDown() },
                         )
                     }
                 }
             }
             assertTrue("Player header should appear with transport controls", awaitText("Synthetic feature", true))
-            assertTrue("Header should auto-hide with transport controls", awaitText("Synthetic feature", false, 10_000))
+            assertTrue("Synthetic video should begin before the auto-hide check", playbackStarted.await(15, TimeUnit.SECONDS))
+            assertTrue("Header should auto-hide during active playback", awaitText("Synthetic feature", false, 8_000))
             val metrics = context.resources.displayMetrics
             ParcelFileDescriptor.AutoCloseInputStream(
                 automation.executeShellCommand("input tap ${metrics.widthPixels / 2} ${metrics.heightPixels / 2}"),

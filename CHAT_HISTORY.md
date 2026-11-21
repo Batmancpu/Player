@@ -420,3 +420,8 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 ## 2026-11-21 — Subtitle zoom CI follow-up
 - CI #148 / 44923450336 compiled the new player layout and ran 45 tests. The new subtitle sibling assertion and Fit/Fill/Zoom cycling passed; one auto-hide integration timed out. Increased the CI-generated video fixture to 30 seconds to avoid playback ending during emulator setup and restored buffering/error placeholders in the adapted Media3 layout.
 - CI #149 on the state assertion correction is running; next full run pending. No APK.
+
+
+## 2026-11-21 — Playback startup race in auto-hide test
+- CI #149 passed all 45 Android tests; #150 passed 44/45, failing only auto-hide while the engine was not yet in confirmed active playback. A 30-second fixture alone did not remove the startup race.
+- Added an optional state callback and changed the test to await Media3 isPlaying before checking auto-hide. Product UI remains unchanged; no APK.

@@ -1164,3 +1164,11 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - The integration fixture was only ten seconds; if setup/controller interaction reaches the end, Media3 can keep playback controls shown. Extended the generated synthetic clip to 30 seconds so its playback state remains active during slow CI/emulator UI setup. This is a test-only media fixture, not bundled in production.
 - Restored the standard Media3 buffering and error placeholder views in the app's adapted layout; keeping the caption view as a sibling does not require losing these status surfaces.
 - Verification: CI rerun pending. No installable APK/Release. Next: inspect run #149 and the new full build/tests.
+
+
+## 2026-11-21 — Auto-hide regression waits for playback state
+
+- CI #150 / 44924204549 compiled the 30-second synthetic fixture and full Media3 layout; 44/45 Android tests passed. Subtitle hierarchy, mode cycling, and all other tests passed. Auto-hide failed again; #149 had passed 45/45 on the same app source and integration assertions.
+- A longer clip did not resolve the timing variability. Media3 intentionally keeps controls visible while idle, ended, or not playWhenReady. The test now waits for the actual `Player.Listener.onIsPlayingChanged(true)` event before measuring the controller hide behavior, distinguishing player startup from timeout behavior.
+- Added an optional internal player-state callback to LocalPlayerScreen; normal production calls use the default no-op. No user-facing behavior change. No signed APK/Release.
+- Verification: CI pending. Next: run complete Android/unit/schema/privacy gates; inspect logs for any separate failures before changing production behavior.
