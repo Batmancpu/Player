@@ -1049,3 +1049,11 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - Motivation: the user reported that Glass Lab's bottom dock looked broken/floating in the older installed version. That handset report is not evidence that the current source failed on OPPO; this change targets clarity and adds coverage. No Apple assets/upstream code copied.
 - Verification: source diff checks pass; CI pending. Local Gradle unavailable. No installable APK/Release; the current release remains v0.1.91.
 - Next: inspect Android 15 instrumentation/synthetic screenshots and full build/privacy CI; correct failures, then continue integrated player and production Glass/accessibility work before one final APK.
+
+
+## 2026-11-21 — Glass dock CI findings and accessibility assertion correction
+
+- CI #134 / 44912378872 failed because the Android emulator's Pixel Launcher entered a system "isn't responding" dialog; five unrelated UI tests then could not see their expected app nodes. CI #133 had passed the same application source. No app assertion or code change was implicated; #135 is the source-changing dock gate.
+- CI #135 / 44912842899 ran 41 Android 15 tests; 40 passed. The dock safe-area/fit and Glass mode assertions passed, but the new selected-state assertion read only the child Text node. Compose publishes selectable state on its parent semantics node, so this was a test-query defect rather than evidence of broken product selection behavior.
+- Corrected the synthetic assertion to walk from the visible label through its accessibility parents and find the selected tab semantics. Re-run Android 15 plus full build/schema/privacy CI before calling this slice verified.
+- No APK/Release. Latest public installable remains v0.1.91. Next: inspect corrected test CI, then continue player and production Glass integration.

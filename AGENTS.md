@@ -317,3 +317,8 @@ Recorded the green 41/41 Android 15 integration run and all JVM/build/schema/pri
 ## 2026-11-21 — Glass Lab dock polish in CI
 
 Refined the Glass Lab dock's source-backed edge, selection highlight and shadow; expanded Compose instrumentation to assert bottom-safe placement and selected-tab accessibility, in addition to horizontal fit and Glass on/off. This addresses the user's reported broken-looking dock without treating the lab as a finished production engine. CI pending. No Release APK. Next: inspect the run, then continue full player and cinematic integration.
+
+
+## 2026-11-21 — Dock accessibility test correction
+
+CI #135 ran all 41 Android tests; 40 passed. The dock test's selected-state assertion inspected only the label text node, while Compose exposes selection semantics on its selectable parent. Updated the test to walk the label's accessibility ancestors. No product defect is established by that failure; corrected assertion is pending CI. CI #134's unrelated five UI failures all showed the Pixel Launcher not-responding dialog; CI #133 passed the same source. No installable APK. Next: verify corrected semantics assertion and all gates.

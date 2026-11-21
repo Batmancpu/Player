@@ -1,5 +1,5 @@
 ## Current handoff — 2026-11-21 (latest)
-- Current follow-up polishes the source-backed Glass Lab dock edge/selected state and adds bottom-safe-area plus selected-tab accessibility assertions; CI is pending. No Release APK.
+- Current follow-up polishes the source-backed Glass Lab dock edge/selected state. CI #135 passed 40/41 Android 15 tests; only the new assertion queried the label child instead of its selectable parent. Corrected parent-chain assertion is pending CI. CI #134's unrelated launcher ANR is recorded in the log. No Release APK.
 - Implementation commit e43b779467f25d08f84c8f0a971c31ef16002a22 (local sidecar playback); CI #132 / 44911456180 passed.
 - Latest signed Release remains v0.1.91 (versionCode 91). User requests one complete app before the next install APK; do not publish milestone APKs.
 - Latest completed phone evidence is user-reported v0.1.79: four video titles/year parsed, library retained after airplane-mode restart, and folder switching worked. The newer v0.1.91 catalogue/player/Glass preview is not accepted or performance-tested on OPPO.

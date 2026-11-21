@@ -5,6 +5,7 @@ This file is the durable, accumulating record of important user requests, produc
 **Format:** decision-focused session summaries, not a verbatim export of every message. Preserve the meaning of user requests and reasons behind decisions. Never include private signing files, passwords, base64 secret values, API keys, tokens or other credentials.
 
 ## 2026-11-21 — Glass Lab dock follow-up
+- CI #134 failed from a Pixel Launcher system ANR across five unrelated UI tests; identical source passed #133. CI #135 ran 41 Android tests: 40 passed, including dock bounds, safe area and both Glass modes. The only failure queried selected state on the text child instead of Compose's selectable parent. Updated the test to walk the accessibility parent chain; corrective CI pending.
 
 - User reported that the Glass Lab bottom navigation looked broken/floating in the older installed build. No current OPPO screenshot or latest-source handset report is available, so it remains a user-reported visual issue rather than a reproduced current-source defect.
 - Refined the original dock's material edge, selection highlight and shadow, and added Android UI assertions for safe-area proximity, selected accessibility semantics, tab fit and Glass enabled/disabled. CI pending. No APK/Release.

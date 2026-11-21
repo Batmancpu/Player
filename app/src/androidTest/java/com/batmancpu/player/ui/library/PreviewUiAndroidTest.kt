@@ -86,6 +86,15 @@ class PreviewUiAndroidTest {
 
     private fun text(value: String) = awaitNode { it.text?.toString() == value }
 
+    private fun hasSelectedSemanticsOnLabelOrParent(value: String): Boolean {
+        var node: AccessibilityNodeInfo = find { it.text?.toString() == value } ?: return false
+        repeat(8) {
+            if (node.isSelected) return true
+            node = node.parent ?: return false
+        }
+        return false
+    }
+
     private fun click(node: AccessibilityNodeInfo) {
         var target: AccessibilityNodeInfo? = node
         while (target != null && !target.isClickable) target = target.parent
@@ -303,7 +312,10 @@ class PreviewUiAndroidTest {
             assertTrue("Dock labels should sit near the bottom safe area, gap=$lowestLabelGapDp dp", lowestLabelGapDp in 0f..120f)
             screenshot("glass-on")
             click(text("Movies"))
-            assertTrue("Selected tab semantics did not update", awaitCondition(3_000) { find { it.text?.toString() == "Movies" }?.isSelected == true })
+            assertTrue(
+                "Selected tab semantics did not update",
+                awaitCondition(3_000) { hasSelectedSemanticsOnLabelOrParent("Movies") },
+            )
             click(awaitNode { it.contentDescription?.toString() == "Glass effects" })
             labels.forEach { text(it) }
             screenshot("glass-off")
