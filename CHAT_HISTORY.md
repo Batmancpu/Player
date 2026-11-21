@@ -300,3 +300,8 @@ After green CI #115 for the bounded transport and Credits route, integrated expl
 ## 2026-11-21 — Fix metadata test compile error
 
 CI #116 compiled production code, then failed compiling the new Android controller test because it referenced OfflineMetadataCache without importing it. Added the missing import; no app behavior, permission or APK changed. Follow-up CI still needs to verify instrumentation and manifest privacy checks.
+
+
+## 2026-11-21 — Keep playback visible and test manual metadata scrolling
+
+CI #117 found the manifest test still disallowed the narrow INTERNET permission now used by opt-in TMDB, and metadata UI placement pushed Play video offscreen. The manual result test also needed to scroll to the candidate. Updated the exact permission allowlist assertion, placed metadata below playback controls, and added a small synthetic swipe helper. No APK/Release. Follow-up CI pending.

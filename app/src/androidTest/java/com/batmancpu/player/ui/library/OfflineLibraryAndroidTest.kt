@@ -107,11 +107,14 @@ class OfflineLibraryAndroidTest {
         assertEquals(remaining.map { it.documentId }.toSet(), rescanned.map { it.documentId }.toSet())
     }
 
-    @Test fun mergedManifestRetainsOfflineReadOnlyPrivacyBoundary() {
+    @Test fun mergedManifestRetainsReadOnlyPrivacyAndOnlyOptInInternet() {
         @Suppress("DEPRECATION")
         val info = context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_PERMISSIONS)
-        assertTrue(info.requestedPermissions.orEmpty().all {
-            it == context.packageName + ".DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+        val permissions = info.requestedPermissions.orEmpty().toSet()
+        assertTrue(permissions.contains("android.permission.INTERNET"))
+        assertTrue(permissions.all {
+            it == context.packageName + ".DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" ||
+                it == "android.permission.INTERNET"
         })
         assertFalse(context.applicationInfo.flags and ApplicationInfo.FLAG_ALLOW_BACKUP != 0)
     }

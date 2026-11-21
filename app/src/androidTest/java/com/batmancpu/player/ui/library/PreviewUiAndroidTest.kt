@@ -84,6 +84,25 @@ class PreviewUiAndroidTest {
         assertTrue("No clickable ancestor", target?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true)
     }
 
+    private fun swipeUp() {
+        val metrics = context.resources.displayMetrics
+        val centerX = metrics.widthPixels / 2
+        val fromY = metrics.heightPixels * 7 / 10
+        val toY = metrics.heightPixels * 6 / 10
+        ParcelFileDescriptor.AutoCloseInputStream(
+            automation.executeShellCommand("input swipe $centerX $fromY $centerX $toY 300"),
+        ).use { it.readBytes() }
+        instrumentation.waitForIdleSync()
+    }
+
+    private fun revealBySwiping(value: String): AccessibilityNodeInfo {
+        repeat(8) {
+            find { it.text?.toString() == value }?.let { return it }
+            swipeUp()
+        }
+        return awaitNode { it.text?.toString() == value }
+    }
+
     private fun screenshot(name: String) {
         instrumentation.waitForIdleSync()
         SystemClock.sleep(400) // Let the finite sheet/selection transition finish.
@@ -220,11 +239,11 @@ class PreviewUiAndroidTest {
             }
             click(text("Aurora"))
             assertEquals("Opening details must not initiate an external lookup", 0, searches.get())
-            click(text("Search TMDB"))
+            click(revealBySwiping("Search TMDB"))
             assertEquals(1, searches.get())
-            click(text("Synthetic result description"))
+            click(revealBySwiping("Synthetic result description"))
             assertEquals("Selecting a candidate is not confirmation", 0, confirmations.get())
-            click(text("Confirm movie match"))
+            click(revealBySwiping("Confirm movie match"))
             assertEquals("The selected provider result needs a separate confirmation tap", 1, confirmations.get())
         } finally {
             instrumentation.runOnMainSync { activity.finish() }

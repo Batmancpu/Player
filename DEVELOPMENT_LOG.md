@@ -928,3 +928,10 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 
 - CI #116 / 44898155397 compiled production code but failed before Android instrumentation because the new controller Android test omitted the import for OfflineMetadataCache; its subsequent unresolved title-property diagnostic was a consequence of that missing symbol.
 - Added the explicit library-package import. No application behavior or permission changed. No signed/user-installable APK or Release was produced. Follow-up CI must run the controller/UI and privacy-manifest tests before this integrated slice is verified.
+
+
+## 2026-11-21 — Preserve playback visibility and adapt privacy/UI tests
+
+- CI #117 / 44898595021 compiled production and test sources, then Android 15 instrumentation exposed three issues. The existing privacy test still expected zero INTERNET permission; the new detail panel displaced Play video below the initial viewport; the explicit candidate-selection test needed to scroll inside the sheet.
+- Changed the merged-manifest assertion to allow only INTERNET and the AndroidX dynamic receiver permission, while rejecting all other permissions. Moved metadata beneath the existing play/episode controls so local playback remains immediately visible. Added a small real swipe helper for the synthetic candidate UI test.
+- No request, provider credential, or release behavior changed. No APK/Release was produced. Follow-up CI must verify controller persistence, UI selection/confirmation and permission checks.

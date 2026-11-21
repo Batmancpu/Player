@@ -248,3 +248,6 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-21 — CI #116 / 44898155397 stopped at Android test compilation because MetadataLookupControllerAndroidTest referenced OfflineMetadataCache without importing its ui.library package; the secondary unresolved property was compiler fallout. Added the missing test import. Production sources compiled; instrumentation and manifest verification still need rerunning. No APK/Release. Next: check the follow-up CI, fix any real integration failures, then proceed to bounded artwork cache/display.
+
+
+- 2026-11-21 — CI #117 / 44898595021 ran Android tests and found three failures: the old merged-manifest test rejected the newly approved opt-in INTERNET permission; the inserted metadata card pushed the existing Play button out of the initial detail viewport; and the new candidate flow test did not swipe to its offscreen result. Updated the privacy test to allow only INTERNET plus the AndroidX receiver permission, moved metadata below playback/episodes, and added a small synthetic swipe helper. Follow-up CI pending. No APK/Release. Next: verify all Android and manifest gates before art integration.
