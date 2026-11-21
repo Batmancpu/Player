@@ -24,6 +24,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import coil3.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
@@ -255,6 +257,14 @@ internal fun LocalLibraryContent(
                                     style = MaterialTheme.typography.titleLarge,
                                     color = PlayerPalette.textPrimary,
                                 )
+                                lookup.posterFile?.let { poster ->
+                                    AsyncImage(
+                                        model = poster,
+                                        contentDescription = stringResource(R.string.metadata_lookup_poster_description, lookup.cached.title),
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier.width(144.dp).height(216.dp),
+                                    )
+                                }
                                 if (lookup.cached.overview.isNotBlank()) {
                                     Text(lookup.cached.overview, style = MaterialTheme.typography.bodyMedium, color = PlayerPalette.textSecondary)
                                 }

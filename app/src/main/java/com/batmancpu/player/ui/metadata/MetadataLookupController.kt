@@ -8,6 +8,7 @@ import com.batmancpu.player.ui.library.MetadataSearchConsent
 import com.batmancpu.player.ui.library.OfflineMetadataCache
 import com.batmancpu.player.ui.library.ParsedMediaName
 import com.batmancpu.player.ui.library.TmdbSearchTerms
+import java.io.File
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -31,6 +32,7 @@ internal data class MetadataLookupUiState(
     val confirming: Boolean = false,
     val candidates: List<TmdbCandidate> = emptyList(),
     val cached: CachedTmdbMetadata? = null,
+    val posterFile: File? = null,
     val matchedFiles: Int = 0,
     val issue: MetadataLookupIssue? = null,
 )
@@ -44,6 +46,7 @@ internal class MetadataLookupController(
     private val scope: CoroutineScope,
     private val settings: MetadataSettingsStore,
     private val client: TmdbClient,
+    private val artworkCache: TmdbArtworkCache = TmdbArtworkCache(context, settings),
     private val currentTree: () -> String?,
     private val isCurrentTitle: (String, LocalTitle) -> Boolean,
 ) {
@@ -70,6 +73,8 @@ internal class MetadataLookupController(
                 val localMatches = fileIds.mapNotNull(cachedByDocument::get)
                     .distinctBy { it.tmdbId to it.mediaType }
                 val searchable = searchTerms(title) != null
+                val cachedMatch = localMatches.singleOrNull()
+                val posterFile = cachedMatch?.posterPath?.let { artworkCache.cached(it, TmdbImageSize.POSTER) }
                 if (!active(ticket, tree, title)) return@launch
                 mutableState.value = MetadataLookupUiState(
                     tree = tree,
@@ -77,7 +82,8 @@ internal class MetadataLookupController(
                     settingsEnabled = configured.enabled,
                     credentialConfigured = configured.credentialConfigured,
                     searchable = searchable,
-                    cached = localMatches.singleOrNull(),
+                    cached = cachedMatch,
+                    posterFile = posterFile,
                     matchedFiles = if (localMatches.size == 1) {
                         fileIds.count { cachedByDocument[it] == localMatches.single() }
                     } else 0,
@@ -174,10 +180,18 @@ internal class MetadataLookupController(
                 mutableState.value = mutableState.value.copy(
                     confirming = false,
                     cached = metadata.takeIf { stored },
+                    posterFile = null,
                     matchedFiles = title.files.size.takeIf { stored } ?: 0,
                     candidates = emptyList(),
                     issue = if (stored) null else MetadataLookupIssue.STALE_LIBRARY,
                 )
+                // Fetch only after the explicit, separate match confirmation.
+                val poster = metadata.posterPath?.takeIf { stored }?.let {
+                    artworkCache.fetch(it, TmdbImageSize.POSTER)
+                }
+                if (poster != null && active(ticket, tree, title)) {
+                    mutableState.value = mutableState.value.copy(posterFile = poster)
+                }
             } catch (cancelled: CancellationException) {
                 throw cancelled
             } catch (_: Exception) {

@@ -251,3 +251,7 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-21 — CI #117 / 44898595021 ran Android tests and found three failures: the old merged-manifest test rejected the newly approved opt-in INTERNET permission; the inserted metadata card pushed the existing Play button out of the initial detail viewport; and the new candidate flow test did not swipe to its offscreen result. Updated the privacy test to allow only INTERNET plus the AndroidX receiver permission, moved metadata below playback/episodes, and added a small synthetic swipe helper. Follow-up CI pending. No APK/Release. Next: verify all Android and manifest gates before art integration.
+
+
+## 2026-11-21 — artwork integration in progress
+User wants one complete APK, not installable milestone APKs. Artwork is fetched only after separate TMDB match confirmation, stored in bounded no-backup app-private storage, then rendered from a local File. Current code adds cancellation-safe cache transport, Coil local-file rendering, synthetic test; CI pending. Next inspect CI, repair failures, continue whole-app integration. Do not claim OPPO performance/acceptance.

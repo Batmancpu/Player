@@ -1,6 +1,6 @@
 ## Current implementation update — 2026-11-21
 
-Room v3 offline metadata storage, encrypted user-managed TMDB settings, official TMDB Credits attribution, bounded fixed-origin HTTPS search client and manual title → candidate → separate confirmation flow are integrated. Confirmed data is cached in Room and shown offline; the only match operation is explicit and scoped to the current indexed folder. CI #115 / 44896086296 passed Android 15 tests plus unit/build/schema/privacy gates for transport and Credits. The app has the INTERNET capability for this opt-in stage, but no request occurs from scan, startup, scrolling or playback. Artwork cache/display, live provider behavior, OPPO acceptance and performance remain unfinished. No installable APK or Release was produced; continue toward one complete phone-test build.
+Room v3 offline metadata storage, encrypted user-managed TMDB settings, official TMDB Credits attribution, bounded fixed-origin HTTPS search client and manual title → candidate → separate confirmation flow are integrated. Confirmed data is cached in Room and shown offline; the only match operation is explicit and scoped to the current indexed folder. CI #115 / 44896086296 passed Android 15 tests plus unit/build/schema/privacy gates for transport and Credits. The app has the INTERNET capability for this opt-in stage, but no request occurs from scan, startup, scrolling or playback. Bounded artwork cache/display is integrated after explicit match confirmation; current CI is pending. Live provider behavior, OPPO acceptance and performance remain unfinished. No installable APK/Release between milestones per user's request.
 
 ---
 
@@ -90,3 +90,7 @@ Apply the exact screen-by-screen Glass surfaces and interactive seek/volume/subt
 - No marketing/120-FPS claim: actual OPPO CPH2531 profiling (60-Hz FrameTimingMetric/Perfetto baseline, then optional120-Hz and thermal/memory checks) remains future evidence.
 - Release policy: increase versionCode from GitHub Actions run number, preserve `com.batmancpu.player` and the permanent certificate, install only Release APKs, never debug artifacts; maintain `allowBackup=false`, one read-only local SAF folder and no original-media writes.
 - Estimate of whole product completion is intentionally not refreshed here; the six phases have unequal work and no phase has full phone acceptance yet.
+
+
+## 2026-11-21 — artwork implementation
+Coil Compose 3.6.3 Apache-2.0 decodes only app-private cached Files; no image-network module. Fixed unauthenticated CDN transport enforces host/path/redirect/time/byte/pixel bounds and cancellation. Atomic no-backup cache is capped at 96 MiB. Metadata is saved first; poster download follows only the separate confirmation action. Instrumentation uses fake API/artwork and synthetic PNG. CI pending. Do not produce installable APK until the integrated app is ready.

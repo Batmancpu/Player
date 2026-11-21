@@ -1,6 +1,7 @@
 package com.batmancpu.player.ui.metadata
 
 import android.net.Uri
+import android.util.Base64
 import androidx.test.platform.app.InstrumentationRegistry
 import com.batmancpu.player.ui.library.DiscoveredLocalMedia
 import com.batmancpu.player.ui.library.LocalCatalogue
@@ -41,9 +42,15 @@ class MetadataLookupControllerAndroidTest {
                 """{"results":[{"id":42,"title":"Aurora","release_date":"2022-01-01","overview":"Synthetic provider description","poster_path":"/poster_A.jpg","backdrop_path":"/backdrop_A.jpg"}]}""".toByteArray(),
             )
         })
+        val artworkCalls = AtomicInteger()
+        val artwork = TmdbArtworkCache(context, settings, TmdbArtworkTransport { uri ->
+            artworkCalls.incrementAndGet()
+            assertEquals("image.tmdb.org", uri.host)
+            TmdbArtworkResponse(200, Base64.decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/nXcAAAAASUVORK5CYII=", Base64.DEFAULT), "image/png")
+        }, testNamespace = suffix)
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
         val controller = MetadataLookupController(
-            context, scope, settings, client, currentTree = { tree },
+            context, scope, settings, client, artworkCache = artwork, currentTree = { tree },
             isCurrentTitle = { candidateTree, candidate -> candidateTree == tree && candidate.key == title.key },
         )
         try {
@@ -53,6 +60,7 @@ class MetadataLookupControllerAndroidTest {
             val prepared = withTimeout(5_000) { controller.state.first { !it.preparing } }
             assertTrue(prepared.settingsEnabled && prepared.credentialConfigured && prepared.searchable)
             assertEquals("Opening details must not search", 0, calls.get())
+            assertEquals("Opening details must not fetch artwork", 0, artworkCalls.get())
 
             controller.search(title)
             val found = withTimeout(5_000) { controller.state.first { !it.searching } }
@@ -60,15 +68,18 @@ class MetadataLookupControllerAndroidTest {
             assertEquals("Aurora", found.candidates.single().title)
 
             controller.confirm(title, found.candidates.single())
-            val confirmed = withTimeout(5_000) { controller.state.first { !it.confirming } }
+            val confirmed = withTimeout(5_000) { controller.state.first { !it.confirming && it.posterFile != null } }
             assertEquals("Aurora", confirmed.cached?.title)
             assertEquals(1, confirmed.matchedFiles)
+            assertEquals(1, artworkCalls.get())
+            assertTrue(confirmed.posterFile?.isFile == true)
             assertEquals("Aurora", OfflineMetadataCache.load(context, tree)[file.documentId]?.title)
         } finally {
             controller.clear()
             scope.cancel()
             OfflineLibraryIndex.forgetTree(context, treeUri)
             settings.clear()
+            artwork.directory.deleteRecursively()
         }
     }
 }

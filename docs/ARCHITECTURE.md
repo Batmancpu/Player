@@ -102,3 +102,7 @@ LocalCatalogue derives video-only movie/series identities from indexed files; Vi
 
 ## Folder removal
 The library settings action first confirms the user's intent, then deletes Player's app-private index/cache and resume checkpoints, then clears/reconciles persisted read-only SAF grants under FolderAccessManager's mutex. Grant reconciliation is non-cancellable after confirmation. It never invokes a DocumentsContract delete/write operation. On failure the setup screen exposes a retry state. CI #104 passed manager/build/schema gates; CI #105 covers resume cleanup and confirm/cancel UI.
+
+
+## Confirmed artwork cache — 2026-11-21
+Artwork uses a fixed unauthenticated TMDB image CDN transport, called only after explicit match confirmation. HTTPS/no redirects, w342 route, MIME/2 MiB/2048-pixel/timeout bounds, cancellation and AtomicFile cache under no-backup storage with 96 MiB LRU. UI state exposes only the local cached File; Coil Compose has no network module. Details read existing art offline. Consent/token rechecked around download/write. Synthetic tests inject fake transports; handset rendering/battery unmeasured.

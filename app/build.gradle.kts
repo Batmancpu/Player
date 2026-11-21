@@ -97,6 +97,7 @@ dependencies {
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("io.coil-kt.coil3:coil-compose:3.6.3")
 
     implementation("dev.chrisbanes.haze:haze:2.1.0")
     implementation("dev.chrisbanes.haze:haze-glass:2.1.0")

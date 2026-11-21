@@ -19,3 +19,13 @@ AndroidX/Jetpack (Android Open Source Project and contributors), Kotlin/kotlinx.
 
 ## AndroidX Media3 local playback
 Media3 ExoPlayer and UI 1.11.1, Android Open Source Project/contributors, Apache-2.0: https://github.com/androidx/media/tree/1.11.1 (LICENSE). Included through pinned Maven dependencies; packaged Apache-2.0 text and dependency attribution above apply. Uses platform decoders; no separate GPL/native codec bundle or Zenith application source is included.
+
+
+## Coil Compose image rendering
+- Dependency: `io.coil-kt.coil3:coil-compose:3.6.3`, Apache-2.0: https://github.com/coil-kt/coil/blob/3.6.3/LICENSE.txt
+- Used only to decode bounded Player app-private cached artwork from local `File` values. No Coil network module is included; metadata API and artwork CDN transports remain separate, explicit and bounded.
+- Apache-2.0 license text is packaged at `app/src/main/assets/licenses/APACHE_2_0.txt`.
+
+
+## Coil Compose
+Coil Compose 3.6.3 (Apache-2.0): https://github.com/coil-kt/coil/blob/3.6.3/LICENSE.txt. Used for local app-private artwork File decoding only; no network module. Apache text is already packaged in APACHE_2_0.txt.

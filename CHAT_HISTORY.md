@@ -305,3 +305,7 @@ CI #116 compiled production code, then failed compiling the new Android controll
 ## 2026-11-21 — Keep playback visible and test manual metadata scrolling
 
 CI #117 found the manifest test still disallowed the narrow INTERNET permission now used by opt-in TMDB, and metadata UI placement pushed Play video offscreen. The manual result test also needed to scroll to the candidate. Updated the exact permission allowlist assertion, placed metadata below playback controls, and added a small synthetic swipe helper. No APK/Release. Follow-up CI pending.
+
+
+## 2026-11-21 — APK cadence
+User explicitly asked to complete the app before receiving an APK rather than produce an installable build at every step. Continue small CI-verified main commits and withhold user-installable APKs/releases until one integrated phone-test build is ready. Added confirmed artwork cache/display slice; test pending. Target performance remains unmeasured.

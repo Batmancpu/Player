@@ -1,4 +1,12 @@
 ## Current handoff — 2026-11-21
+- Latest user instruction: finish the whole integrated app before providing an APK; no milestone APKs.
+- Base main: b344b420ae693e830c2828c2fee5ac577bb86d34. CI #118 passed Android15 tests/build/schema/privacy. No candidate release; latest public v0.1.91.
+- Current change adds bounded TMDB artwork cache after separate manual match confirmation, Coil local-file rendering, synthetic test. CI pending. Next inspect Actions and fix any build/test/privacy failure.
+- Preserve app ID/certificate, allowBackup=false, one read-only local SAF tree, no source-media writes/telemetry/backend/broad permissions. Continue on main. Phone acceptance/performance still require evidence; do not publish APK until complete integrated catalogue/player/Glass experience is ready.
+
+---
+
+## Current handoff — 2026-11-21
 
 CI #115 / 44896086296 passed after commit 5a467f2: Android 15 instrumentation, client tests, builds, Room schema and privacy gates. Main-only work; no signed/user-installable APK or Release was produced, per user's request to wait for one integrated build. Main now has opt-in manual TMDB search, separate candidate confirmation and offline Room metadata. INTERNET permission is scoped in source to this explicit flow; no scan/scroll/startup request. Next: finish bounded artwork caching/rendering, add visual/offline/error coverage, then complete remaining roadmap and hand to the user with one signed APK and phone checklist. Phase 1 acceptance, live TMDB behavior and performance on OPPO remain pending.
 

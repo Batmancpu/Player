@@ -50,3 +50,7 @@ The user can remove the selected tree from Player's library. This operation clea
 ## Zenith visual-reference licence check — 2026-11-21
 - The requested Batmancpu/FCZenith URL now redirects to Batmancpu/brrMusic. Its immediate parent is rezapranata089-bit/Zenith; both repositories declare GPL-3.0. Zenith's GlassNavBar.kt identifies GPL-3.0-derived Echo Music structure and a vendored floating-tab component; its renderer tree has separate provenance/licence requirements.
 - Use these repositories only to understand visual behavior and as design references. Do not copy/adapt application source into Player; implement original Compose components. This avoids importing GPL obligations or unverified upstream code. The parent chain traces further to BitChord, but Zenith remains the user's explicitly named immediate reference.
+
+
+## Artwork loader — 2026-11-21
+Coil Compose 3.6.3 (Apache-2.0) only decodes local Files from Player's bounded private no-backup cache. No Coil network module is packaged. TMDB CDN requests occur after explicit confirmation, send no credential or local identifiers, use fixed HTTPS image.tmdb.org host/path, disable redirects and bound bytes, dimensions and time. Synthetic tests make no real network call.
