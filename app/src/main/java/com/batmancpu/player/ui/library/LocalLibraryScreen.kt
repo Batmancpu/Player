@@ -55,6 +55,7 @@ internal fun LocalLibraryScreen(model: LibraryViewModel, onOpenGlassLab: () -> U
         onChooseFolder = { picker.launch(Uri.parse(folder.tree)) },
         onPlay = model::play,
         onOpenGlassLab = onOpenGlassLab,
+        onForgetFolder = model::forgetFolder,
     )
 }
 
@@ -70,6 +71,7 @@ internal fun LocalLibraryContent(
     onChooseFolder: () -> Unit,
     onPlay: (DiscoveredLocalMedia) -> Unit,
     onOpenGlassLab: () -> Unit,
+    onForgetFolder: () -> Unit = {},
 ) {
     val titles = snapshot.takeIf { it.tree == folder.tree }?.titles.orEmpty()
     val matchingLibrary = library.takeIf { it.tree == folder.tree }
@@ -78,6 +80,7 @@ internal fun LocalLibraryContent(
     var filter by rememberSaveable { mutableStateOf(CatalogueFilter.ALL) }
     var selectedKey by rememberSaveable { mutableStateOf<String?>(null) }
     var settings by rememberSaveable { mutableStateOf(false) }
+    var confirmForget by rememberSaveable { mutableStateOf(false) }
     val results = remember(titles, query, filter) { LocalCatalogue.search(titles, query, filter) }
     val selected = titles.firstOrNull { it.key == selectedKey }
     val snackbar = remember { SnackbarHostState() }
@@ -206,12 +209,34 @@ internal fun LocalLibraryContent(
                 OutlinedButton(onClick = { settings = false; onChooseFolder() }, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.folder_setup_change_folder))
                 }
+                OutlinedButton(onClick = { confirmForget = true }, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.catalogue_forget_folder))
+                }
                 TextButton(onClick = { settings = false; onOpenGlassLab() }, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.catalogue_glass_preview))
                 }
                 Text(stringResource(R.string.catalogue_glass_note), color = PlayerPalette.textTertiary, style = MaterialTheme.typography.bodySmall)
             }
         }
+    }
+    if (confirmForget) {
+        AlertDialog(
+            onDismissRequest = { confirmForget = false },
+            title = { Text(stringResource(R.string.catalogue_forget_title)) },
+            text = { Text(stringResource(R.string.catalogue_forget_explanation)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmForget = false
+                    settings = false
+                    onForgetFolder()
+                }) { Text(stringResource(R.string.catalogue_forget_confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmForget = false }) {
+                    Text(stringResource(R.string.catalogue_forget_cancel))
+                }
+            },
+        )
     }
 }
 

@@ -388,3 +388,7 @@ The user wants a single integrated signed APK only after the complete app is rea
 
 ## 2026-11-21 — Room v3 provider metadata foundation
 A focused Phase 2 database slice is on main: cached TMDB metadata is keyed separately from SAF identity and is exposed only after a user-confirmed mapping. CI #102 / 44888106152 passed the explicit v1-to-v3 migration, cache tests, Android 15 suite 20/20 and generated-schema validation; the exact v3 JSON is committed (SHA-256 a48bab777b7dcad1f02f0e61a1a936b95f91eca61265a1ede03d7cccbc4450db). This is not a network-enabled or user-facing metadata feature yet. No candidate APK was produced; publish only when one complete integrated app is ready.
+
+
+## 2026-11-21 — Explicit library removal
+Added “Remove folder from Player” with confirmation, Room index/cache cleanup and persisted SAF grant release; original files remain untouched. Unit tests cover grant release ordering and a refused release; CI #104 is pending. No intermediate APK is produced. CI #103 has verified the Room v3 snapshot follow-up (20/20 Android 15 tests, build/schema checks).

@@ -62,6 +62,7 @@ internal fun FolderSetupScreen(
     val scanError = if (visibleState?.hasError == true) stringResource(R.string.library_scan_error) else null
     val feedback = when {
         folderState.unsupported -> stringResource(R.string.folder_setup_unsupported_provider)
+        folderState.forgetFailed -> stringResource(R.string.folder_setup_forget_failed)
         folderState.error -> stringResource(R.string.folder_setup_permission_lost)
         else -> null
     }
@@ -212,6 +213,15 @@ internal fun FolderSetupScreen(
                         color = PlayerPalette.textTertiary,
                         style = MaterialTheme.typography.bodyMedium,
                     )
+                    if (folderState.forgetFailed) {
+                        OutlinedButton(
+                            onClick = model::forgetFolder,
+                            enabled = !isRestoring,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(stringResource(R.string.folder_setup_retry_forget))
+                        }
+                    }
                     Button(
                         onClick = { folderPicker.launch(null) },
                         modifier = Modifier.fillMaxWidth(),

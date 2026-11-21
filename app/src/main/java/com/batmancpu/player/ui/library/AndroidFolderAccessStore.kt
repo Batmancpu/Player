@@ -23,6 +23,12 @@ internal class AndroidFolderAccessStore(context: Context) : FolderAccessStore {
         preferences.getString("selected_local_tree_uri", null)
     }
 
+    override suspend fun clearSelected() = withContext(Dispatchers.IO) {
+        if (!preferences.edit().remove("selected_local_tree_uri").commit()) {
+            throw IOException("Local folder selection could not be cleared")
+        }
+    }
+
     override suspend fun saveSelected(tree: String) = withContext(Dispatchers.IO) {
         if (!preferences.edit().putString("selected_local_tree_uri", tree).commit()) {
             throw IOException("Local folder selection could not be saved")

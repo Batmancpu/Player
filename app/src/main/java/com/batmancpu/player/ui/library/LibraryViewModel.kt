@@ -24,6 +24,7 @@ internal data class FolderUiState(
     val busy: Boolean = true,
     val error: Boolean = false,
     val unsupported: Boolean = false,
+    val forgetFailed: Boolean = false,
 )
 
 /** Application context only: never retain an Activity or its composition. */
@@ -32,6 +33,7 @@ internal class LibraryViewModel(application: Application) : AndroidViewModel(app
     private val mutableFolder = MutableStateFlow(FolderUiState())
     val folder = mutableFolder.asStateFlow()
     private var folderGeneration = 0L
+    private var pendingForgetTree: String? = null
     val session = LibrarySession(
         scope = viewModelScope,
         load = { tree -> OfflineLibraryIndex.activateAndLoad(application, Uri.parse(tree)) },
@@ -85,6 +87,31 @@ internal class LibraryViewModel(application: Application) : AndroidViewModel(app
 
     fun restoreFolder() = updateFolder { access.restore() }
     fun connectFolder(tree: String) = updateFolder { access.connect(tree) }
+
+    /** Remove Player's cached index and read grant; original media stays untouched. */
+    fun forgetFolder() {
+        val tree = folder.value.folder?.tree ?: pendingForgetTree ?: return
+        pendingForgetTree = tree
+        val ticket = ++folderGeneration
+        closePlayback()
+        session.select(null)
+        mutableFolder.value = FolderUiState()
+        viewModelScope.launch {
+            try {
+                OfflineLibraryIndex.forgetTree(getApplication(), Uri.parse(tree))
+                access.forget()
+                if (ticket == folderGeneration) {
+                    pendingForgetTree = null
+                    mutableFolder.value = FolderUiState(busy = false)
+                }
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                if (ticket == folderGeneration) mutableFolder.value =
+                    FolderUiState(busy = false, error = true, forgetFailed = true)
+            }
+        }
+    }
 
     private fun updateFolder(action: suspend () -> LocalFolder?) {
         val ticket = ++folderGeneration

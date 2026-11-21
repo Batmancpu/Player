@@ -260,3 +260,10 @@ CI90 / 43678768709 passed the full Android15 integration suite including the cor
 - **Change:** Room v3 adds provider metadata keyed by TMDB ID/type and keeps local SAF document matches separate. The v2-to-v3 migration is explicit; cache visibility requires a user-confirmed binding; stale associations are removed after a successful rescan.
 - **Evidence:** CI #102 / 44888106152 passed 20/20 Android 15 tests, including v1-to-v3 migration, unknown document rejection, unsafe image-path rejection and stale metadata cleanup. CI validated and uploaded v1/v2/v3; the exact generated v3 JSON is committed (SHA-256 a48bab777b7dcad1f02f0e61a1a936b95f91eca61265a1ede03d7cccbc4450db).
 - **Remaining limit:** No live TMDB request or OPPO test is part of this persistence change.
+
+
+## H-025 — No explicit way to remove a selected folder
+- **Status:** Implementation on main; CI #104 pending.
+- **User impact:** Changing the selected tree existed, but there was no clear action to remove the library and revoke its persisted access while leaving the original media in place.
+- **Change:** Added a confirmation dialog in Library settings, removal of only Room data and saved SAF access, grant reconciliation and retry feedback. Source media are not written or deleted.
+- **Next:** Verify unit/Android CI, then include “remove from Player without deleting originals; reconnect and rescan” in the final OPPO checklist.

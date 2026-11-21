@@ -824,3 +824,11 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 - Added Android instrumentation for the v1→v3 production migration, visibility only after explicit confirmation, rejection of unknown document IDs/unsafe artwork paths, and stale-cache cleanup. CI now validates and uploads exact v1/v2/v3 schema snapshots.
 - No network request, INTERNET permission, credential flow, source-media write or downloadable APK is part of this change. CI #102 / 44888106152 passed Android 15 instrumentation 20/20 (0 failures/errors/skips), JVM/build/regression gates and exported v1/v2/v3 schema validation. The exact generated v3 snapshot was inspected and committed with SHA-256 a48bab777b7dcad1f02f0e61a1a936b95f91eca61265a1ede03d7cccbc4450db. Release signing, manifest/signature checks and publication were skipped because this was not a candidate request.
 - Next: continue explicit opt-in lookup and artwork integration, including user-facing destination disclosure, attribution, cancellation, and offline presentation before preparing one complete phone-test APK.
+
+
+## 2026-11-21 — Add explicit folder removal without touching media
+
+- Library settings now offer “Remove folder from Player” behind a clear confirmation. It deletes only Player's indexed Room rows/match cache, clears the saved tree URI and releases persisted SAF grants; no ContentResolver delete/write is used, so the original videos/subtitles remain.
+- Folder access cleanup clears the saved selection and reconciles all persisted grants under the existing mutex. The ViewModel cancels playback/scan state, retires the library and provides a retry action if Room cleanup or grant release fails.
+- Added resource strings, Android phone checklist coverage and fake-store tests for grant release order and failure recovery. CI #103 / 44888950131 passed 20/20 Android 15 and schema/build gates before this UI/service change; CI #104 is pending.
+- No versionCode change, signing or installable APK. Next: verify CI #104 and fix failures; then continue the final integrated experience.

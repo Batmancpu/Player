@@ -25,6 +25,7 @@ Never share private media paths or file contents in GitHub issues or logs.
 4. Open **Glass preview**, tap each tab and compare the effects-on/effects-off layouts. Report clipping or unreadable labels; no file deletion is required.
 
 ## Phase 1 acceptance test
+- In **Manage → Remove folder from Player**, confirm the library disappears and Player returns to folder setup. Verify the original videos/subtitles remain in the phone's file manager. Select the same folder again and confirm it can be rescanned.
 - Launch Player and choose the test folder using Android's **system folder picker**. Decline all other providers, and confirm Player never requests "all files" or access to photos/media outside that folder.
 - Tap **Scan this folder**; confirm nested video names are shown and the unrelated outside file is absent. Subtitle count should include SRT; non-media text files should be ignored.
 - Close Player completely and reopen it, including with airplane mode on. The previously scanned library should still appear without a rescan.

@@ -64,6 +64,13 @@
     <string name="catalogue_local_video">Local video</string>
     <string name="catalogue_play">Play video</string>
     <string name="catalogue_settings">Library settings</string>
+    <string name="catalogue_forget_folder">Remove folder from Player</string>
+    <string name="catalogue_forget_title">Remove this library?</string>
+    <string name="catalogue_forget_explanation">Player will remove its saved library index and folder access. Your original videos and subtitles stay in the folder and will not be deleted.</string>
+    <string name="catalogue_forget_confirm">Remove from Player</string>
+    <string name="catalogue_forget_cancel">Keep library</string>
+    <string name="folder_setup_forget_failed">Player could not finish removing this folder. Retry to clear its saved access. Your original media were not changed.</string>
+    <string name="folder_setup_retry_forget">Retry removing folder</string>
     <string name="catalogue_glass_preview">Glass preview</string>
     <string name="catalogue_glass_note">A separate rendering preview. It does not affect your library or enable online access.</string>
     <string name="catalogue_scan_started">Scan started. Your saved library stays available.</string>

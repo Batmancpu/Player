@@ -35,3 +35,7 @@ Reference candidates (research only, not automatic approvals): https://github.co
 
 ## 2026-11-21 — Offline metadata cache boundary
 Room v3 stores provider title/year/overview and validated TMDB image paths separately from local document identity. The only relationship is a user-confirmed mapping from the currently indexed SAF document. Metadata is not requested or attached automatically; it is purged when no confirmed mapping remains. This persistence change adds no HTTP, INTERNET permission or credential storage. Verify the generated schema and explicit 2→3 migration in CI before integrating request flows.
+
+
+## 2026-11-21 — User-controlled folder removal
+The user can remove the selected tree from Player's library. This operation is limited to the app-private Room index/cache and the persisted read-only SAF grant; original media are never changed. It runs through the serialized folder-access manager, and a retry path covers failed grant cleanup. CI #104 is pending; no provider-specific phone behavior is claimed.

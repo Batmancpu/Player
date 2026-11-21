@@ -246,3 +246,7 @@ The user reiterated that an APK should not be produced after every step. Keep im
 
 ## 2026-11-21 — Room v3 foundation verified
 CI #102 passed: Android 15 tests 20/20, including the production v1-to-v3 migration and offline metadata cache cases; unit/build and exported schema validators also passed. The exact generated v3 schema is committed. Release signing/publication were skipped. Development continues toward one complete app APK, with OPPO acceptance/performance still pending actual device evidence.
+
+
+## 2026-11-21 — Remove a folder without deleting files
+The user reported that the app did not offer a way to remove its selected folder. Added a confirmed remove-from-Player action that deletes only Player's index/cache and persisted SAF grant. The dialog states that the original videos/subtitles remain untouched; a retry action handles cleanup failures. CI #104 is pending, and this will be included in the one final phone checklist.

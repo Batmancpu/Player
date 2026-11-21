@@ -20,6 +20,7 @@ class FolderAccessManagerTest {
         override fun isSupported(tree: String) = tree.startsWith("local:")
         override suspend fun selected() = saved
         override suspend fun saveSelected(tree: String) { events.add("save:$tree"); saved = tree }
+        override suspend fun clearSelected() { events.add("clear"); saved = null }
         override suspend fun grants() = permissions.values.toList()
         override suspend fun takeRead(tree: String) {
             acquisition?.invoke()
@@ -95,6 +96,28 @@ class FolderAccessManagerTest {
         }
         assertThrows(SecurityException::class.java) { runBlocking { FolderAccessManager(store).connect("local:B") } }
         assertEquals("local:B", store.saved) // next restoration retries cleanup before activation
+    }
+
+    @Test fun forgetClearsSelectionAndReleasesAllPersistedGrants() = runBlocking {
+        val store = Store().apply {
+            saved = "local:A"
+            permissions["local:A"] = FolderGrant("local:A", true, true)
+            permissions["local:orphan"] = FolderGrant("local:orphan", true, false)
+        }
+        FolderAccessManager(store).forget()
+        assertEquals(null, store.saved)
+        assertTrue(store.grants().isEmpty())
+        assertEquals(listOf("clear", "release:local:A", "release:local:orphan"), store.events)
+    }
+
+    @Test fun forgetReportsGrantReleaseFailureAfterClearingSavedSelection() {
+        val store = Store().apply {
+            saved = "local:A"; refuseRelease = true
+            permissions["local:A"] = FolderGrant("local:A", true, false)
+        }
+        assertThrows(SecurityException::class.java) { runBlocking { FolderAccessManager(store).forget() } }
+        assertEquals(null, store.saved)
+        assertEquals(listOf(FolderGrant("local:A", true, false)), runBlocking { store.grants() })
     }
 
     @Test fun rejectsUnknownProviderBeforeAcquiringPermission() {

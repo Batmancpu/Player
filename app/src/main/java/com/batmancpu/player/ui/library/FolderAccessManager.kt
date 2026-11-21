@@ -14,6 +14,7 @@ internal interface FolderAccessStore {
     fun isSupported(tree: String): Boolean
     suspend fun selected(): String?
     suspend fun saveSelected(tree: String)
+    suspend fun clearSelected()
     suspend fun grants(): List<FolderGrant>
     suspend fun takeRead(tree: String)
     suspend fun release(tree: String, read: Boolean, write: Boolean)
@@ -48,6 +49,12 @@ internal class FolderAccessManager(private val store: FolderAccessStore) {
                 reconcile(store.selected()?.takeIf(store::isSupported))
             }
         }
+    }
+
+    /** Forget only Player's index and SAF access; never touches source media. */
+    suspend fun forget() = mutex.withLock {
+        store.clearSelected()
+        reconcile(null)
     }
 
     private suspend fun requireRead(tree: String) {

@@ -157,3 +157,7 @@ Latest user requests substantial usable progress and permits further independent
 
 ### D-032 — Keep provider metadata separate from local document identity (Accepted)
 Provider metadata is cached by TMDB ID/media type and joined to a SAF document only after an explicit user confirmation. Automatic matching never mutates an override. Full successful rescans clean stale document bindings and unreferenced provider rows transactionally. This design adds no network or credential permission by itself; it makes no metadata visible until the explicit match exists.
+
+
+### D-033 — Forgetting a library never deletes source media (Accepted)
+“Remove folder from Player” clears Player's app-private index and revokes its persisted SAF permission only after explicit confirmation. It must not delete, rename or modify source videos/subtitles. Retry is available if app-private cleanup or grant reconciliation fails.
