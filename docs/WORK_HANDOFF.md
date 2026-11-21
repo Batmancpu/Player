@@ -363,3 +363,7 @@ The unfiltered library uses horizontal Movies and TV Shows shelves; text search 
 ## 2026-11-21 — Completed playback checkpoint guard (CI pending)
 - Resume checkpoint normalization now covers the natural-end callback, periodic timer, Activity pause and composition disposal. Any subsequent save while the player remains STATE_ENDED records start/paused and clears saved play intent.
 - Android test now holds past a five-second checkpoint interval and checks the final checkpoint remains (0, false); direct state-normalization assertions cover other playback states.
+
+## 2026-11-21 — Playback completion test timing fix
+- CI #180 failed only because its 30-second synthetic video exceeded the test's 20-second completion wait. The product compiled, and the failure occurred at the test's natural-end wait.
+- The test now seeks to 29 seconds and still waits over one periodic checkpoint interval. CI verification pending.

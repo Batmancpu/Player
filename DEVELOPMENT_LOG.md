@@ -1319,3 +1319,7 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 ## 2026-11-21 — Prevent EOF checkpoint from being restored by timer
 - Code review caught that the periodic checkpoint could re-save the final duration after the first end event. A shared playbackResumeCheckpoint normalizer now maps every checkpoint captured while Media3 is STATE_ENDED to zero/paused, and clears the remembered play intent so background/foreground state cannot restart the ended item unexpectedly.
 - Added direct state normalization assertions and extended the synthetic playback test past the five-second checkpoint interval. CI pending.
+
+## 2026-11-21 — Synthetic completion test timeout correction
+- CI #180 / 44948650139 passed compilation and ran 47 Android tests; the new natural-end case timed out because its owned synthetic H.264 fixture is deliberately 30 seconds long and the test started at zero with a 20-second wait.
+- Updated the test target to start at 29,000 ms, leaving enough time for the player to prepare and reach natural completion, then wait over the five-second checkpoint interval. This is a test timing correction; CI #181 verifies source checkpoint normalization, and the updated test awaits the next run.

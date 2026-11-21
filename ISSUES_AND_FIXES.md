@@ -497,3 +497,7 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 ## 2026-11-21 — Keep completed video reset durable
 - Review found a follow-up timer could overwrite the initial zero checkpoint with duration. All save paths now share a STATE_ENDED normalizer and clear stored play intent.
 - Added unit-style assertions and a synthetic playback integration assertion after the five-second timer fires. CI pending; source files remain read-only.
+
+## 2026-11-21 — Resolve long-fixture timeout in completion test
+- CI #180: 47 tests ran; the new playback test timed out waiting for the workflow-generated 30-second fixture to end after starting at zero. This is a harness timing defect.
+- The test now starts from 29,000 ms and retains the five-second checkpoint follow-up assertion. CI pending.

@@ -550,3 +550,6 @@ The playback layer now clears its resume position on natural completion and make
 
 ## 2026-11-21 — Resume checkpoint timer regression coverage
 After discovering that the periodic checkpoint may run after the end event, all save paths normalize an ended player to position zero and false play intent. The synthetic Android test waits over one timer interval and verifies the zero checkpoint persists. CI pending.
+
+## 2026-11-21 — Completion test fixture timing
+CI #180's 30-second synthetic video made the new 20-second natural-end wait time out. The test now seeks to 29 seconds before playback, then checks end state and a later timer save. CI pending.

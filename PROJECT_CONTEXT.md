@@ -425,3 +425,7 @@ Artwork behavior is verified by CI #122 and #123 attempt 2. CI #123 attempt 1 hi
 ## 2026-11-21 — Completion checkpoint follow-up
 - Guarded against the periodic timer overwriting the end checkpoint: all save paths return position zero and false intent while Media3 is ended.
 - The synthetic instrumentation test now spans the five-second timer interval; helper assertions cover end, ready and buffering state. Await CI before continuing.
+
+## 2026-11-21 — Playback completion test correction
+- CI #180 compiled and ran 47 tests; the only failure was a 20-second wait against a 30-second video fixture.
+- The synthetic test now seeks to 29 seconds before playback and continues through the five-second resume timer. Await CI.

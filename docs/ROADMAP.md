@@ -161,3 +161,6 @@ The user requested a signed APK checkpoint now and wants implementation to conti
 ## 2026-11-21 — Guarded completed-video resume state (verification pending)
 - A shared checkpoint normalizer keeps zero/paused resume state through periodic and lifecycle saves after STATE_ENDED. The saved play intent is also cleared.
 - CI test now waits across a periodic checkpoint interval; device result remains pending.
+
+## 2026-11-21 — CI playback test timing correction
+- CI #180's synthetic video is 30 seconds, longer than the test's 20-second wait from position zero. Start at 29 seconds; retain the post-completion timer assertion. No OPPO evidence is implied.

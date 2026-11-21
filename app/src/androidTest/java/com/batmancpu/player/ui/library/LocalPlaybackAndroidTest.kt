@@ -233,6 +233,7 @@ class LocalPlaybackAndroidTest {
                                 documentId = "synthetic-video",
                                 uri = "content://com.batmancpu.player.synthetic/video",
                                 label = "Synthetic completion",
+                                positionMs = 29_000L,
                                 playWhenReady = true,
                             ),
                             activity.lifecycle,

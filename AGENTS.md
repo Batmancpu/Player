@@ -457,3 +457,7 @@ When the unfiltered library is open, movie titles and series now appear in separ
 - Follow-up review found the five-second timer and lifecycle saves could overwrite the zero-on-ended checkpoint with the ended position. All player checkpoint paths now normalize STATE_ENDED to position 0 and false play intent, including the saved intent used during lifecycle changes.
 - Extended the Android integration test to wait across a checkpoint interval and assert the later save remains (0, false); added direct tests for the normalization helper. CI verification is pending.
 - Next: inspect the latest main CI runs, then continue subtitle settings and the remaining production Glass/performance work.
+
+## 2026-11-21 — Tighten playback completion test timing
+- CI #180 compiled the app and ran 47 Android tests; only the new completion test failed because the workflow-generated synthetic video is 30 seconds but the test waited just 20 seconds from its beginning. This was a test setup timeout, not a product assertion.
+- Start the synthetic test at 29 seconds and preserve its additional wait across the five-second checkpoint interval. CI #181 verifies the checkpoint guard; the timing correction is also queued for CI.

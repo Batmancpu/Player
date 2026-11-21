@@ -126,3 +126,6 @@ A completed local video now saves resume position 0 and play intent false when M
 
 ## 2026-11-21 — Stable reset state across lifecycle saves
 The playback checkpoint helper now normalizes STATE_ENDED to zero/paused for timer, background and disposal paths; remembered play intent is cleared too. The new Android test spans the five-second periodic interval and checks that the result stays zero. CI pending.
+
+## 2026-11-21 — Synthetic playback test timing
+The previous CI attempt timed out because the synthetic fixture lasts 30 seconds. The regression test now begins at 29 seconds, then waits beyond the checkpoint timer. CI pending.
