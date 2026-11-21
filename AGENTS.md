@@ -255,3 +255,7 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 ## 2026-11-21 — artwork integration in progress
 User wants one complete APK, not installable milestone APKs. Artwork is fetched only after separate TMDB match confirmation, stored in bounded no-backup app-private storage, then rendered from a local File. Current code adds cancellation-safe cache transport, Coil local-file rendering, synthetic test; CI pending. Next inspect CI, repair failures, continue whole-app integration. Do not claim OPPO performance/acceptance.
+
+
+## 2026-11-21 — artwork accessibility label
+Added a localized content description for the confirmed cached poster. The artwork feature commit is building in CI #119; this resource-only follow-up is needed for Compose/AAPT and TalkBack. Next inspect both Actions runs, fix failures, continue app integration. No APK produced.

@@ -48,4 +48,5 @@
     <string name="metadata_lookup_remove">Remove this TMDB match</string>
     <string name="metadata_lookup_confirm_movie">Confirm movie match</string>
     <string name="metadata_lookup_confirm_series">Link this show to all %1$d episodes</string>
+    <string name="metadata_lookup_poster_description">Poster artwork for %1$s</string>
 </resources>

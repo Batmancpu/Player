@@ -939,3 +939,7 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 
 ## 2026-11-21 — confirmed offline artwork implementation (verification pending)
 Added Coil Compose 3.6.3 Apache-2.0 for app-private local Files only; no Coil networking module. Artwork transport uses fixed image.tmdb.org HTTPS paths, no credentials, redirects off, bounded timeout/bytes/content-type/pixels, cancellable worker and atomic no-backup cache with 96 MiB LRU. Rechecks enabled settings before save. Fixed completion race with tryResume and makes trim errors fail closed. Details only read cached files offline; image fetch begins after explicit match confirmation. Synthetic Android controller test asserts zero CDN requests before confirmation and one after. CI pending; no installable APK/Release.
+
+
+## 2026-11-21 — poster accessibility resource follow-up
+Added the missing localized TalkBack content description required by the confirmed artwork UI. CI #119 is building the feature commit; this follow-up will receive its own build. No release APK.
