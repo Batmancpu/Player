@@ -246,10 +246,16 @@ class PreviewUiAndroidTest {
                     }
                 }
             }
-            val first = Rect().also { text("Aurora").getBoundsInScreen(it) }
-            val second = Rect().also { text("Blue Harbour").getBoundsInScreen(it) }
-            assertEquals("Two visible columns on the narrow synthetic phone", first.top, second.top)
-            assertTrue(first.right <= second.left)
+            fun cardBounds(title: String): Rect {
+                var target: AccessibilityNodeInfo? = text(title)
+                while (target != null && !target.isClickable) target = target.parent
+                val card = checkNotNull(target) { "No clickable catalogue card for $title" }
+                return Rect().also { card.getBoundsInScreen(it) }
+            }
+            val first = cardBounds("Aurora")
+            val second = cardBounds("Blue Harbour")
+            assertTrue("Both synthetic cards occupy the same row", kotlin.math.abs(first.top - second.top) <= 4)
+            assertTrue("The cards are distinct side-by-side columns", first.right <= second.left)
             text("Shows")
             screenshot("catalogue")
             val input = awaitNode { it.className?.toString()?.contains("EditText") == true }

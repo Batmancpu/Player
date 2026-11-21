@@ -309,3 +309,6 @@ The unfiltered library uses horizontal Movies and TV Shows shelves; text search 
 
 ## 2026-11-21 — Android test swipe correction
 - CI #165 identified that the fallback instrumented swipe began near Android's bottom home-gesture area, returning the test to Launcher before sheet content could be checked. Constrain synthetic swipes to visible sheet text above the system gesture region. Restore Material3's normal sheet drag/nested-scroll handling; keep the explicit accessible Close action. CI verification is pending; next rerun Android 15 instrumentation and release gates.
+
+## 2026-11-21 — Screenshot test now checks card bounds
+- CI #166 passed both long-details scroll flows after the harness stopped swiping from Android's Home gesture zone. It then exposed a brittle assertion comparing wrapped title-text y coordinates, which differ when one title wraps. Updated the catalogue check to compare clickable card bounds, preserving the actual two-column layout requirement. CI verification pending.
