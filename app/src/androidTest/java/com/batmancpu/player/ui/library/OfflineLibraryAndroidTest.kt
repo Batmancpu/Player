@@ -23,7 +23,7 @@ class OfflineLibraryAndroidTest {
     private val context get() = InstrumentationRegistry.getInstrumentation().targetContext
     private val a = Uri.parse("content://com.android.externalstorage.documents/tree/synthetic-A")
     private val b = Uri.parse("content://com.android.externalstorage.documents/tree/synthetic-B")
-    private fun media(id: String) = DiscoveredLocalMedia(id, "$id.mp4", LocalMediaKind.VIDEO)
+    private fun media(id: String) = DiscoveredLocalMedia(id, "$id.mp4", LocalMediaKind.VIDEO, "opaque-parent")
     @After fun cleanup() = runBlocking {
         OfflineLibraryIndex.forgetTree(context, a); OfflineLibraryIndex.forgetTree(context, b)
     }
@@ -34,6 +34,7 @@ class OfflineLibraryAndroidTest {
         val reopened = Room.databaseBuilder(context, PlayerLibraryDatabase::class.java, "player-local-library.db").build()
         try {
             assertEquals(setOf("kept", "new"), reopened.mediaDao().forTree(a.toString()).map { it.documentId }.toSet())
+            assertEquals("opaque-parent", OfflineLibraryIndex.load(context, a).first { it.documentId == "kept" }.parentDocumentId)
         } finally { reopened.close() }
         OfflineLibraryIndex.saveSuccessfulScan(context, a, emptyList())
         assertTrue(OfflineLibraryIndex.load(context, a).isEmpty())

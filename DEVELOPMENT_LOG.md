@@ -1002,3 +1002,12 @@ Next: run full CI on the correction, then continue with the Room parent-ID migra
 CI #127 / 44907206092 Android 15 integration passed. First JVM attempt failed only because the cap test's generated names were unrelated to the target movie. CI #128 / 44907892171 Android 15 integration passed with the corrected valid fixture but the cap test still failed. Inspection found a production defect: the root Locale can have a blank ISO3 value; after removing the `.en` suffix from simple `Film.en`, a later pass could treat the blank suffix as a language and strip the base to empty.
 
 The matcher now filters blank locale codes and refuses blank suffix tokens. A direct `Film.en.srt` regression test was added; the cap test retains twelve distinct matching identities. H-024 records the reproduction and root cause. Verification pending a new full CI run. No APK/Release.
+
+
+## 2026-11-21 — Persist SAF parent identity (Room v4)
+
+CI #129 / 44908615223 passed after excluding blank root-locale values from subtitle suffix matching; the direct simple-title regression, matcher cap, Android 15 integration, unit/build and v1-v3 schema/privacy gates all passed.
+
+This change adds a non-null `parentDocumentId` to indexed media with SQL default `''`, Room migration 3→4 using `ALTER TABLE`, and round-trip mapping for successful scans/offline loads. Existing v1 rows migrate without loss and receive the explicit empty value; they gain sidecar associations after a successful rescan. Migration instrumentation now opens v1 through v4 and verifies old media, metadata and defaulted parent identity. CI schema validation preserves exact v1-v3 and checks generated v4 column order/default; generated schema artifact is retained for committing the canonical v4 snapshot.
+
+Verification pending. Playback has not been attached to sidecars yet. No Release/user APK.

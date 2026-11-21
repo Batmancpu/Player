@@ -135,7 +135,7 @@ jobs:
       - name: Export Room schemas without trusting task cache
         run: gradle --no-daemon --rerun-tasks :app:kspDebugKotlin
 
-      - name: Verify exported Room v1, v2 and v3 schemas
+      - name: Verify exported Room v1 through v4 schemas
         shell: bash
         run: |
           python - <<'PY'
@@ -144,8 +144,8 @@ jobs:
 
           schema_dir = Path("app/schemas/com.batmancpu.player.ui.library.PlayerLibraryDatabase")
           schemas = {path.stem: json.loads(path.read_text(encoding="utf-8")) for path in schema_dir.glob("*.json")}
-          if set(schemas) != {"1", "2", "3"}:
-              raise SystemExit(f"Expected exact Room schema snapshots 1, 2 and 3; found {sorted(schemas)}")
+          if set(schemas) != {"1", "2", "3", "4"}:
+              raise SystemExit(f"Expected exact Room schema snapshots 1 through 4; found {sorted(schemas)}")
 
           version_one = schemas["1"].get("database", {})
           if version_one.get("version") != 1:
@@ -175,10 +175,22 @@ jobs:
               raise SystemExit("Unexpected Room v3 provider metadata columns")
           if metadata.get("primaryKey", {}).get("columnNames") != ["tmdbId", "mediaType"]:
               raise SystemExit("Provider metadata must use the TMDB id/type composite key")
-          print("Verified Room v1 baseline, v2 manual matches and v3 offline provider metadata schema")
+          version_four = schemas["4"].get("database", {})
+          v4_entities = version_four.get("entities", [])
+          v4_tables = {entity.get("tableName") for entity in v4_entities}
+          if version_four.get("version") != 4 or v4_tables != expected_tables:
+              raise SystemExit(f"Unexpected Room v4 schema: version={version_four.get('version')}, tables={v4_tables}")
+          indexed = next(entity for entity in v4_entities if entity.get("tableName") == "indexed_media")
+          expected_media_fields = ["treeUri", "documentId", "displayName", "mediaKind", "parsedKind", "title", "year", "season", "episode", "scanToken", "parentDocumentId"]
+          media_fields = indexed.get("fields", [])
+          if [field.get("columnName") for field in media_fields] != expected_media_fields:
+              raise SystemExit("Room v4 indexed_media parent identity column is missing or reordered")
+          if media_fields[-1].get("notNull") is not True or media_fields[-1].get("defaultValue") != "''":
+              raise SystemExit("Room v4 parentDocumentId must default to an empty value for migrated rows")
+          print("Verified Room v1 baseline, v2 manual matches, v3 offline metadata and v4 SAF parent identity")
           PY
 
-      - name: Upload exported Room v1, v2 and v3 schemas for review
+      - name: Upload exported Room v1 through v4 schemas for review
         uses: actions/upload-artifact@v7
         with:
           name: Player-Room-Schema-${{ github.sha }}

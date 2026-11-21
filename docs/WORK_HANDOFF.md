@@ -208,3 +208,6 @@ CI #127 Android job passed, but its unit test step failed at `LocalSubtitleMatch
 
 
 H-024 found while fixing CI #127's cap test: a blank ISO3 value from Locale.ROOT could strip a simple base name after language suffix removal. The corrected candidate now filters/guards empty tokens and tests `Film.en.srt` directly; CI pending. Do not proceed to Room v4 until this full gate passes. No APK.
+
+
+CI #129 / 44908615223 passed the language-suffix root-locale fix, Android 15 integration, JVM/build, Room v1-v3 and privacy gates. Current source adds Room v4 parent identity with default-empty 3→4 migration and offline index persistence; tests cover old v1 row preservation/default and parent round-trip. Full CI pending. Sidecar playback remains off until v4 and SAF URI validation are green. No APK/Release.

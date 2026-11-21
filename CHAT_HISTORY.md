@@ -333,3 +333,7 @@ The assistant audited commit 9200aaeed66c08eb30f29b27d9d8713f8afe5c67 and found 
 
 ## 2026-11-21 — Phase 5 sidecar foundation
 CI #126 / 44906299456 passed Android 15 selector testing and all unit/build/schema/privacy gates. Work continues on local sidecar subtitles: scanner now captures the opaque parent document ID and a pure matcher limits candidates to supported subtitle files in that exact directory, including bounded language/forced suffix matching. New tests check no sibling-folder bleed and no opaque ID/path guessing. Pending CI; no persistence or playback attachment until Room v4 is safely migrated. No APK produced for this step.
+
+
+## 2026-11-21 — Room v4 sidecar identity
+CI #129 / 44908615223 passed the matcher regression and full schema/build/privacy gates. New work persistently stores the immediate SAF parent document ID in Room v4 with a default-empty additive migration; includes v1→v4 migration and offline round-trip tests. CI pending. Sidecars are not yet attached to the player, and no user APK is produced each step.

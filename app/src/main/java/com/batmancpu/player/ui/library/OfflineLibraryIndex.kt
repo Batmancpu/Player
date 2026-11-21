@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.room.Dao
 import androidx.room.Database
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Embedded
 import androidx.room.Insert
@@ -33,6 +34,7 @@ internal data class IndexedMedia(
     val season: Int?,
     val episode: Int?,
     val scanToken: String,
+    @ColumnInfo(defaultValue = "''") val parentDocumentId: String = "",
 )
 
 /** A user-confirmed TMDB match, private to one selected SAF tree/document. */
@@ -122,7 +124,7 @@ internal interface ManualTmdbMatchDao {
     suspend fun removeOrphans(tree: String)
 }
 
-@Database(entities = [IndexedMedia::class, ManualTmdbMatch::class, CachedTmdbMetadata::class], version = 3, exportSchema = true)
+@Database(entities = [IndexedMedia::class, ManualTmdbMatch::class, CachedTmdbMetadata::class], version = 4, exportSchema = true)
 internal abstract class PlayerLibraryDatabase : RoomDatabase() {
     abstract fun mediaDao(): IndexedMediaDao
     abstract fun manualTmdbMatchDao(): ManualTmdbMatchDao
@@ -151,6 +153,12 @@ internal abstract class PlayerLibraryDatabase : RoomDatabase() {
             }
         }
 
+        val MIGRATION_3_4: Migration = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE indexed_media ADD COLUMN parentDocumentId TEXT NOT NULL DEFAULT ''")
+            }
+        }
+
         @Volatile private var instance: PlayerLibraryDatabase? = null
 
         fun get(context: Context): PlayerLibraryDatabase =
@@ -159,7 +167,7 @@ internal abstract class PlayerLibraryDatabase : RoomDatabase() {
                     context.applicationContext,
                     PlayerLibraryDatabase::class.java,
                     "player-local-library.db",
-                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build().also { instance = it }
+                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).build().also { instance = it }
             }
     }
 }
@@ -195,6 +203,7 @@ internal object OfflineLibraryIndex {
                 documentId = it.documentId,
                 displayName = it.displayName,
                 kind = LocalMediaKind.valueOf(it.mediaKind),
+                parentDocumentId = it.parentDocumentId,
             )
         }
     }
@@ -233,6 +242,7 @@ internal object OfflineLibraryIndex {
                 season = (parsed as? ParsedMediaName.Episode)?.season,
                 episode = (parsed as? ParsedMediaName.Episode)?.episode,
                 scanToken = token,
+                parentDocumentId = media.parentDocumentId,
             )
         }
         val db = PlayerLibraryDatabase.get(context)

@@ -294,3 +294,7 @@ CI #127 / 44907206092 Android 15 integration passed. The JVM/build job caught a 
 
 ## Recent agent changes — 2026-11-21
 CI #127 Android integration passed, but CI #127 unit tests exposed a bad cap-test fixture. Correcting the fixture exposed H-024: a blank root-locale ISO3 code could erase a simple movie stem after stripping a language suffix. Guarded blank locale codes and added a focused simple-title regression. Current corrective code/test change awaits CI. Next: verify all gates, then persist parent IDs through a Room v4 migration before sidecar playback. No user APK/Release.
+
+
+## Recent agent changes — 2026-11-21
+CI #129 / 44908615223 passed the matcher root-locale regression and all Android 15, unit/build, schema/privacy gates. The next slice persists opaque SAF parent IDs in Room with additive schema v4/default-empty migration, preserves historical v1-v3 snapshots, and exercises both v1→v4 migration and offline parent round-trip. This code/schema gate is pending. Sidecar playback remains unwired until migration and secure URI validation pass. No installable APK/Release.

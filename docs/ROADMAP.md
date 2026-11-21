@@ -118,3 +118,7 @@ A live source audit found the prior selector commit was documentation-only; its 
 
 ## 2026-11-21 — Phase 5 sidecar foundation
 CI #126 verified embedded Media3 audio selector integration. New source propagates opaque SAF parent identity from immediate-child enumeration and matches only supported same-parent subtitle names with deterministic bounds; scanner and matcher tests are pending CI. This is foundation only: Room still needs a non-destructive migration to persist parent IDs, and playback still needs validated local subtitle URIs. Continue both before calling sidecar support integrated. No interim APK.
+
+
+## 2026-11-21 — Room v4 parent persistence in progress
+CI #129 / 44908615223 verified subtitle-matcher fixes. Current work adds an additive v4 `parentDocumentId` migration, stores scanner-captured opaque IDs in Room and restores them offline. It verifies old rows receive empty parent IDs and historical schemas remain unchanged. Pending CI/schema artifact. Next wire only validated same-parent supported subtitle URIs into Media3; no source file writes.
