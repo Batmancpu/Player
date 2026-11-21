@@ -153,3 +153,7 @@ The user requested a signed APK checkpoint now and wants implementation to conti
 - CI #177 passed the Glass Lab return, dock bounds, and effects-off fallback UI checks; its synthetic on/off screenshots were inspected. CI #178 passed the full 46-test Android 15 integration suite plus unit/schema/privacy/identity gates after connecting one shared tab interaction source to the bounded Haze surface.
 - Haze's existing pressed style now animates lens lighting/refraction and subtle scale; `GlassReducedMotionPolicy.System` is retained. The spring selection pill remains original Compose code. Haze is still lab-only; the screenshots are emulator evidence, not OPPO frame-time, thermal, or premium acceptance evidence.
 - Next: apply measured design principles to production navigation and finish player/format/subtitle workflows; then build reproducible Macrobenchmark/Perfetto coverage and do the final release-size/performance audit.
+
+## 2026-11-21 — Completed local playback resume behavior (verification pending)
+- The Phase 4 implementation now resets its checkpoint to the beginning when Media3 naturally reaches STATE_ENDED; controls are shown again at completion.
+- The new Android integration test uses only the generated synthetic fixture and asserts zero/paused checkpoint output. Await CI. Phone validation still requires OPPO.

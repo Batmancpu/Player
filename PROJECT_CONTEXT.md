@@ -416,3 +416,8 @@ User requested a single installable APK after the integrated app is ready, not p
 
 ## 2026-11-21 — CI #123 and UI test stability
 Artwork behavior is verified by CI #122 and #123 attempt 2. CI #123 attempt 1 hit a transient Compose test timeout in unbounded waitForIdleSync; attempt 2 passed unchanged. This change replaces global idle waits with bounded accessibility polling and corrects obsolete catalogue copy. Follow-up CI pending; no installable APK/Release.
+
+## 2026-11-21 — Playback completion starts cleanly on reopen
+- Fixed stale EOF resume state: natural completion checkpoints position 0 and false play intent, and restores player controls.
+- Added completedPlaybackResetsResumeCheckpointToBeginning Android instrumentation coverage with the owned synthetic fixture. CI result pending.
+- Next: validate the main CI run and continue Phase 5 subtitle controls; Reno10 playback evidence remains uncollected.

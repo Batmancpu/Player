@@ -120,3 +120,6 @@ Player exposes Fit, Fill and Zoom resizing through Media3. The app overrides the
 
 
 **Playback engine selection:** Media3 remains the primary local engine. Its supported-container list does not guarantee device codec support. Do not add LibVLC until the target local-file corpus shows material gaps; compare pinned artifact size/ABI, hardware decode, subtitle overlay behavior, memory, thermal, battery and license obligations. See DEC-021.
+
+## 2026-11-21 — Phase 4 completion reopen edge case
+A completed local video now saves resume position 0 and play intent false when Media3 reports STATE_ENDED, and reveals the player controls. The CI-owned synthetic-video Android test asserts the completion checkpoint. CI pending; continue with subtitle controls and full player interaction coverage after green verification.

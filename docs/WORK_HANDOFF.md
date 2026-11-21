@@ -354,3 +354,8 @@ The unfiltered library uses horizontal Movies and TV Shows shelves; text search 
 - CI #177 passed the Glass Lab return, dock bounds, and effects-off fallback UI checks; its synthetic on/off screenshots were inspected. CI #178 passed the full 46-test Android 15 integration suite plus unit/schema/privacy/identity gates after connecting one shared tab interaction source to the bounded Haze surface.
 - Haze's existing pressed style now animates lens lighting/refraction and subtle scale; `GlassReducedMotionPolicy.System` is retained. The spring selection pill remains original Compose code. Haze is still lab-only; the screenshots are emulator evidence, not OPPO frame-time, thermal, or premium acceptance evidence.
 - Next: apply measured design principles to production navigation and finish player/format/subtitle workflows; then build reproducible Macrobenchmark/Perfetto coverage and do the final release-size/performance audit.
+
+## 2026-11-21 — Completed playback checkpoint (CI pending)
+- LocalPlayerScreen now checkpoints zero and clears play intent on Media3 STATE_ENDED, then re-shows player controls. This fixes reopening completed content at EOF.
+- Added an owned synthetic video instrumentation test asserting the completion callback is (0, false). CI pending; real Reno10 playback validation remains part of final phone acceptance.
+- Next: verify CI, then advance subtitle settings and later measured Glass/performance work.

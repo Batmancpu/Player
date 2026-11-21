@@ -487,3 +487,9 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - Haze's existing pressed style now animates lens lighting/refraction and subtle scale; `GlassReducedMotionPolicy.System` is retained. The spring selection pill remains original Compose code. Haze is still lab-only; the screenshots are emulator evidence, not OPPO frame-time, thermal, or premium acceptance evidence.
 - Next: apply measured design principles to production navigation and finish player/format/subtitle workflows; then build reproducible Macrobenchmark/Perfetto coverage and do the final release-size/performance audit.
 - Resolution: explicit return, footer fade/scroll room, and pressed material response are verified by CI #177/#178; Haze remains experimental and device appearance is still pending.
+
+## 2026-11-21 — Completed local video reopen bug
+- Issue: resume checkpoints were only saved periodically and on player disposal, so a video that naturally finished could reopen at EOF and appear stuck on its last frame.
+- Change: Media3 STATE_ENDED now records position zero and false play intent and reveals the transport/header. Added an instrumentation test using the synthetic local video to verify the callback.
+- Verification: CI run started; result pending. The change does not alter media files or any network behavior.
+- Next: fix any CI failure, then continue subtitle controls and the production Glass/performance milestones.

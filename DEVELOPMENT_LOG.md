@@ -1310,3 +1310,8 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - CI #177 passed the Glass Lab return, dock bounds, and effects-off fallback UI checks; its synthetic on/off screenshots were inspected. CI #178 passed the full 46-test Android 15 integration suite plus unit/schema/privacy/identity gates after connecting one shared tab interaction source to the bounded Haze surface.
 - Haze's existing pressed style now animates lens lighting/refraction and subtle scale; `GlassReducedMotionPolicy.System` is retained. The spring selection pill remains original Compose code. Haze is still lab-only; the screenshots are emulator evidence, not OPPO frame-time, thermal, or premium acceptance evidence.
 - Next: apply measured design principles to production navigation and finish player/format/subtitle workflows; then build reproducible Macrobenchmark/Perfetto coverage and do the final release-size/performance audit.
+
+## 2026-11-21 — Completed-video resume recovery
+- Added a Media3 STATE_ENDED listener path that writes a zero resume position and false play intent. It also reveals the controls on completion; this prevents an ended file reopening at EOF with no clear way to restart.
+- Added completedPlaybackResetsResumeCheckpointToBeginning, an Android 15 instrumentation test driven by the CI-owned synthetic H.264 fixture. The test asserts the callback receives (0, false) on natural completion; no physical phone evidence is claimed.
+- CI is pending. Next inspect the test result, then continue the local subtitle workflow (including upstream-supported offset API when stable), production Glass integration and benchmark coverage.

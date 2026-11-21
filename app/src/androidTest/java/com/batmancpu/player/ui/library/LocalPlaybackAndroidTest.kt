@@ -203,4 +203,52 @@ class LocalPlaybackAndroidTest {
         assertEquals(0L, ResumePositions.load(context, first.tree, first.documentId))
         assertEquals(0L, ResumePositions.load(context, second.tree, second.documentId))
     }
+
+    @Test(timeout = 35_000) fun completedPlaybackResetsResumeCheckpointToBeginning() {
+        val fixture = File(context.cacheDir, "synthetic-completion.mp4")
+        instrumentation.context.assets.open("synthetic-video.mp4").use { input ->
+            fixture.outputStream().use { output -> input.copyTo(output) }
+        }
+        SyntheticSafProvider.reset()
+        SyntheticSafProvider.playbackFile = fixture
+        val finished = CountDownLatch(1)
+        val checkpoint = AtomicReference<Pair<Long, Boolean>?>()
+        val activity = instrumentation.startActivitySync(
+            Intent(context, PreviewTestActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK),
+        ) as PreviewTestActivity
+        try {
+            instrumentation.runOnMainSync {
+                activity.setContent {
+                    PlayerTheme {
+                        LocalPlayerScreen(
+                            LocalPlaybackTarget(
+                                tree = "synthetic-tree",
+                                documentId = "synthetic-video",
+                                uri = "content://com.batmancpu.player.synthetic/video",
+                                label = "Synthetic completion",
+                                playWhenReady = true,
+                            ),
+                            activity.lifecycle,
+                            onCheckpoint = { position, playing ->
+                                if (!playing && position == 0L) {
+                                    checkpoint.set(position to playing)
+                                    finished.countDown()
+                                }
+                            },
+                            onClose = {},
+                            isFullScreen = false,
+                            onToggleFullScreen = {},
+                        )
+                    }
+                }
+            }
+            assertTrue("Playback should reach its natural end", finished.await(20, TimeUnit.SECONDS))
+            assertEquals(0L to false, checkpoint.get())
+        } finally {
+            instrumentation.runOnMainSync { activity.finish() }
+            SyntheticSafProvider.playbackFile = null
+            fixture.delete()
+        }
+    }
 }

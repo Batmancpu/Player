@@ -447,3 +447,8 @@ When the unfiltered library is open, movie titles and series now appear in separ
 - CI #177 passed the Glass Lab return, dock bounds, and effects-off fallback UI checks; its synthetic on/off screenshots were inspected. CI #178 passed the full 46-test Android 15 integration suite plus unit/schema/privacy/identity gates after connecting one shared tab interaction source to the bounded Haze surface.
 - Haze's existing pressed style now animates lens lighting/refraction and subtle scale; `GlassReducedMotionPolicy.System` is retained. The spring selection pill remains original Compose code. Haze is still lab-only; the screenshots are emulator evidence, not OPPO frame-time, thermal, or premium acceptance evidence.
 - Next: apply measured design principles to production navigation and finish player/format/subtitle workflows; then build reproducible Macrobenchmark/Perfetto coverage and do the final release-size/performance audit.
+
+## 2026-11-21 — Reset completed playback resume point
+- A natural Media3 end now checkpoints position 0 with play intent false and reveals the controls, so reopening a finished local video starts at its beginning instead of landing on the last frame.
+- Added an Android instrumentation test using the owned synthetic local video to assert the completion checkpoint. CI verification is pending.
+- Next: inspect the current CI run and this test result; fix any timing or lifecycle issue before continuing Phase 5 subtitle controls and the production Glass/performance batches.

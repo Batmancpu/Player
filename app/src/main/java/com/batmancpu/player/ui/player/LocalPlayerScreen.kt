@@ -70,6 +70,16 @@ internal fun LocalPlayerScreen(
         }
         val listener = object : Player.Listener {
             override fun onPlayerError(failure: PlaybackException) { error = true }
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                if (playbackState == Player.STATE_ENDED) {
+                    // A completed item should start from the beginning when opened again.
+                    savedPlayIntent = false
+                    checkpoint(0L, false)
+                    playerViewRef[0]?.showController()
+                    controlsVisible = true
+                    chromeInteractionEpoch++
+                }
+            }
             override fun onIsPlayingChanged(value: Boolean) {
                 isPlaying = value
                 playingChanged(value)
