@@ -1,4 +1,13 @@
 ## Current handoff — 2026-11-21
+- User wants the whole integrated experience before receiving one phone-test APK. Do not publish milestone APKs/releases.
+- Latest base: e6a64b0a7526ce3f2c1e6ddd0b7cf2eb0ae72a18. CI #123 / 44902997094 attempt 2 passed Android 15 tests plus JVM/build/schema/privacy checks; attempt 1's Compose tests timed out inside waitForIdleSync, the same code passed on retry. No signed Release.
+- Poster cache only fetches after manual confirmation; local Coil files render in details and lazy catalogue cards. Cache remains readable offline after disabling TMDB; invalid image routes cannot reach transport. Zenith GPL findings are documented; no source/assets reused.
+- Current change makes test helper waits bounded and updates obsolete library text. CI pending. Next: complete player controls/audio/subtitle journeys, original Glass design and accessibility, then CI and final integrated APK; phone performance remains unmeasured.
+- Preserve app ID, certificate, read-only one-folder SAF boundary, no backup, no source writes/upload, no telemetry/backend/broad permissions. Main only.
+
+---
+
+## Current handoff — 2026-11-21
 - User wants the whole integrated app before a single installable APK; do not create milestone Releases/APKs.
 - Latest verified main before offline edge-case test: 96a340a260875eae945c611c7df3e6573aa3af26. CI #122 / 44902258363 passed Android 15 tests, screenshots, JVM/debug, Room schema and privacy. No user APK/Release.
 - TMDB remains manual and default-off. Only a separate match confirmation fetches poster; cache is bounded/no-backup. Coil decodes local cache Files only. Lazy visible cards read only those Files; no requests on browse/scroll. Current follow-up tests offline cache after setting disable and invalid URL rejection; CI pending.

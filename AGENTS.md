@@ -271,3 +271,6 @@ Artwork detail/cache change passed CI #121 attempt 2 (run 44901117586): Android 
 
 ## 2026-11-21 — poster grid verification and upstream licensing research
 CI #122 (run 44902258363) passed Android 15 tests/screenshots, unit/build, Room schema and privacy gates for cached posters in lazy cards. No Release/signing/user APK. Researched user's references: FCZenith URL redirects to Batmancpu/brrMusic; its LICENSE and immediate upstream rezapranata089-bit/Zenith are GPL-3.0. Zenith README notes another upstream lineage; Player did not copy source/assets and will use only as a visual/interaction reference. New test extends offline/disabled-settings and unsafe-route coverage; CI pending. Next inspect CI then continue local playback/audio/subtitle and original Glass work.
+
+## 2026-11-21 — flaky UI wait and catalogue copy fix
+CI #123 (run 44902997094) attempt 1 had two preview UI timeouts while Instrumentation.waitForIdleSync blocked; artwork offline/disable test passed. Attempt 2 of identical source passed Android 15 plus unit/build/schema/privacy. The failure was flaky, not an app assertion. Current change replaces global unbounded idling calls with bounded accessibility polling and async callback waits, and corrects Phase 1-era note saying artwork is disabled. CI pending. No installable APK/Release; continue player/Glass integration once green.

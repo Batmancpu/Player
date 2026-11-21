@@ -42,10 +42,18 @@ class PreviewUiAndroidTest {
         return automation.rootInActiveWindow?.let(::visit)
     }
 
+    private fun awaitCondition(timeoutMs: Long, predicate: () -> Boolean): Boolean {
+        val deadline = SystemClock.uptimeMillis() + timeoutMs
+        while (SystemClock.uptimeMillis() < deadline) {
+            if (predicate()) return true
+            SystemClock.sleep(50)
+        }
+        return predicate()
+    }
+
     private fun awaitNode(predicate: (AccessibilityNodeInfo) -> Boolean): AccessibilityNodeInfo {
         val deadline = SystemClock.uptimeMillis() + 10_000
         while (SystemClock.uptimeMillis() < deadline) {
-            instrumentation.waitForIdleSync()
             find(predicate)?.let { return it }
             SystemClock.sleep(100)
         }
@@ -92,7 +100,6 @@ class PreviewUiAndroidTest {
         ParcelFileDescriptor.AutoCloseInputStream(
             automation.executeShellCommand("input swipe $centerX $fromY $centerX $toY 300"),
         ).use { it.readBytes() }
-        instrumentation.waitForIdleSync()
     }
 
     private fun revealBySwiping(value: String): AccessibilityNodeInfo {
@@ -104,7 +111,6 @@ class PreviewUiAndroidTest {
     }
 
     private fun screenshot(name: String) {
-        instrumentation.waitForIdleSync()
         SystemClock.sleep(400) // Let the finite sheet/selection transition finish.
         // AGP uninstalls tested packages after connected tests and removes their external dirs.
         // Shell-owned, synthetic screenshots survive that cleanup without app storage permissions.
@@ -148,19 +154,17 @@ class PreviewUiAndroidTest {
                 putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, "2022")
             }))
             text("Aurora")
-            instrumentation.waitForIdleSync()
-            val filteredBy = SystemClock.uptimeMillis() + 10_000
-            while (find { it.text?.toString() == "Blue Harbour" } != null && SystemClock.uptimeMillis() < filteredBy) {
-                instrumentation.waitForIdleSync()
-                SystemClock.sleep(100)
-            }
-            assertNull("Nonmatching title must disappear after the asynchronous edit", find { it.text?.toString() == "Blue Harbour" })
+            assertTrue(
+                "Nonmatching title must disappear after the asynchronous edit",
+                awaitCondition(10_000) { find { it.text?.toString() == "Blue Harbour" } == null },
+            )
+            assertNull(find { it.text?.toString() == "Blue Harbour" })
             screenshot("search")
             click(text("Aurora"))
             text("Aurora.2022.mp4")
             screenshot("details")
             click(text("Play video"))
-            instrumentation.waitForIdleSync()
+            assertTrue("Play action reaches the selected indexed file", awaitCondition(3_000) { played.get()?.documentId == "movie-A" })
             assertEquals("movie-A", played.get()?.documentId)
         } finally {
             instrumentation.runOnMainSync { activity.finish() }

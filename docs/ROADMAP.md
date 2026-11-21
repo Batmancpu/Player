@@ -1,6 +1,6 @@
 ## Current implementation update — 2026-11-21
 
-Room v3 offline metadata storage, encrypted user-managed TMDB settings, official TMDB Credits attribution, bounded fixed-origin HTTPS search client and manual title → candidate → separate confirmation flow are integrated. Confirmed data is cached in Room and shown offline; the only match operation is explicit and scoped to the current indexed folder. CI #115 / 44896086296 passed Android 15 tests plus unit/build/schema/privacy gates for transport and Credits. The app has the INTERNET capability for this opt-in stage, but no request occurs from scan, startup, scrolling or playback. Bounded artwork cache/display is integrated after explicit match confirmation; current CI is pending. Live provider behavior, OPPO acceptance and performance remain unfinished. No installable APK/Release between milestones per user's request.
+Room v3 offline metadata storage, encrypted user-managed TMDB settings, official TMDB Credits attribution, bounded fixed-origin HTTPS search client and manual title → candidate → separate confirmation flow are integrated. Confirmed data is cached in Room and shown offline; the only match operation is explicit and scoped to the current indexed folder. CI #115 / 44896086296 passed Android 15 tests plus unit/build/schema/privacy gates for transport and Credits. The app has the INTERNET capability for this opt-in stage, but no request occurs from scan, startup, scrolling or playback. Confirmed artwork cache/display is integrated after manual match; CI #122 passed. CI #123 attempt 2 passed offline/disabled-settings cache tests and all build/schema/privacy gates after attempt 1's transient UI timeout. Catalog poster tiles use local Files only. Live provider behavior, OPPO acceptance and performance remain unfinished. No installable APK/Release between milestones per user's request.
 
 ---
 
@@ -102,3 +102,7 @@ CI #121 attempt 2 passed the corrected manual confirmation/artwork test, Android
 
 ## 2026-11-21 — grid posters and reference license
 CI #122 passed the poster card change and all existing Android 15/UI, unit, schema and privacy gates. Cards render only existing app-private confirmed artwork locally; no CDN request while browsing. A new offline/disabled-setting safety regression is in CI. Licensing research recorded below in UPSTREAM_AND_PRIVACY: user's FCZenith project and immediate Zenith use GPL-3.0; Player takes visual/design inspiration only and copies no source or assets. No user APK/Release; continue to one complete final candidate.
+
+
+## 2026-11-21 — accessibility copy and bounded test waits
+Removed unbounded instrumentation waitForIdleSync calls that caused transient CI #123 preview timeout; the exact previous source passed attempt 2. Tests now poll accessibility and callbacks with finite deadlines. Corrected library note to state TMDB artwork/matching are optional and local use remains offline. Follow-up CI pending.

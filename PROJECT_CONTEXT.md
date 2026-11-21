@@ -412,3 +412,7 @@ CI #110 / 44894615964 reported a malformed quote in the Credits button callback 
 
 ## 2026-11-21 — reference and release cadence update
 User requested a single installable APK after the integrated app is ready, not per-slice. CI #122 passed cached poster cards; no Release. The user's FCZenith URL now redirects to Batmancpu/brrMusic and both it and immediate upstream rezapranata089-bit/Zenith have GPL-3.0 licenses. Player uses them as visual reference only, no code/assets reuse. See docs/UPSTREAM_AND_PRIVACY.md. Current follow-up validates disabled/offline artwork cache and unsafe-route rejection; CI pending.
+
+
+## 2026-11-21 — CI #123 and UI test stability
+Artwork behavior is verified by CI #122 and #123 attempt 2. CI #123 attempt 1 hit a transient Compose test timeout in unbounded waitForIdleSync; attempt 2 passed unchanged. This change replaces global idle waits with bounded accessibility polling and corrects obsolete catalogue copy. Follow-up CI pending; no installable APK/Release.

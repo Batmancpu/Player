@@ -317,3 +317,7 @@ User asked to wait for one complete APK, not milestone downloads. Artwork cache 
 
 ## 2026-11-21 — lazy offline posters and reference review
 CI #122 passed Android 15 UI/screenshots, JVM/build, Room-schema and privacy checks for grid poster rendering. User requested one complete APK at the end, so no installable build was published. Original FCZenith repository URL now redirects to Batmancpu/brrMusic; it and rezapranata089-bit/Zenith use GPL-3.0. We are using the user's reference for visual research only, no code/assets copied. Added tests for offline cached poster and disabled-settings behavior; pending CI.
+
+
+## 2026-11-21 — bounded Compose test waits
+CI #123 had a transient first-run Compose UI timeout at waitForIdleSync; the identical second attempt passed the entire Android 15 suite plus build/schema/privacy. The poster offline test passed both attempts. Removed unbounded idling in UI instrumentation in favor of deadline polling and fixed stale copy saying artwork was disabled. No APK/Release; CI for helper/copy fix pending.
