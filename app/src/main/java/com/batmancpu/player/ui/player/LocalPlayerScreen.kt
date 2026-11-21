@@ -21,6 +21,7 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Tracks
 import androidx.media3.common.C
+import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.PlayerView
 import androidx.media3.ui.AspectRatioFrameLayout
@@ -44,6 +45,7 @@ internal fun LocalPlayerScreen(
     var error by remember(target.uri) { mutableStateOf(false) }
     var hasAudioTracks by remember(target.uri) { mutableStateOf(false) }
     var hasSubtitleTracks by remember(target.uri) { mutableStateOf(false) }
+    var playbackSpeed by remember(target.uri) { mutableFloatStateOf(1f) }
     var controlsVisible by remember(target.uri) { mutableStateOf(true) }
     var chromeInteractionEpoch by remember(target.uri) { mutableIntStateOf(0) }
     var resizeMode by remember(target.uri) { mutableIntStateOf(AspectRatioFrameLayout.RESIZE_MODE_FIT) }
@@ -97,6 +99,9 @@ internal fun LocalPlayerScreen(
                 reason: Int,
             ) {
                 chromeInteractionEpoch++
+            }
+            override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
+                playbackSpeed = playbackParameters.speed
             }
             override fun onTracksChanged(tracks: Tracks) {
                 chromeInteractionEpoch++
@@ -172,8 +177,8 @@ internal fun LocalPlayerScreen(
                     onToggleFullScreen()
                 }
             }
-            if (hasAudioTracks || hasSubtitleTracks) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     if (hasAudioTracks) TextButton(onClick = {
                         chromeInteractionEpoch++
                         createTrackSelectionDialog(context, audioTitle, player, C.TRACK_TYPE_AUDIO).show()
@@ -182,6 +187,11 @@ internal fun LocalPlayerScreen(
                         chromeInteractionEpoch++
                         createTrackSelectionDialog(context, subtitleTitle, player, C.TRACK_TYPE_TEXT).show()
                     }) { Text(subtitleTitle, color = Color.White) }
+                }
+                Spacer(Modifier.weight(1f))
+                PlayerSpeedButton(playbackSpeed) { speed ->
+                    player.setPlaybackParameters(PlaybackParameters(speed))
+                    chromeInteractionEpoch++
                 }
             }
         }
@@ -237,3 +247,29 @@ internal fun playbackResumeCheckpoint(
 ): Pair<Long, Boolean> =
     if (playbackState == Player.STATE_ENDED) 0L to false
     else positionMs.coerceAtLeast(0L) to playWhenReady
+
+
+@Composable
+internal fun PlayerSpeedButton(speed: Float, onSpeedSelected: (Float) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    val currentSpeed = formatPlayerSpeed(speed)
+    val description = stringResource(R.string.player_speed_accessibility, currentSpeed)
+    Box {
+        TextButton(onClick = { expanded = true }, modifier = Modifier.semantics { contentDescription = description }) {
+            Text(currentSpeed, color = Color.White)
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            PLAYER_SPEED_OPTIONS.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(formatPlayerSpeed(option)) },
+                    onClick = { expanded = false; onSpeedSelected(option) },
+                )
+            }
+        }
+    }
+}
+
+internal fun formatPlayerSpeed(speed: Float): String =
+    if (speed % 1f == 0f) "${speed.toInt()}×" else "${speed}×"
+
+private val PLAYER_SPEED_OPTIONS = listOf(0.75f, 1f, 1.25f, 1.5f, 2f)
