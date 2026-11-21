@@ -21,6 +21,13 @@ A risk is not a confirmed defect. Record evidence, confidence and status precise
 
 ## Design-time risks
 
+### R-011 — Glass Lab dock can appear detached or visually weak
+- **Status:** User-reported on the older installed preview; current-source visual verification pending.
+- **Evidence:** User said the Glass Lab bottom navigation looked broken/floating. No current v0.1.91 screenshot/device reproduction supplied.
+- **Mitigation in current source:** A restrained source-backed surface edge, selected pill and shadow are being tuned, with synthetic bottom-safe-area and selected-state accessibility assertions. This does not establish target-device visual quality or performance.
+- **Next:** review the CI screenshot and obtain actual OPPO visual feedback with the eventual integrated APK.
+
+
 ### R-010 — Persisted subtitle sibling identity can become stale
 - **Status:** Mitigated; CI #132 / 44911456180 passed the external subtitle integration test.
 - **Risk:** A document may be moved, renamed or replaced after the offline scan, and stale parent IDs alone must not make it eligible for playback.

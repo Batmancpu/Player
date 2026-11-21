@@ -1040,3 +1040,12 @@ Next: validate same-tree sidecar candidates into bounded local subtitle configur
 ## 2026-11-21 — Handoff reconciled after CI #132
 
 Recorded that local Media3 sidecar subtitle integration passed CI #132 / 44911456180: 41/41 Android 15 tests, JVM/build, Room v1-v4 schema and privacy checks. Reconciled the current handoff and agent ledger to remove pending-status text. Only Android test and Room schema artifacts exist for this run; no user APK/Release. Next: local subtitle delay/reset and full player/Glass/accessibility integration.
+
+
+## 2026-11-21 — Glass Lab floating dock refinement
+
+- Increased separation between the Haze material and the dark content with a restrained shadow, thin vertical specular edge and a brighter selected pill. Preserved the black contrast tint and the effects-disabled fallback.
+- Expanded the synthetic Android UI regression to assert that all four tab labels remain in bounds, the dock stays within 120 dp of the bottom safe region, selected state reaches accessibility semantics, and the Glass toggle still renders both modes.
+- Motivation: the user reported that Glass Lab's bottom dock looked broken/floating in the older installed version. That handset report is not evidence that the current source failed on OPPO; this change targets clarity and adds coverage. No Apple assets/upstream code copied.
+- Verification: source diff checks pass; CI pending. Local Gradle unavailable. No installable APK/Release; the current release remains v0.1.91.
+- Next: inspect Android 15 instrumentation/synthetic screenshots and full build/privacy CI; correct failures, then continue integrated player and production Glass/accessibility work before one final APK.

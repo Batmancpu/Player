@@ -4,6 +4,12 @@ This file is the durable, accumulating record of important user requests, produc
 
 **Format:** decision-focused session summaries, not a verbatim export of every message. Preserve the meaning of user requests and reasons behind decisions. Never include private signing files, passwords, base64 secret values, API keys, tokens or other credentials.
 
+## 2026-11-21 — Glass Lab dock follow-up
+
+- User reported that the Glass Lab bottom navigation looked broken/floating in the older installed build. No current OPPO screenshot or latest-source handset report is available, so it remains a user-reported visual issue rather than a reproduced current-source defect.
+- Refined the original dock's material edge, selection highlight and shadow, and added Android UI assertions for safe-area proximity, selected accessibility semantics, tab fit and Glass enabled/disabled. CI pending. No APK/Release.
+- Next: inspect screenshots and test results from Actions, then continue integrated player/Glass/accessibility implementation. The user still wants one installable APK after the whole app is ready.
+
 ## 2026-11-21 — One integrated APK request and local subtitle playback
 
 - User clarified: do not create an installable APK at each engineering step; complete the integrated app and then produce one APK for the broad phone test.

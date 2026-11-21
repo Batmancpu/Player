@@ -295,10 +295,15 @@ class PreviewUiAndroidTest {
             val labels = listOf("Home", "Movies", "Shows", "Search")
             val bounds = labels.map { label -> Rect().also { text(label).getBoundsInScreen(it) } }
             val displayWidth = context.resources.displayMetrics.widthPixels
+            val displayHeight = context.resources.displayMetrics.heightPixels
+            val density = context.resources.displayMetrics.density
             bounds.forEach { assertTrue(it.width() > 0 && it.left >= 0 && it.right <= displayWidth) }
             bounds.zipWithNext().forEach { (a, b) -> assertTrue(a.right <= b.left) }
+            val lowestLabelGapDp = (displayHeight - bounds.maxOf { it.bottom }) / density
+            assertTrue("Dock labels should sit near the bottom safe area, gap=$lowestLabelGapDp dp", lowestLabelGapDp in 0f..120f)
             screenshot("glass-on")
             click(text("Movies"))
+            assertTrue("Selected tab semantics did not update", awaitCondition(3_000) { find { it.text?.toString() == "Movies" }?.isSelected == true })
             click(awaitNode { it.contentDescription?.toString() == "Glass effects" })
             labels.forEach { text(it) }
             screenshot("glass-off")

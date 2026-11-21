@@ -312,3 +312,8 @@ Attached only freshly revalidated same-parent subtitle URIs to local Media3 play
 ## 2026-11-21 — CI #132 verification follow-up
 
 Recorded the green 41/41 Android 15 integration run and all JVM/build/schema/privacy gates for e43b779; only test/schema artifacts were produced. Updated current handoff next steps. Latest installable Release is still v0.1.91; no interim APK. Next: implement subtitle delay/reset and continue integrated app work.
+
+
+## 2026-11-21 — Glass Lab dock polish in CI
+
+Refined the Glass Lab dock's source-backed edge, selection highlight and shadow; expanded Compose instrumentation to assert bottom-safe placement and selected-tab accessibility, in addition to horizontal fit and Glass on/off. This addresses the user's reported broken-looking dock without treating the lab as a finished production engine. CI pending. No Release APK. Next: inspect the run, then continue full player and cinematic integration.

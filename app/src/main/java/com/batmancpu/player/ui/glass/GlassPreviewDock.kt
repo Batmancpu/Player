@@ -3,6 +3,7 @@ package com.batmancpu.player.ui.glass
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
@@ -14,10 +15,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.draw.shadow
 import com.batmancpu.player.R
 import com.batmancpu.player.ui.icons.PlayerGlyph
 import com.batmancpu.player.ui.icons.PlayerGlyphIcon
@@ -34,17 +37,29 @@ internal fun GlassPreviewDock(
 ) {
     val glyphs = listOf(PlayerGlyph.HOME, PlayerGlyph.MOVIES, PlayerGlyph.SHOWS, PlayerGlyph.SEARCH)
     val labels = listOf(R.string.nav_home, R.string.nav_movies, R.string.nav_shows, R.string.nav_search)
+    val dockShape = RoundedCornerShape(30.dp)
     BoxWithConstraints(
         modifier.widthIn(max = 420.dp).fillMaxWidth().height(76.dp)
-            .playerGlassSurface(hazeState, enabled, shape = RoundedCornerShape(30.dp))
+            .shadow(14.dp, dockShape, clip = false)
+            .playerGlassSurface(hazeState, enabled, shape = dockShape)
             // Bound light-background luminance behind white labels in this always-dark interface.
-            .background(Color.Black.copy(alpha = if (enabled) .62f else 0f), RoundedCornerShape(30.dp))
+            .background(Color.Black.copy(alpha = if (enabled) .62f else 0f), dockShape)
+            .border(
+                1.dp,
+                Brush.verticalGradient(listOf(Color.White.copy(alpha = .42f), Color.White.copy(alpha = .12f))),
+                dockShape,
+            )
             .padding(6.dp),
     ) {
         val cell = maxWidth / 4
         val offset by animateDpAsState(cell * selected, spring(dampingRatio = .72f, stiffness = 420f), label = "dock_selection")
+        val selectionShape = RoundedCornerShape(24.dp)
         Box(Modifier.offset(x = offset).width(cell).fillMaxHeight()
-            .background(Color.White.copy(alpha = .10f), RoundedCornerShape(24.dp)))
+            .background(
+                Brush.verticalGradient(listOf(Color.White.copy(alpha = .20f), Color.White.copy(alpha = .07f))),
+                selectionShape,
+            )
+            .border(1.dp, Color.White.copy(alpha = .22f), selectionShape))
         Row(Modifier.fillMaxSize().selectableGroup()) {
             glyphs.forEachIndexed { index, glyph ->
                 val interaction = remember { MutableInteractionSource() }
