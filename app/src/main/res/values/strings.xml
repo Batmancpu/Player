@@ -98,5 +98,6 @@
     <string name="metadata_open_settings">Metadata and connections</string>
     <string name="catalogue_close_details">Close</string>
     <string name="glass_lab_back">Back to library</string>
+    <string name="player_speed_accessibility">Playback speed %1$s</string>
 </resources>
 
