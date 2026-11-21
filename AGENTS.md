@@ -233,3 +233,6 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-21 — CI #110 / 44894615964 exposed two Credits compile errors: an escaped quote in the button callback and the wrong verticalScroll package. The quote is fixed in #111; this commit fixes the Compose import. CI #112 pending. No APK/Release. Next: verify the full Credits UI suite before implementing manual metadata search.
+
+
+- 2026-11-21 — Added fixed HTTPS TMDB request policy/client plus unit and synthetic Android transport/privacy/cancellation tests. Requests remain unreachable from the app UI and INTERNET permission is absent; no APK or Release. CI #113 will verify compilation and tests after #112's Credits fixes. Next: connect explicit detail-sheet search, user-confirmed Room matches and offline metadata display, then add network permission only with the complete user-facing flow.

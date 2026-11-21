@@ -891,3 +891,11 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 
 - CI #110 / 44894615964 failed at Kotlin compilation with an escaped quote in the settings Credits callback and an unresolved verticalScroll import from androidx.compose.foundation.layout. The callback was corrected in commit a9e9196; this commit imports verticalScroll from androidx.compose.foundation. Other diagnostics were parser fallout from the quote error.
 - CI #111 covers the callback correction; CI #112 will verify both fixes and the Credits UI assertions. No installable APK or Release. Next: inspect #112 and continue the manual search/match feature after green verification.
+
+
+## 2026-11-21 — Add bounded TMDB request/client foundation
+
+- Added a fixed-origin request policy for normalized movie/series title searches, positive-ID details calls, and fixed-size TMDB artwork destinations. The API client uses only the stored user token in an Authorization header; it never puts credentials in URLs or UI state.
+- Added a bounded, redirect-disabled HTTPS transport with 10-second connect and 15-second read limits, 1 MiB JSON cap, at most 20 search results, typed failures, generic headers, and cancellation-triggered disconnect. Search terms carry normalized title/year/type only; no filename, folder URI, episode number, subtitle, or media bytes are sent.
+- Added JVM request-policy cases and synthetic Android transport/client tests for consent gates, origin/path constraints, response bounds, credential revocation, typed errors, cancellation and connection cleanup. No real network access is used in tests.
+- INTERNET permission and UI dispatch remain absent, so the client cannot be invoked by app users yet. No APK artifact or Release was produced intentionally. CI #113 pending; #112 still verifies the prior Credits repair. Next: integrate the manual search → candidate → explicit match confirmation path into title details and read the cache offline, then add INTERNET permission only with that complete flow and passing privacy gates.

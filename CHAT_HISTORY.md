@@ -275,3 +275,8 @@ Credits screen follow-up: source review caught and corrected a Kotlin quoting ty
 
 
 CI #110 failed before tests at Kotlin compile: an escaped quote in the Credits callback and an incorrect verticalScroll import. The callback fix is on main and the import is now corrected; CI #111/#112 verify the changes. No installable APK/Release was produced.
+
+
+## 2026-11-21 — Bounded TMDB client groundwork
+
+Added the fixed HTTPS API policy/client and synthetic tests for safe normalized search, bounded responses, explicit consent/credential checks, cancellation and redirect rejection. The UI still cannot dispatch lookups and INTERNET permission is still absent. No installable APK or Release was produced, following the user's preference to receive one integrated build when ready. CI #113 pending; next integrate manual matching and offline cache presentation before enabling network permission.

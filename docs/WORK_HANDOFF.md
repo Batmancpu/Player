@@ -23,6 +23,12 @@ CI #103 / 44888950131 passed after the exact generated Room v3 schema commit (20
 - Continue on `main` only, no task branches/PRs or scheduled tasks. Preserve the one-tree read-only SAF boundary, no original-media writes/uploads, backup-disabled intent and no Phase 1 INTERNET. Actual Phase 1 acceptance and the v0.1.91 OPPO checklist remain pending.
  
 - **Latest testing preference (2026-11-21):** user wants no installable APK for each phase/step. Continue coding, automated tests and CI without waiting for phone checks. Prepare and publish one signed APK for the complete integrated app when it is ready for their final phone test. Ordinary CI instrumentation binaries are internal and are not uploaded; signed release artifacts require an explicit candidate request.
+## 2026-11-21 — TMDB transport foundation
+
+- Main commit adds fixed-destination TMDB request policy/client and synthetic tests for privacy bounds and cancellation. This is not yet exposed in UI; Android INTERNET permission remains absent and no APK/Release was produced.
+- CI #113 is pending after CI #112 verifies the Credits compile repair. Next: wire explicit detail-sheet search/candidate confirmation to Room and cached offline metadata; only then add INTERNET permission and verify complete end-to-end behavior.
+- User requested one integrated app APK when the app is ready; do not publish per-step APKs. Latest signed Release remains v0.1.91. OPPO phone acceptance, Glass behavior and device performance remain unverified.
+
 ## Historical handoff snapshots (superseded)
 
 # Historical Codex handoff — 2026-11-14
