@@ -143,15 +143,24 @@ class PreviewUiAndroidTest {
     }
 
     private fun revealGlassSetting() {
-        val deadline = SystemClock.uptimeMillis() + 4_000
-        while (SystemClock.uptimeMillis() < deadline &&
-            find { it.contentDescription?.toString()?.startsWith("Liquid Glass effects,") == true } == null
-        ) {
-            if (!scrollForwardOnSmallestScrollable()) {
-                if (!swipeUpFromVisibleSheetText()) break
+        val visibleSwitch = {
+            find {
+                it.contentDescription?.toString()?.startsWith("Liquid Glass effects,") == true &&
+                    isInsideVisibleAppBounds(it)
+            }
+        }
+        repeat(12) { attempt ->
+            if (visibleSwitch() != null) return
+            val advanced = scrollForwardOnSmallestScrollable()
+            if (!advanced || attempt % 3 == 2) {
+                assertTrue(
+                    "The settings sheet can scroll to its Glass control; ${activeWindowSummary()}",
+                    swipeUpFromVisibleSheetText(),
+                )
             }
             SystemClock.sleep(150)
         }
+        assertNotNull("Glass setting is visibly revealed; ${activeWindowSummary()}", visibleSwitch())
     }
 
     private fun scrollForwardOnSmallestScrollable(): Boolean {

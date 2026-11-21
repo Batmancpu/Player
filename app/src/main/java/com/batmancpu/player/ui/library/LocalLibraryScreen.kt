@@ -541,7 +541,11 @@ internal fun LocalLibraryContent(
         }
     }
     if (settings) {
-        ModalBottomSheet(onDismissRequest = { settings = false }, containerColor = PlayerPalette.surface) {
+        ModalBottomSheet(
+            onDismissRequest = { settings = false },
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+            containerColor = PlayerPalette.surface,
+        ) {
             Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 28.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(stringResource(R.string.catalogue_settings), style = MaterialTheme.typography.headlineMedium, color = PlayerPalette.textPrimary)
                 Text(folder.label, color = PlayerPalette.textSecondary)

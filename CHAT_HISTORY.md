@@ -632,3 +632,6 @@ CI #209 stopped before Android tests because the new poster accessibility descri
 - User wants no per-step APK and one integrated signed test APK only after feature completion and final efficiency review. Continue on main; exact next action is commit with mandatory docs then run/inspect Android 15 CI.
 ## 2026-11-21 — CI #215 compile correction
 - CI #215 / 44962980148 failed at compile time: custom transport Button semantics lacked the `androidx.compose.ui.semantics.role` extension import. No instrumentation or screenshot ran. Added the import in `684c35f`, pushed to main; CI #216 is running. Current handoff SHA/status is reconciled. Next: inspect CI #216 and fix any real regression it finds.
+## 2026-11-21 — CI #216 exposed Manage-sheet reveal regression
+- Transport compiled and all nine local-player tests passed. Android 15 total was 51/52; the existing Glass preference persistence test could not reveal the toggle after activity recreation. The active accessibility snapshot showed only the top Manage actions.
+- Changed the settings sheet to start expanded and strengthened its test to require a visible control, with accessibility scroll and safe swipe fallback. Updated R-036 and current handoff. `git diff --check` passes; CI pending. Next: push and verify all 52 Android 15 tests plus build/privacy/schema gates.
