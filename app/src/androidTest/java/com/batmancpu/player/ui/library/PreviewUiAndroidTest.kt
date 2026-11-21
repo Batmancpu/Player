@@ -12,6 +12,7 @@ import com.batmancpu.player.ui.glass.GlassLabScreen
 import com.batmancpu.player.ui.metadata.MetadataLookupUiState
 import com.batmancpu.player.ui.player.PlayerFullscreenButton
 import com.batmancpu.player.ui.player.PlayerResizeButton
+import com.batmancpu.player.ui.player.PlayerSpeedButton
 import com.batmancpu.player.ui.player.nextPlayerResizeMode
 import androidx.media3.ui.AspectRatioFrameLayout
 import com.batmancpu.player.ui.metadata.TmdbCandidate
@@ -252,6 +253,24 @@ class PreviewUiAndroidTest {
             assertEquals(AspectRatioFrameLayout.RESIZE_MODE_ZOOM, mode.value)
             click(text("Zoom"))
             assertEquals(AspectRatioFrameLayout.RESIZE_MODE_FIT, mode.value)
+        } finally {
+            instrumentation.runOnMainSync { activity.finish() }
+        }
+    }
+
+    @Test(timeout = 30_000) fun playbackSpeedMenuOffersAccessibleCommonRates() {
+        val activity = launch()
+        val speed = mutableStateOf(1f)
+        try {
+            instrumentation.runOnMainSync {
+                activity.setContent {
+                    PlayerTheme { PlayerSpeedButton(speed.value) { speed.value = it } }
+                }
+            }
+            click(text("1×"))
+            assertNotNull("Speed options appear after opening the control", awaitNode { it.text?.toString() == "1.25×" })
+            click(text("1.5×"))
+            assertEquals(1.5f, speed.value)
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
         }
