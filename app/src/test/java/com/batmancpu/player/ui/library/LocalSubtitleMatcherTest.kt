@@ -39,6 +39,14 @@ class LocalSubtitleMatcherTest {
     }
 
     @Test
+    fun simpleMovieStemSurvivesLanguageSuffixRemoval() {
+        val film = video("movie", "Film.mp4")
+        val caption = subtitle("caption", "Film.en.srt")
+
+        assertEquals(listOf("caption"), LocalSubtitleMatcher.forVideo(film, listOf(caption)).map { it.documentId })
+    }
+
+    @Test
     fun capsSubtitleCandidates() {
         val film = video("movie", "Film.mp4")
         val candidates = (1..12).map { subtitle("s$it", "Film.en.srt") }

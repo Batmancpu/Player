@@ -995,3 +995,10 @@ Verification: pending CI for this scanner/matcher change. Parent ID is not yet s
 CI #127 / 44907206092: Android 15 instrumentation passed, including scanner traversal. Unit verification failed only in `LocalSubtitleMatcherTest.capsSubtitleCandidates`: the test constructed files named `Film.1.srt` through `Film.12.srt`, none of which satisfy the matcher's exact/language suffix rules for `Film.mp4`. The assertion expected eight matches from unrelated synthetic names. Corrected the fixture to use twelve distinct document identities with a valid `Film.en.srt` stem so the result cap is actually exercised. No production code change.
 
 Next: run full CI on the correction, then continue with the Room parent-ID migration. No APK/Release.
+
+
+## 2026-11-21 — Subtitle matcher root-locale regression
+
+CI #127 / 44907206092 Android 15 integration passed. First JVM attempt failed only because the cap test's generated names were unrelated to the target movie. CI #128 / 44907892171 Android 15 integration passed with the corrected valid fixture but the cap test still failed. Inspection found a production defect: the root Locale can have a blank ISO3 value; after removing the `.en` suffix from simple `Film.en`, a later pass could treat the blank suffix as a language and strip the base to empty.
+
+The matcher now filters blank locale codes and refuses blank suffix tokens. A direct `Film.en.srt` regression test was added; the cap test retains twelve distinct matching identities. H-024 records the reproduction and root cause. Verification pending a new full CI run. No APK/Release.

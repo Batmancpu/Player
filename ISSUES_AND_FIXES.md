@@ -271,3 +271,12 @@ CI90 / 43678768709 passed the full Android15 integration suite including the cor
 
 ## 2026-11-21 — bounded Android UI test wait
 Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumentation.waitForIdleSync during a modal transition; failure cascaded to next test, while identical-source retry passed. Fix: test helper polls accessibility state at 50–100 ms with explicit deadlines; callback checks are bounded. CI verification pending. This changes test synchronization, not production runtime behavior.
+
+
+## 2026-11-21 — H-024: subtitle language suffix can erase simple title
+
+**Symptoms:** `LocalSubtitleMatcherTest.capsSubtitleCandidates` failed when matching `Film.en.srt` to `Film.mp4`; complex-title language/forced tests and same-parent scanner integration passed. Reproduced by CI #128 / 44907892171 unit run.
+
+**Root cause:** `Locale.getAvailableLocales()` includes the root locale; its empty ISO3 language value could enter the three-letter language suffix set. After correctly stripping `.en`, the next matcher iteration treated an empty suffix as a language token and erased the one-component title stem. Root cause confidence: high, based on the suffix loop and root-locale value semantics.
+
+**Fix/regression:** Exclude blank ISO3 values and require a nonblank language token before stripping. Added a direct simple-title `Film.en.srt` regression plus the existing result-cap test with valid matching candidates. Verification pending CI; no device test. No source files/media are touched.

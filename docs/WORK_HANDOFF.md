@@ -205,3 +205,6 @@ CI #126 / 44906299456 passed Android 15 integration (selector dialog open/dismis
 
 
 CI #127 Android job passed, but its unit test step failed at `LocalSubtitleMatcherTest.capsSubtitleCandidates`. The synthetic names were not valid matches, so the expected eight was wrong; matcher logic is unchanged. A test-only follow-up now uses twelve same-stem subtitle entries to exercise the cap. Verify its full CI before Room v4 parent persistence. No installable APK.
+
+
+H-024 found while fixing CI #127's cap test: a blank ISO3 value from Locale.ROOT could strip a simple base name after language suffix removal. The corrected candidate now filters/guards empty tokens and tests `Film.en.srt` directly; CI pending. Do not proceed to Room v4 until this full gate passes. No APK.

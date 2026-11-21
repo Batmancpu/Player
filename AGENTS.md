@@ -290,3 +290,7 @@ CI #126 / 44906299456 passed the actual selector source: Android 15 instrumentat
 
 ## Recent agent changes — 2026-11-21
 CI #127 / 44907206092 Android 15 integration passed. The JVM/build job caught a faulty cap-test fixture: twelve generated subtitle names did not match the movie, so expected results were invalid; matcher behavior was correct. Updated the fixture to use multiple valid matching sidecars. This corrective test-only commit awaits CI. Next: verify full CI, then persist parent IDs with Room v4; no user APK/Release.
+
+
+## Recent agent changes — 2026-11-21
+CI #127 Android integration passed, but CI #127 unit tests exposed a bad cap-test fixture. Correcting the fixture exposed H-024: a blank root-locale ISO3 code could erase a simple movie stem after stripping a language suffix. Guarded blank locale codes and added a focused simple-title regression. Current corrective code/test change awaits CI. Next: verify all gates, then persist parent IDs through a Room v4 migration before sidecar playback. No user APK/Release.

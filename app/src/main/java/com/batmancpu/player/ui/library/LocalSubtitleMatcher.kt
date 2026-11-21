@@ -12,7 +12,7 @@ internal object LocalSubtitleMatcher {
     private val suffixFlags = setOf("forced", "sdh", "cc", "default")
     private val twoLetterLanguages = Locale.getISOLanguages().map(String::lowercase).toSet()
     private val threeLetterLanguages = Locale.getAvailableLocales().mapNotNull { locale ->
-        runCatching { locale.isO3Language.lowercase() }.getOrNull()
+        runCatching { locale.isO3Language.lowercase() }.getOrNull()?.takeIf(String::isNotBlank)
     }.toSet()
 
     fun forVideo(
@@ -51,7 +51,7 @@ internal object LocalSubtitleMatcher {
             val suffix = result.substringAfterLast('.', "")
             val normalized = suffix.replace('_', '-')
             val language = normalized.substringBefore('-')
-            val isLocale = language in twoLetterLanguages || language in threeLetterLanguages
+            val isLocale = language.isNotBlank() && (language in twoLetterLanguages || language in threeLetterLanguages)
             val region = normalized.substringAfter('-', "")
             val validRegion = region.isEmpty() || region.matches(Regex("[a-z]{2}|[0-9]{3}"))
             if (suffixFlags.contains(normalized) || (isLocale && validRegion)) {
