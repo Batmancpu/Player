@@ -117,3 +117,6 @@ Library cards first map their indexed document IDs to a single user-confirmed of
 ### Subtitle viewport and video resizing
 
 Player exposes Fit, Fill and Zoom resizing through Media3. The app overrides the supported `exo_player_view.xml` layout so `SubtitleView` is a sibling of `exo_content_frame`, rather than a child inside the aspect-ratio frame. This keeps subtitle size/placement tied to the player viewport while the video content is resized or cropped. The layout is a small Apache-2.0 adaptation of Media3's layout; its source and upstream URL are identified in the XML header. Android instrumentation asserts the caption and video frames remain siblings under Zoom. Media3 source references: [PlayerView layout contract](https://github.com/androidx/media/blob/release/libraries/ui/src/main/res/layout/exo_player_view.xml), [SubtitleView API](https://developer.android.com/reference/androidx/media3/ui/SubtitleView). Recheck the override whenever the pinned Media3 version changes.
+
+
+**Playback engine selection:** Media3 remains the primary local engine. Its supported-container list does not guarantee device codec support. Do not add LibVLC until the target local-file corpus shows material gaps; compare pinned artifact size/ABI, hardware decode, subtitle overlay behavior, memory, thermal, battery and license obligations. See DEC-021.

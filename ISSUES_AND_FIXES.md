@@ -366,3 +366,9 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - **Change:** Reset the 2.5-second header/controller timer after seeks, track changes, resize mode changes and fullscreen action. Paused playback retains controls.
 - **Verification:** CI #152's 46/46 suite passed before the interaction-reset change; CI #153 tests the explicit timer.
 - **Next:** Verify all interaction paths, then continue integrated player work.
+
+
+### R-020 — Format compatibility on OPPO remains unmeasured
+- **Status:** Open; no claim of universal format support.
+- **Evidence:** Media3 supports common containers but uses Android platform decoders by default; official docs state sample format support is device dependent. LibVLC is a viable broader candidate but adds native engine and LGPL obligations.
+- **Next:** Create a local representative corpus including container, video codec/profile, audio codec, subtitle format and resolution; exercise the final signed app on OPPO and record decoder errors. Only run LibVLC comparison if material gaps appear. Preserve local-only SAF access and measure APK/memory/battery/thermal before adoption.

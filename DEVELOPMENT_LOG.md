@@ -1196,3 +1196,11 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - The explicit Compose-owned hide timer now restarts on seeks/position discontinuity, track changes, resize mode selection and fullscreen action. It pauses while playback is paused and starts again when playback resumes. This avoids hiding the overlay mid-interaction.
 - Verification of the new timer is pending CI #153; no signed APK/Release.
 - Next: inspect #153/#154 results, then continue player controls, subtitle delay decision and production Glass.
+
+
+## 2026-11-21 — Media3 and LibVLC source review
+
+- Reviewed Android's official Media3 format table: common containers such as MP4, Matroska, WebM and MPEG-TS are supported, but sample-format availability depends on platform decoders; optional software extensions must be built and included. [Source](https://developer.android.com/media/media3/exoplayer/supported-formats).
+- Reviewed VideoLAN's official Android README: LibVLC offers broader codec/container coverage; its Android engine is LGPLv2 while the VLC Android app is GPLv2-or-later (de facto GPLv3). [Source](https://github.com/videolan/vlc-android/blob/master/README.md).
+- Decision DEC-021: retain Media3 as primary to preserve AndroidX integration and avoid adding native ABI/APK/memory/thermal/licensing cost without evidence. User requested broad formats; compatibility must be measured on a representative local-file corpus, not inferred from marketing lists.
+- Next: include codec/container diagnostics in final OPPO checklist; only compare LibVLC if a real local media sample fails on Media3. No dependency or permission change.

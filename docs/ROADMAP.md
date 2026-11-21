@@ -134,3 +134,6 @@ CI #130 / 44909463881 passed Android 15 migration/offline persistence, JVM/build
 
 
 **Playback chrome correction (2026-11-21):** CI #151 reproduced the header staying visible after Media3 reported active playback. An explicit Compose timeout now hides the PlayerView controller and header together while playing, retains controls when paused and restarts on reveal. Verification pending.
+
+
+**Playback format research (2026-11-21):** DEC-021 keeps Media3 primary while target-device local corpus coverage is unmeasured. Official docs support common containers but device decoder availability determines codecs. LibVLC (LGPLv2 engine) is a candidate fallback only after measured failures and package/performance/license review. No universal format promise.

@@ -440,3 +440,8 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 ## 2026-11-21 — Timer interaction behavior
 - CI #152 passed all 46 Android 15 tests, including new season grouping and subtitle/zoom cases.
 - The Compose playback chrome timeout now restarts after seeks, track changes, resize selection and fullscreen action; pause holds controls open. CI #153 verifies the hide behavior, and the interaction refinement is queued.
+
+
+## 2026-11-21 — VLC engine evaluation
+- The user suggested VLC for broad codec support. Official docs show Media3 covers common containers but relies on device decoders; official VideoLAN docs describe LibVLC's broader engine and LGPLv2 engine license (VLC app license differs).
+- DEC-021 keeps Media3 primary pending real local corpus evidence. A LibVLC comparison must measure app size/ABI, license notices, decoder stability, subtitles, memory, thermal and battery; no external media route may be enabled. No VLC dependency added.

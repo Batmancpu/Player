@@ -251,3 +251,7 @@ CI #151 confirmed the Compose player header remained visible after Media3 report
 
 ### Verified catalogue update
 CI #152 / 44931933805 passed all 46 Android 15 tests, including local season grouping, exact indexed episode playback, caption/video sibling layout and Fit/Fill/Zoom cycling. Full unit/schema/privacy job completion was pending at last check. Player timeout interaction resets are being tested in #153 and follow-up.
+
+
+### Engine choice
+DEC-021 records Media3 as primary and LibVLC as a measured fallback candidate. Media3's format list is not a guarantee of device codec support; target local corpus testing remains pending. Do not add another engine until failures, license obligations, package size, battery and thermal effects are measured.

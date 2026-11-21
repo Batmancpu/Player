@@ -183,3 +183,14 @@ The first Credits UI build failed in CI #110 on a Kotlin string-escaping typo an
 
 ## D-2026-11-21 — Player's Zenith inspiration boundary
 Use the user's FCZenith/brrMusic project and immediate rezapranata089-bit/Zenith upstream to study interaction and visual hierarchy only. Both public LICENSE files are GPL-3.0, and Player currently has no LICENSE file; no source code/assets are imported. Original Compose implementations must use separate code and assets. Design reference does not authorize copying upstream code or transitive upstream material.
+
+
+## DEC-021 — Keep Media3 primary; evaluate LibVLC against a local corpus first (2026-11-21)
+
+**Decision:** Keep AndroidX Media3 1.11.1 as Player's primary local engine. Do not add LibVLC until a representative OPPO/local-file corpus demonstrates material decoder gaps that Media3 cannot cover acceptably.
+
+**Reasoning:** Media3's official format guide lists direct support for common progressive containers including MP4, Matroska, WebM, MPEG-TS, MPEG-PS and FLV, but explicitly says sample decoding depends on Android platform decoders and each device. VLC for Android's official README describes broad LibVLC format/codec support; it identifies the Android LibVLC engine as LGPLv2, while the VLC Android application itself is GPLv2-or-later (de facto GPLv3). Adding the engine requires ABI/APK-size, licensing-notice/replacement, hardware-decoder, startup-memory, battery and thermal checks. Broad codec claims cannot be inferred from the library README alone.
+
+**Plan:** Test user-owned local media examples with codec/container diagnostics on target hardware. For failures, record decoder errors and compare a pinned current LibVLC Android artifact in an isolated benchmark build. Restrict all playback input to the selected persisted SAF tree and verify that no remote URI or network source can be opened. Compare release APK size, memory, battery/thermal behavior, subtitle track controls and SRT/ASS placement before deciding whether to ship. Keep Media3 when its platform-decoder path covers the real corpus.
+
+**Sources:** [Media3 supported formats](https://developer.android.com/media/media3/exoplayer/supported-formats); [VideoLAN VLC for Android README and license](https://github.com/videolan/vlc-android/blob/master/README.md).

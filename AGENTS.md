@@ -382,3 +382,8 @@ CI #151 / 44931701605 waited for confirmed Media3 isPlaying yet the title/track 
 ## 2026-11-21 — Playback timer resets on interactions
 
 The explicit 2.5-second header/controller timeout now restarts after seeking, track changes, resize mode selection and fullscreen actions; pause still keeps controls visible. CI #152 passed all 46 Android 15 tests, including season grouping and exact episode selection. CI #153 tests the explicit hide timer; this interaction-reset update is queued for verification. No APK. Next: validate both runs and continue player polish.
+
+
+## 2026-11-21 — Playback engine research: Media3 vs LibVLC
+
+Recorded DEC-021 after reviewing official Media3 format/codec guidance and VideoLAN's Android engine/license README. Keep Media3 primary pending a local OPPO corpus; if real decoder gaps remain, compare a pinned LibVLC artifact for APK size, ABI, licensing, subtitle, hardware decode, thermal and battery impact. No new engine dependency or network route added. Next: complete the current UI/CI work, then validate a representative local file matrix on target hardware when the integrated build is ready.
