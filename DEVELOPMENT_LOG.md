@@ -1100,3 +1100,10 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 
 - CI #141 / 44917670837 compiled app source after the Media3 listener fix, then failed compiling the new instrumentation test because `startActivitySync` was typed as generic `Activity`.
 - Cast the result to the launched `MainActivity`, matching the established UI test harness, so `setContent` and `lifecycle` resolve. Android integration has not run yet; rerun pending. No installable APK.
+
+
+## 2026-11-21 — Keep exit control visible during full-screen toggle
+
+- CI #142 / 44918375043 ran 43 Android tests; the new player overlay integration passed initial display, auto-hide, tap-to-restore and enter action, then failed because the exit label was checked as the controller timeout elapsed. Other 42 tests passed.
+- The full-screen button now explicitly calls `PlayerView.showController()` before switching mode, resetting Media3's visibility timer so the resulting exit action remains available. Player view reference is scoped to the media target and cleared during disposal.
+- Rerun Android 15 integration and full build/schema/privacy gates. No APK/Release.

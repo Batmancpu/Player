@@ -379,3 +379,7 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 
 ## 2026-11-21 — Playback test activity typing
 - CI #141 app compilation passed after explicit Media3 listener typing. Android-test compilation found the test used generic Activity; it is now explicitly MainActivity so Compose/lifecycle APIs resolve. Rerun pending; no APK.
+
+
+## 2026-11-21 — Auto-hide exit-control timing
+- CI #142 passed 42/43 tests. Auto-hide, tap restore and fullscreen entry worked; the exit label timed out before assertion. Full-screen action now calls `showController()` to restart the auto-hide timer. Rerun pending; no APK.

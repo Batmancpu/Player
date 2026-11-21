@@ -40,6 +40,7 @@ internal fun LocalPlayerScreen(
     var hasAudioTracks by remember(target.uri) { mutableStateOf(false) }
     var hasSubtitleTracks by remember(target.uri) { mutableStateOf(false) }
     var controlsVisible by remember(target.uri) { mutableStateOf(true) }
+    val playerViewRef = remember(target.uri) { arrayOfNulls<PlayerView>(1) }
     val player = remember(target.uri) {
         createLocalPlayer(context).apply {
             setMediaItem(createLocalMediaItem(target))
@@ -81,6 +82,7 @@ internal fun LocalPlayerScreen(
             checkpoint(player.currentPosition, savedPlayIntent)
             lifecycle.removeObserver(observer)
             player.removeListener(listener)
+            playerViewRef[0] = null
             player.release()
         }
     }
@@ -95,6 +97,7 @@ internal fun LocalPlayerScreen(
     Box(Modifier.fillMaxSize().background(Color.Black)) {
         AndroidView(
             factory = { viewContext -> PlayerView(viewContext).apply {
+                playerViewRef[0] = this
                 this.player = player
                 setShowNextButton(false)
                 setShowPreviousButton(false)
@@ -114,7 +117,10 @@ internal fun LocalPlayerScreen(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = onClose) { Text(stringResource(R.string.player_back), color = Color.White) }
                 Text(target.label, color = Color.White, maxLines = 1, modifier = Modifier.weight(1f))
-                PlayerFullscreenButton(isFullScreen, onToggleFullScreen)
+                PlayerFullscreenButton(isFullScreen) {
+                    playerViewRef[0]?.showController()
+                    onToggleFullScreen()
+                }
             }
             if (hasAudioTracks || hasSubtitleTracks) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
