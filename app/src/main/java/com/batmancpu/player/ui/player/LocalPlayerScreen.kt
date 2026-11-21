@@ -100,7 +100,9 @@ internal fun LocalPlayerScreen(
                 setShowPreviousButton(false)
                 setShowSubtitleButton(false)
                 setControllerShowTimeoutMs(2_500)
-                setControllerVisibilityListener { visibility -> controlsVisible = visibility == View.VISIBLE }
+                setControllerVisibilityListener(PlayerView.ControllerVisibilityListener { visibility ->
+                    controlsVisible = visibility == View.VISIBLE
+                })
             } },
             update = { it.keepScreenOn = isPlaying },
             modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing),

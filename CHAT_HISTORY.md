@@ -371,3 +371,7 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 ## 2026-11-21 — Player overlay auto-hide
 - To improve the cinematic local playback view, the title/track toolbar now auto-hides together with Media3 controls and returns when the video is tapped. CI's synthetic video is ten seconds; an Android test covers hide, restore and accessible full-screen action.
 - CI pending; no installable APK. Continue to one final integrated build.
+
+
+## 2026-11-21 — Media3 visibility listener compile correction
+- CI #140 failed to compile because the listener lambda matched both PlayerView and PlayerControlView overloads. Explicitly typed the PlayerView callback; rerun pending. No installable APK.

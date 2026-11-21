@@ -1085,5 +1085,12 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 
 - Connected PlayerView's visibility callback to the Compose title/track overlay; set a 2.5-second controller timeout. The overlay hides with the transport, preserving video area, and reappears when the video is tapped. Playback controls themselves remain Media3-owned.
 - Extended the test-only synthetic H.264/AAC fixture from 3s to 10s so the auto-hide/tap regression has time to observe the hidden state before playback ends. Added an Android 15 integration that renders LocalPlayerScreen, waits for auto-hide, taps the synthetic video, and invokes the full-screen action by accessibility. Test-only video remains generated at CI time.
-- Verification: `git diff --check` passes; local Gradle unavailable. Android CI pending. No installable APK/Release.
-- Next: inspect controller/surface lifecycle result, then continue polished playback, catalogue navigation, production Glass, accessibility, and offline/device review.
+- Verification: `git diff --check` passes; local Gradle unavailable. CI #140 / run 44916989309 failed at main Kotlin compilation because Media3 provides two same-named listener overloads. Corrected the call with the explicit PlayerView.ControllerVisibilityListener type; Android CI rerun pending. No installable APK/Release.
+- Next: verify compilation and the synthetic controller visibility flow, then continue polished playback, catalogue navigation, production Glass, accessibility, and offline/device review.
+
+
+## 2026-11-21 — Media3 listener overload correction
+
+- CI #140 / 44916989309 found Kotlin overload ambiguity at `PlayerView.setControllerVisibilityListener`: Media3 also exposes a deprecated `PlayerControlView.VisibilityListener` overload.
+- Specified `PlayerView.ControllerVisibilityListener` explicitly. This is a compile fix; the Android integration test has not yet run past compilation.
+- No APK or Release. Next: rerun full Android 15 + JVM/build/schema/privacy CI and inspect the synthetic auto-hide/tap test result.
