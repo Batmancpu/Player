@@ -23,7 +23,7 @@ concurrency:
 jobs:
   verify:
     needs: instrumentation
-    name: Verify Android build and signed release
+    name: Verify app tests; sign only a requested release candidate
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -54,7 +54,7 @@ jobs:
 
       - name: Prepare release-signing credentials
         id: release_signing
-        if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
+        if: ${{ github.ref == 'refs/heads/main' && ((github.event_name == 'workflow_dispatch' && inputs.publish_release == true) || (github.event_name == 'push' && startsWith(github.event.head_commit.message, 'release(test):'))) }}
         shell: bash
         env:
           PLAYER_RELEASE_KEYSTORE_BASE64: ${{ secrets.PLAYER_RELEASE_KEYSTORE_BASE64 }}
@@ -173,14 +173,6 @@ jobs:
           path: app/schemas/**/*.json
           if-no-files-found: error
           retention-days: 14
-
-      - name: Upload CI-only debug APK
-        uses: actions/upload-artifact@v7
-        with:
-          name: Player-debug-CI-ONLY-${{ github.sha }}
-          path: app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
-          retention-days: 7
 
       - name: Assemble signed release APK
         if: ${{ steps.release_signing.outputs.enabled == 'true' }}

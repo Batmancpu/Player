@@ -235,3 +235,7 @@ After publishing v0.1.91, began a focused schema-only update: Room/KSP exports v
 - Added source XML/manifest tests and hardened the compiled-APK verifier. Focused local Python test suite passed 7/7. CI #99 / 43740997631 passed 17/17 Android 15 tests, complete Python suite, build/schema/compiled manifest privacy, APK signature and permanent certificate. VersionCode 99 signed artifact SHA-256 `29f3945c4c8aa5e1501e90a3f05ad5de7685d7acc543821bb3fc74e57f9296fb` is CI-only; no APK Release or phone acceptance is inferred.
 - Android 16 QPR2 cross-platform transfer to iOS requires actual target-app bundle/team/content identifiers; there is no iOS Player app, so identifiers are not fabricated and that mode is not claimed as excluded.
 - Next: continue independent privacy work on credential-free opt-in/destination-policy tests; keep HTTP and credential storage gated. OPPO behavior/performance remain unverified; no new Release from this config-only slice.
+
+
+## 2026-11-21 — One complete-app test APK
+The user clarified that they want the whole app built before receiving an installable test APK. Continue all six engineering phases and CI autonomously; do not ask for phone checks or publish APKs after each step. Updated CI to withhold intermediate debug artifacts and only sign/upload a Release candidate for an explicit candidate request. The single final candidate must preserve the permanent signing identity and include a complete OPPO checklist.

@@ -8,6 +8,7 @@
 - **Next action:** continue independently on the approved roadmap, starting with credential-free metadata preference/consent and destination-policy tests; keep HTTP and credential storage gated until those privacy controls are explicit and verified. The v0.1.91 OPPO acceptance checklist remains a separate user evidence gate. No new Release is justified by this config-only slice.
 - Continue on `main` only, no task branches/PRs or scheduled tasks. Preserve the one-tree read-only SAF boundary, no original-media writes/uploads, backup-disabled intent and no Phase 1 INTERNET. Actual Phase 1 acceptance and the v0.1.91 OPPO checklist remain pending.
  
+- **Latest testing preference (2026-11-21):** user wants no installable APK for each phase/step. Continue coding, automated tests and CI without waiting for phone checks. Prepare and publish one signed APK for the complete integrated app when it is ready for their final phone test. Ordinary CI instrumentation binaries are internal and are not uploaded; signed release artifacts require an explicit candidate request.
 ## Historical handoff snapshots (superseded)
 
 # Historical Codex handoff — 2026-11-14

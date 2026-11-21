@@ -381,3 +381,7 @@ The current source retains `allowBackup=false` and now defines legacy Android 11
 
 ## 2026-11-15 — CI #99 backup/privacy verification
 CI #99 / 43740997631 completed successfully. Android 15 instrumentation reports 17 tests, zero failures/errors/skips. Full Python tests, unit/debug/release builds, Room v1/v2 schema validation, compiled manifest checks for backup disabled/both rule references/no unexpected permissions, APK signing and the permanent certificate check passed. Signed versionCode 99 APK SHA-256 is `29f3945c4c8aa5e1501e90a3f05ad5de7685d7acc543821bb3fc74e57f9296fb`; it is a CI artifact only, not a GitHub Release. H-023 is resolved for configured Android modes; real OEM transfer behavior remains untested. Next: continue credential-free opt-in/destination-policy tests before any HTTP or persisted credential. OPPO acceptance remains pending.
+
+
+## 2026-11-21 — Final APK cadence
+The user wants a single integrated signed APK only after the complete app is ready, with no routine phone install pauses during development. CI remains the verification gate; normal development no longer uploads debug APK artifacts or prepares release signing. Explicit candidate builds use the permanent certificate and publish only at the final phone-test milestone. No OPPO acceptance or performance claim is implied.

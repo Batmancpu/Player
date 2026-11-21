@@ -4,20 +4,13 @@ The user-reported v0.1.79 checks on OPPO CPH2531 confirm four movie/video titles
 
 Main now has exact Room v1/v2 schema history, the default-off normalized metadata query contract and a separately persisted manual-match foundation. CI #97 and #98 passed 17 Android 15 cases and all build/schema/manifest/signing/certificate gates. The current change adds explicit legacy and Android 12+ cloud/device-transfer backup exclusions while retaining `allowBackup=false`; focused Python tests pass 7/7 and CI #99 / 43740997631 passed Android15 17/17, builds/schema, compiled manifest/privacy and permanent signing-certificate gates. Its versionCode99 signed APK is CI-only; no Release was published. No HTTP, credential, network permission or release is part of this slice. Android 16 QPR2 cross-platform iOS transfer remains unconfigured because no iOS counterpart identifiers exist. Continue on `main`; handset acceptance and performance measurements require actual OPPO evidence.
 
-# Player — six phone-testable release phases
+# Player — six implementation phases
 
-Status: approved user workflow, 2026-11-14. This document supersedes the older ten-phase breakdown and is the **active implementation plan**. Historical details and technical rationale remain in PROJECT_CONTEXT.md, CHAT_HISTORY.md, docs/ARCHITECTURE.md and docs/DECISIONS.md.
+Status: implementation order approved 2026-11-14 and testing cadence updated 2026-11-21. This document supersedes the older ten-phase breakdown and remains the engineering sequence. The user now wants one integrated APK after the complete app is ready, not separate test releases or phone pauses after each phase. Historical details and technical rationale remain in PROJECT_CONTEXT.md, CHAT_HISTORY.md, docs/ARCHITECTURE.md and docs/DECISIONS.md.
 
-## Definition of done for EVERY phase
+## Completion and phone-test rule
 
-A phase is not complete merely because code builds. Before advancing:
-0. Apply the original premium UI/performance specification in `docs/DESIGN_SYSTEM_AND_PERFORMANCE.md` and upstream-reuse/privacy specification in `docs/UPSTREAM_AND_PRIVACY.md` to each applicable slice. Every small/large change refreshes AGENTS.md recent ledger AND DEVELOPMENT_LOG.md; preserve the working signed Obtainium update chain.
-1. Commit small, testable changes directly to main, each with a dated DEVELOPMENT_LOG.md entry; do not proceed on a failing main.
-2. Automated tests pass; GitHub Actions builds and verifies the signed Release APK with the **existing** permanent signing certificate; no debug APK is recommended for installing/updating.
-3. Publish ONE named GitHub Release with the signed APK and human-readable changes/testing instructions; this release is the Obtainium update source.
-4. User installs/updates on OPPO Reno10 5G CPH2531 (Android 15), tests phase acceptance checklist and reports findings (including crash/log evidence if necessary). Record verified device results separately from CI.
-5. Fix critical failures in focused commits and publish a higher-version signed APK; only mark acceptance complete when user confirms real-device behavior. Do not claim acceptance without evidence.
-6. Update docs/WORK_HANDOFF.md, CHAT_HISTORY.md, PROJECT_CONTEXT.md and the issue register appropriately. Record exact commit, CI run, Release URL/tag, SHA-256, signing certificate fingerprint, app versionCode and next step.
+Use the six phases below as a staged engineering plan, with automated CI after focused main commits. Do not stop for a phone install or publish an installable APK after each phase. Continue integration independently while the user is away. Once the complete catalogue/player/Glass experience is implemented, tested and documented as one coherent app, produce one signed Release APK with the permanent certificate and a complete phone-test checklist. Fix findings from that final test with higher-version updates. Never claim OPPO acceptance, FPS, thermal or battery results without device evidence. Keep AGENTS.md and DEVELOPMENT_LOG.md current on every change, preserve small main-only commits, and keep the Obtainium update chain intact.
 
 **Release rule:** Use the NEW keystore explicitly approved and created on 2026-11-14 (see docs/ANDROID_SIGNING.md), alias and app identity for every APK. The older key and old fingerprint in historical notes were superseded BEFORE the first signed release. Keep applicationId com.batmancpu.player stable for updates until a user-approved migration plan. Do not regenerate or rotate the NEW key after the first signed release install. Increment versionCode on every new installable APK. Never publish unsigned/debug APKs as an Obtainium update. Manual milestone publishing is preferred to publishing every small commit.
 
