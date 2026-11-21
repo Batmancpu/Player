@@ -178,3 +178,8 @@ The user requested a signed APK checkpoint now and wants implementation to conti
 ## 2026-11-21 — Navigation selected semantics test correction
 - The first navigation test run found the Movies shelf heading before the bottom-tab label, so the helper reported a false failure after movie-only filtering passed.
 - Search all matching nodes and their ancestors for selected semantics. Build and remaining Android tests passed in CI #184; rerun the corrected assertion.
+
+
+## 2026-11-21 progress update — production navigation
+- Home/Movies/Shows/Search navigation is implemented and filters the local catalogue. Android 15 CI exposed a selected-tab accessibility state reporting gap; explicit selected/not-selected state descriptions and an assertion are now committed, pending CI.
+- Sequence: verify navigation → complete player caption controls and playback interaction polish → apply bounded control-surface Glass and accessibility/reduced-motion fallbacks → run release-like size/performance checks and prepare one integrated test candidate. Physical Reno10 FPS/thermal evidence remains a required user-device measurement.
