@@ -15,7 +15,6 @@ import androidx.media3.ui.PlayerView
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.SubtitleView
 import androidx.test.platform.app.InstrumentationRegistry
-import com.batmancpu.player.MainActivity
 import com.batmancpu.player.ui.player.*
 import com.batmancpu.player.ui.theme.PlayerTheme
 import java.io.File
@@ -62,7 +61,7 @@ class LocalPlaybackAndroidTest {
         val frame = CountDownLatch(1)
         val failure = AtomicReference<String?>()
         val reference = AtomicReference<ExoPlayer>()
-        val activity = instrumentation.startActivitySync(Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+        val activity = instrumentation.startActivitySync(Intent(context, PreviewTestActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
         try {
             instrumentation.runOnMainSync {
                 val player = createLocalPlayer(context)
@@ -134,7 +133,7 @@ class LocalPlaybackAndroidTest {
         SyntheticSafProvider.playbackFile = fixture
         val fullScreen = mutableStateOf(false)
         val playbackStarted = CountDownLatch(1)
-        val activity = instrumentation.startActivitySync(Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)) as MainActivity
+        val activity = instrumentation.startActivitySync(Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)) as PreviewTestActivity
         try {
             instrumentation.runOnMainSync {
                 activity.setContent {

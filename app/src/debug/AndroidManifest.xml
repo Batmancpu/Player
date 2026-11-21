@@ -1,7 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
-        <provider android:name="com.batmancpu.player.ui.library.SyntheticSafProvider"
-            android:authorities="${applicationId}.synthetic"
+        <activity
+            android:name="com.batmancpu.player.ui.library.PreviewTestActivity"
             android:exported="false" />
     </application>
 </manifest>

@@ -8,7 +8,6 @@ import android.view.accessibility.AccessibilityNodeInfo
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.mutableStateOf
 import androidx.test.platform.app.InstrumentationRegistry
-import com.batmancpu.player.MainActivity
 import com.batmancpu.player.ui.glass.GlassLabScreen
 import com.batmancpu.player.ui.metadata.MetadataLookupUiState
 import com.batmancpu.player.ui.player.PlayerFullscreenButton
@@ -31,8 +30,8 @@ class PreviewUiAndroidTest {
     private val automation get() = instrumentation.uiAutomation
 
     private fun launch() = instrumentation.startActivitySync(
-        Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK),
-    ) as MainActivity
+        Intent(context, PreviewTestActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK),
+    ) as PreviewTestActivity
 
     private fun find(predicate: (AccessibilityNodeInfo) -> Boolean): AccessibilityNodeInfo? {
         fun visit(node: AccessibilityNodeInfo): AccessibilityNodeInfo? {
@@ -253,7 +252,7 @@ class PreviewUiAndroidTest {
             text("S01 · E01")
             text("S01 · E02")
             revealBySwiping("Season 2")
-            click(text("S02 · E01"))
+            click(revealBySwiping("S02 · E01"))
             assertTrue(
                 "Episode button must play its indexed document",
                 awaitCondition(3_000) { played.get()?.documentId == "episode-s2e1" },

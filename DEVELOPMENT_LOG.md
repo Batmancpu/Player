@@ -1212,3 +1212,10 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - Reuses the same indexed LocalTitleCard and private offline artwork cache; card selection retains the same detail sheet and playback identity. No network, image or manifest changes.
 - Existing synthetic catalogue UI checks still assert side-by-side movie cards, search, details, and playback. CI pending; no signed APK/Release.
 - Next: inspect screenshot and instrumentation on phone-sized Android; tune spacing and card crop within the documented performance budget.
+
+
+## 2026-11-21 — Isolate Compose instrumentation host after #155
+- Base: `11faca5e43f55909b5911e4201f9707d1d4e31fa`; current CI #156 is still running at the time of this change.
+- `PreviewUiAndroidTest` and the fullscreen integration test now launch a debug-only empty `PreviewTestActivity` rather than MainActivity. This prevents production startup, persisted folders and lifecycle work from racing test-owned synthetic Compose content; the activity is in the debug source set and is not packaged in release.
+- The season-detail regression now scrolls the exact `S02 · E01` accessible episode node into view before clicking it; previously it scrolled the season heading and then assumed the episode remained on screen.
+- No user-facing release build or phone test is produced by this change. Verification: pending CI run after commit. Next: inspect the current #156 result, then verify test isolation and all gates in the new run.
