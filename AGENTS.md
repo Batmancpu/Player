@@ -357,3 +357,8 @@ Added player Fit/Fill/Zoom modes and an Apache-2.0 attributed Media3 player-layo
 ## 2026-11-21 — Separate fullscreen state test from controller timer
 
 CI #147 / 44923019327 passed 42/43; the player integration test's final accessibility-tree read still raced the Media3 controller's own auto-hide callback after pressing the fullscreen action. The integration keeps verifying video-tap restore, control activation and state change; a focused Compose test already verifies both accessible labels and reversible state. Removed only the redundant timing-sensitive accessibility-tree read. No product code changed. CI #148 (subtitle viewport / resize controls) pending. Next: inspect #148 and rerun the complete suite; investigate the single #146 metadata fixture timeout if it recurs.
+
+
+## 2026-11-21 — Longer playback fixture and Media3 placeholders
+
+The caption hierarchy and resize-mode UI tests passed in CI #148 / 44923450336; 44/45 Android tests passed. The single failure was the playback overlay hide assertion with the ten-second synthetic clip. Extended the generated test-only clip to 30 seconds to keep it from reaching ended state during slow emulator setup, and retained Media3 buffering/error placeholders in the custom layout. CI #149 on the prior test correction is running; next: inspect its outcome and run the full suite on this change.

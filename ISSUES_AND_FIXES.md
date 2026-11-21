@@ -336,3 +336,10 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - **Evidence:** CI #147 / 44923019327 passed 42/43. The final exit-label lookup failed after the player action changed fullscreen state; #146 showed a related visibility-timer race. The independent UI test verifies enter/exit accessible labels and reversible state.
 - **Fix:** Keep the player integration focused on video auto-hide/reveal, action activation and state callback; do not perform a second accessibility-tree lookup across the controller timer.
 - **Next:** Require green complete CI; do not infer a product defect from this synthetic tree race.
+
+
+### R-018 — Synthetic player fixture may end before auto-hide assertion
+- **Status:** Mitigation added; CI pending.
+- **Evidence:** CI #148 / 44923450336 passed 44/45 tests; only the player header auto-hide assertion failed. The workflow fixture lasted ten seconds and test startup can vary under emulator load.
+- **Mitigation:** Extend test-only fixture to 30 seconds so media cannot reach EOS during the controller timing assertion. Restored Media3 buffering/error placeholders in the custom layout.
+- **Next:** Validate in full Android 15 CI; do not claim OPPO behavior from synthetic playback.

@@ -231,3 +231,7 @@ Added Fit/Fill/Zoom controls and a documented Media3 layout adaptation with the 
 
 ### Player test note (2026-11-21)
 CI #147 / 44923019327 passed 42/43; remaining failure was the final fullscreen label lookup racing controller visibility. The integration test now covers action activation/state change while the isolated Compose test covers reversible enter/exit accessible labels. CI #148 is testing the new separate subtitle viewport and Fit/Fill/Zoom behavior. CI result pending; no APK.
+
+
+### CI #148 playback note
+New subtitle/video sibling and Fit/Fill/Zoom tests passed. The 10-second synthetic playback fixture made the existing auto-hide assertion flaky; it now lasts 30 seconds, and the app layout retains Media3 buffering/error placeholders. CI verification pending.

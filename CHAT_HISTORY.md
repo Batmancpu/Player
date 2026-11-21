@@ -415,3 +415,8 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 ## 2026-11-21 — Fullscreen overlay test isolation
 - Repeated Android 15 CI runs showed the accessibility tree for the Compose header could change during Media3 controller visibility callbacks, even after its button activated successfully. CI #147 passed 42/43; the only remaining error was a timing-sensitive exit-label lookup. The dedicated fullscreen composable test checks both accessible labels and reversible state, so the player integration now stops after proving action activation changes fullscreen state. It retains auto-hide and tap-restore coverage.
 - The unrelated metadata fixture failure from #146 did not recur in #147. CI #148 tests subtitle-zoom implementation; no APK.
+
+
+## 2026-11-21 — Subtitle zoom CI follow-up
+- CI #148 / 44923450336 compiled the new player layout and ran 45 tests. The new subtitle sibling assertion and Fit/Fill/Zoom cycling passed; one auto-hide integration timed out. Increased the CI-generated video fixture to 30 seconds to avoid playback ending during emulator setup and restored buffering/error placeholders in the adapted Media3 layout.
+- CI #149 on the state assertion correction is running; next full run pending. No APK.

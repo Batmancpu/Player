@@ -1156,3 +1156,11 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - CI #146's one synthetic metadata timeout did not recur in #147; treat it as transient unless repeated.
 - Product code unchanged. No installable APK/Release. CI #148 on source change is still pending.
 - Next: inspect #148 source/build/test results, then rerun the corrected full suite. Continue subtitle/zoom only with test evidence.
+
+
+## 2026-11-21 — Playback fixture stability and Media3 layout completeness
+
+- CI #148 / 44923450336 built the caption-safe Fit/Fill/Zoom implementation and ran 45 tests; 44 passed. The subtitle/video sibling hierarchy and resize control cycle passed. The player auto-hide case did not observe the header hide within its timeout.
+- The integration fixture was only ten seconds; if setup/controller interaction reaches the end, Media3 can keep playback controls shown. Extended the generated synthetic clip to 30 seconds so its playback state remains active during slow CI/emulator UI setup. This is a test-only media fixture, not bundled in production.
+- Restored the standard Media3 buffering and error placeholder views in the app's adapted layout; keeping the caption view as a sibling does not require losing these status surfaces.
+- Verification: CI rerun pending. No installable APK/Release. Next: inspect run #149 and the new full build/tests.
