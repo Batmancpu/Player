@@ -377,3 +377,7 @@ The unfiltered library uses horizontal Movies and TV Shows shelves; text search 
 - The library now has functional Home, Movies, Shows and Search bottom destinations. Home shows grouped shelves, Movies/Shows apply the real title filter, and Search focuses the offline search field and presents a clear prompt when empty.
 - Added Android 15 navigation/selected-semantics/search-focus instrumentation. The bar is plain Compose for this behavior pass; production Glass remains deferred to Phase 6.
 - Next: inspect CI screenshots/tests, fix any issue, then continue subtitle controls and the final Glass/performance work.
+
+## 2026-11-21 — Navigation test helper correction (CI pending)
+- CI #184 / 44950921953: Android build succeeded and the full suite ran; the only failure was a duplicate-label lookup in the new test (Movies shelf heading shadowed selected tab semantics). Actual movie filtering passed.
+- Updated the helper to examine every label match and its ancestor semantics. CI pending.

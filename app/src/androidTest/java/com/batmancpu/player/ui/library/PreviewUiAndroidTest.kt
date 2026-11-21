@@ -98,12 +98,19 @@ class PreviewUiAndroidTest {
     private fun text(value: String) = awaitNode { it.text?.toString() == value }
 
     private fun hasSelectedSemanticsOnLabelOrParent(value: String): Boolean {
-        var node: AccessibilityNodeInfo = find { it.text?.toString() == value } ?: return false
-        repeat(8) {
-            if (node.isSelected) return true
-            node = node.parent ?: return false
+        var selected = false
+        fun visit(node: AccessibilityNodeInfo) {
+            if (node.text?.toString() == value || node.contentDescription?.toString() == value) {
+                var ancestor: AccessibilityNodeInfo? = node
+                repeat(8) {
+                    if (ancestor?.isSelected == true) selected = true
+                    ancestor = ancestor?.parent
+                }
+            }
+            for (index in 0 until node.childCount) node.getChild(index)?.let(::visit)
         }
-        return false
+        automation.rootInActiveWindow?.let(::visit)
+        return selected
     }
 
     private fun click(node: AccessibilityNodeInfo) {

@@ -1334,3 +1334,7 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - Replaced duplicate type chips with the four destinations. Changing destinations dismisses the details sheet; leaving Search clears its query; the accessible selected-tab semantics are provided by Material3.
 - Added an Android 15 synthetic-library test for all destinations, title filtering and Search field focus. CI pending.
 - This intentionally establishes navigation behavior before bounded Haze is placed in production; Glass remains a later rendering phase. Next: validate CI and fix failures before continuing player/subtitle polish.
+
+## 2026-11-21 — Correct navigation selected-state test
+- CI #184 passed compilation and 48 of 49 Android 15 tests. The navigation test's movie filter assertion passed, then its generic helper matched the earlier Movies shelf heading instead of the selected tab label.
+- Changed the test helper to examine all matching text/content-description nodes and their selected ancestors. Product navigation code is unchanged. Re-run CI before treating navigation as verified.

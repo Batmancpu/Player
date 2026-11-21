@@ -471,3 +471,8 @@ When the unfiltered library is open, movie titles and series now appear in separ
 - Added real Home, Movies, Shows and Search destinations to the offline library. Movies/Shows tabs filter indexed titles, Search focuses the local title field, and Home shows the grouped shelves. An actually empty library still shows its existing scan action before the Search prompt.
 - The production bar remains solid Compose while navigation and semantics are validated. Bounded Glass stays in its lab until the planned Glass phase.
 - Automated Android 15 navigation coverage is added; CI pending. Next: fix any navigation/test issue, then continue Phase 5 caption tools and production Glass/performance batches.
+
+## 2026-11-21 — Navigation selection assertion corrected
+- CI #184 / 44950921953 compiled the production navigation and ran 49 Android 15 tests. Only the new navigation test failed: it checked the first visible "Movies" label, which was the shelf heading, instead of the selected bottom tab. Movie filtering itself passed.
+- Updated the accessibility helper to inspect every matching label and its ancestors, so duplicate headings cannot mask selected semantics. CI verification pending.
+- Next: rerun full CI; then continue subtitle controls and the production Glass/performance phase.

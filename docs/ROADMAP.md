@@ -174,3 +174,7 @@ The user requested a signed APK checkpoint now and wants implementation to conti
 - Added Home, Movies, Shows and Search destinations for the local catalogue. Movie and series destinations use the same real parsed Room catalogue; Home keeps both shelves and Search focuses local title search.
 - Replaced redundant type chips. Search has an empty prompt, and tab selection uses Material3 semantics. CI pending; OPPO layout/accessibility still needs end-of-app validation.
 - The production bar is currently a solid fallback; bounded Glass is still scheduled for Phase 6 after navigation works.
+
+## 2026-11-21 — Navigation selected semantics test correction
+- The first navigation test run found the Movies shelf heading before the bottom-tab label, so the helper reported a false failure after movie-only filtering passed.
+- Search all matching nodes and their ancestors for selected semantics. Build and remaining Android tests passed in CI #184; rerun the corrected assertion.

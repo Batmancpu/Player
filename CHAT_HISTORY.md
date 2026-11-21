@@ -560,3 +560,6 @@ The corrected near-end synthetic fixture passed in CI #182 / 44949435610. All 48
 ## 2026-11-21 — Home, Movies, Shows and Search destinations
 - Started the production navigation batch. The library bottom bar now switches real catalogue state: Home shelves, movie-only results, series-only results and focused local search. Search results remain on-device.
 - Added UI instrumentation for the destination state and behavior; CI pending. The solid nav is a functional foundation, with bounded Glass still reserved for the later Glass phase.
+
+## 2026-11-21 — Navigation accessibility test lookup
+CI #184's only failure was a test helper choosing a duplicate static Movies heading while checking the selected tab. The movie filter assertion passed. The helper now searches all label matches and their ancestors; await the rerun.

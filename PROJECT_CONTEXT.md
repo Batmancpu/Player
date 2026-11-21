@@ -435,3 +435,6 @@ The synthetic near-end playback regression test and delayed periodic-save assert
 
 ## 2026-11-21 — Functional catalogue destinations
 Production navigation now switches among Home shelves, movie results, series results and focused local Search, all backed by the indexed local catalogue. Android 15 tests are pending; Glass remains lab-only pending final production design/performance integration.
+
+## 2026-11-21 — Navigation test helper
+CI #184 / 44950921953 ran 49 tests with one assertion failure: duplicated "Movies" text made the helper inspect the shelf heading, not the bottom tab. The actual category filter assertion passed. The helper now scans all matching semantic labels and ancestors. Rerun pending.

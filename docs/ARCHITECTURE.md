@@ -135,3 +135,6 @@ CI #182 / 44949435610 passed the 48-case Android 15 instrumentation suite, unit 
 
 ## 2026-11-21 — Local catalogue destination behavior
 The Compose presentation layer now exposes Home, Movies, Shows and Search destinations over the existing local Room catalogue state. Destination state controls the movie/series filter, Search focuses the local query field, and Home preserves the shelves. The solid Material3 navigation bar retains accessibility semantics while production Glass remains deferred. Android 15 test pending.
+
+## 2026-11-21 — Navigation test lookup adjustment
+The CI #184 run built successfully and executed 49 Android tests; its only failure was the selected-state test choosing the Movies shelf heading before the tab. The filter itself passed. Test helper now searches all matches/ancestors; validation pending.

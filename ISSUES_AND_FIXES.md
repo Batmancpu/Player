@@ -510,3 +510,7 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 ## 2026-11-21 — Real catalogue navigation replaces demo-only tabs
 - The production library now has functional Home/Movies/Shows/Search destinations; category tabs filter actual indexed titles and Search focuses local-only title search.
 - Android 15 instrumentation checks content filtering, selected state and search focus. Verification pending. Existing Glass Lab remains a visual renderer preview; production Glass has not been enabled.
+
+## 2026-11-21 — Correct false negative in navigation test
+- CI #184: compilation and 48/49 tests passed; new tab filter behavior passed, but the test helper matched the non-clickable Movies shelf heading before the actual selected tab.
+- Helper now searches every same-label node/ancestor rather than only the first. CI pending.
