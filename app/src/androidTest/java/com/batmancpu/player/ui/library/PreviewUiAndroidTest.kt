@@ -103,7 +103,7 @@ class PreviewUiAndroidTest {
             if (node.text?.toString() == value || node.contentDescription?.toString() == value) {
                 var ancestor: AccessibilityNodeInfo? = node
                 repeat(8) {
-                    if (ancestor?.isSelected == true) selected = true
+                    if (ancestor?.isSelected == true || ancestor?.stateDescription?.toString() == "Selected") selected = true
                     ancestor = ancestor?.parent
                 }
             }
