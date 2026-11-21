@@ -359,3 +359,7 @@ The unfiltered library uses horizontal Movies and TV Shows shelves; text search 
 - LocalPlayerScreen now checkpoints zero and clears play intent on Media3 STATE_ENDED, then re-shows player controls. This fixes reopening completed content at EOF.
 - Added an owned synthetic video instrumentation test asserting the completion callback is (0, false). CI pending; real Reno10 playback validation remains part of final phone acceptance.
 - Next: verify CI, then advance subtitle settings and later measured Glass/performance work.
+
+## 2026-11-21 — Completed playback checkpoint guard (CI pending)
+- Resume checkpoint normalization now covers the natural-end callback, periodic timer, Activity pause and composition disposal. Any subsequent save while the player remains STATE_ENDED records start/paused and clears saved play intent.
+- Android test now holds past a five-second checkpoint interval and checks the final checkpoint remains (0, false); direct state-normalization assertions cover other playback states.

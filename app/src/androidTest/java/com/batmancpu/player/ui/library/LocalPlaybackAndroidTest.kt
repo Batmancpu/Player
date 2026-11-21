@@ -186,6 +186,12 @@ class LocalPlaybackAndroidTest {
         assertThrows(SecurityException::class.java) { runBlocking { LocalPlaybackAccess.resolve(context, "content://com.android.externalstorage.documents/tree/synthetic-root", "synthetic-child", "Synthetic") } }
     }
 
+    @Test fun completedPlaybackCheckpointStaysAtBeginningAcrossLaterSaves() {
+        assertEquals(0L to false, playbackResumeCheckpoint(Player.STATE_ENDED, 98_765L, true))
+        assertEquals(4321L to true, playbackResumeCheckpoint(Player.STATE_READY, 4321L, true))
+        assertEquals(0L to false, playbackResumeCheckpoint(Player.STATE_BUFFERING, -12L, false))
+    }
+
     @Test fun resumePositionsAreScopedToFolderAndDocument() = runBlocking {
         val target = LocalPlaybackTarget("synthetic-A", "document", "content://synthetic/video", "Synthetic")
         ResumePositions.save(context, target, 1234)
@@ -245,6 +251,9 @@ class LocalPlaybackAndroidTest {
             }
             assertTrue("Playback should reach its natural end", finished.await(20, TimeUnit.SECONDS))
             assertEquals(0L to false, checkpoint.get())
+            // Let the five-second checkpoint timer run once after completion.
+            SystemClock.sleep(5_500)
+            assertEquals("Later lifecycle checkpoints must not restore the EOF position", 0L to false, checkpoint.get())
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
             SyntheticSafProvider.playbackFile = null

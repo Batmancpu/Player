@@ -123,3 +123,6 @@ Player exposes Fit, Fill and Zoom resizing through Media3. The app overrides the
 
 ## 2026-11-21 — Phase 4 completion reopen edge case
 A completed local video now saves resume position 0 and play intent false when Media3 reports STATE_ENDED, and reveals the player controls. The CI-owned synthetic-video Android test asserts the completion checkpoint. CI pending; continue with subtitle controls and full player interaction coverage after green verification.
+
+## 2026-11-21 — Stable reset state across lifecycle saves
+The playback checkpoint helper now normalizes STATE_ENDED to zero/paused for timer, background and disposal paths; remembered play intent is cleared too. The new Android test spans the five-second periodic interval and checks that the result stays zero. CI pending.

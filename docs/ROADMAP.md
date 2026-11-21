@@ -157,3 +157,7 @@ The user requested a signed APK checkpoint now and wants implementation to conti
 ## 2026-11-21 — Completed local playback resume behavior (verification pending)
 - The Phase 4 implementation now resets its checkpoint to the beginning when Media3 naturally reaches STATE_ENDED; controls are shown again at completion.
 - The new Android integration test uses only the generated synthetic fixture and asserts zero/paused checkpoint output. Await CI. Phone validation still requires OPPO.
+
+## 2026-11-21 — Guarded completed-video resume state (verification pending)
+- A shared checkpoint normalizer keeps zero/paused resume state through periodic and lifecycle saves after STATE_ENDED. The saved play intent is also cleared.
+- CI test now waits across a periodic checkpoint interval; device result remains pending.

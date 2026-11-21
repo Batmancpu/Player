@@ -421,3 +421,7 @@ Artwork behavior is verified by CI #122 and #123 attempt 2. CI #123 attempt 1 hi
 - Fixed stale EOF resume state: natural completion checkpoints position 0 and false play intent, and restores player controls.
 - Added completedPlaybackResetsResumeCheckpointToBeginning Android instrumentation coverage with the owned synthetic fixture. CI result pending.
 - Next: validate the main CI run and continue Phase 5 subtitle controls; Reno10 playback evidence remains uncollected.
+
+## 2026-11-21 — Completion checkpoint follow-up
+- Guarded against the periodic timer overwriting the end checkpoint: all save paths return position zero and false intent while Media3 is ended.
+- The synthetic instrumentation test now spans the five-second timer interval; helper assertions cover end, ready and buffering state. Await CI before continuing.

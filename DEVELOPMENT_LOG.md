@@ -1315,3 +1315,7 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - Added a Media3 STATE_ENDED listener path that writes a zero resume position and false play intent. It also reveals the controls on completion; this prevents an ended file reopening at EOF with no clear way to restart.
 - Added completedPlaybackResetsResumeCheckpointToBeginning, an Android 15 instrumentation test driven by the CI-owned synthetic H.264 fixture. The test asserts the callback receives (0, false) on natural completion; no physical phone evidence is claimed.
 - CI is pending. Next inspect the test result, then continue the local subtitle workflow (including upstream-supported offset API when stable), production Glass integration and benchmark coverage.
+
+## 2026-11-21 — Prevent EOF checkpoint from being restored by timer
+- Code review caught that the periodic checkpoint could re-save the final duration after the first end event. A shared playbackResumeCheckpoint normalizer now maps every checkpoint captured while Media3 is STATE_ENDED to zero/paused, and clears the remembered play intent so background/foreground state cannot restart the ended item unexpectedly.
+- Added direct state normalization assertions and extended the synthetic playback test past the five-second checkpoint interval. CI pending.

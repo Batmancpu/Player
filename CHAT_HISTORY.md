@@ -547,3 +547,6 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 
 ## 2026-11-21 — Completed playback checkpoint reset
 The playback layer now clears its resume position on natural completion and makes the controls visible again. A synthetic local-media instrumentation test checks the zero/paused checkpoint. Automated CI is pending. This is a playback behavior correction only; no device performance or acceptance is inferred.
+
+## 2026-11-21 — Resume checkpoint timer regression coverage
+After discovering that the periodic checkpoint may run after the end event, all save paths normalize an ended player to position zero and false play intent. The synthetic Android test waits over one timer interval and verifies the zero checkpoint persists. CI pending.

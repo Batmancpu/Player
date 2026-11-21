@@ -493,3 +493,7 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - Change: Media3 STATE_ENDED now records position zero and false play intent and reveals the transport/header. Added an instrumentation test using the synthetic local video to verify the callback.
 - Verification: CI run started; result pending. The change does not alter media files or any network behavior.
 - Next: fix any CI failure, then continue subtitle controls and the production Glass/performance milestones.
+
+## 2026-11-21 — Keep completed video reset durable
+- Review found a follow-up timer could overwrite the initial zero checkpoint with duration. All save paths now share a STATE_ENDED normalizer and clear stored play intent.
+- Added unit-style assertions and a synthetic playback integration assertion after the five-second timer fires. CI pending; source files remain read-only.

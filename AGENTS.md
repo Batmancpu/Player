@@ -452,3 +452,8 @@ When the unfiltered library is open, movie titles and series now appear in separ
 - A natural Media3 end now checkpoints position 0 with play intent false and reveals the controls, so reopening a finished local video starts at its beginning instead of landing on the last frame.
 - Added an Android instrumentation test using the owned synthetic local video to assert the completion checkpoint. CI verification is pending.
 - Next: inspect the current CI run and this test result; fix any timing or lifecycle issue before continuing Phase 5 subtitle controls and the production Glass/performance batches.
+
+## 2026-11-21 — Guard later saves after natural completion
+- Follow-up review found the five-second timer and lifecycle saves could overwrite the zero-on-ended checkpoint with the ended position. All player checkpoint paths now normalize STATE_ENDED to position 0 and false play intent, including the saved intent used during lifecycle changes.
+- Extended the Android integration test to wait across a checkpoint interval and assert the later save remains (0, false); added direct tests for the normalization helper. CI verification is pending.
+- Next: inspect the latest main CI runs, then continue subtitle settings and the remaining production Glass/performance work.

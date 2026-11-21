@@ -56,6 +56,13 @@ internal fun LocalPlayerScreen(
         }
     }
     var savedPlayIntent by remember(target.uri) { mutableStateOf(target.playWhenReady) }
+    fun saveCurrentCheckpoint(playIntent: Boolean = player.playWhenReady) {
+        val (position, effectivePlayIntent) = playbackResumeCheckpoint(
+            player.playbackState, player.currentPosition, playIntent,
+        )
+        if (player.playbackState == Player.STATE_ENDED) savedPlayIntent = false
+        checkpoint(position, effectivePlayIntent)
+    }
     DisposableEffect(player, lifecycle) {
         var firstResume = true
         val observer = LifecycleEventObserver { _, event ->
@@ -64,7 +71,7 @@ internal fun LocalPlayerScreen(
                 player.playWhenReady = savedPlayIntent
             } else if (event == Lifecycle.Event.ON_PAUSE) {
                 savedPlayIntent = player.playWhenReady
-                checkpoint(player.currentPosition, savedPlayIntent)
+                saveCurrentCheckpoint(savedPlayIntent)
                 player.pause()
             }
         }
@@ -107,7 +114,7 @@ internal fun LocalPlayerScreen(
             player.playWhenReady = savedPlayIntent
         }
         onDispose {
-            checkpoint(player.currentPosition, savedPlayIntent)
+            saveCurrentCheckpoint(savedPlayIntent)
             lifecycle.removeObserver(observer)
             player.removeListener(listener)
             playerViewRef[0] = null
@@ -118,7 +125,7 @@ internal fun LocalPlayerScreen(
         while (true) {
             delay(5_000)
             if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-                checkpoint(player.currentPosition, player.playWhenReady)
+                saveCurrentCheckpoint()
             }
         }
     }
@@ -221,3 +228,12 @@ internal fun PlayerResizeButton(resizeMode: Int, onNext: () -> Unit) {
 
 
 private const val PLAYER_CHROME_AUTO_HIDE_MS = 2_500L
+
+/** Completed playback is stored as a paused start point, even during later lifecycle saves. */
+internal fun playbackResumeCheckpoint(
+    playbackState: Int,
+    positionMs: Long,
+    playWhenReady: Boolean,
+): Pair<Long, Boolean> =
+    if (playbackState == Player.STATE_ENDED) 0L to false
+    else positionMs.coerceAtLeast(0L) to playWhenReady
