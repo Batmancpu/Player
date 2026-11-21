@@ -472,3 +472,9 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 - CI #158 passed Kotlin compilation but 6/46 Android tests failed. I traced five playback/SAF failures to my test-host change overwriting the pre-existing debug manifest entry for SyntheticSafProvider; restored both debug-only entries.
 - The season test's scroll gestures could dismiss the details sheet, leaving the underlying library in the active window. Changed test interaction to accessibility scroll actions on the smallest nested container.
 - CI #159 was already running the broken intermediate source; CI #160 is required for verification. The APK remains withheld until a full green source gate.
+
+
+## 2026-11-21 — User requests signed APK now and continuous batched work
+- User wants up to five substantial published batches, no pause for a phone install/check after each, and specifically requested an APK now before continuing. We are using four visible batches with rough planning estimates. Batch 1 is the README and visual identity.
+- Queued a higher-version signed checkpoint using the existing permanent release key/workflow. Full Android tests and signing/privacy checks must pass before the release can publish. Development continues after that release; it is not represented as the final premium app.
+- Next: inspect CI #160 for the restored synthetic SAF provider and safe scroll correction, then the new release workflow. Continue Batch 2 without waiting for the user to install the checkpoint.

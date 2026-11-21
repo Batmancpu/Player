@@ -46,7 +46,7 @@ See [storage and privacy rules](docs/UPSTREAM_AND_PRIVACY.md) and [architecture]
 
 ## Current development status
 
-The latest signed release is [v0.1.91](https://github.com/Batmancpu/Player/releases/tag/v0.1.91) (versionCode 91). It is an early offline catalogue/playback preview—not the final premium app.
+The latest signed build is listed on the [Releases page](https://github.com/Batmancpu/Player/releases/latest). Existing signed installs keep the same package and permanent update certificate. These are development checkpoints; the integrated premium app is still in progress.
 
 The user confirmed that v0.1.79 selected a folder, identified four local videos with titles and years, retained the library after an airplane-mode restart, and handled folder switching. Since then, main has gained title shelves, series season grouping, local playback and sidecar subtitle handling. The current source is being expanded and verified in CI; no new signed APK is published in this README update.
 
