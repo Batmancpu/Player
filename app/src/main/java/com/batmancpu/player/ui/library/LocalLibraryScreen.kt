@@ -30,6 +30,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
@@ -190,6 +192,13 @@ internal fun LocalLibraryContent(
                 destinations.forEachIndexed { index, (glyph, label) ->
                     NavigationBarItem(
                         selected = selectedDestination == index,
+                        modifier = Modifier.semantics {
+                            stateDescription = if (selectedDestination == index) {
+                                stringResource(R.string.nav_item_selected)
+                            } else {
+                                stringResource(R.string.nav_item_not_selected)
+                            }
+                        },
                         onClick = {
                             selectedDestination = index
                             selectedKey = null
