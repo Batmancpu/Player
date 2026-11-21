@@ -135,7 +135,8 @@ class PreviewUiAndroidTest {
             val bounds = Rect()
             node.getBoundsInScreen(bounds)
             if ((!node.text.isNullOrBlank() || !node.contentDescription.isNullOrBlank()) &&
-                bounds.width() > 0 && bounds.height() > 0 && bounds.bottom <= safeBottom
+                node.isVisibleToUser && bounds.width() > 0 && bounds.height() > 0 &&
+                bounds.bottom <= safeBottom
             ) candidates += bounds to node
             for (index in 0 until node.childCount) node.getChild(index)?.let(::visit)
         }
@@ -159,7 +160,7 @@ class PreviewUiAndroidTest {
 
     private fun revealByScrolling(value: String): AccessibilityNodeInfo {
         repeat(12) {
-            find { it.text?.toString() == value }?.let { return it }
+            find { it.text?.toString() == value && it.isVisibleToUser }?.let { return it }
             if (!scrollForwardOnSmallestScrollable()) {
                 assertTrue(
                     "No visible sheet content could reveal $value; ${activeWindowSummary()}",
@@ -168,7 +169,7 @@ class PreviewUiAndroidTest {
             }
             SystemClock.sleep(150)
         }
-        return awaitNode { it.text?.toString() == value }
+        return awaitNode { it.text?.toString() == value && it.isVisibleToUser }
     }
 
     private fun screenshot(name: String) {

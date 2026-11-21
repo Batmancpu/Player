@@ -408,3 +408,6 @@ When the unfiltered library is open, movie titles and series now appear in separ
 
 ## 2026-11-21 — Screenshot test now checks card bounds
 - CI #166 passed both long-details scroll flows after the harness stopped swiping from Android's Home gesture zone. It then exposed a brittle assertion comparing wrapped title-text y coordinates, which differ when one title wraps. Updated the catalogue check to compare clickable card bounds, preserving the actual two-column layout requirement. CI verification pending.
+
+## 2026-11-21 — Instrumentation now requires visible targets
+- CI #167 passed the two-column card-bound check and all episode/scroll cases, then exposed that the test helper accepted a composed but clipped button as revealed. Constrained both text-target discovery and swipe origins to accessibility nodes visible above the system gesture region. Next run verifies the manual match action is actually onscreen before a test tap.
