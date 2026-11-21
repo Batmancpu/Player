@@ -66,7 +66,7 @@
     <string name="catalogue_settings">Library settings</string>
     <string name="catalogue_forget_folder">Remove folder from Player</string>
     <string name="catalogue_forget_title">Remove this library?</string>
-    <string name="catalogue_forget_explanation">Player will remove its saved library index and folder access. Your original videos and subtitles stay in the folder and will not be deleted.</string>
+    <string name="catalogue_forget_explanation">Player will remove its saved library index, playback resume points and folder access. Your original videos and subtitles stay in the folder and will not be deleted.</string>
     <string name="catalogue_forget_confirm">Remove from Player</string>
     <string name="catalogue_forget_cancel">Keep library</string>
     <string name="folder_setup_forget_failed">Player could not finish removing this folder. Retry to clear its saved access. Your original media were not changed.</string>

@@ -160,4 +160,4 @@ Provider metadata is cached by TMDB ID/media type and joined to a SAF document o
 
 
 ### D-033 — Forgetting a library never deletes source media (Accepted)
-“Remove folder from Player” clears Player's app-private index and revokes its persisted SAF permission only after explicit confirmation. It must not delete, rename or modify source videos/subtitles. Retry is available if app-private cleanup or grant reconciliation fails.
+“Remove folder from Player” clears Player's app-private index and resume checkpoints and revokes its persisted SAF permission only after explicit confirmation. It must not delete, rename or modify source videos/subtitles. Retry is available if app-private cleanup or grant reconciliation fails. Grant cleanup continues if the UI lifecycle is cancelled.

@@ -73,4 +73,14 @@ class LocalPlaybackAndroidTest {
         assertEquals(0L, ResumePositions.load(context, "synthetic-B", target.documentId))
         assertEquals(0L, ResumePositions.load(context, target.tree, "different"))
     }
+
+    @Test fun forgettingLibraryClearsAppPrivateResumeCheckpoints() = runBlocking {
+        val first = LocalPlaybackTarget("synthetic-A", "document-A", "content://synthetic/video-a", "Synthetic")
+        val second = LocalPlaybackTarget("synthetic-old-tree", "document-B", "content://synthetic/video-b", "Synthetic")
+        ResumePositions.save(context, first, 1234)
+        ResumePositions.save(context, second, 5678)
+        ResumePositions.clearAll(context)
+        assertEquals(0L, ResumePositions.load(context, first.tree, first.documentId))
+        assertEquals(0L, ResumePositions.load(context, second.tree, second.documentId))
+    }
 }

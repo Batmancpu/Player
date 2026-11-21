@@ -99,6 +99,7 @@ internal class LibraryViewModel(application: Application) : AndroidViewModel(app
         viewModelScope.launch {
             try {
                 OfflineLibraryIndex.forgetTree(getApplication(), Uri.parse(tree))
+                ResumePositions.clearAll(getApplication())
                 access.forget()
                 if (ticket == folderGeneration) {
                     pendingForgetTree = null

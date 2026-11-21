@@ -391,4 +391,4 @@ A focused Phase 2 database slice is on main: cached TMDB metadata is keyed separ
 
 
 ## 2026-11-21 — Explicit library removal
-Added “Remove folder from Player” with confirmation, Room index/cache cleanup and persisted SAF grant release; original files remain untouched. Unit tests cover grant release ordering and a refused release; CI #104 is pending. No intermediate APK is produced. CI #103 has verified the Room v3 snapshot follow-up (20/20 Android 15 tests, build/schema checks).
+Added “Remove folder from Player” with confirmation, Room index/cache cleanup and persisted SAF grant release; original files remain untouched. CI #104 / 44890135563 passed Android 15 20/20 and unit/build/schema gates; unit tests cover grant release ordering and refused release. A follow-up also clears resume points and adds confirmation/cancel UI coverage; CI #105 is pending. No intermediate APK is produced. CI #103 has verified the Room v3 snapshot follow-up (20/20 Android 15 tests, build/schema checks).

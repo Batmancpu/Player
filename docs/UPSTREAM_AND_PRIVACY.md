@@ -38,4 +38,4 @@ Room v3 stores provider title/year/overview and validated TMDB image paths separ
 
 
 ## 2026-11-21 — User-controlled folder removal
-The user can remove the selected tree from Player's library. This operation is limited to the app-private Room index/cache and the persisted read-only SAF grant; original media are never changed. It runs through the serialized folder-access manager, and a retry path covers failed grant cleanup. CI #104 is pending; no provider-specific phone behavior is claimed.
+The user can remove the selected tree from Player's library. This operation clears the app-private Room index/cache, resume positions and persisted read-only SAF grant; original media are never changed. It runs through the serialized folder-access manager, and confirmed grant cleanup is not cancelled with the screen lifecycle. A retry path covers failures. CI #104 passed manager/build/schema checks; CI #105 adds UI/resume coverage. No provider-specific phone behavior is claimed.

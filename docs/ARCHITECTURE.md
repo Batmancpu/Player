@@ -101,4 +101,4 @@ LocalCatalogue derives video-only movie/series identities from indexed files; Vi
 
 
 ## Folder removal
-The library settings action first confirms the user's intent, then deletes Player's app-private index/cache for the selected tree and clears/reconciles persisted read-only SAF grants under FolderAccessManager's mutex. It never invokes a DocumentsContract delete/write operation. On failure the setup screen exposes a retry state; CI #104 is verifying the new flow.
+The library settings action first confirms the user's intent, then deletes Player's app-private index/cache and resume checkpoints, then clears/reconciles persisted read-only SAF grants under FolderAccessManager's mutex. Grant reconciliation is non-cancellable after confirmation. It never invokes a DocumentsContract delete/write operation. On failure the setup screen exposes a retry state. CI #104 passed manager/build/schema gates; CI #105 covers resume cleanup and confirm/cancel UI.

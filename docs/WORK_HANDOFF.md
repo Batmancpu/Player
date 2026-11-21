@@ -7,7 +7,7 @@ CI #103 / 44888950131 passed after the exact generated Room v3 schema commit (20
 - User confirmed v0.1.79 selected-folder scan/title-year parsing, airplane-mode library persistence and folder switching. v0.1.91 appearance/playback and actual OPPO behavior/performance remain unverified; Phase 1 is not accepted.
 - Room v3 keeps TMDB provider metadata separate from local SAF document IDs and only exposes it through explicit matches. CI passed the production v1-to-v3 migration and offline cache reconciliation tests. No HTTP, INTERNET permission, credential UI, or lookup feature is integrated yet.
 - Preserve com.batmancpu.player, the permanent signing certificate, one read-only selected SAF tree, backup-disabled policy, no source-media writes/uploads and no telemetry. Continue on main only.
-- Current focused change: the library settings now have a confirmed “Remove folder from Player” action that clears only Player's index and persisted read-only grant; original media are untouched. CI #104 is pending.
+- Current focused change: the library settings now have a confirmed “Remove folder from Player” action that clears only Player's index and persisted read-only grant; original media are untouched. CI #104 / 44890135563 passed (Android 15 20/20, build/unit/schema). A follow-up now clears resume positions and tests confirmation/cancel; CI #105 pending.
 - Next: verify CI #104, then continue Phase 2 explicit opt-in lookup, match UX, attributed artwork and offline detail presentation; complete remaining catalogue/player/Glass and performance work. Publish one verified signed APK only when the integrated app is ready. Obtain final OPPO acceptance and measurements from real-device evidence; do not claim these in CI.
 
 ---

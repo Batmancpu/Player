@@ -263,7 +263,7 @@ CI90 / 43678768709 passed the full Android15 integration suite including the cor
 
 
 ## H-025 — No explicit way to remove a selected folder
-- **Status:** Implementation on main; CI #104 pending.
+- **Status:** Implementation on main; CI #104 manager/build/schema checks passed. Resume/UI coverage is pending CI #105.
 - **User impact:** Changing the selected tree existed, but there was no clear action to remove the library and revoke its persisted access while leaving the original media in place.
-- **Change:** Added a confirmation dialog in Library settings, removal of only Room data and saved SAF access, grant reconciliation and retry feedback. Source media are not written or deleted.
+- **Change:** Added a confirmation dialog in Library settings, removal of only Room data, resume checkpoints and saved SAF access, non-cancellable grant reconciliation and retry feedback. Source media are not written or deleted.
 - **Next:** Verify unit/Android CI, then include “remove from Player without deleting originals; reconnect and rescan” in the final OPPO checklist.

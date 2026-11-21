@@ -52,9 +52,11 @@ internal class FolderAccessManager(private val store: FolderAccessStore) {
     }
 
     /** Forget only Player's index and SAF access; never touches source media. */
-    suspend fun forget() = mutex.withLock {
-        store.clearSelected()
-        reconcile(null)
+    suspend fun forget() = withContext(NonCancellable) {
+        mutex.withLock {
+            store.clearSelected()
+            reconcile(null)
+        }
     }
 
     private suspend fun requireRead(tree: String) {

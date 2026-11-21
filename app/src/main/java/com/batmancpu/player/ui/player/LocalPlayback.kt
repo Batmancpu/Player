@@ -60,6 +60,13 @@ internal object ResumePositions {
         context.getSharedPreferences("player_resume_positions", Context.MODE_PRIVATE).edit()
             .putLong(key(target.tree, target.documentId), position.coerceAtLeast(0)).apply()
     }
+
+    /** The selected tree is the app's only library, so forgetting it clears all old checkpoints too. */
+    suspend fun clearAll(context: Context) = withContext(Dispatchers.IO) {
+        check(context.getSharedPreferences("player_resume_positions", Context.MODE_PRIVATE).edit().clear().commit()) {
+            "Playback resume state could not be cleared"
+        }
+    }
 }
 
 /** No HTTP data source, connectivity observer, wake lock or platform metrics listener. */

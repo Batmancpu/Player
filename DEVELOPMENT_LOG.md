@@ -832,3 +832,10 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 - Folder access cleanup clears the saved selection and reconciles all persisted grants under the existing mutex. The ViewModel cancels playback/scan state, retires the library and provides a retry action if Room cleanup or grant release fails.
 - Added resource strings, Android phone checklist coverage and fake-store tests for grant release order and failure recovery. CI #103 / 44888950131 passed 20/20 Android 15 and schema/build gates before this UI/service change; CI #104 is pending.
 - No versionCode change, signing or installable APK. Next: verify CI #104 and fix failures; then continue the final integrated experience.
+
+
+## 2026-11-21 — Complete folder removal cleanup
+
+- CI #104 / 44890135563 passed: Android 15 instrumentation 20/20, unit/build, and Room v1/v2/v3 schema validation. The new folder-access tests passed for grant release order and failed-release recovery.
+- Tightened removal: once confirmed, clear the app-private resume-position preferences as well as the Room library/match cache. Persisted grant reconciliation now runs in a non-cancellable section so lifecycle cancellation cannot leave stale SAF access. Original videos/subtitles remain untouched.
+- Added a UI integration test that checks the explanation, verifies cancel makes no call, and verifies confirmation invokes removal once; added resume-state cleanup coverage. CI #105 pending. No Release APK or versionCode change.

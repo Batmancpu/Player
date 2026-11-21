@@ -11,6 +11,7 @@ import com.batmancpu.player.MainActivity
 import com.batmancpu.player.ui.glass.GlassLabScreen
 import com.batmancpu.player.ui.theme.PlayerTheme
 import android.os.ParcelFileDescriptor
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
 import org.junit.Assert.*
 import org.junit.Test
@@ -114,6 +115,38 @@ class PreviewUiAndroidTest {
             click(text("Play video"))
             instrumentation.waitForIdleSync()
             assertEquals("movie-A", played.get()?.documentId)
+        } finally {
+            instrumentation.runOnMainSync { activity.finish() }
+        }
+    }
+
+    @Test(timeout = 25_000) fun removeFolderRequiresClearConfirmationAndDoesNotCallDeleteWhenCancelled() {
+        val activity = launch()
+        val files = listOf(DiscoveredLocalMedia("movie-A", "Aurora.2022.mp4", LocalMediaKind.VIDEO))
+        val forgotten = AtomicInteger(0)
+        try {
+            instrumentation.runOnMainSync {
+                activity.setContent {
+                    PlayerTheme {
+                        LocalLibraryContent(
+                            LocalFolder("synthetic-tree", "Synthetic local folder"),
+                            LibrarySessionState(tree = "synthetic-tree", media = files, hasCompletedScan = true),
+                            CatalogueSnapshot("synthetic-tree", LocalCatalogue.build(files)),
+                            onScan = {}, onCancel = {}, scanStillRunning = { false }, onChooseFolder = {},
+                            onPlay = {}, onOpenGlassLab = {}, onForgetFolder = { forgotten.incrementAndGet() },
+                        )
+                    }
+                }
+            }
+            click(text("Manage"))
+            click(text("Remove folder from Player"))
+            text("Remove this library?")
+            text("Player will remove its saved library index, playback resume points and folder access. Your original videos and subtitles stay in the folder and will not be deleted.")
+            click(text("Keep library"))
+            assertEquals("Cancel must leave the library connected", 0, forgotten.get())
+            click(text("Remove folder from Player"))
+            click(text("Remove from Player"))
+            assertEquals("Only explicit confirmation starts removal", 1, forgotten.get())
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
         }
