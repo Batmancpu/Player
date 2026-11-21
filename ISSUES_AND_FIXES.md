@@ -542,17 +542,17 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 - **Next:** Confirm all regressions in full CI and inspect screenshots. CI #208 did not reach tests; its compile error was a composable string lookup inside the semantics lambda and is corrected by computing the localized label earlier. No handset observation or Glass performance claim.
 
 ### R-037 — Resolve localized descriptions outside Compose semantics lambdas
-- **Status:** Two compile-time failures corrected; Android CI #210 pending.
+- **Status:** Compile failures corrected; CI #211 confirms app compilation.
 - **Evidence:** CI #208 found `stringResource` inside the dock semantics lambda; CI #209 found the same in the offline poster semantics lambda. Neither run reached instrumentation.
 - **Fix:** Resolve each localized label in a composable scope and assign its value from the semantics block.
-- **Next:** Verify compilation and run Android tests before claiming accessibility or poster-layout behavior.
+- **Next:** Corrected source compiled in CI #211; continue semantics validation in CI #212.
 
 
 ### R-038 — Android 15 production accessibility semantics and modal scroll
-- **Status:** Focused correction pending CI #211.
-- **Evidence:** CI #210 / 44958625515 compiled and ran 51 Android 15 tests; 46 passed and five failed. The tree showed poster placeholder descriptions replacing clickable card title text; selected tab state was not exposed to Android; a custom Switch `stateDescription` was null even when the native checked state existed; and the sheet test could not safely scroll to a virtualized confirmation action.
-- **Correction:** Make catalogue art decorative, expose title/year through clickable card content, set tab role/label/selected/click in an explicit semantics node, retain native Switch checked state and localized On/Off label, and swipe only inside the visible modal when no suitable semantic scroll node exists. Improve bounds diagnostics.
-- **Next:** Verify on CI #211 and inspect screenshots; do not assert actual TalkBack behavior or OPPO quality from the emulator alone.
+- **Status:** Iterative correction pending CI #212.
+- **Evidence:** CI #210 ran 51 tests: 46 passed, 5 failed. CI #211 compiled and ran 51 tests: 47 passed, 4 failed. Explicit dock selected semantics now pass, as does series details. Compose clear semantics on the decorative title initial also removed merged card text; the Glass Switch Android node reported `isChecked=false` despite enabled preference. The metadata journey was blocked by missing accessible card title.
+- **Correction under test:** Add a localized title/type/year description directly to each clickable card; make cards the test accessibility target. Set Role.Switch and ToggleableState explicitly, keep the localized On/Off announcement, and verify Android's checked field plus persistent preference across recreation. Keep explicit tab semantics and safe modal scroll fallback.
+- **Next:** Verify all UI tests/screenshots in CI #212. Emulator results do not establish actual TalkBack behavior or OPPO quality.
 
 ### R-039 — Larger detail hero and backdrop caching
 - **Status:** Implemented locally, security regression test added, CI pending.

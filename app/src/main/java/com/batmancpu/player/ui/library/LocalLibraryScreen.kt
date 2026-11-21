@@ -32,9 +32,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.toggleableState
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
@@ -571,6 +573,8 @@ internal fun LocalLibraryContent(
                             uiSettings.setGlassEnabled(enabled)
                         },
                         modifier = Modifier.semantics {
+                            role = Role.Switch
+                            toggleableState = if (glassEnabled) ToggleableState.On else ToggleableState.Off
                             // Switch state is announced through the native checked property;
                             // include a concise localized state in its label for services that
                             // do not expose Compose's custom stateDescription on Android 15.
@@ -613,6 +617,18 @@ private fun LocalTitleCard(
 ) {
     val palettes = listOf(Color(0xFF3B465C), Color(0xFF514350), Color(0xFF294D47), Color(0xFF5A4835))
     val color = palettes[title.key.hashCode().ushr(1) % palettes.size]
+    val titleKind = stringResource(if (title.isSeries) R.string.catalogue_card_series else R.string.catalogue_card_movie)
+    val titleContext = if (title.isSeries) {
+        pluralStringResource(R.plurals.catalogue_episodes, title.files.size, title.files.size)
+    } else {
+        title.year?.toString() ?: stringResource(R.string.catalogue_on_device)
+    }
+    val cardAccessibilityDescription = stringResource(
+        R.string.catalogue_card_accessibility,
+        title.title,
+        titleKind,
+        titleContext,
+    )
     val metadata = remember(title.key, cachedMetadataByDocumentId) {
         title.files.mapNotNull { cachedMetadataByDocumentId[it.documentId] }
             .distinctBy { it.tmdbId to it.mediaType }.singleOrNull()
@@ -623,7 +639,14 @@ private fun LocalTitleCard(
             artworkCache.cached(metadata.posterPath, TmdbImageSize.POSTER)
         } else null
     }
-    Card(onClick = onClick, shape = RoundedCornerShape(22.dp), colors = CardDefaults.cardColors(containerColor = PlayerPalette.surface)) {
+    Card(
+        onClick = onClick,
+        modifier = Modifier.semantics(mergeDescendants = true) {
+            contentDescription = cardAccessibilityDescription
+        },
+        shape = RoundedCornerShape(22.dp),
+        colors = CardDefaults.cardColors(containerColor = PlayerPalette.surface),
+    ) {
         Box(Modifier.fillMaxWidth().aspectRatio(2f / 3f)) {
             if (posterFile != null) {
                 AsyncImage(
@@ -642,7 +665,7 @@ private fun LocalTitleCard(
                 )
                 Text(
                     title.title.take(1).uppercase(),
-                    modifier = Modifier.align(Alignment.Center).clearAndSetSemantics {},
+                    modifier = Modifier.align(Alignment.Center),
                     style = MaterialTheme.typography.displayLarge,
                     color = Color.White.copy(alpha = .25f),
                 )

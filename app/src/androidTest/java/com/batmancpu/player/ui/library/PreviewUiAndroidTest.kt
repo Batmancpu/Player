@@ -98,6 +98,10 @@ class PreviewUiAndroidTest {
     }
 
     private fun text(value: String) = awaitNode { it.text?.toString() == value }
+    private fun titleCard(value: String) = awaitNode {
+        it.contentDescription?.toString()?.startsWith("$value,") == true
+    }
+    private fun clickTitleCard(value: String) = click(titleCard(value))
 
     private fun hasSelectedSemanticsOnLabelOrParent(value: String): Boolean {
         var selected = false
@@ -328,22 +332,40 @@ class PreviewUiAndroidTest {
             install(activity)
             click(text("Manage"))
             revealGlassSetting()
-            val glassSwitch = awaitNode { it.contentDescription?.toString()?.startsWith("Liquid Glass effects,") == true }
-            assertTrue("Glass starts enabled with native checked state", glassSwitch.isChecked)
+            val announcedOn = context.getString(com.batmancpu.player.R.string.settings_glass_on)
+            val announcedOff = context.getString(com.batmancpu.player.R.string.settings_glass_off)
+            val glassSwitch = awaitNode {
+                it.contentDescription?.toString()?.let { label ->
+                    label.startsWith("Liquid Glass effects,") && label.endsWith(", $announcedOn")
+                } == true
+            }
+            assertTrue("Glass starts enabled and announced; ${activeWindowSummary()}", glassSwitch.isChecked)
             click(glassSwitch)
             assertTrue("Glass off preference is saved", awaitCondition(3_000) {
                 !preferences.getBoolean(com.batmancpu.player.ui.glass.PlayerUiSettingsStore.GLASS_ENABLED_KEY, true)
             })
             assertTrue("Glass off state is announced", awaitCondition(3_000) {
-                find { it.contentDescription?.toString()?.startsWith("Liquid Glass effects,") == true }?.let { !it.isChecked } == true
+                find {
+                    it.contentDescription?.toString()?.let { label ->
+                        label.startsWith("Liquid Glass effects,") && label.endsWith(", $announcedOff")
+                    } == true
+                }?.let { !it.isChecked } == true
             })
             instrumentation.runOnMainSync { activity.finish() }
             activity = launch()
             install(activity)
             click(text("Manage"))
             revealGlassSetting()
-            assertFalse("Glass off preference survives screen/activity recreation",
-                awaitNode { it.contentDescription?.toString()?.startsWith("Liquid Glass effects,") == true }.isChecked)
+            val restoredSwitch = awaitNode {
+                it.contentDescription?.toString()?.let { label ->
+                    label.startsWith("Liquid Glass effects,") && label.endsWith(", $announcedOff")
+                } == true
+            }
+            assertFalse("Glass off preference survives screen/activity recreation", preferences.getBoolean(
+                com.batmancpu.player.ui.glass.PlayerUiSettingsStore.GLASS_ENABLED_KEY, true,
+            ))
+            assertFalse("Restored Glass switch exposes its off state", restoredSwitch.isChecked)
+            assertTrue(restoredSwitch.isClickable)
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
             preferences.edit().clear().commit()
@@ -373,7 +395,7 @@ class PreviewUiAndroidTest {
                 }
             }
             fun cardBounds(title: String): Rect {
-                var target: AccessibilityNodeInfo? = text(title)
+                var target: AccessibilityNodeInfo? = titleCard(title)
                 while (target != null && !target.isClickable) target = target.parent
                 val card = checkNotNull(target) { "No clickable catalogue card for $title" }
                 return Rect().also { card.getBoundsInScreen(it) }
@@ -387,14 +409,14 @@ class PreviewUiAndroidTest {
             assertTrue(input.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, Bundle().apply {
                 putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, "2022")
             }))
-            text("Aurora")
+            titleCard("Aurora")
             assertTrue(
                 "Nonmatching title must disappear after the asynchronous edit",
-                awaitCondition(10_000) { find { it.text?.toString() == "Blue Harbour" } == null },
+                awaitCondition(10_000) { find { it.contentDescription?.toString()?.startsWith("Blue Harbour,") == true } == null },
             )
-            assertNull(find { it.text?.toString() == "Blue Harbour" })
+            assertNull(find { it.contentDescription?.toString()?.startsWith("Blue Harbour,") == true })
             screenshot("search")
-            click(text("Aurora"))
+            clickTitleCard("Aurora")
             text("Aurora.2022.mp4")
             val detailArtwork = awaitNode { it.contentDescription?.toString() == "Title artwork for Aurora" }
             val detailArtworkBounds = Rect()
@@ -405,7 +427,7 @@ class PreviewUiAndroidTest {
             assertTrue("Close returns to the library without removing its item", awaitCondition(2_000) {
                 find { it.text?.toString() == "Play video" } == null
             })
-            click(text("Aurora"))
+            clickTitleCard("Aurora")
             text("Aurora.2022.mp4")
             click(text("Play video"))
             assertTrue("Play action reaches the selected indexed file", awaitCondition(3_000) { played.get()?.documentId == "movie-A" })
@@ -437,7 +459,7 @@ class PreviewUiAndroidTest {
                     }
                 }
             }
-            click(text("North Star"))
+            clickTitleCard("North Star")
             text("Season 1")
             text("S01 · E01")
             text("S01 · E02")
@@ -523,7 +545,7 @@ class PreviewUiAndroidTest {
                     }
                 }
             }
-            click(text("Aurora"))
+            clickTitleCard("Aurora")
             // Capture also provides a finite transition settle before inspecting sheet actions.
             screenshot("metadata-details")
             assertEquals("Opening details must not initiate an external lookup", 0, searches.get())
@@ -625,8 +647,8 @@ class PreviewUiAndroidTest {
                     }
                 }
             }
-            assertTrue(awaitCondition(3_000) { find { it.text?.toString() == "Aurora" } != null })
-            val titleNode = awaitNode { it.text?.toString() == "Aurora" }
+            assertTrue(awaitCondition(3_000) { find { it.contentDescription?.toString()?.startsWith("Aurora,") == true } != null })
+            val titleNode = titleCard("Aurora")
             var cardNode: AccessibilityNodeInfo? = titleNode
             while (cardNode != null && !cardNode.isClickable) cardNode = cardNode.parent
             val artworkBounds = Rect()
@@ -636,7 +658,8 @@ class PreviewUiAndroidTest {
 
             clickLastClickableLabel("Movies")
             assertTrue("Movies selection filters the catalogue", awaitCondition(3_000) {
-                find { it.text?.toString() == "Aurora" } != null && find { it.text?.toString() == "North Star" } == null
+                find { it.contentDescription?.toString()?.startsWith("Aurora,") == true } != null &&
+                    find { it.contentDescription?.toString()?.startsWith("North Star,") == true } == null
             })
             assertTrue(
                 "Movies tab exposes selected semantics; ${activeWindowSummary()}",
@@ -645,7 +668,8 @@ class PreviewUiAndroidTest {
 
             clickLastClickableLabel("Shows")
             assertTrue("Shows selection filters the catalogue", awaitCondition(3_000) {
-                find { it.text?.toString() == "North Star" } != null && find { it.text?.toString() == "Aurora" } == null
+                find { it.contentDescription?.toString()?.startsWith("North Star,") == true } != null &&
+                    find { it.contentDescription?.toString()?.startsWith("Aurora,") == true } == null
             })
             assertTrue("Shows tab exposes selected semantics", hasSelectedSemanticsOnLabelOrParent("Shows"))
 

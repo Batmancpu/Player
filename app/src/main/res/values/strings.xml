@@ -66,6 +66,9 @@
     <string name="catalogue_on_device">On this device</string>
     <string name="catalogue_detail_artwork_description">Backdrop artwork for %1$s</string>
     <string name="catalogue_detail_placeholder_description">Title artwork for %1$s</string>
+    <string name="catalogue_card_accessibility">%1$s, %2$s, %3$s</string>
+    <string name="catalogue_card_movie">Movie</string>
+    <string name="catalogue_card_series">TV series</string>
     <string name="catalogue_local_video">Local video</string>
     <string name="catalogue_play">Play video</string>
     <string name="catalogue_season">Season %1$d</string>
