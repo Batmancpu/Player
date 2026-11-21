@@ -183,3 +183,8 @@ The user requested a signed APK checkpoint now and wants implementation to conti
 ## 2026-11-21 progress update — production navigation
 - Home/Movies/Shows/Search navigation is implemented and filters the local catalogue. Android 15 CI exposed a selected-tab accessibility state reporting gap; explicit selected/not-selected state descriptions and an assertion are now committed, pending CI.
 - Sequence: verify navigation → complete player caption controls and playback interaction polish → apply bounded control-surface Glass and accessibility/reduced-motion fallbacks → run release-like size/performance checks and prepare one integrated test candidate. Physical Reno10 FPS/thermal evidence remains a required user-device measurement.
+
+
+## 2026-11-21 progress update — playback controls
+- Production library navigation now announces selected destination state for accessibility. CI #185 surfaced the issue; explicit state descriptions and regression coverage are committed, awaiting a new CI result.
+- Added local Media3 playback rate choices (0.75×–2×) and synthetic UI coverage. Next: CI verification, remaining subtitle/player control polish, bounded Glass and release-like performance/size checks. Final user-device acceptance and Reno10 performance evidence remain separate gates.
