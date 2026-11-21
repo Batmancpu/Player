@@ -1219,3 +1219,9 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - `PreviewUiAndroidTest` and the fullscreen integration test now launch a debug-only empty `PreviewTestActivity` rather than MainActivity. This prevents production startup, persisted folders and lifecycle work from racing test-owned synthetic Compose content; the activity is in the debug source set and is not packaged in release.
 - The season-detail regression now scrolls the exact `S02 · E01` accessible episode node into view before clicking it; previously it scrolled the season heading and then assumed the episode remained on screen.
 - No user-facing release build or phone test is produced by this change. Verification: pending CI run after commit. Next: inspect the current #156 result, then verify test isolation and all gates in the new run.
+
+
+## 2026-11-21 — Correct remaining instrumentation host reference
+- CI #157 / https://github.com/Batmancpu/Player/actions/runs/44934245938 failed before tests at Android-test compilation: `LocalPlaybackAndroidTest.kt:136` still referenced `MainActivity::class.java` after its import was removed during the synthetic-host conversion.
+- Corrected that fullscreen controller test to launch `PreviewTestActivity`, matching the rest of the synthetic UI suite. This was a compile-time omission, not an app/runtime defect.
+- No tests ran in #157 and no APK/release was produced. Next: rerun CI #158; inspect test XML and full gates before continuing.

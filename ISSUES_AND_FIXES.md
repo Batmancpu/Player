@@ -381,9 +381,17 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - **Next:** Verify shelf scrolling/selection/search and synthetic screenshots across phone widths.
 
 
-## H-0XX — Synthetic Compose instrumentation can race MainActivity startup
+## H-026 — Synthetic Compose instrumentation can race MainActivity startup
 - **Status:** Regression guard added; CI verification pending.
 - **Evidence:** CI #155 had a metadata interaction failure whose active accessibility window contained the actual MainActivity library (including a persisted Aurora title) while the test expected synthetic content. A second failure in the same run clicked a season episode after scrolling only its header.
 - **Root-cause confidence:** High that MainActivity lifecycle/startup can race synthetic `setContent`; the exact interleaving was intermittent. The episode row failure is consistent with independent list scrolling.
 - **Fix:** UI tests now launch a debug-only, empty Compose host activity. The season test reveals the exact selected episode before click.
 - **Regression coverage:** Existing metadata synthetic interaction and indexed season-episode playback tests. CI pending.
+
+
+## H-027 — One fullscreen test retained the production activity reference
+- **Status:** Corrected; full CI verification pending.
+- **Evidence:** CI #157 failed Android-test Kotlin compilation at `LocalPlaybackAndroidTest.kt:136` with an unresolved `MainActivity` reference after the host refactor removed that import.
+- **Root cause:** The test-host substitution did not match this line because its long one-line Intent expression differed from the other references.
+- **Fix:** The fullscreen controller integration now launches the debug-only `PreviewTestActivity`.
+- **Regression coverage:** CI #158 must compile and execute the Android 15 integration suite.

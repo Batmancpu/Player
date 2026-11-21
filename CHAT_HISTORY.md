@@ -455,3 +455,8 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 ## 2026-11-21 — Synthetic Compose test isolation
 - CI #155 had two UI failures: the selected season-2 episode was not brought into view before click, and a metadata test occasionally saw production MainActivity content instead of the synthetic test screen. The season test now scrolls the exact episode node into view, and synthetic UI tests use an empty debug-only host activity so app startup cannot overwrite their content.
 - This is test-only; release APK source and user data behavior are unchanged. Verification is pending the next Android CI run. The user has asked to receive a single APK after integrated readiness; no milestone APK was published.
+
+
+## 2026-11-21 — Follow-up for CI #157 compile failure
+- CI #157 found one missed `MainActivity` reference in the fullscreen test when synthetic screens were moved to the debug-only host. Corrected the Intent target to `PreviewTestActivity` and recorded H-027.
+- This build failed before running tests. CI #158 is required before further app changes.

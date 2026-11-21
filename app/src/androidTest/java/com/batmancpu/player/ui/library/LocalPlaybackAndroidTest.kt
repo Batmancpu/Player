@@ -133,7 +133,7 @@ class LocalPlaybackAndroidTest {
         SyntheticSafProvider.playbackFile = fixture
         val fullScreen = mutableStateOf(false)
         val playbackStarted = CountDownLatch(1)
-        val activity = instrumentation.startActivitySync(Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)) as PreviewTestActivity
+        val activity = instrumentation.startActivitySync(Intent(context, PreviewTestActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)) as PreviewTestActivity
         try {
             instrumentation.runOnMainSync {
                 activity.setContent {

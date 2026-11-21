@@ -1,4 +1,9 @@
 ## Current handoff — 2026-11-21 (latest)
+- Latest source: `62dbc678ce444de723383423a6963995ddba3d57`. CI #156 passed 46/46 Android 15 cases, plus schema/JVM/privacy/build gates. It produced no installable APK.
+- CI #157 failed before Android tests at `LocalPlaybackAndroidTest.kt:136`, where one fullscreen test retained a deleted MainActivity import/reference after switching synthetic UI tests to the debug-only host. Corrected on main in this follow-up; verification pending.
+- New CI run #158 is the next exact action: verify the Android test host compiles, run all instrumentation tests, inspect screenshots/results and confirm app privacy/build gates. Do not layer further changes until it is green.
+- User wants one installable APK after integrated readiness; latest release remains signed v0.1.91. No new APK/Release, OPPO test or performance measure from these commits.
+-## Current handoff — 2026-11-21 (latest)
 - Main base for current test-host correction: `11faca5e43f55909b5911e4201f9707d1d4e31fa`; latest released signed APK remains v0.1.91. User requested one installable APK only when the integrated app is ready; no milestone APK.
 - CI #156 is running for offline movie/TV shelves at `https://github.com/Batmancpu/Player/actions/runs/44933722641`. Before the next commit, inspect this run's final outcome.
 - CI #155 exposed two UI test defects: a season 2 episode row was clicked without scrolling the exact row, and a metadata test intermittently observed MainActivity content during synthetic Compose setup. The current follow-up uses a debug-only synthetic host and exact episode reveal. CI has not yet verified this correction.
