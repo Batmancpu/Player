@@ -1092,5 +1092,11 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 ## 2026-11-21 — Media3 listener overload correction
 
 - CI #140 / 44916989309 found Kotlin overload ambiguity at `PlayerView.setControllerVisibilityListener`: Media3 also exposes a deprecated `PlayerControlView.VisibilityListener` overload.
-- Specified `PlayerView.ControllerVisibilityListener` explicitly. This is a compile fix; the Android integration test has not yet run past compilation.
+- Specified `PlayerView.ControllerVisibilityListener` explicitly. CI #141 compiled the app source and then identified that the test activity was inferred as generic `Activity`; cast the launched test target to `MainActivity` so Compose `setContent` and lifecycle are available.
 - No APK or Release. Next: rerun full Android 15 + JVM/build/schema/privacy CI and inspect the synthetic auto-hide/tap test result.
+
+
+## 2026-11-21 — Playback UI test activity type correction
+
+- CI #141 / 44917670837 compiled app source after the Media3 listener fix, then failed compiling the new instrumentation test because `startActivitySync` was typed as generic `Activity`.
+- Cast the result to the launched `MainActivity`, matching the established UI test harness, so `setContent` and `lifecycle` resolve. Android integration has not run yet; rerun pending. No installable APK.

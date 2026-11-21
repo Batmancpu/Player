@@ -375,3 +375,7 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 
 ## 2026-11-21 — Media3 visibility listener compile correction
 - CI #140 failed to compile because the listener lambda matched both PlayerView and PlayerControlView overloads. Explicitly typed the PlayerView callback; rerun pending. No installable APK.
+
+
+## 2026-11-21 — Playback test activity typing
+- CI #141 app compilation passed after explicit Media3 listener typing. Android-test compilation found the test used generic Activity; it is now explicitly MainActivity so Compose/lifecycle APIs resolve. Rerun pending; no APK.

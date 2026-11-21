@@ -303,7 +303,7 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 
 
 ### R-013 — Persistent player header obscures video
-- **Status:** Initial CI #140 exposed a Kotlin overload ambiguity; explicit PlayerView listener type added and full integration rerun pending.
+- **Status:** CI #140 overload ambiguity is fixed; CI #141 compiled app source then found a generic Activity type in the new test. Test type corrected; rerun pending.
 - **Change:** Tie the Compose title/audio/subtitle header to Media3 controller visibility with a bounded 2.5-second timeout. Tap on video restores the controls and header.
-- **Verification:** CI #140 failed during compilation before the integration test ran; the overloaded listener is now typed explicitly.
+- **Verification:** CI #140 app compile failed on ambiguous overload. CI #141 app compile passed but Android-test compile failed because startActivitySync was not cast to MainActivity. Both source/test corrections are in place; full interaction test is pending.
 - **Next:** Verify auto-hide/tap on synthetic Android playback; later verify controller layout and subtitle visibility on OPPO.

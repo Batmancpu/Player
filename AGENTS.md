@@ -331,4 +331,4 @@ Added a reversible full-screen system-bar toggle to local video playback with di
 
 ## 2026-11-21 — Playback chrome auto-hide
 
-Player's title/track overlay now follows Media3 controller visibility and uses a 2.5-second timeout so video is not permanently covered. CI #140 exposed an overload ambiguity between PlayerView and PlayerControlView listeners; the source now specifies PlayerView.ControllerVisibilityListener. The ten-second synthetic fixture and hide/tap accessibility regression remain in the gate. CI pending. Next: verify compilation and the end-to-end interaction; no Release APK.
+Player's title/track overlay now follows Media3 controller visibility and uses a 2.5-second timeout so video is not permanently covered. CI #140 exposed an overload ambiguity between PlayerView and PlayerControlView listeners; fixed with the explicit PlayerView.ControllerVisibilityListener. CI #141 compiled app source, then found the new UI test held a generic Activity instead of MainActivity. The test now uses the concrete activity type for Compose/lifecycle APIs. Rerun pending; no Release APK. Next: verify test compilation and end-to-end interaction.
