@@ -77,7 +77,7 @@ class PreviewUiAndroidTest {
             val description = node.contentDescription?.toString()?.take(80)
             if (!label.isNullOrBlank() || !description.isNullOrBlank()) {
                 val bounds = Rect().also(node::getBoundsInScreen)
-                entries += "${node.className}[text=$label, description=$description, bounds=$bounds, selected=${node.isSelected}, checked=${node.isChecked}, state=${node.stateDescription}, scrollable=${node.isScrollable}]"
+                entries += "${node.className}[text=$label, description=$description, bounds=$bounds, selected=${node.isSelected}, checkable=${node.isCheckable}, checked=${node.isChecked}, state=${node.stateDescription}, scrollable=${node.isScrollable}]"
             }
             for (index in 0 until node.childCount) {
                 val child = node.getChild(index) ?: continue
@@ -97,7 +97,9 @@ class PreviewUiAndroidTest {
         return bounds.width() > 0 && bounds.height() > 0 && bounds.top >= 0 && bounds.bottom <= safeBottom
     }
 
-    private fun text(value: String) = awaitNode { it.text?.toString() == value }
+    private fun text(value: String) = awaitNode {
+        it.text?.toString() == value || it.contentDescription?.toString() == value
+    }
     private fun titleCard(value: String) = awaitNode {
         it.contentDescription?.toString()?.startsWith("$value,") == true
     }
@@ -339,7 +341,7 @@ class PreviewUiAndroidTest {
                     label.startsWith("Liquid Glass effects,") && label.endsWith(", $announcedOn")
                 } == true
             }
-            assertTrue("Glass starts enabled and announced; ${activeWindowSummary()}", glassSwitch.isChecked)
+            assertTrue("Glass starts enabled and announced; ${activeWindowSummary()}", glassSwitch.isCheckable && glassSwitch.isChecked)
             click(glassSwitch)
             assertTrue("Glass off preference is saved", awaitCondition(3_000) {
                 !preferences.getBoolean(com.batmancpu.player.ui.glass.PlayerUiSettingsStore.GLASS_ENABLED_KEY, true)
@@ -349,7 +351,7 @@ class PreviewUiAndroidTest {
                     it.contentDescription?.toString()?.let { label ->
                         label.startsWith("Liquid Glass effects,") && label.endsWith(", $announcedOff")
                     } == true
-                }?.let { !it.isChecked } == true
+                }?.let { it.isCheckable && !it.isChecked } == true
             })
             instrumentation.runOnMainSync { activity.finish() }
             activity = launch()
@@ -364,7 +366,7 @@ class PreviewUiAndroidTest {
             assertFalse("Glass off preference survives screen/activity recreation", preferences.getBoolean(
                 com.batmancpu.player.ui.glass.PlayerUiSettingsStore.GLASS_ENABLED_KEY, true,
             ))
-            assertFalse("Restored Glass switch exposes its off state", restoredSwitch.isChecked)
+            assertTrue("Restored Glass switch exposes its off state; ${activeWindowSummary()}", restoredSwitch.isCheckable && !restoredSwitch.isChecked)
             assertTrue(restoredSwitch.isClickable)
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
@@ -553,7 +555,9 @@ class PreviewUiAndroidTest {
             assertEquals(1, searches.get())
             click(revealByScrolling("Synthetic result description"))
             assertEquals("Selecting a candidate is not confirmation", 0, confirmations.get())
-            click(revealByScrolling("Confirm movie match"))
+            val confirmMatch = text("Confirm movie match")
+            assertTrue("Confirmation is inside the visible detail sheet", isInsideVisibleAppBounds(confirmMatch))
+            click(confirmMatch)
             assertEquals("The selected provider result needs a separate confirmation tap", 1, confirmations.get())
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
@@ -661,17 +665,18 @@ class PreviewUiAndroidTest {
                 find { it.contentDescription?.toString()?.startsWith("Aurora,") == true } != null &&
                     find { it.contentDescription?.toString()?.startsWith("North Star,") == true } == null
             })
-            assertTrue(
-                "Movies tab exposes selected semantics; ${activeWindowSummary()}",
-                hasSelectedSemanticsOnLabelOrParent("Movies"),
-            )
+            assertTrue("Movies tab exposes selected semantics; ${activeWindowSummary()}", awaitCondition(3_000) {
+                hasSelectedSemanticsOnLabelOrParent("Movies")
+            })
 
             clickLastClickableLabel("Shows")
             assertTrue("Shows selection filters the catalogue", awaitCondition(3_000) {
                 find { it.contentDescription?.toString()?.startsWith("North Star,") == true } != null &&
                     find { it.contentDescription?.toString()?.startsWith("Aurora,") == true } == null
             })
-            assertTrue("Shows tab exposes selected semantics", hasSelectedSemanticsOnLabelOrParent("Shows"))
+            assertTrue("Shows tab exposes selected semantics", awaitCondition(3_000) {
+                hasSelectedSemanticsOnLabelOrParent("Shows")
+            })
 
             clickLastClickableLabel("Search")
             assertTrue("Search destination focuses the accessible title field", awaitCondition(3_000) {

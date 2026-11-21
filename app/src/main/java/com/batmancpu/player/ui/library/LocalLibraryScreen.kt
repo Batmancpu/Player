@@ -33,6 +33,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.toggleableState
 import androidx.compose.ui.semantics.semantics
@@ -567,19 +569,24 @@ internal fun LocalLibraryContent(
                         Text(stringResource(R.string.settings_glass_description), color = PlayerPalette.textSecondary,
                             style = MaterialTheme.typography.bodySmall)
                     }
+                    fun updateGlassPreference(enabled: Boolean) {
+                        glassEnabled = enabled
+                        uiSettings.setGlassEnabled(enabled)
+                    }
                     Switch(
                         checked = glassEnabled,
-                        onCheckedChange = { enabled ->
-                            glassEnabled = enabled
-                            uiSettings.setGlassEnabled(enabled)
-                        },
-                        modifier = Modifier.semantics {
+                        onCheckedChange = ::updateGlassPreference,
+                        modifier = Modifier.clearAndSetSemantics {
                             role = Role.Switch
                             toggleableState = if (glassEnabled) ToggleableState.On else ToggleableState.Off
                             // Include the localized state in the label as well as the native
                             // Switch state so Android accessibility services announce it clearly.
                             contentDescription = "$glassDescription, $glassStateDescription"
                             stateDescription = glassStateDescription
+                            onClick(label = glassDescription) {
+                                updateGlassPreference(!glassEnabled)
+                                true
+                            }
                         },
                     )
                 }

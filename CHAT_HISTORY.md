@@ -620,3 +620,9 @@ CI #209 stopped before Android tests because the new poster accessibility descri
 ## 2026-11-21 — CI #212 import correction
 - CI #212 / 44960830044 stopped before Android tests at `LocalLibraryScreen.kt:576`: the explicit `Role.Switch` semantics assignment was missing the Compose `role` extension import. This is a compile-only error; no UI or privacy behavior was evaluated and no APK/artifact was produced.
 - Added the extension import and clarified the accessibility semantics comment. Next: commit with updated docs and inspect CI #213 for compilation, 51 Android 15 tests, screenshots and privacy/schema gates. Continue integrated player work after this gate.
+
+
+## 2026-11-21 — CI #213 UI semantics and modal follow-up
+- CI #213 compiled and ran 51 Android 15 instrumentation tests: 47 passed, 4 UI checks failed. Explicit card labels now appear and series detail works. The Switch remained a generic unchecked node; dock labels as contentDescriptions weren't recognized by a test helper; selected semantics were asserted before recomposition; and the metadata confirm button was visible in safe bounds but rejected by the generic scroll fallback.
+- Current correction uses a clear Switch semantics node including role/state/accessibility click, searches either exact text or contentDescription, waits for navigation state settlement and asserts safe on-screen bounds before clicking the final confirmation. CI #214 must verify; no APK or actual-phone evidence.
+- Next: commit with updated repo context, inspect CI #214 and screenshots, then continue player/subtitle/Glass, Macrobenchmark and the final efficiency review.

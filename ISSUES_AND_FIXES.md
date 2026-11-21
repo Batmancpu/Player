@@ -549,10 +549,10 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 
 
 ### R-038 — Android 15 production accessibility semantics and modal scroll
-- **Status:** Iterative correction pending CI #213. CI #212 stopped at compile for the separate missing `role` import; fixed locally.
+- **Status:** Iterative correction pending CI #214. CI #212 stopped at compile for the separate missing `role` import; CI #213 compiled but surfaced 4 UI issues.
 - **Evidence:** CI #210 ran 51 tests: 46 passed, 5 failed. CI #211 compiled and ran 51 tests: 47 passed, 4 failed. Explicit dock selected semantics now pass, as does series details. Compose clear semantics on the decorative title initial also removed merged card text; the Glass Switch Android node reported `isChecked=false` despite enabled preference. The metadata journey was blocked by missing accessible card title.
-- **Correction under test:** Add a localized title/type/year description directly to each clickable card; make cards the test accessibility target. Set Role.Switch and ToggleableState explicitly, keep the localized On/Off announcement, and verify Android's checked field plus persistent preference across recreation. Keep explicit tab semantics and safe modal scroll fallback.
-- **Next:** Verify all UI tests/screenshots in CI #213. Emulator results do not establish actual TalkBack behavior or OPPO quality.
+- **Correction under test:** Add a localized title/type/year description directly to each clickable card; make cards the test accessibility target. Clear and set Role.Switch/ToggleableState plus explicit accessibility click, keep localized On/Off, and verify Android checked fields and preference persistence. Accept exact text or contentDescription in tests; wait for selected semantics; directly activate the metadata confirm only after asserting safe visible bounds.
+- **Next:** Verify all UI tests/screenshots in CI #214. Emulator results do not establish actual TalkBack behavior or OPPO quality.
 
 ### R-039 — Larger detail hero and backdrop caching
 - **Status:** Implemented locally, security regression test added, CI pending.
