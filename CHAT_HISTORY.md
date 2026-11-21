@@ -313,3 +313,7 @@ User explicitly asked to complete the app before receiving an APK rather than pr
 
 ## 2026-11-21 — artwork verification and grid continuation
 User asked to wait for one complete APK, not milestone downloads. Artwork cache was added after manual confirmation and local poster display passed CI #121 on retry. Initial UI test failure was a transient Pixel Launcher ANR; run attempt 2 passed both Android 15 and build/schema/privacy jobs. Follow-up adds lazy cached artwork to catalogue cards without networking; no installable APK or Release. OPPO acceptance/performance still unmeasured.
+
+
+## 2026-11-21 — lazy offline posters and reference review
+CI #122 passed Android 15 UI/screenshots, JVM/build, Room-schema and privacy checks for grid poster rendering. User requested one complete APK at the end, so no installable build was published. Original FCZenith repository URL now redirects to Batmancpu/brrMusic; it and rezapranata089-bit/Zenith use GPL-3.0. We are using the user's reference for visual research only, no code/assets copied. Added tests for offline cached poster and disabled-settings behavior; pending CI.

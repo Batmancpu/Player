@@ -57,3 +57,7 @@ Coil Compose 3.6.3 (Apache-2.0) only decodes local Files from Player's bounded p
 
 
 Catalogue poster images are drawn only from Player's private cache using Coil's local File model; loading and scrolling cards never contact a URL. The poster association comes only from the locally saved user-confirmed match. No local paths or media bytes leave the device through this flow.
+
+
+## User's Zenith reference and reuse review — 2026-11-21
+The requested first-hand reference is the user's FCZenith repository, not Bitcode. GitHub currently redirects `https://github.com/Batmancpu/FCZenith` to `https://github.com/Batmancpu/brrMusic`; its published LICENSE is GNU GPL v3.0. Its immediate upstream `rezapranata089-bit/Zenith` also publishes GPL-3.0 and its README describes its lineage. Player has no repository LICENSE file and has not copied code, artwork, brand assets or fonts from these projects. Use them only to study interaction qualities and broadly translate those ideas into independently authored Compose; retain citations and do not import GPL code unless Player's licensing strategy is explicitly changed. Do not include BitChord/other transitive upstream code. References: [FCZenith/brrMusic](https://github.com/Batmancpu/brrMusic), [brrMusic LICENSE](https://github.com/Batmancpu/brrMusic/blob/main/LICENSE), [Zenith](https://github.com/rezapranata089-bit/Zenith), [Zenith LICENSE](https://github.com/rezapranata089-bit/Zenith/blob/main/LICENSE).

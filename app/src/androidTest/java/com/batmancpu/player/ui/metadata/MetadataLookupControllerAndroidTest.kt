@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -74,6 +75,12 @@ class MetadataLookupControllerAndroidTest {
             assertEquals(1, artworkCalls.get())
             assertTrue(confirmed.posterFile?.isFile == true)
             assertEquals("Aurora", OfflineMetadataCache.load(context, tree)[file.documentId]?.title)
+            assertNull("Untrusted image paths must not reach the transport", artwork.fetch("https://example.invalid/poster.jpg", TmdbImageSize.POSTER))
+            assertEquals("Invalid routes are rejected locally", 1, artworkCalls.get())
+            settings.disable()
+            assertEquals("Confirmed artwork remains readable offline after disabling TMDB", confirmed.posterFile, artwork.cached("/poster_A.jpg", TmdbImageSize.POSTER))
+            assertNull("Disabled settings prevent another artwork request", artwork.fetch("/poster_A.jpg", TmdbImageSize.POSTER))
+            assertEquals("Offline cache reads do not call the network", 1, artworkCalls.get())
         } finally {
             controller.clear()
             scope.cancel()

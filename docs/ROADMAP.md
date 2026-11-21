@@ -98,3 +98,7 @@ Coil Compose 3.6.3 Apache-2.0 decodes only app-private cached Files; no image-ne
 
 ## 2026-11-21 — artwork integration verification
 CI #121 attempt 2 passed the corrected manual confirmation/artwork test, Android 15 integration, JVM/build, Room schema and privacy checks. Attempt 1's UI failures all reported Pixel Launcher not responding; rerun passed. No user APK/Release. A new slice displays cached confirmed posters in lazy catalogue cards, with crisp artwork, contrast scrim and original placeholder when no poster exists. It reads only app-private Files; rendering/scroll does not request artwork. Verification pending. Device rendering/performance remain open.
+
+
+## 2026-11-21 — grid posters and reference license
+CI #122 passed the poster card change and all existing Android 15/UI, unit, schema and privacy gates. Cards render only existing app-private confirmed artwork locally; no CDN request while browsing. A new offline/disabled-setting safety regression is in CI. Licensing research recorded below in UPSTREAM_AND_PRIVACY: user's FCZenith project and immediate Zenith use GPL-3.0; Player takes visual/design inspiration only and copies no source or assets. No user APK/Release; continue to one complete final candidate.

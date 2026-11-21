@@ -1,4 +1,13 @@
 ## Current handoff — 2026-11-21
+- User wants the whole integrated app before a single installable APK; do not create milestone Releases/APKs.
+- Latest verified main before offline edge-case test: 96a340a260875eae945c611c7df3e6573aa3af26. CI #122 / 44902258363 passed Android 15 tests, screenshots, JVM/debug, Room schema and privacy. No user APK/Release.
+- TMDB remains manual and default-off. Only a separate match confirmation fetches poster; cache is bounded/no-backup. Coil decodes local cache Files only. Lazy visible cards read only those Files; no requests on browse/scroll. Current follow-up tests offline cache after setting disable and invalid URL rejection; CI pending.
+- Upstream reference research: FCZenith now redirects to Batmancpu/brrMusic; its LICENSE and rezapranata089-bit/Zenith LICENSE are GPL-3.0. No code/assets from them imported; visual reference only. See UPSTREAM_AND_PRIVACY.
+- Next: verify current test run, continue offline details/catalogue, playback/audio/subtitle and original Haze-based Glass/accessibility/performance tasks. Preserve stable app ID/certificate, no-backup, read-only single SAF tree. Target phone acceptance/FPS evidence still pending. No APK until integrated experience ready.
+
+---
+
+## Current handoff — 2026-11-21
 - User wants one APK only after the whole app is complete; do not provide installable milestone builds/releases.
 - Base before current slice: dd7bffe86169a9f4831343b9ae213efdc8a00ed4. CI #121 / 44901117586 attempt 2 passed Android 15 integration, JVM/build, schema and privacy checks. Attempt 1 showed Pixel Launcher ANR in five existing UI tests; attempt 2 passed. Signing/release skipped. No user APK.
 - Confirmed TMDB artwork now uses an unauthenticated, bounded fixed-host CDN transport after explicit match confirmation, no-backup LRU and Coil local-file decoding. Current follow-up shows already-cached poster files in visible catalogue cards; verification pending. It does not fetch from card scroll or startup.

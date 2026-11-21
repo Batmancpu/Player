@@ -179,3 +179,7 @@ Provider metadata is cached by TMDB ID/media type and joined to a SAF document o
 
 ### D-035 implementation verification addendum — 2026-11-21
 The first Credits UI build failed in CI #110 on a Kotlin string-escaping typo and wrong foundation import; both are corrected on main, with CI #111/#112 pending. No app permission/network behavior changed and no installable APK was created.
+
+
+## D-2026-11-21 — Player's Zenith inspiration boundary
+Use the user's FCZenith/brrMusic project and immediate rezapranata089-bit/Zenith upstream to study interaction and visual hierarchy only. Both public LICENSE files are GPL-3.0, and Player currently has no LICENSE file; no source code/assets are imported. Original Compose implementations must use separate code and assets. Design reference does not authorize copying upstream code or transitive upstream material.

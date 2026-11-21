@@ -267,3 +267,7 @@ Replaced the synthetic PNG test fixture with a CRC-valid 1×1 RGBA PNG after loc
 
 ## 2026-11-21 — CI #121 and grid poster progress
 Artwork detail/cache change passed CI #121 attempt 2 (run 44901117586): Android 15 integration, unit/build, Room schema and privacy gates green. Attempt 1's five UI failures were a Pixel Launcher ANR; immediate rerun passed. No APK/Release. Current main adds lazy poster rendering to visible catalogue cards from the already-confirmed app-private cache; tests pending. Continue offline/card accessibility work, then Phase 3+ and only make one final integrated APK when requested experience is ready. Actual OPPO/performance remain unverified.
+
+
+## 2026-11-21 — poster grid verification and upstream licensing research
+CI #122 (run 44902258363) passed Android 15 tests/screenshots, unit/build, Room schema and privacy gates for cached posters in lazy cards. No Release/signing/user APK. Researched user's references: FCZenith URL redirects to Batmancpu/brrMusic; its LICENSE and immediate upstream rezapranata089-bit/Zenith are GPL-3.0. Zenith README notes another upstream lineage; Player did not copy source/assets and will use only as a visual/interaction reference. New test extends offline/disabled-settings and unsafe-route coverage; CI pending. Next inspect CI then continue local playback/audio/subtitle and original Glass work.

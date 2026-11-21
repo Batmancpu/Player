@@ -408,3 +408,7 @@ The About/Credits screen displays TMDB's approved logo and exact required non-en
 
 ### Credits compile follow-up — 2026-11-21
 CI #110 / 44894615964 reported a malformed quote in the Credits button callback and an unresolved verticalScroll import. Both source fixes are on main; CI #111/#112 are verifying. No user-installable APK or Release was produced.
+
+
+## 2026-11-21 — reference and release cadence update
+User requested a single installable APK after the integrated app is ready, not per-slice. CI #122 passed cached poster cards; no Release. The user's FCZenith URL now redirects to Batmancpu/brrMusic and both it and immediate upstream rezapranata089-bit/Zenith have GPL-3.0 licenses. Player uses them as visual reference only, no code/assets reuse. See docs/UPSTREAM_AND_PRIVACY.md. Current follow-up validates disabled/offline artwork cache and unsafe-route rejection; CI pending.
