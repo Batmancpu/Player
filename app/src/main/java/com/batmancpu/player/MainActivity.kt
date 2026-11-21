@@ -12,6 +12,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.ViewModelProvider
 import com.batmancpu.player.ui.glass.GlassLabScreen
 import com.batmancpu.player.ui.library.LocalLibraryScreen
@@ -44,6 +47,7 @@ class MainActivity : ComponentActivity() {
         val metadataModel = ViewModelProvider(this)[MetadataSettingsViewModel::class.java]
         setContent {
             var showGlassLab by rememberSaveable { mutableStateOf(false) }
+            var immersivePlayback by rememberSaveable { mutableStateOf(false) }
             var showMetadataSettings by rememberSaveable { mutableStateOf(false) }
             var showMetadataCredits by rememberSaveable { mutableStateOf(false) }
             BackHandler(enabled = showMetadataCredits || showMetadataSettings || showGlassLab) {
@@ -55,6 +59,17 @@ class MainActivity : ComponentActivity() {
             }
 
             val playback by libraryModel.playback.collectAsState()
+            LaunchedEffect(playback.target?.uri) { immersivePlayback = false }
+            DisposableEffect(playback.target?.uri, immersivePlayback) {
+                val controller = WindowInsetsControllerCompat(window, window.decorView)
+                if (playback.target != null && immersivePlayback) {
+                    controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                    controller.hide(WindowInsetsCompat.Type.systemBars())
+                } else {
+                    controller.show(WindowInsetsCompat.Type.systemBars())
+                }
+                onDispose { controller.show(WindowInsetsCompat.Type.systemBars()) }
+            }
             BackHandler(enabled = playback.target != null || playback.loading || playback.failed) { libraryModel.closePlayback() }
             PlayerTheme {
                 val target = playback.target
@@ -64,6 +79,8 @@ class MainActivity : ComponentActivity() {
                         lifecycle = lifecycle,
                         onCheckpoint = { position, play -> libraryModel.checkpoint(target, position, play) },
                         onClose = libraryModel::closePlayback,
+                        isFullScreen = immersivePlayback,
+                        onToggleFullScreen = { immersivePlayback = !immersivePlayback },
                     )
                     showMetadataCredits -> MetadataCreditsScreen(onBack = { showMetadataCredits = false })
                     showMetadataSettings -> MetadataSettingsScreen(

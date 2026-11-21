@@ -360,3 +360,9 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 - Corrected accessibility parent-chain check passed in CI #136 / 44913968127; all 41 Android 15 tests, unit/build, Room v1-v4 schema and privacy gates succeeded.
 - No signed APK/Release was created; latest installable remains v0.1.91 per the one-integrated-APK request.
 - Continue the integrated product; actual OPPO visual/performance acceptance is pending.
+
+
+## 2026-11-21 — Player immersive control
+- User reiterated that they want one APK after the whole app is assembled, not per-step builds.
+- Added a reversible player action for immersive system-bar hiding, reset per media item, and an Android UI test for enter/exit accessible labels. System bars restore on lifecycle disposal.
+- No installable APK; CI pending. Actual OPPO behavior and all other integration/performance checks remain pending.

@@ -29,6 +29,8 @@ internal fun LocalPlayerScreen(
     lifecycle: Lifecycle,
     onCheckpoint: (Long, Boolean) -> Unit,
     onClose: () -> Unit,
+    isFullScreen: Boolean,
+    onToggleFullScreen: () -> Unit,
 ) {
     val context = LocalContext.current
     val checkpoint by rememberUpdatedState(onCheckpoint)
@@ -106,6 +108,7 @@ internal fun LocalPlayerScreen(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = onClose) { Text(stringResource(R.string.player_back), color = Color.White) }
                 Text(target.label, color = Color.White, maxLines = 1, modifier = Modifier.weight(1f))
+                PlayerFullscreenButton(isFullScreen, onToggleFullScreen)
             }
             if (hasAudioTracks || hasSubtitleTracks) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
@@ -128,4 +131,11 @@ internal fun LocalPlayerScreen(
             }
         }
     }
+}
+
+
+@Composable
+internal fun PlayerFullscreenButton(isFullScreen: Boolean, onToggle: () -> Unit) {
+    val label = stringResource(if (isFullScreen) R.string.player_exit_fullscreen else R.string.player_enter_fullscreen)
+    TextButton(onClick = onToggle) { Text(label, color = Color.White) }
 }

@@ -293,3 +293,9 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 **Root cause:** `Locale.getAvailableLocales()` includes the root locale; its empty ISO3 language value could enter the three-letter language suffix set. After correctly stripping `.en`, the next matcher iteration treated an empty suffix as a language token and erased the one-component title stem. Root cause confidence: high, based on the suffix loop and root-locale value semantics.
 
 **Fix/regression:** Exclude blank ISO3 values and require a nonblank language token before stripping. Added a direct simple-title `Film.en.srt` regression plus the existing result-cap test with valid matching candidates. Verification pending CI; no device test. No source files/media are touched.
+
+
+### R-012 — Immersive system bars vary by OEM
+- **Status:** Implementation pending Android CI; OPPO behavior unverified.
+- **Change:** Local playback exposes an explicit reversible system-bar toggle and restores bars on exit/composition disposal.
+- **Next:** Confirm Android 15 interaction/lifecycle behavior in CI and verify actual OPPO behavior only with the final integrated APK.

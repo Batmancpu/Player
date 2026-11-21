@@ -11,6 +11,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.batmancpu.player.MainActivity
 import com.batmancpu.player.ui.glass.GlassLabScreen
 import com.batmancpu.player.ui.metadata.MetadataLookupUiState
+import com.batmancpu.player.ui.player.PlayerFullscreenButton
 import com.batmancpu.player.ui.metadata.TmdbCandidate
 import com.batmancpu.player.ui.library.TmdbMediaType
 import com.batmancpu.player.ui.theme.PlayerTheme
@@ -128,6 +129,26 @@ class PreviewUiAndroidTest {
         }
         shell("mkdir -p /sdcard/Download/player-preview-screens")
         shell("screencap -p /sdcard/Download/player-preview-screens/$name.png")
+    }
+
+    @Test(timeout = 20_000) fun playerFullscreenButtonHasReversibleAccessibleState() {
+        val activity = launch()
+        val fullScreen = mutableStateOf(false)
+        try {
+            instrumentation.runOnMainSync {
+                activity.setContent {
+                    PlayerTheme {
+                        PlayerFullscreenButton(fullScreen.value) { fullScreen.value = !fullScreen.value }
+                    }
+                }
+            }
+            click(text("Full screen"))
+            assertTrue("Toggle enters immersive mode", fullScreen.value)
+            click(text("Exit full screen"))
+            assertFalse("Toggle restores normal mode", fullScreen.value)
+        } finally {
+            instrumentation.runOnMainSync { activity.finish() }
+        }
     }
 
     @Test(timeout = 45_000) fun catalogueSearchDetailsAndPlayUseIndexedIdentity() {

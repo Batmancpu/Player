@@ -322,3 +322,8 @@ Refined the Glass Lab dock's source-backed edge, selection highlight and shadow;
 ## 2026-11-21 — Dock accessibility test correction
 
 CI #136 / 44913968127 passed all 41 Android 15 instrumentation tests after the dock assertion began checking selectable ancestors. Unit tests, CI-only debug assembly, Room v1-v4 schema regeneration/validation and privacy checks also passed. Signing/release steps were skipped because this is not the final APK request. No installable APK was published; v0.1.91 remains latest. CI #134 was an unrelated Pixel Launcher ANR; CI #135 exposed only the corrected assertion query. Next: continue integrated player controls, screen/navigation and production Glass/accessibility work; final signed APK waits until the coherent app is ready.
+
+
+## 2026-11-21 — Immersive local playback control
+
+Added a reversible full-screen system-bar toggle to local video playback with distinct accessible labels; immersive mode is scoped to active playback and system bars are restored on exit/disposal. Added an Android Compose regression for enter/exit state. CI pending. No installable APK; continue integrated work. Next: inspect CI and verify lifecycle restoration.

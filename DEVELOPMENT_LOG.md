@@ -1064,3 +1064,11 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - The full verify job passed JVM tests, CI-only debug build, exact Room v1-v4 schema export/validation and production privacy checks. Release signing and publication did not run. No installable APK or Release was created.
 - Current installable release remains v0.1.91. User asked for a single APK after the integrated app is ready; do not publish milestone APKs.
 - Next: evaluate stable Media3 options for subtitle offset, then complete player controls/full-screen/resume, catalogue navigation, production Glass surfaces, accessibility and fallback coverage. Actual OPPO visual, codec, battery, thermal and frame-time evidence remains pending.
+
+
+## 2026-11-21 — Immersive playback toggle
+
+- Added a player top-bar action to hide Android system bars during local playback and restore them on exit. The mode is transient-swipe-reveal, scoped to an active video target, and reset when the target changes; composition disposal restores system bars. Existing pause/checkpoint/release behavior is unchanged.
+- Added accessible state labels for entering and exiting full screen plus an Android Compose interaction test that toggles both ways.
+- Verification: `git diff --check` passes; local Gradle is unavailable. Android CI is pending. No installable APK/Release; keep to the user's single final integrated APK request.
+- Risk/next: Android 15 synthetic test must verify compile and reversible label interaction; actual OEM system-bar behavior on OPPO remains unmeasured. Continue full player, navigation, Glass and accessibility work after CI.

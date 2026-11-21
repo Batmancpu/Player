@@ -68,6 +68,8 @@ Playback is limited to local content URIs obtained from the one persisted SAF tr
 
 Evaluate AndroidX Media3 first against a representative local-file corpus. Its supported container list is not a guarantee that every embedded codec is decodable: actual support depends on the selected decoder and device. Evaluate LibVLC only if the Media3/device matrix leaves material format gaps; account for its native ABI/APK footprint, hardware-decoding behaviour, GPL/LGPL obligations and target-device stability before adoption. Do not promise literal support for every file format.
 
+Playback owns an explicit immersive system-bar toggle; system bars are hidden only while a local target is active in immersive mode and restored on exit/disposal.
+
 The player must expose embedded audio and subtitle tracks. It must also support external subtitle files where the selected engine supports them, including common formats such as SRT, WebVTT, TTML and SSA/ASS. Subtitle search/download provider and credentials remain unselected until API terms, privacy, account requirements and availability are audited. Downloaded subtitle files default to app-private storage and are associated with the local media identity; never modify the original media folder by default.
 
 Track selection and subtitle delay are functional requirements. The initial playback engine milestone needs only the controls required to start, pause, seek and resume a local file, plus track discovery/selection. A later UI milestone adds a compact audio/subtitle sheet, external subtitle search/download, subtitle visibility and fine-grained subtitle offset with reset. Keep video content unobstructed and do not add clutter.
