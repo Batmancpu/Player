@@ -583,3 +583,7 @@ CI #184's only failure was a test helper choosing a duplicate static Movies head
 ## 2026-11-21 — Production library Glass dock starts
 - After CI #203 passed (50/50 Android 15 tests and unit/build/schema checks), integrated the existing bounded Haze navigation material into the real library. Manage includes a persistent local Glass toggle; off mode removes Haze source capture and uses the solid fallback. The bar keeps the four real local catalogue destinations.
 - Added synthetic activity-recreation coverage. This change awaits CI; no handset performance claim or APK. User’s Glass Lab report remains a placement/experience item to verify from the new capture and later OPPO use.
+
+
+## 2026-11-21 — Glass settings compile correction
+- CI #205 caught a missing `contentDescription` import for the new Liquid Glass settings switch. Fixed the import; instrumentation did not start. Full CI for the corrected production dock is pending. No APK.

@@ -199,3 +199,7 @@ The user requested a signed APK checkpoint now and wants implementation to conti
 - CI #203 / 44952898549 passed 50/50 Android 15 instrumentation tests, unit tests, app build and Room v1-v4 schema export. This verifies the production navigation selected-state announcements and local playback-speed menu selection.
 - Release-specific signing, manifest and certificate jobs were skipped on the development push. No APK or release was produced. OPPO device experience and performance remain unverified.
 - Next engineering slice: address the user's Glass Lab dock report, continue subtitle/player controls, then production Glass and the final efficiency/performance review before one integrated signed APK.
+
+
+## 2026-11-21 build correction
+CI #205 / 44955249002 failed before instrumentation at LocalLibraryScreen.kt:517 because the new Glass toggle used Compose `contentDescription` without importing it. The import is corrected; no tests ran on that commit. Await the new full CI before continuing visual tuning.

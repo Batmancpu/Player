@@ -1,5 +1,9 @@
 ## Current implementation update — 2026-11-21
 
+CI #203 verified 50/50 Android 15 navigation/speed tests, unit/build and Room schemas. The next change adds a bounded Haze dock to production library navigation plus a private persisted on/off preference and opaque fallback. CI #205 caught a missing Compose `contentDescription` import before instrumentation; it is fixed and the full rerun is pending. No APK, OPPO performance or thermal evidence. One integrated signed candidate remains scheduled after all app features and the efficiency review.
+
+## Current implementation update — 2026-11-21
+
 CI #203 / 44952898549 passed the navigation and playback-speed baseline: 50/50 Android 15 instrumentation tests, JVM/unit checks, debug app build and Room schemas v1-v4. The current main adds the first bounded Haze Glass dock to production library navigation. Manage exposes a locally persisted on/off toggle; disabling Glass removes Haze source capture and uses the opaque fallback. An activity-recreation test is added and pending CI. This is not full-screen Glass acceptance and has no OPPO rendering or performance evidence. The user requested a single integrated APK after the app and efficiency review; v0.1.174 is only an earlier checkpoint.
 
 ## Current development status — 2026-11-21

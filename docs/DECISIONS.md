@@ -94,7 +94,7 @@ CI build/test success and OPPO handset validation must be reported separately.
 **Reason:** The user explicitly prioritised a useful working product over further visual experiments. Haze dependencies and lab work are retained but must not dictate the functional architecture.
 
 
-**Implementation status (2026-11-21):** The functional navigation baseline and player speed control passed CI #203. Following the user’s direction to continue toward the full app, the shared Haze dock is now integrated as the first bounded production Glass surface; library Manage has a persistent off switch and solid fallback, and disabled mode detaches the source. This does not mark the broader Glass phase accepted; CI and Reno10 frame/thermal measurements are pending.
+**Implementation status (2026-11-21):** The functional navigation baseline and player speed control passed CI #203. Following the user’s direction to continue toward the full app, the shared Haze dock is now integrated as the first bounded production Glass surface; library Manage has a persistent off switch and solid fallback, and disabled mode detaches the source. This does not mark the broader Glass phase accepted; CI #205 caught a missing Compose semantics import and was corrected; rerun and Reno10 frame/thermal measurements are pending.
 
 ### D-019 — Stable self-managed Android release signing
 **Status:** Accepted  

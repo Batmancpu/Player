@@ -43,3 +43,6 @@ Every UI slice: design tokens/screen states, screenshot or reproducible descript
 
 ## 2026-11-21 — Navigation implementation status
 The local catalogue now has real Home/Movies/Shows/Search destinations backed by the selected folder's local index. Home displays the movie/series shelves, Movies and Shows filter results, and Search opens the local title field. The production library uses one bounded Haze dock on functional navigation, with explicit persisted effects-off fallback. Only the dock is glass; poster and video surfaces remain crisp. CI #203 passed the navigation baseline; dock integration is pending CI and OPPO performance measurement.
+
+
+**Current production Glass check (2026-11-21):** CI #205 caught a missing semantics import in the library toggle before tests. Corrected; the Haze dock/fallback implementation still awaits CI and Reno10 measurements.

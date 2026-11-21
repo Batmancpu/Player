@@ -1366,3 +1366,9 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - Added Android 15 synthetic coverage that disables the effect, verifies local persistence through activity recreation, and cleans up its test preference. Existing production navigation test covers tab behavior and selection.
 - Verification: CI pending; no Android SDK/Gradle wrapper is available in this workspace. No OPPO rendering, frame-time, memory, thermal or battery evidence.
 - Next: inspect CI and generated catalogue screenshots for bottom inset/overlap and Haze behavior; correct any issues before moving to subtitle controls and the final performance/release pass.
+
+
+## 2026-11-21 — Glass dock compile failure and correction
+- CI #205 / 44955249002 reached `:app:compileDebugKotlin` and failed at LocalLibraryScreen.kt:517 with unresolved reference `contentDescription`; the switch's Compose semantics modifier lacked its import. No instrumentation tests ran, and the release verification job was skipped after the failed test/build job.
+- Added the missing `androidx.compose.ui.semantics.contentDescription` import. This changes no behavior; the production Glass dock, local preference and persistence test remain the intended change. Fresh CI is pending.
+- No APK/Release or handset evidence. Next: verify compile + 51 Android 15 tests, then inspect the generated library screenshot and full build/schema checks.
