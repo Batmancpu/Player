@@ -563,3 +563,8 @@ The corrected near-end synthetic fixture passed in CI #182 / 44949435610. All 48
 
 ## 2026-11-21 — Navigation accessibility test lookup
 CI #184's only failure was a test helper choosing a duplicate static Movies heading while checking the selected tab. The movie filter assertion passed. The helper now searches all label matches and their ancestors; await the rerun.
+
+
+## 2026-11-21 — Navigation accessibility follow-up
+- CI #185 ran all 49 Android 15 instrumentation tests; the only failure was the new selected destination assertion. Catalogue screenshot shows correct bottom navigation and Home selection. Movies filtering had passed before the failed check.
+- Added explicit selected-state descriptions to each production navigation destination and adjusted the test to inspect these accessible descriptions. CI pending; continue toward the integrated app release rather than emitting intermediate APKs.
