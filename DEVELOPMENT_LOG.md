@@ -1407,3 +1407,9 @@ CI #209 / 44958254084 failed Kotlin compilation at `LocalLibraryScreen.kt:601`: 
 - Follow-up assigns each clickable card a single localized accessible label with title, media type and year/device fallback; decorative image/initial remain visual. UI tests address titles through that card label. Switch explicitly exposes Role.Switch and ToggleableState.On/Off in addition to a localized On/Off label; tests verify Android's checked flag and preference after toggling/recreation.
 - Local checks: `git diff --check` and resource XML parse pass; Android build is known to compile from #211. No local Android SDK/Gradle, no APK and no handset evidence. CI #212 must verify the regression correction and confirm the metadata action scroll helper.
 - Next: commit the documented correction, then inspect CI #212's full Android/JVM/schema/privacy result and screenshots. Continue player subtitle/controls and production Glass; only after all functionality, add Macrobenchmark/Perfetto and run the final efficiency/size review for the single signed APK.
+
+
+## 2026-11-21 — CI #212 missing semantics import
+- CI #212 / 44960830044 reached Kotlin compilation and failed at `LocalLibraryScreen.kt:576` because the Compose `role` semantics extension used for `Role.Switch` was not imported. No Android tests/screenshots ran, no APK was produced, and no product assertion was reached.
+- Added `androidx.compose.ui.semantics.role` and clarified that the setting provides both explicit native `Role.Switch`/`ToggleableState` and a localized On/Off announcement. Local `git diff --check` passes; no Android SDK/Gradle is installed locally.
+- Next: commit and inspect CI #213. It must compile and execute all 51 Android 15 cases, including explicit card semantics, switch state/persistence and modal navigation, before further feature commits.

@@ -615,3 +615,8 @@ CI #209 stopped before Android tests because the new poster accessibility descri
 - CI #211 / 44959819745 compiled and ran 51 Android 15 cases: 47 passed and four UI checks failed. Production dock selected semantics and series-details navigation pass. Android omitted card title labels after clear semantics on the decorative initial; the metadata route therefore could not open its card. The Switch `isChecked` node flag was false despite the default-enabled preference.
 - The follow-up gives each clickable poster card an explicit localized title/type/year description and switches UI automation to that accessible card. Glass exposes explicit Role.Switch/ToggleableState semantics and a localized On/Off announcement; tests check the Android checked flag and saved preference across recreation. CI #212 must validate the source and full modal route.
 - No APK or handset evidence. Next: commit with updated context, inspect CI #212/screenshots, then continue player/subtitle and final efficiency work.
+
+
+## 2026-11-21 — CI #212 import correction
+- CI #212 / 44960830044 stopped before Android tests at `LocalLibraryScreen.kt:576`: the explicit `Role.Switch` semantics assignment was missing the Compose `role` extension import. This is a compile-only error; no UI or privacy behavior was evaluated and no APK/artifact was produced.
+- Added the extension import and clarified the accessibility semantics comment. Next: commit with updated docs and inspect CI #213 for compilation, 51 Android 15 tests, screenshots and privacy/schema gates. Continue integrated player work after this gate.

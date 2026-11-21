@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.toggleableState
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -575,9 +576,8 @@ internal fun LocalLibraryContent(
                         modifier = Modifier.semantics {
                             role = Role.Switch
                             toggleableState = if (glassEnabled) ToggleableState.On else ToggleableState.Off
-                            // Switch state is announced through the native checked property;
-                            // include a concise localized state in its label for services that
-                            // do not expose Compose's custom stateDescription on Android 15.
+                            // Include the localized state in the label as well as the native
+                            // Switch state so Android accessibility services announce it clearly.
                             contentDescription = "$glassDescription, $glassStateDescription"
                             stateDescription = glassStateDescription
                         },
