@@ -351,3 +351,10 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - **Root cause:** The test did not establish that Media3 had left idle/buffering before expecting the controller to auto-hide; PlayerView may intentionally keep controls visible in idle/non-playing states.
 - **Fix:** Wait on the screen's optional internal isPlaying callback before measuring controller hide. The production callback defaults to no-op.
 - **Next:** Validate all CI gates; if failure repeats after confirmed playback, investigate the actual PlayerView listener path.
+
+
+### R-019 — Series detail sheet exposed release filenames as episode titles
+- **Status:** Improved in source; CI pending.
+- **Risk:** Raw codec/release suffixes made the episode list difficult to scan and provided no season hierarchy. The parser currently does not infer episode title text.
+- **Fix:** Group existing parsed episode records by season and show zero-padded season/episode labels; retain original document identity for playback. No external metadata request is made.
+- **Next:** Verify Android UI and accessibility in CI; later integrate episode titles only from confirmed metadata without guessing.

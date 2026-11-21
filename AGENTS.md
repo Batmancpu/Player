@@ -367,3 +367,8 @@ The caption hierarchy and resize-mode UI tests passed in CI #148 / 44923450336; 
 ## 2026-11-21 — Auto-hide test waits for active playback
 
 CI #150 / 44924204549 failed only the auto-hide test despite the 30-second media fixture; #149 passed the same 45-test source. The assertion could run while Media3 was still idle/buffering, when PlayerView intentionally keeps controls visible. Added an internal playback-state callback and made the synthetic UI test wait for actual isPlaying before asserting auto-hide. Caption hierarchy and Fit/Fill/Zoom tests passed in #148/#150. CI pending. No APK. Next: inspect complete gates and continue integrated app work.
+
+
+## 2026-11-21 — Season-grouped series details
+
+Series detail sheets now group episodes beneath localized Season headings and display stable Sxx · Exx labels instead of release filenames. Playback still uses the exact indexed document ID. Added a synthetic UI test with out-of-order episodes across two seasons. CI pending; no media/network changes and no APK. Next: verify ordering, accessibility and exact episode identity, then continue playback and production Glass work.

@@ -425,3 +425,8 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 ## 2026-11-21 — Playback startup race in auto-hide test
 - CI #149 passed all 45 Android tests; #150 passed 44/45, failing only auto-hide while the engine was not yet in confirmed active playback. A 30-second fixture alone did not remove the startup race.
 - Added an optional state callback and changed the test to await Media3 isPlaying before checking auto-hide. Product UI remains unchanged; no APK.
+
+
+## 2026-11-21 — Season-grouped series sheet
+- User requested a polished cinematic catalogue. Series details now show localized season headers and concise Sxx · Exx episode rows rather than release filenames, using the local parser only.
+- A synthetic Android interaction test verifies out-of-order season grouping and that tapping S02 · E01 plays its exact indexed document. CI pending. No APK.

@@ -128,3 +128,6 @@ CI #129 / 44908615223 verified subtitle-matcher fixes. Current work adds an addi
 
 ## 2026-11-21 — Room v4 parent persistence verified
 CI #130 / 44909463881 passed Android 15 migration/offline persistence, JVM/build/schema/privacy. The exact KSP-generated Room v4 snapshot is committed, preserving v1-v3. Parent IDs survive database close/reopen; legacy records receive an empty parent value and do not acquire guessed sidecar relationships. Next implement local sidecar URI validation/playback and tests. No installable APK at this intermediate step.
+
+
+**Catalogue detail update (2026-11-21):** Series details now group local parsed episodes by season and present compact episode numbers; the underlying document IDs remain the playback identity. This is a filename-derived grouping only. Episode titles and artwork still require explicit, confirmed metadata matching. CI pending.

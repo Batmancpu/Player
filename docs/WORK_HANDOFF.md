@@ -239,3 +239,7 @@ New subtitle/video sibling and Fit/Fill/Zoom tests passed. The 10-second synthet
 
 ### Current auto-hide test synchronization
 CI #150 failed one player test; CI #149 passed the same 45-test source. The test now waits for Media3's active-playback callback before asserting control auto-hide, so slow idle/buffering setup is excluded. Caption/zoom tests passed. CI pending; no APK.
+
+
+### Catalogue series detail update
+Series sheets now group episodes under Season headings and use Sxx · Exx labels from the local parser. The exact indexed document ID is preserved for playback. Synthetic Android test covers ordering and selection; CI pending.

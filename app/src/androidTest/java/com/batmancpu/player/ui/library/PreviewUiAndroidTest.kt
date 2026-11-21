@@ -226,6 +226,44 @@ class PreviewUiAndroidTest {
         }
     }
 
+    @Test(timeout = 35_000) fun seriesDetailsGroupSeasonsAndPlaySelectedIndexedEpisode() {
+        val activity = launch()
+        val files = listOf(
+            DiscoveredLocalMedia("episode-s2e1", "North.Star.S02E01.mkv", LocalMediaKind.VIDEO),
+            DiscoveredLocalMedia("episode-s1e2", "North.Star.S01E02.mkv", LocalMediaKind.VIDEO),
+            DiscoveredLocalMedia("episode-s1e1", "North.Star.S01E01.mkv", LocalMediaKind.VIDEO),
+        )
+        val played = AtomicReference<DiscoveredLocalMedia?>()
+        try {
+            instrumentation.runOnMainSync {
+                activity.setContent {
+                    PlayerTheme {
+                        LocalLibraryContent(
+                            LocalFolder("synthetic-tree", "Synthetic local folder"),
+                            LibrarySessionState(tree = "synthetic-tree", media = files, hasCompletedScan = true),
+                            CatalogueSnapshot("synthetic-tree", LocalCatalogue.build(files)),
+                            onScan = {}, onCancel = {}, scanStillRunning = { false }, onChooseFolder = {},
+                            onPlay = { played.set(it) }, onOpenGlassLab = {},
+                        )
+                    }
+                }
+            }
+            click(text("North Star"))
+            text("Season 1")
+            text("S01 · E01")
+            text("S01 · E02")
+            revealBySwiping("Season 2")
+            click(text("S02 · E01"))
+            assertTrue(
+                "Episode button must play its indexed document",
+                awaitCondition(3_000) { played.get()?.documentId == "episode-s2e1" },
+            )
+            assertEquals("episode-s2e1", played.get()?.documentId)
+        } finally {
+            instrumentation.runOnMainSync { activity.finish() }
+        }
+    }
+
     @Test(timeout = 25_000) fun removeFolderRequiresClearConfirmationAndDoesNotCallDeleteWhenCancelled() {
         val activity = launch()
         val files = listOf(DiscoveredLocalMedia("movie-A", "Aurora.2022.mp4", LocalMediaKind.VIDEO))

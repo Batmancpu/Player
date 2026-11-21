@@ -241,6 +241,11 @@ internal fun LocalLibraryContent(
         }
     }
     if (selected != null) {
+        val episodesBySeason = remember(selected.key, selected.files) {
+            selected.files.mapNotNull { file ->
+                (MediaNameParser.parse(file.displayName) as? ParsedMediaName.Episode)?.let { file to it }
+            }.groupBy(keySelector = { it.second.season }, valueTransform = { it }).toSortedMap()
+        }
         val lookup = metadataState.takeIf { it.tree == folder.tree && it.titleKey == selected.key }
         val chosenCandidate = lookup?.candidates?.firstOrNull { it.id == selectedCandidateId }
         ModalBottomSheet(onDismissRequest = { selectedKey = null }, containerColor = PlayerPalette.surface) {
@@ -254,10 +259,24 @@ internal fun LocalLibraryContent(
                     }
                 } else {
                     Text(pluralStringResource(R.plurals.catalogue_episodes, selected.files.size, selected.files.size), color = PlayerPalette.textSecondary)
-                    LazyColumn(Modifier.fillMaxWidth().heightIn(max = 380.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        items(selected.files, key = { it.documentId }) { file ->
-                            TextButton(onClick = { onPlay(file); selectedKey = null }, modifier = Modifier.fillMaxWidth()) {
-                                Text(file.displayName, modifier = Modifier.fillMaxWidth(), color = PlayerPalette.textPrimary)
+                    LazyColumn(Modifier.fillMaxWidth().heightIn(max = 380.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        episodesBySeason.forEach { (season, episodes) ->
+                            item(key = "season-$season") {
+                                Text(
+                                    stringResource(R.string.catalogue_season, season),
+                                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 2.dp),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = PlayerPalette.accentMuted,
+                                )
+                            }
+                            items(episodes, key = { it.first.documentId }) { (file, episode) ->
+                                TextButton(onClick = { onPlay(file); selectedKey = null }, modifier = Modifier.fillMaxWidth()) {
+                                    Text(
+                                        stringResource(R.string.catalogue_episode_label, episode.season, episode.episode),
+                                        modifier = Modifier.fillMaxWidth(),
+                                        color = PlayerPalette.textPrimary,
+                                    )
+                                }
                             }
                         }
                     }

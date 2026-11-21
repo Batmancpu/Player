@@ -1172,3 +1172,11 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - A longer clip did not resolve the timing variability. Media3 intentionally keeps controls visible while idle, ended, or not playWhenReady. The test now waits for the actual `Player.Listener.onIsPlayingChanged(true)` event before measuring the controller hide behavior, distinguishing player startup from timeout behavior.
 - Added an optional internal player-state callback to LocalPlayerScreen; normal production calls use the default no-op. No user-facing behavior change. No signed APK/Release.
 - Verification: CI pending. Next: run complete Android/unit/schema/privacy gates; inspect logs for any separate failures before changing production behavior.
+
+
+## 2026-11-21 — Catalogue series season and episode rows
+
+- Replaced the flat raw-filename list in series detail sheets with season groups and localized `S01 · E01` style labels from the existing deterministic parser. Episodes are grouped/sorted by parsed season and episode; selection still calls `onPlay` with the original indexed `DiscoveredLocalMedia` document, so no filename lookup or filesystem mutation was introduced.
+- Added synthetic Android UI coverage for intentionally unsorted Season 1/2 items, visible labels and tapping Season 2 Episode 1 to verify the exact document ID.
+- Privacy/offline scope unchanged. CI pending; no installable APK/Release.
+- Next: inspect CI results and synthetic screenshots; then continue playback/subtitle controls, accessibility and Glass integration.
