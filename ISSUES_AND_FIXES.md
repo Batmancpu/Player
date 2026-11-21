@@ -514,3 +514,8 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 ## 2026-11-21 — Correct false negative in navigation test
 - CI #184: compilation and 48/49 tests passed; new tab filter behavior passed, but the test helper matched the non-clickable Movies shelf heading before the actual selected tab.
 - Helper now searches every same-label node/ancestor rather than only the first. CI pending.
+
+
+## 2026-11-21 — Navigation selection reporting and playback speed
+- CI #185 failed one Android 15 assertion because Material3's selected navigation destination was not represented as `AccessibilityNodeInfo.isSelected`. The catalogue screen and movie filter passed. Production items now expose explicit selected/not-selected state descriptions; the updated synthetic assertion is pending CI.
+- Added an accessible Media3 playback-speed menu (0.75×, 1×, 1.25×, 1.5×, 2×) and a synthetic selection test. Build/test verification pending; no APK or Reno10 performance result.
