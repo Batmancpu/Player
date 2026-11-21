@@ -221,3 +221,6 @@ Older ledger entries are archived verbatim in DEVELOPMENT_LOG.md under “AGENTS
 
 
 - 2026-11-21 — Added a reachable metadata-connection screen backed by AES-GCM credential storage in no-backup app storage and Android Keystore; consent defaults off, clear is non-cancellable, and there is still no network permission/client/request. Manage now opens the screen. Android Keystore lifecycle/tamper tests added. CI pending. Next: complete and review explicit TMDB manual matching, official attribution and bounded artwork before enabling HTTP.
+
+
+- 2026-11-21 — CI #108 / 44893247270 passed the secure metadata-settings integration: Android 15 instrumentation 30/30, unit tests, debug/release build, Room schema and privacy checks. No INTERNET permission, signing, APK artifact or Release was produced; only test and Room-schema artifacts. The official TMDB logo was retrieved from its approved asset URL for later in-app Credits; no API integration exists yet. Next: implement explicit manual search/match UI, exact attribution and bounded/cancellable transport, then artwork cache.

@@ -261,3 +261,7 @@ CI #106 / 44891844084 passed after the prior run’s three UI accessibility time
 
 ## 2026-11-21 — Secure metadata settings foundation
 Added a Library Manage entry for metadata/connection settings using a user-owned token stored with Android Keystore AES-GCM in no-backup app-private storage. Consent defaults off, tampered/lost credentials fail closed, and clearing completes even during lifecycle cancellation. No network permission/request or installable APK was added. CI pending. Next: explicit user-initiated matching with approved attribution, bounded transport and offline cache.
+
+
+## 2026-11-21 — Encrypted TMDB connection settings verified
+Commit 7501006 added Library Manage → Metadata and connections, encrypted user-provided TMDB Read Access Token storage (AES-GCM/Android Keystore, app-private no-backup path), explicit default-off consent and clear/disable behavior. CI #108 / 44893247270 passed Android 15 30/30 plus unit/build/schema/privacy; only internal test/schema artifacts were produced, no user APK/Release. Current settings explicitly state they do not start a lookup yet. TMDB official attribution requirements were rechecked; next is the manual match flow and About/Credits logo/notice before any network request.

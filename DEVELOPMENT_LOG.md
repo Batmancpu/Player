@@ -863,3 +863,11 @@ The following prior Recent agent changes ledger is preserved verbatim when short
 - Consent remains default-off. Invalid tokens are rejected without replacing the saved credential; disabling revokes use across store instances; clearing deletes ciphertext and key even if the screen coroutine is cancelled. The token stays out of saved Compose state and settings UI state. Added Android tests for disabled first-run state, key absence, encrypted persistence/reopen, opt-in, disable/clear cross-instance revocation, tampering/key loss, malformed input, nonce uniqueness and concurrent revocation.
 - This slice adds no INTERNET permission, transport, TMDB request or artwork download. UI explicitly says saving a connection does not start a library lookup in this build. No schema/versionCode/signing/Release change.
 - CI #107 for the preceding documentation update is still running; this commit’s Android 15 tests and credential-store verification are pending CI #108. Next: verify the settings lifecycle and proceed only with explicit manual search/match plus official attribution.
+
+
+## 2026-11-21 — Verify encrypted metadata settings
+
+- CI #108 / 44893247270 passed Android 15 instrumentation 30/30, including the eight new Android Keystore/AtomicFile credential lifecycle cases and existing SAF, playback, metadata-cache, and synthetic UI coverage. Unit tests, debug/release build and Room v1/v2/v3 schema/privacy checks passed.
+- CI produced Android test results and the Room schema review artifact only. Signing/publication steps were not requested; no user-installable APK or Release was produced and versionCode/signing identity did not change.
+- Fetched the current approved TMDB blue gradient logo asset directly from the URL linked by TMDB's official branding documentation; the SVG SHA-256 is d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b. A local PNG conversion was inspected at original aspect ratio; logo still needs to be added to the app's Credits screen before any TMDB API/data use.
+- Next: implement user-triggered TMDB search, manual match confirmation to Room, About/Credits with the approved logo and notice, allowlisted/cancellable transport, then separately bounded artwork caching/display. Keep network calls disabled until all pieces are integrated and tested.

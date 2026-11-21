@@ -161,3 +161,11 @@ Provider metadata is cached by TMDB ID/media type and joined to a SAF document o
 
 ### D-033 — Forgetting a library never deletes source media (Accepted)
 “Remove folder from Player” clears Player's app-private index and resume checkpoints and revokes its persisted SAF permission only after explicit confirmation. It must not delete, rename or modify source videos/subtitles. Retry is available if app-private cleanup or grant reconciliation fails. Grant cleanup continues if the UI lifecycle is cancelled.
+
+
+### D-034 — Store TMDB credentials locally, keep request permission separate (2026-11-21)
+**Engineering choice:** an optional user-owned TMDB API Read Access Token is AES-GCM encrypted using an Android Keystore key and stored only under app noBackupFilesDir. Persisted consent defaults off; a setting or saved token alone never initiates a request. Clear/disable revoke in-process use, and clear is non-cancellable once explicitly invoked. No token is included in Activity saved state or UI state.
+
+**Evidence:** Android 15 instrumentation tests cover fresh default-off state/key absence, encryption/reopen, opt-in, cross-instance disable/clear, tampered ciphertext/key loss, malformed/oversized tokens, nonce uniqueness and concurrent revocation. CI #108 / 44893247270 passed 30/30 Android instrumentation plus unit/build/schema/privacy checks. The app still has no INTERNET permission or TMDB client/request, and no installable APK was produced.
+
+**Next gate:** finish explicit one-title search/manual match and About/Credits approved logo plus exact notice; audit fixed API/CDN hosts, TLS, cancellation, response/size bounds and opt-out rechecks before adding INTERNET. Preserve offline playback/library when metadata is off.

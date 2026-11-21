@@ -32,12 +32,12 @@ The selected SAF tree URI is the only scan root. Never use raw filesystem paths 
 
 ## Offline metadata query contract
 
-`TmdbSearchTerms` is a pure value model containing only a normalized title, optional valid year and typed movie/TV kind. It is created only from recognized parser output and defaults to disabled unless the caller supplies explicit user opt-in. Series lookups use the show title without season/episode numbers. Path/URI/file-suffix/control/oversized inputs are rejected. This type has no network side effects and no local file or SAF identity fields; persistent preferences, credential storage, HTTP and `INTERNET` are not yet implemented.
+`TmdbSearchTerms` is a pure value model containing only a normalized title, optional valid year and typed movie/TV kind. It is created only from recognized parser output and defaults to disabled unless the caller supplies explicit user opt-in. Series lookups use the show title without season/episode numbers. Path/URI/file-suffix/control/oversized inputs are rejected. This type has no network side effects and no local file or SAF identity fields; persistent user consent and encrypted credential settings are implemented with Android Keystore and no-backup app-private storage; HTTP and `INTERNET` remain deliberately absent until the manual request/match/attribution flow is ready.
 
 ## Network boundary
 Allow only HTTPS TMDB API and approved TMDB image CDN hosts. Permitted fields: normalized title, optional year, media type and language. Never send source URI, folder path/name, full filename, directory listing or video bytes. Validate returned image hosts. No custom proxy or backend.
 
-The no-backend design means a private shared API credential cannot be kept secret inside a public APK. Use a user-managed credential protected with Android Keystore-backed encryption; cached library remains available without it. Subtitle lookup is a separate provider decision: do not silently add a host, account, API key or SDK. Search only from normalized title/year/content identifiers, and download subtitle files directly to app-private storage.
+The no-backend design means a private shared API credential cannot be kept secret inside a public APK. Use the optional user-managed Read Access Token protected with Android Keystore-backed encryption (implemented in MetadataSettingsStore); cached library remains available without it. Consent defaults off and changing the setting alone makes no request. Subtitle lookup is a separate provider decision: do not silently add a host, account, API key or SDK. Search only from normalized title/year/content identifiers, and download subtitle files directly to app-private storage.
 
 ## Identity and persistence
 - Folder: tree URI, validated authority, display label, grant status and scan time.

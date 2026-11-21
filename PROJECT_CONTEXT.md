@@ -392,3 +392,7 @@ A focused Phase 2 database slice is on main: cached TMDB metadata is keyed separ
 
 ## 2026-11-21 — Explicit library removal
 Added “Remove folder from Player” with confirmation, Room index/cache cleanup and persisted SAF grant release; original files remain untouched. CI #104 / 44890135563 passed Android 15 20/20 and unit/build/schema gates; unit tests cover grant release ordering and refused release. A follow-up also clears resume points and adds confirmation/cancel UI coverage; CI #105 is pending. No intermediate APK is produced. CI #103 has verified the Room v3 snapshot follow-up (20/20 Android 15 tests, build/schema checks).
+
+
+## Current continuation state — 2026-11-21
+Latest CI #108 / 44893247270 passed after commit 7501006: Android 15 instrumentation 30/30, unit/build, and Room v1/v2/v3 schema/privacy gates. Metadata and connections is reachable from Library Manage. A user-supplied TMDB Read Access Token is encrypted using Android Keystore AES-GCM in no-backup app-private storage; consent is default-off, clear/disable are fail-closed, and no INTERNET permission or request exists yet. No user-installable APK or Release was produced. Next is the explicit manual search/match UX plus approved TMDB logo/notice in About/Credits, before any HTTP integration. The full six-phase app is still in development; actual OPPO acceptance and device performance remain unverified.
