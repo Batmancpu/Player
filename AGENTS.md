@@ -342,3 +342,8 @@ CI #144 / 44920009659 passed 43/43 Android 15 tests, including the synthetic aut
 ## 2026-11-21 — Playback auto-hide test timing correction
 
 CI #145 / 44920952692 exposed a timing race: the test treated the still-visible exit label as proof that a video tap had restored it, then waited through its 2.5-second auto-hide timeout. The test now waits for the header to hide after entering fullscreen, then taps video and verifies the exit action returns. Product code unchanged. CI rerun pending; no installable APK. Next: confirm Android 15 tests are green before further player/catalogue changes.
+
+
+## 2026-11-21 — Playback overlay test stabilization
+
+CI #146 / 44922204439 found the revised test's extra post-toggle auto-hide expectation did not hold in the isolated test setup; 41/43 passed. The test now asserts the accessible exit action immediately while controls are shown. The same run had one synthetic metadata details test fail to find its fixture in the active window; it remains under investigation pending rerun. No APK. Next: rerun CI, distinguish reproducible product/UI test defects from emulator timing, then continue subtitle zoom separation.

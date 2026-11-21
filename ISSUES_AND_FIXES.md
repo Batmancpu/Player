@@ -315,3 +315,10 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - **Root cause:** The test skipped its video tap if the label was already visible, then waited up to three seconds while the expected 2.5-second timeout hid it.
 - **Fix:** Wait for title/header auto-hide after the fullscreen action, then tap the video and verify the exit label reappears. No product playback behavior changed.
 - **Next:** Confirm CI green and continue integrated player/catalogue work. No interim APK.
+
+
+### R-015 — Synthetic metadata details test isolation timeout
+- **Status:** Under investigation; observed once in CI #146 / 44922204439.
+- **Evidence:** `titleMetadataSearchIsManualAndMatchRequiresASecondConfirmation` timed out locating synthetic UI. Failure snapshot showed the active window in the connected one-video library rather than the synthetic test details sheet.
+- **Possible causes:** transient Activity/Compose test setup race or test isolation failure; no product cause established yet.
+- **Next:** rerun and compare active-window snapshot. Do not change metadata production code without reproducible evidence.
