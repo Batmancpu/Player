@@ -263,3 +263,7 @@ Added a localized content description for the confirmed cached poster. The artwo
 
 ## 2026-11-21 — synthetic poster fixture correction
 Replaced the synthetic PNG test fixture with a CRC-valid 1×1 RGBA PNG after local chunk validation. Artwork CI #119/#120 are still pending. Next verify their result, then continue integration; no installable APK.
+
+
+## 2026-11-21 — CI #121 and grid poster progress
+Artwork detail/cache change passed CI #121 attempt 2 (run 44901117586): Android 15 integration, unit/build, Room schema and privacy gates green. Attempt 1's five UI failures were a Pixel Launcher ANR; immediate rerun passed. No APK/Release. Current main adds lazy poster rendering to visible catalogue cards from the already-confirmed app-private cache; tests pending. Continue offline/card accessibility work, then Phase 3+ and only make one final integrated APK when requested experience is ready. Actual OPPO/performance remain unverified.

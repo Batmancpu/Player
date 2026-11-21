@@ -106,3 +106,7 @@ The library settings action first confirms the user's intent, then deletes Playe
 
 ## Confirmed artwork cache — 2026-11-21
 Artwork uses a fixed unauthenticated TMDB image CDN transport, called only after explicit match confirmation. HTTPS/no redirects, w342 route, MIME/2 MiB/2048-pixel/timeout bounds, cancellation and AtomicFile cache under no-backup storage with 96 MiB LRU. UI state exposes only the local cached File; Coil Compose has no network module. Details read existing art offline. Consent/token rechecked around download/write. Synthetic tests inject fake transports; handset rendering/battery unmeasured.
+
+
+## Catalogue artwork rendering — 2026-11-21
+Library cards first map their indexed document IDs to a single user-confirmed offline metadata row. Only visible lazy cards read the corresponding app-private poster File; Coil decodes that local File with a dark text-contrast scrim. Unmatched/ambiguous/missing artwork retains a local deterministic gradient/glyph fallback. The card path cannot call the network. A poster-state key refreshes after a confirmed download or removal; cached files remain browsable offline.

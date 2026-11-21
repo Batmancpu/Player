@@ -947,3 +947,7 @@ Added the missing localized TalkBack content description required by the confirm
 
 ## 2026-11-21 — synthetic artwork fixture
 Static PNG chunk/CRC validation found the first test image fixture was malformed; replaced it with a valid 1×1 RGBA image. This is test-only; no app behavior change. CI runs #119/#120 pending. No release APK.
+
+
+## 2026-11-21 — artwork cache verification and catalogue poster rendering
+CI #119 failed only because Compose referenced a missing poster content-description string. Added the localized TalkBack string. CI #120 was superseded/cancelled when the synthetic test PNG was corrected (CRC check had found the fixture invalid). CI #121 attempt 1 compiled and ran 41 Android 15 tests but five existing Preview UI tests hit a Pixel Launcher ANR; the new metadata artwork test passed. Rerunning the same job as attempt 2 passed Android 15 instrumentation, JVM unit/debug build, Room schema and privacy verification (https://github.com/Batmancpu/Player/actions/runs/44901117586). No signing/release step ran and no user APK was generated. Follow-up displays a cached confirmed poster in visible catalogue tiles: each lazy tile looks up only its already-confirmed metadata and reads local app-private artwork; no card browsing network. It keeps a high contrast dark scrim and fallback gradient/glyph. CI pending; device frame/battery results absent.

@@ -1,4 +1,12 @@
 ## Current handoff — 2026-11-21
+- User wants one APK only after the whole app is complete; do not provide installable milestone builds/releases.
+- Base before current slice: dd7bffe86169a9f4831343b9ae213efdc8a00ed4. CI #121 / 44901117586 attempt 2 passed Android 15 integration, JVM/build, schema and privacy checks. Attempt 1 showed Pixel Launcher ANR in five existing UI tests; attempt 2 passed. Signing/release skipped. No user APK.
+- Confirmed TMDB artwork now uses an unauthenticated, bounded fixed-host CDN transport after explicit match confirmation, no-backup LRU and Coil local-file decoding. Current follow-up shows already-cached poster files in visible catalogue cards; verification pending. It does not fetch from card scroll or startup.
+- Next: verify grid changes on CI, then continue complete offline catalogue/details and local player, accessibility, Glass and audio/subtitle work. Keep main only, privacy constraints unchanged. No OPPO FPS or thermal claims. Final APK/testing waits for integrated app readiness.
+
+---
+
+## Current handoff — 2026-11-21
 - Latest user instruction: finish the whole integrated app before providing an APK; no milestone APKs.
 - Base main: b344b420ae693e830c2828c2fee5ac577bb86d34. CI #118 passed Android15 tests/build/schema/privacy. No candidate release; latest public v0.1.91.
 - Current change adds bounded TMDB artwork cache after separate manual match confirmation, Coil local-file rendering, synthetic test. CI pending. Next inspect Actions and fix any build/test/privacy failure.

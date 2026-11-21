@@ -1,6 +1,7 @@
 package com.batmancpu.player.ui.library
 
 import android.net.Uri
+import java.io.File
 import android.content.Context
 import android.content.ContextWrapper
 import androidx.activity.ComponentActivity
@@ -43,6 +44,9 @@ import com.batmancpu.player.ui.theme.PlayerPalette
 import com.batmancpu.player.ui.metadata.MetadataLookupIssue
 import com.batmancpu.player.ui.metadata.MetadataLookupUiState
 import com.batmancpu.player.ui.metadata.TmdbCandidate
+import com.batmancpu.player.ui.metadata.MetadataSettingsStore
+import com.batmancpu.player.ui.metadata.TmdbArtworkCache
+import com.batmancpu.player.ui.metadata.TmdbImageSize
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,7 +56,9 @@ internal fun LocalLibraryScreen(
     onOpenGlassLab: () -> Unit,
     onOpenMetadataSettings: () -> Unit = {},
 ) {
-    val activity = LocalContext.current.activity()
+    val context = LocalContext.current
+    val appContext = remember(context) { context.applicationContext }
+    val activity = context.activity()
     DisposableEffect(activity, model) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_STOP) model.clearMetadata()
@@ -64,7 +70,15 @@ internal fun LocalLibraryScreen(
     val library by model.session.state.collectAsState()
     val snapshot by model.catalogue.collectAsState()
     val metadataState by model.metadataLookup.collectAsState()
+    val artworkCache = remember(appContext) { TmdbArtworkCache(appContext, MetadataSettingsStore(appContext)) }
     val folder = folderState.folder
+    var cachedMetadataByDocumentId by remember(folderState.folder?.tree) { mutableStateOf(emptyMap<String, CachedTmdbMetadata>()) }
+    LaunchedEffect(folder?.tree, snapshot, metadataState.cached?.tmdbId, metadataState.cached?.cachedAtEpochMs, metadataState.posterFile) {
+        val tree = folder?.tree
+        cachedMetadataByDocumentId = if (tree != null && snapshot.tree == tree) {
+            OfflineMetadataCache.load(appContext, tree)
+        } else emptyMap()
+    }
     if (folder == null || folderState.busy) {
         FolderSetupScreen(model, onOpenGlassLab)
         return
@@ -83,6 +97,9 @@ internal fun LocalLibraryScreen(
         onOpenMetadataSettings = onOpenMetadataSettings,
         onForgetFolder = model::forgetFolder,
         metadataState = metadataState,
+        cachedMetadataByDocumentId = cachedMetadataByDocumentId,
+        artworkCache = artworkCache,
+        posterRefreshKey = metadataState.posterFile,
         onPrepareMetadata = model::prepareMetadata,
         onSearchMetadata = model::searchMetadata,
         onConfirmMetadata = model::confirmMetadata,
@@ -111,6 +128,9 @@ internal fun LocalLibraryContent(
     onConfirmMetadata: (LocalTitle, TmdbCandidate) -> Unit = { _, _ -> },
     onRemoveMetadata: (LocalTitle) -> Unit = {},
     onClearMetadata: () -> Unit = {},
+    cachedMetadataByDocumentId: Map<String, CachedTmdbMetadata> = emptyMap(),
+    artworkCache: TmdbArtworkCache? = null,
+    posterRefreshKey: File? = null,
 ) {
     val titles = snapshot.takeIf { it.tree == folder.tree }?.titles.orEmpty()
     val matchingLibrary = library.takeIf { it.tree == folder.tree }
@@ -211,7 +231,7 @@ internal fun LocalLibraryContent(
                     horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(18.dp),
                 ) {
                     items(results, key = { it.key }) { title ->
-                        LocalTitleCard(title) { focus.clearFocus(); selectedKey = title.key }
+                        LocalTitleCard(title, cachedMetadataByDocumentId, artworkCache, posterRefreshKey) { focus.clearFocus(); selectedKey = title.key }
                     }
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Text(stringResource(R.string.catalogue_local_note), color = PlayerPalette.textTertiary, style = MaterialTheme.typography.bodySmall)
@@ -401,18 +421,45 @@ internal fun LocalLibraryContent(
 }
 
 @Composable
-private fun LocalTitleCard(title: LocalTitle, onClick: () -> Unit) {
+private fun LocalTitleCard(
+    title: LocalTitle,
+    cachedMetadataByDocumentId: Map<String, CachedTmdbMetadata>,
+    artworkCache: TmdbArtworkCache?,
+    posterRefreshKey: File?,
+    onClick: () -> Unit,
+) {
     val palettes = listOf(Color(0xFF3B465C), Color(0xFF514350), Color(0xFF294D47), Color(0xFF5A4835))
     val color = palettes[title.key.hashCode().ushr(1) % palettes.size]
+    val metadata = remember(title.key, cachedMetadataByDocumentId) {
+        title.files.mapNotNull { cachedMetadataByDocumentId[it.documentId] }
+            .distinctBy { it.tmdbId to it.mediaType }.singleOrNull()
+    }
+    var posterFile by remember(title.key, metadata?.posterPath) { mutableStateOf<File?>(null) }
+    LaunchedEffect(metadata?.posterPath, posterRefreshKey) {
+        posterFile = if (metadata?.posterPath != null && artworkCache != null) {
+            artworkCache.cached(metadata.posterPath, TmdbImageSize.POSTER)
+        } else null
+    }
     Card(onClick = onClick, shape = RoundedCornerShape(22.dp), colors = CardDefaults.cardColors(containerColor = PlayerPalette.surface)) {
-        Box(Modifier.fillMaxWidth().height(158.dp).background(Brush.verticalGradient(listOf(color, PlayerPalette.surface)))) {
-            PlayerGlyphIcon(
-                if (title.isSeries) PlayerGlyph.SHOWS else PlayerGlyph.MOVIES, null,
-                modifier = Modifier.align(Alignment.Center), size = 38.dp, tint = Color.White.copy(alpha = .7f),
-            )
+        Box(Modifier.fillMaxWidth().height(158.dp)) {
+            if (posterFile != null) {
+                AsyncImage(
+                    model = posterFile,
+                    contentDescription = metadata?.let { stringResource(R.string.metadata_lookup_poster_description, it.title) },
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize(),
+                )
+                Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color.Transparent, Color.Black.copy(alpha = .78f)))))
+            } else {
+                Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(color, PlayerPalette.surface))))
+                PlayerGlyphIcon(
+                    if (title.isSeries) PlayerGlyph.SHOWS else PlayerGlyph.MOVIES, null,
+                    modifier = Modifier.align(Alignment.Center), size = 38.dp, tint = Color.White.copy(alpha = .7f),
+                )
+            }
             Text(
                 stringResource(if (title.isSeries) R.string.nav_shows else R.string.catalogue_on_device),
-                color = Color.White.copy(alpha = .75f), style = MaterialTheme.typography.labelSmall,
+                color = Color.White.copy(alpha = .9f), style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier.align(Alignment.BottomStart).padding(14.dp),
             )
         }

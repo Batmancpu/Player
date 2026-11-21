@@ -309,3 +309,7 @@ CI #117 found the manifest test still disallowed the narrow INTERNET permission 
 
 ## 2026-11-21 — APK cadence
 User explicitly asked to complete the app before receiving an APK rather than produce an installable build at every step. Continue small CI-verified main commits and withhold user-installable APKs/releases until one integrated phone-test build is ready. Added confirmed artwork cache/display slice; test pending. Target performance remains unmeasured.
+
+
+## 2026-11-21 — artwork verification and grid continuation
+User asked to wait for one complete APK, not milestone downloads. Artwork cache was added after manual confirmation and local poster display passed CI #121 on retry. Initial UI test failure was a transient Pixel Launcher ANR; run attempt 2 passed both Android 15 and build/schema/privacy jobs. Follow-up adds lazy cached artwork to catalogue cards without networking; no installable APK or Release. OPPO acceptance/performance still unmeasured.

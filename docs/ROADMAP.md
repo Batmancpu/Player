@@ -94,3 +94,7 @@ Apply the exact screen-by-screen Glass surfaces and interactive seek/volume/subt
 
 ## 2026-11-21 — artwork implementation
 Coil Compose 3.6.3 Apache-2.0 decodes only app-private cached Files; no image-network module. Fixed unauthenticated CDN transport enforces host/path/redirect/time/byte/pixel bounds and cancellation. Atomic no-backup cache is capped at 96 MiB. Metadata is saved first; poster download follows only the separate confirmation action. Instrumentation uses fake API/artwork and synthetic PNG. CI pending. Do not produce installable APK until the integrated app is ready.
+
+
+## 2026-11-21 — artwork integration verification
+CI #121 attempt 2 passed the corrected manual confirmation/artwork test, Android 15 integration, JVM/build, Room schema and privacy checks. Attempt 1's UI failures all reported Pixel Launcher not responding; rerun passed. No user APK/Release. A new slice displays cached confirmed posters in lazy catalogue cards, with crisp artwork, contrast scrim and original placeholder when no poster exists. It reads only app-private Files; rendering/scroll does not request artwork. Verification pending. Device rendering/performance remain open.

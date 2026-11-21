@@ -54,3 +54,6 @@ The user can remove the selected tree from Player's library. This operation clea
 
 ## Artwork loader — 2026-11-21
 Coil Compose 3.6.3 (Apache-2.0) only decodes local Files from Player's bounded private no-backup cache. No Coil network module is packaged. TMDB CDN requests occur after explicit confirmation, send no credential or local identifiers, use fixed HTTPS image.tmdb.org host/path, disable redirects and bound bytes, dimensions and time. Synthetic tests make no real network call.
+
+
+Catalogue poster images are drawn only from Player's private cache using Coil's local File model; loading and scrolling cards never contact a URL. The poster association comes only from the locally saved user-confirmed match. No local paths or media bytes leave the device through this flow.
