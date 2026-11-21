@@ -399,3 +399,6 @@ Recorded DEC-021 after reviewing official Media3 format/codec guidance and Video
 ## 2026-11-21 — Movie and TV shelves on the local home catalogue
 
 When the unfiltered library is open, movie titles and series now appear in separate horizontal poster shelves; explicit filters and search retain the adaptive grid. All rows still use only cached local artwork and offline filename/index data. CI pending; no network or APK changes. Next: verify shelf scrolling, search, series selection and small-screen card bounds.
+
+## 2026-11-21 — Details sheet gesture reliability
+- Disabled swipe-to-dismiss on the long movie/show details sheet and added a labeled Close action so vertical swipes scroll its single lazy list; Android back and outside-tap dismissal remain available. Android 15 CI verification is pending; next action is rerun all gates and inspect the release signing checks.

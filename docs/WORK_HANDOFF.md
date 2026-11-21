@@ -302,3 +302,7 @@ DEC-021 records Media3 as primary and LibVLC as a measured fallback candidate. M
 
 ### Default catalogue shelves
 The unfiltered library uses horizontal Movies and TV Shows shelves; text search and explicit type filters retain the grid. Cards still resolve from the local index and app-private artwork only. CI pending.
+
+
+### Current continuation — details sheet scroll fix (2026-11-21)
+- Main is `4124d7d0c729acdfdd8d0fed448cf9788a346046`. CI #164 built successfully and ran 46 Android 15 tests: 45 passed, 1 failed (`titleMetadataSearchIsManualAndMatchRequiresASecondConfirmation`) because the detail sheet dismissed on an upward scroll before “Search TMDB” became reachable. The current patch disables swipe-to-dismiss only on the content details sheet and adds a labeled Close button. Back and outside-tap remain dismissal routes. Verification pending on the next CI run; publish the signed checkpoint only after the full workflow succeeds. Continue the remaining app batches after publication; actual Reno10 acceptance/performance remains unmeasured.

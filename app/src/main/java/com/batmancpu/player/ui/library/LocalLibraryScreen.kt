@@ -284,14 +284,28 @@ internal fun LocalLibraryContent(
         }
         val lookup = metadataState.takeIf { it.tree == folder.tree && it.titleKey == selected.key }
         val chosenCandidate = lookup?.candidates?.firstOrNull { it.id == selectedCandidateId }
-        ModalBottomSheet(onDismissRequest = { selectedKey = null }, containerColor = PlayerPalette.surface) {
+        ModalBottomSheet(
+            onDismissRequest = { selectedKey = null },
+            sheetGesturesEnabled = false,
+            containerColor = PlayerPalette.surface,
+        ) {
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(start = 24.dp, end = 24.dp, bottom = 28.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 item(key = "title") {
-                    Text(selected.title, style = MaterialTheme.typography.headlineLarge, color = PlayerPalette.textPrimary)
+                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            selected.title,
+                            modifier = Modifier.weight(1f),
+                            style = MaterialTheme.typography.headlineLarge,
+                            color = PlayerPalette.textPrimary,
+                        )
+                        TextButton(onClick = { selectedKey = null }) {
+                            Text(stringResource(R.string.catalogue_close_details))
+                        }
+                    }
                 }
                 item(key = "year") {
                     Text(selected.year?.toString() ?: stringResource(R.string.catalogue_on_device), color = PlayerPalette.textSecondary)

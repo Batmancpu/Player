@@ -1262,3 +1262,6 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - Source review after commit `0f8b514` found that the extracted metadata block still carried the old outer Column/Modal closures, duplicating the new LazyColumn/Modal closures. This would fail Kotlin compilation; CI #163 was queued for the intermediate source.
 - Removed only those stale braces, retaining the metadata-card and new one-LazyColumn hierarchy. The correction is in this commit. Verification is pending CI #164.
 - No APK was produced. Next: confirm source compilation, then run season/metadata UI interactions and complete gates before release.
+
+## 2026-11-21 — Details sheet scroll recovery (verification pending)
+- Android 15 CI #164 passed 45/46 instrumentation tests; the manual TMDB search UI test could not reach the button because a short upward scroll dismissed the modal. Changed the details sheet to ignore swipe dismissal and added an accessible Close button while retaining system back/outside dismissal. The single LazyColumn still owns long episode and metadata scrolling. Added the English string resource. CI verification is pending; no APK is published from this change yet.

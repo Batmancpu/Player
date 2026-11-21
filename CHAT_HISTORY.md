@@ -494,3 +494,7 @@ CI #130 / 44909463881 passed v1→v4 Android migration, offline parent-ID round-
 ## 2026-11-21 — Fix a stale closure in the detail-sheet refactor
 - Review after `0f8b514` caught old outer closing braces left inside the new metadata item. They would prevent compilation.
 - Removed the duplicate closures before treating the scroll refactor as verified. CI #164 must compile and run the tests; no APK/release is considered until then.
+
+## 2026-11-21 — User asked for continuous completion and visible work batches
+- User clarified that CI failures are ours to fix; do not pause for routine phone checks between implementation batches. Requested a signed APK checkpoint now, then continued work toward the premium local-first app and final performance/size/efficiency pass.
+- Current issue: CI #164 had 45/46 tests pass; manual metadata search could not scroll the long details sheet. Added sheet scroll/dismiss fix with Close control; verification pending. No Reno10 measurements may be claimed without actual device evidence.

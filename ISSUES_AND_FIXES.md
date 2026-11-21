@@ -434,3 +434,8 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - **Root-cause confidence:** Confirmed source-edit mistake. CI has not yet established whether the intermediate commit compiled.
 - **Fix:** Remove the obsolete outer closures; retain the metadata Surface and new LazyColumn/Modal/selected-state closures.
 - **Regression coverage:** Kotlin compilation and Android 15 UI tests in CI #164.
+
+### H-033 — Detail sheet scroll gestures dismissed long content (2026-11-21)
+- Evidence: CI #164 (#44938064931), Android 15 instrumentation 45/46 passed; the metadata manual-search flow failed while scrolling to the Search TMDB action. The failure snapshot showed the catalogue after the sheet had closed.
+- Fix committed for verification: disable sheet swipe dismissal for this long-content details sheet and provide an accessible Close action; Android back and outside-tap continue to close it.
+- Status: CI verification pending. Do not publish a release candidate until the full test, manifest/privacy and signing gates pass.
