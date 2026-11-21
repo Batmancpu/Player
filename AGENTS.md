@@ -337,3 +337,8 @@ Player's title/track overlay now follows Media3 controller visibility and uses a
 ## 2026-11-21 — Playback chrome integration verified
 
 CI #144 / 44920009659 passed 43/43 Android 15 tests, including the synthetic auto-hide → tap-to-restore → accessible exit action path. JVM/unit/build, Room v1-v4 schema and privacy checks passed. Signing/publication skipped; no installable APK. Next: continue complete playback, production navigation/Glass, accessibility and performance review.
+
+
+## 2026-11-21 — Playback auto-hide test timing correction
+
+CI #145 / 44920952692 exposed a timing race: the test treated the still-visible exit label as proof that a video tap had restored it, then waited through its 2.5-second auto-hide timeout. The test now waits for the header to hide after entering fullscreen, then taps video and verifies the exit action returns. Product code unchanged. CI rerun pending; no installable APK. Next: confirm Android 15 tests are green before further player/catalogue changes.

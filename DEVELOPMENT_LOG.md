@@ -1121,3 +1121,12 @@ Recorded that local Media3 sidecar subtitle integration passed CI #132 / 4491145
 - Commit f0ce46f984767effe778be2dd6928ee2160ce0dd and CI #144 / 44920009659 passed 43/43 Android 15 tests, including the local Media3/Compose controller visibility path: toolbar appears, auto-hides, returns on tap, and exposes the full-screen exit action after reveal.
 - JVM/unit, CI-only debug build, Room v1-v4 schema and production privacy gates passed. Signing/release steps skipped. No user-installable APK/Release. Latest public signed version remains v0.1.91.
 - Android emulator success does not verify OPPO UI or performance. Continue playback completeness, subtitle offset decision, production catalogue/navigation/Glass, accessibility/fallback, then final-device and performance review before one signed integrated APK.
+
+
+## 2026-11-21 — Playback chrome test timing correction
+
+- CI #145 / 44920952692 failed only `LocalPlaybackAndroidTest.playerOverlayFollowsTransportControllerVisibility`; 42 other tests passed. Android build and test execution completed, and test artifacts were collected. No signed APK or Release was produced.
+- Root cause: after entering full screen, the test conditionally tapped only when the exit label was already absent. When the label was present, it skipped the tap and then asserted for up to three seconds, longer than the 2.5-second controller timeout, so the correctly auto-hidden overlay disappeared before the assertion. The test now waits until the title/header auto-hides, taps the video, and verifies the exit label reappears.
+- Product playback code is unchanged. This corrects the regression test to model the user's actual reveal interaction.
+- Verification: diff reviewed; CI rerun pending. Local Gradle/Android emulator is unavailable here. No installable APK/Release.
+- Next: require green Android 15 instrumentation and privacy/schema/build gates, then continue the integrated catalogue/player/Glass backlog. Maintain one final APK request.

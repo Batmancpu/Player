@@ -307,3 +307,11 @@ Issue: Android 15 PreviewUiAndroidTest intermittently stalled inside Instrumenta
 - **Change:** Tie the Compose title/audio/subtitle header to Media3 controller visibility with a bounded 2.5-second timeout. Tap on video restores the controls and header.
 - **Verification:** CI #144 passed auto-hide, tap-to-restore, full-screen callback and accessible exit action after re-reveal. Full JVM/build/schema/privacy gates passed; no APK was signed or published.
 - **Next:** Verify auto-hide/tap on synthetic Android playback; later verify controller layout and subtitle visibility on OPPO.
+
+
+### R-014 — Auto-hide integration test tapped conditionally
+- **Status:** Test correction committed; CI rerun pending.
+- **Evidence:** CI #145 / 44920952692 had 42/43 Android 15 tests pass; the failing assertion was the final fullscreen exit-label reappearance check.
+- **Root cause:** The test skipped its video tap if the label was already visible, then waited up to three seconds while the expected 2.5-second timeout hid it.
+- **Fix:** Wait for title/header auto-hide after the fullscreen action, then tap the video and verify the exit label reappears. No product playback behavior changed.
+- **Next:** Confirm CI green and continue integrated player/catalogue work. No interim APK.
