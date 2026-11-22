@@ -491,3 +491,6 @@ CI #233 / 44974218075 stopped at app compile: `onDispose` is a `DisposableEffect
 
 ## 2026-11-22 — CI #234 follow-up
 CI #234 / 44974536206: app compiled, 51/53 Android tests passed. Picker click succeeds but selected node is absent; test now first asserts Media3's text-track-disabled state. Poster bounds remained at dock-clipped Home coordinates, so portrait check moves to the full Movies destination instead of relying on a no-op scroll action. CI #235 pending.
+
+## 2026-11-22 — CI #235 follow-up
+CI #235 / 44975039271 compiled; 51/53 tests passed. The new diagnostic Player read was on the wrong thread; test corrected to main. Movies poster geometry passes. Glass preference helper now scrolls to the fully visible switch rather than finding its offscreen semantic node. Revalidation pending CI #236.

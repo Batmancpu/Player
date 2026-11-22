@@ -542,3 +542,9 @@ When the unfiltered library is open, movie titles and series now appear in separ
 - The poster bounds stayed at its dock-clipped Home coordinates because the test scroll action made no progress. Removed that helper; Home is tested for hero/Play, then the Movies destination is opened before verifying full portrait-card geometry and capturing `movies.png`.
 - `git diff --check` and resource XML validation pending; CI #235 pending.
 - Next: inspect whether Media3 state or semantic rendering is at fault, then continue Glass/performance and release-readiness batches.
+
+## 2026-11-22 — Run Player assertions on main and scroll settings test
+- CI #235 / 44975039271 compiled and ran 53 Android tests; 51 passed, 2 failed. The new direct Player-parameters assertion accessed ExoPlayer from the instrumentation thread; it now reads `trackSelectionParameters` through `runOnMainSync`. The Movies-destination full poster test passed.
+- An existing Glass preference test matched its switch while it was below the safe viewport. Its helper now scrolls the settings sheet until the switch is actually visible, then clicks/asserts it. This is a test-fixture visibility correction; no production Glass behavior changed.
+- `git diff --check` pending; CI #236 pending.
+- Next: inspect Media3 disabled state and picker selected semantics, complete all gates, then continue the remaining production Glass/performance backlog.

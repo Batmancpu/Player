@@ -612,3 +612,7 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 ## 2026-11-22 — CI #234 selected semantics and poster viewport
 - CI #234 compiled and ran 53 tests; 51 passed, 2 failed. Added an immediate Media3 disabled-track assertion after clicking Subtitles Off to distinguish engine selection from accessibility selected-state reporting.
 - Home's inaccessible scroll test action did not move the list. Poster ratio verification now occurs on the Movies tab, where the card is presented fully, with a synthetic `movies.png` capture.
+
+## 2026-11-22 — CI #235 wrong-thread assertion and modal visibility
+- 51/53 tests passed. The Media3 parameter assertion must run on the Player application thread; fixed with `runOnMainSync`.
+- Glass settings test assumed an offscreen switch was visible. It now scrolls the modal to the actual visible switch. Movies-destination poster geometry passed. CI #236 pending.

@@ -146,11 +146,20 @@ class PreviewUiAndroidTest {
         awaitNode {
             it.text?.toString() == settingsHeading && isInsideVisibleAppBounds(it)
         }
-        val glassSwitch = awaitNode {
-            it.contentDescription?.toString()?.startsWith("Liquid Glass effects,") == true
+        repeat(12) {
+            find {
+                it.contentDescription?.toString()?.startsWith("Liquid Glass effects,") == true &&
+                    isInsideVisibleAppBounds(it)
+            }?.let { return it }
+            if (!scrollForwardOnSmallestScrollable()) {
+                assertTrue("Could not scroll settings to the Glass switch; ${activeWindowSummary()}", swipeUpFromVisibleSheetText())
+            }
+            SystemClock.sleep(150)
         }
-        assertTrue("Glass switch is inside the visible app bounds; ${activeWindowSummary()}", isInsideVisibleAppBounds(glassSwitch))
-        return glassSwitch
+        return awaitNode {
+            it.contentDescription?.toString()?.startsWith("Liquid Glass effects,") == true &&
+                isInsideVisibleAppBounds(it)
+        }
     }
 
     private fun scrollForwardOnSmallestScrollable(): Boolean {

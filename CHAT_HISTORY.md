@@ -661,3 +661,5 @@ CI #232 compiled and ran 53 tests (51 passed, 2 failed): picker click works but 
 CI #233 stopped before tests: `onDispose` was incorrectly imported as a top-level Compose symbol. Removed the import (the call remains in `DisposableEffect` scope). CI #234 pending.
 
 CI #234 compiled the app; 51/53 Android tests passed. Subtitles Off clicks but the selected accessibility state still fails; new assertion checks Media3 disabled parameters immediately after click. Poster bounds stayed clipped because the scroll action made no progress; artwork ratio check now runs after opening Movies and captures `movies.png`. CI #235 pending.
+
+CI #235: app compiled; 51/53 Android tests passed. The new Media3 assertion read ExoPlayer off its main application thread; wrapped it in `runOnMainSync`. Movie-tab portrait poster check passed. Existing Glass preference test found the switch below the visible safe area; helper now scrolls the sheet before asserting. CI #236 pending.
