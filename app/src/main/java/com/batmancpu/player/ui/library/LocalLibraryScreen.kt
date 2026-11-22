@@ -560,7 +560,16 @@ internal fun LocalLibraryContent(
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
             containerColor = PlayerPalette.surface,
         ) {
-            Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 28.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Column(
+                Modifier.fillMaxWidth()
+                    // Keep the last settings controls above Android's gesture/navigation area.
+                    // Applying the inset before scrolling also leaves them reachable by touch.
+                    .windowInsetsPadding(WindowInsets.navigationBars)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp)
+                    .padding(bottom = 28.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
                 Text(stringResource(R.string.catalogue_settings), style = MaterialTheme.typography.headlineMedium, color = PlayerPalette.textPrimary)
                 Text(folder.label, color = PlayerPalette.textSecondary)
                 Button(onClick = { settings = false; scanAction() }, enabled = !loading, modifier = Modifier.fillMaxWidth()) {

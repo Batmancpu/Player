@@ -9,7 +9,7 @@
 
 ## Verified repository state
 
-- Latest committed main SHA: `6159b0c`. CI #236 / `44975472542` compiled and ran 53 Android 15 tests; 51 passed. The Movies poster layout and direct Media3 subtitles-disabled assertion passed. Remaining: picker selected accessibility state was not found; Glass switch interaction raced the entrance animation. Working-tree follow-up separately tracks Media3 disabled state and accepts explicit selected state descriptions, while requiring the settings heading to settle before scrolling. Local diff/XML checks and a fresh full CI run are pending. CI #226 / `44969253993` passed 53 Android 15 tests, JVM/build, Room schema 1–4 and privacy checks. Synthetic screenshots do not prove Reno10 playback/performance. README concept art is explicitly not an app screenshot.
+- Latest committed main SHA: `5b59246`. CI #237 / `44976546455` compiled and ran 53 Android 15 tests; the picker selected-state case and Movies poster geometry passed. One Glass settings failure showed the switch 32dp into the bottom gesture exclusion area on the 320×640 synthetic viewport. Working tree moves the Manage content above `WindowInsets.navigationBars` before its scroll container; all local/Android CI checks for this production reachability fix are pending. CI #226 / `44969253993` passed 53 Android 15 tests, JVM/build, Room schema 1–4 and privacy checks. Synthetic screenshots do not prove Reno10 playback/performance. README concept art is explicitly not an app screenshot.
 - User reported OPPO v0.1.79 recognized four videos with years, retained the catalogue after airplane-mode restart, and switched folders successfully. That report is not validation of the newer catalogue/player/Glass implementation.
 - Latest release recorded in project history is signed v0.1.174. It is an older progress checkpoint, not the integrated candidate. Current signing identity and package must remain intact.
 
@@ -19,7 +19,7 @@ A Compose-owned transport in `LocalPlayerScreen.kt` replaces generic PlayerView 
 
 ## Exact next actions
 
-1. Complete the CI #236 picker/Glass follow-up in the working tree, run the full CI workflow and inspect screenshots, privacy/signing checks, and any remaining exact failures.
+1. Commit the navigation-inset settings fix with current records and inspect its full Android test run, screenshots, build/schema/privacy checks, and exact results.
 2. Continue the integrated backlog in coherent batches: complete catalogue/detail behavior, player interaction/accessibility, production Glass/navigation, Macrobenchmark/Perfetto and final license/privacy/size/efficiency review. Do not make interim APKs.
 3. Publish one higher-version signed Release after integrated implementation and automated efficiency checks. Provide the concise OPPO checklist then. Real handset acceptance and measured Reno10 frame-time/thermal/battery remain pending; CI cannot establish them.
 
