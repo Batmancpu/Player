@@ -559,3 +559,7 @@ When the unfiltered library is open, movie titles and series now appear in separ
 ## 2026-11-22 — Expose caption slider ranges to accessibility
 - CI #243 compiled the caption UI and ran 55 Android tests; 54 passed. Its sole failure showed the custom-labelled subtitle size Slider did not expose Android range info to accessibility. Added merged slider semantics with explicit bounded `ProgressBarRangeInfo` for size and independent bottom position. This verification remains pending a full rerun; no APK was produced.
 - Next: run CI #244 and check both sliders, reset/persistence, synthetic screenshots and downstream build/schema/privacy checks before making one signed APK for the completed caption batch.
+
+## 2026-11-22 — Import Compose slider range semantics explicitly
+- CI #244 / 44981445066 stopped at app compilation because `progressBarRangeInfo` is an extension property and its import was missing. Added the explicit Compose semantics import; no tests ran and no APK was produced. Local XML and whitespace checks pass.
+- Next: push the compile correction and inspect the full CI #245 run; then rerun/fix until caption accessibility and every downstream gate pass.
