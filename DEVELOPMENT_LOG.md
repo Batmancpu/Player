@@ -1679,3 +1679,7 @@ Updated the active handoff to distinguish the pushed Glass commit from its still
 
 ### Canonical design record supersession
 Updated the binding Glass policy and current architecture/design text to remove stale Haze-as-current statements. Haze results are now marked historical; D-038/brrMusic migration and CI #263 pending status are authoritative. No app source changed.
+
+
+### Project context commit-state correction
+Updated `PROJECT_CONTEXT.md` to reflect that the Glass integration is pushed as `51be014` and CI #263 is running, rather than uncommitted. No app source changed.
