@@ -52,10 +52,14 @@ internal fun PlayerTrackSelectionSheet(
     onSelectionApplied: () -> Unit = {},
 ) {
     var trackParameters by remember(player) { mutableStateOf(player.trackSelectionParameters) }
-    DisposableEffect(player) {
+    var isTrackTypeDisabled by remember(player, trackType) {
+        mutableStateOf(trackType in player.trackSelectionParameters.disabledTrackTypes)
+    }
+    DisposableEffect(player, trackType) {
         val listener = object : Player.Listener {
             override fun onTrackSelectionParametersChanged(parameters: TrackSelectionParameters) {
                 trackParameters = parameters
+                isTrackTypeDisabled = trackType in parameters.disabledTrackTypes
             }
         }
         player.addListener(listener)
@@ -64,7 +68,6 @@ internal fun PlayerTrackSelectionSheet(
     val title = stringResource(if (trackType == C.TRACK_TYPE_AUDIO) R.string.player_audio_tracks else R.string.player_subtitle_tracks)
     val isSubtitle = trackType == C.TRACK_TYPE_TEXT
     val hasOverride = tracks.groups.any { it.type == trackType && trackParameters.overrides.containsKey(it.mediaTrackGroup) }
-    val isDisabled = trackType in trackParameters.disabledTrackTypes
     val options = tracks.groups.filter { it.type == trackType && it.isSupported }.flatMap { group ->
         (0 until group.length).filter(group::isTrackSupported).map { index ->
             TrackOption(
@@ -75,8 +78,8 @@ internal fun PlayerTrackSelectionSheet(
             )
         }
     }
-    val automaticSelected = !isDisabled && !hasOverride
-    val offSelected = isSubtitle && isDisabled
+    val automaticSelected = !isTrackTypeDisabled && !hasOverride
+    val offSelected = isSubtitle && isTrackTypeDisabled
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -95,6 +98,7 @@ internal fun PlayerTrackSelectionSheet(
                 onActivate = {
                     applyPlayerTrackSelection(player, trackType, null, null)
                     trackParameters = player.trackSelectionParameters
+                    isTrackTypeDisabled = trackType in player.trackSelectionParameters.disabledTrackTypes
                     onSelectionApplied()
                     onDismiss()
                 },
@@ -106,6 +110,7 @@ internal fun PlayerTrackSelectionSheet(
                     onActivate = {
                         applyPlayerTrackSelection(player, trackType, null, null, disabled = true)
                         trackParameters = player.trackSelectionParameters
+                        isTrackTypeDisabled = trackType in player.trackSelectionParameters.disabledTrackTypes
                         onSelectionApplied()
                         onDismiss()
                     },
@@ -118,6 +123,7 @@ internal fun PlayerTrackSelectionSheet(
                     onActivate = {
                         applyPlayerTrackSelection(player, trackType, option.group, option.trackIndex)
                         trackParameters = player.trackSelectionParameters
+                        isTrackTypeDisabled = trackType in player.trackSelectionParameters.disabledTrackTypes
                         onSelectionApplied()
                         onDismiss()
                     },

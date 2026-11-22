@@ -1,5 +1,9 @@
 # Player — chronological chat and session history
 
+## 2026-11-22 — Integrated build continues, no interim APK
+- User reiterated: do not stop for incremental phone checks or generate APKs after every batch; build the complete integrated app, then perform final efficiency/security checks, then provide one signed APK. Keep all code on `main` and preserve a detailed handoff so another agent can continue.
+- CI #236 ran 53 Android 15 tests (51 passed). Product compiled; local Movies poster bounds and Media3 subtitle-off parameter tests passed. Two accessibility/test issues remain: selected track state and Glass settings sheet entrance timing. Follow-up working-tree changes make disabled state independent Compose state, account for the explicit selected-state announcement, and wait for a settled settings heading. Next: run/inspect full CI, then keep advancing the integrated app batches. No interim APK, handset acceptance or performance claim.
+
 This file is the durable, accumulating record of important user requests, product decisions, implementation history and unresolved actions. It is written for future AI agents to continue work without depending on a lost chat context.
 
 **Format:** decision-focused session summaries, not a verbatim export of every message. Preserve the meaning of user requests and reasons behind decisions. Never include private signing files, passwords, base64 secret values, API keys, tokens or other credentials.

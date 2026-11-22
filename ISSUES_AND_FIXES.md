@@ -2,6 +2,10 @@
 
 A risk is not a confirmed defect. Record evidence, confidence and status precisely.
 
+## 2026-11-22 — Track picker selected-state and Glass settings entrance (open)
+- CI #236 / 44975472542: the Subtitles Off click action worked and Media3's disabled track type was verified on the player thread, but the test could not find the row with `isSelected=true`. Root cause confidence: moderate; selected-state reporting/recomposition remains to be confirmed by a new run. The Glass settings control test also started while the modal was partway through entrance. A working-tree correction keeps the disabled flag as its own Compose state, accepts the explicit selected `stateDescription` for radio rows, and waits until the heading is settled before gestures.
+- Affected: synthetic Android 15 CI only; no user device reproduction. Fix/regression status: pending CI. Next: inspect Android accessibility tree on failure, then validate all CI gates. No APK or device claim.
+
 ## Historical device incidents
 
 ### H-001 — CurrentLens native SIGSEGV on OPPO Reno10

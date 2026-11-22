@@ -1,3 +1,7 @@
+## Current implementation update — 2026-11-22
+
+User's latest instruction is to complete the integrated app and final efficiency review before producing one signed APK; do not make interim APKs or pause for routine phone checks. Latest committed main is `6159b0c`; CI #236 / 44975472542 compiled and ran 53 Android 15 tests (51 passed). It confirmed movie poster geometry and that Subtitles Off updates Media3. Selected state was missing in the accessibility test, and the Glass switch helper interacted before sheet entrance completed. Working tree now has a separate reactive disabled-track state, selected-state accessibility assertions that check selected/stateDescription, and a wait for the settled Glass settings heading. Fresh full CI and local XML/diff checks are pending. Continue feature work after confirming these tests; no APK, Reno10 acceptance or FPS claim.
+
 ## Current implementation update — 2026-11-21
 
 CI #214 / 44961886974 passed 51/51 Android 15 tests and unit/build/Room v1-v4/privacy gates; Details and Glass-on emulator captures were inspected. The Compose transport compiles on main and all nine playback cases passed in #216/#218. The full-height Manage sheet remains under test: #216 reproduced a hidden Glass control after recreation; #218 began scroll gestures before the sheet heading appeared. The regression helper now waits for that heading before scrolling; next Actions run will verify. No OPPO performance evidence. User wants one signed test APK after all remaining features and a final efficiency review, with no interim APK.

@@ -143,8 +143,14 @@ class PreviewUiAndroidTest {
 
     private fun visibleGlassSetting(): AccessibilityNodeInfo {
         val settingsHeading = context.getString(com.batmancpu.player.R.string.catalogue_settings)
+        val metrics = context.resources.displayMetrics
         awaitNode {
-            it.text?.toString() == settingsHeading && isInsideVisibleAppBounds(it)
+            if (it.text?.toString() != settingsHeading || !isInsideVisibleAppBounds(it)) return@awaitNode false
+            val bounds = Rect()
+            it.getBoundsInScreen(bounds)
+            // A partially expanded modal can expose its heading before its content is ready
+            // for scroll gestures. Wait until the heading has settled in the upper half.
+            bounds.top < metrics.heightPixels / 2
         }
         repeat(12) {
             find {

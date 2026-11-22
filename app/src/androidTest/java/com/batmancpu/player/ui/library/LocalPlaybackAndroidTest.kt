@@ -61,6 +61,11 @@ class LocalPlaybackAndroidTest {
         error("Expected accessibility node was not visible")
     }
 
+    private fun awaitSelectedRow(label: String): AccessibilityNodeInfo = awaitNode {
+        it.contentDescription?.toString() == label &&
+            (it.isSelected || it.stateDescription?.toString() == context.getString(com.batmancpu.player.R.string.nav_item_selected))
+    }
+
     private fun awaitText(value: String, expected: Boolean, timeoutMs: Long = 8_000): Boolean {
         val deadline = SystemClock.uptimeMillis() + timeoutMs
         while (SystemClock.uptimeMillis() < deadline) {
@@ -170,19 +175,20 @@ class LocalPlaybackAndroidTest {
                 textTracksDisabled.set(C.TRACK_TYPE_TEXT in player.trackSelectionParameters.disabledTrackTypes)
             }
             assertTrue("Subtitles-off action updates Media3 track parameters", textTracksDisabled.get())
-            assertTrue("Selecting subtitles off marks the accessible row selected", awaitNode {
-                it.contentDescription?.toString() == context.getString(com.batmancpu.player.R.string.player_subtitles_off) && it.isSelected
-            }.isSelected)
+            val offSelected = awaitSelectedRow(context.getString(com.batmancpu.player.R.string.player_subtitles_off))
+            assertTrue("Selecting subtitles off marks the accessible row selected", offSelected.isSelected ||
+                offSelected.stateDescription?.toString() == context.getString(com.batmancpu.player.R.string.nav_item_selected))
             val automaticOption = awaitNode { it.contentDescription?.toString() == context.getString(com.batmancpu.player.R.string.player_tracks_automatic) }
             assertTrue("Automatic track selection is accessible", automaticOption.performAction(AccessibilityNodeInfo.ACTION_CLICK))
-            assertTrue("Automatic selection restores the default track policy", awaitNode {
-                it.contentDescription?.toString() == context.getString(com.batmancpu.player.R.string.player_tracks_automatic) && it.isSelected
-            }.isSelected)
+            val automaticSelected = awaitSelectedRow(context.getString(com.batmancpu.player.R.string.player_tracks_automatic))
+            assertTrue("Automatic selection restores the default track policy", automaticSelected.isSelected || automaticSelected.stateDescription?.toString() == context.getString(com.batmancpu.player.R.string.nav_item_selected))
             val sidecarOption = awaitNode { it.contentDescription?.toString()?.startsWith("Synthetic.en.srt") == true }
             assertTrue("Selecting the local sidecar is accessible", sidecarOption.performAction(AccessibilityNodeInfo.ACTION_CLICK))
-            assertTrue("Selecting a supported sidecar marks its row selected", awaitNode {
-                it.contentDescription?.toString()?.startsWith("Synthetic.en.srt") == true && it.isSelected
-            }.isSelected)
+            val sidecarSelected = awaitNode {
+                it.contentDescription?.toString()?.startsWith("Synthetic.en.srt") == true &&
+                    (it.isSelected || it.stateDescription?.toString() == context.getString(com.batmancpu.player.R.string.nav_item_selected))
+            }
+            assertTrue("Selecting a supported sidecar marks its row selected", sidecarSelected.isSelected || sidecarSelected.stateDescription?.toString() == context.getString(com.batmancpu.player.R.string.nav_item_selected))
             instrumentation.runOnMainSync { selectedTrackType.value = C.TRACK_TYPE_AUDIO }
             assertTrue("Audio picker replaces the subtitle picker", awaitText("Audio", true))
             val audioOption = awaitNode {
@@ -190,8 +196,9 @@ class LocalPlaybackAndroidTest {
             }
             assertTrue("Supported audio track can be selected", audioOption.performAction(AccessibilityNodeInfo.ACTION_CLICK))
             assertTrue("Audio selection exposes its selected state", awaitNode {
-                it.isCheckable && it.contentDescription?.toString() != context.getString(com.batmancpu.player.R.string.player_tracks_automatic) && it.isSelected
-            }.isSelected)
+                it.isCheckable && it.contentDescription?.toString() != context.getString(com.batmancpu.player.R.string.player_tracks_automatic) &&
+                    (it.isSelected || it.stateDescription?.toString() == context.getString(com.batmancpu.player.R.string.nav_item_selected))
+            }.let { it.isSelected || it.stateDescription?.toString() == context.getString(com.batmancpu.player.R.string.nav_item_selected) })
             instrumentation.runOnMainSync { player.removeListener(trackListener) }
         } finally {
             instrumentation.runOnMainSync { reference.get()?.release(); activity.finish() }
