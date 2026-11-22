@@ -525,3 +525,9 @@ When the unfiltered library is open, movie titles and series now appear in separ
 - The remaining test reached the portrait poster but measured its partially dock-obscured bounds. Added an explicit vertical Home scroll before measuring the poster's portrait composition; other Home/details/series/metadata cases passed after the compact hero and distinct CTA.
 - Local `git diff --check` passes; CI #232 pending.
 - Next: verify subtitle picker actions and full Android suite, inspect synthetic screenshots, then continue Glass/performance and release-readiness work.
+
+## 2026-11-22 — Make picker state reactive and scroll-aware UI evidence
+- CI #232 / 44973573949 ran 53 Android tests; 51 passed, 2 failed. The explicit radio click now executes, but selected-state semantics stayed stale after the Media3 selection changed. Added a `Player.Listener.onTrackSelectionParametersChanged` observer and immediate state refresh so Automatic/Off/track selection reflects engine state.
+- A single injected swipe did not reveal the complete poster bounds. The test now scrolls the largest accessible vertical container, captures `catalogue-scrolled.png`, and includes measured bounds in any ratio assertion.
+- `git diff --check`/resource XML validation pending; Android CI #233 will decide both behaviors.
+- Next: commit with records, review #233 reports/captures, and continue app batches without an interim APK.

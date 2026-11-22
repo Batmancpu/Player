@@ -601,3 +601,7 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 ## 2026-11-22 — CI #231 radio click and partially visible poster
 - 51/53 Android tests passed. The picker label's semantics were not merged into its selectable action node. Use one explicit semantics node with imported `role`, selected state and onClick.
 - Poster composition assertion measured a dock-clipped partial card. The test now scrolls Home until posters are visible before measuring full card geometry.
+
+## 2026-11-22 — CI #232 state freshness and vertical Home scroll
+- CI #232: 51/53 Android tests passed. Picker click succeeds, but selected state was stale; track picker now observes Media3's parameter-change callback into Compose state.
+- Poster remains clipped after one test swipe; tests now activate the largest accessible scroll container (vertical catalogue), capture the scrolled view and include bounds in failures. CI #233 pending.

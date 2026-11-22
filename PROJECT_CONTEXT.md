@@ -482,3 +482,6 @@ CI #230 / 44972167368: production sources compiled, 53 Android tests ran, 48 pas
 
 ## 2026-11-22 — CI #231 follow-up
 CI #231 ran 53 Android tests: 51 passed, 2 failed. Compact hero fixed prior Home/series/metadata failures. Remaining picker error was non-clickable matched label semantics; use explicit clearAndSet semantics and import `androidx.compose.ui.semantics.role`. Poster-ratio assertion saw a card clipped by the floating dock; test now scrolls Home first. Full CI pending.
+
+## 2026-11-22 — CI #232 follow-up
+CI #232 / 44973573949: 51/53 Android tests pass. Track option click exists but selected semantics are stale; implementation now mirrors `Player.Listener.onTrackSelectionParametersChanged`. Poster ratio remains clipped after a swipe; test now scrolls the largest accessible container, captures the scrolled home and reports measured bounds. Verification pending CI #233.

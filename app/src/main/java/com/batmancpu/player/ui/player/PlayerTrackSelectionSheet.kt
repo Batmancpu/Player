@@ -13,9 +13,11 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.onDispose
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +34,7 @@ import androidx.media3.common.C
 import androidx.media3.common.Format
 import androidx.media3.common.Player
 import androidx.media3.common.TrackSelectionOverride
+import androidx.media3.common.TrackSelectionParameters
 import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import com.batmancpu.player.R
@@ -49,19 +52,27 @@ internal fun PlayerTrackSelectionSheet(
     onDismiss: () -> Unit,
     onSelectionApplied: () -> Unit = {},
 ) {
-    var selectionRevision by remember(player) { mutableIntStateOf(0) }
+    var trackParameters by remember(player) { mutableStateOf(player.trackSelectionParameters) }
+    DisposableEffect(player) {
+        val listener = object : Player.Listener {
+            override fun onTrackSelectionParametersChanged(parameters: TrackSelectionParameters) {
+                trackParameters = parameters
+            }
+        }
+        player.addListener(listener)
+        onDispose { player.removeListener(listener) }
+    }
     val title = stringResource(if (trackType == C.TRACK_TYPE_AUDIO) R.string.player_audio_tracks else R.string.player_subtitle_tracks)
     val isSubtitle = trackType == C.TRACK_TYPE_TEXT
-    val parameters = remember(player, tracks, selectionRevision) { player.trackSelectionParameters }
-    val hasOverride = tracks.groups.any { it.type == trackType && parameters.overrides.containsKey(it.mediaTrackGroup) }
-    val isDisabled = trackType in parameters.disabledTrackTypes
+    val hasOverride = tracks.groups.any { it.type == trackType && trackParameters.overrides.containsKey(it.mediaTrackGroup) }
+    val isDisabled = trackType in trackParameters.disabledTrackTypes
     val options = tracks.groups.filter { it.type == trackType && it.isSupported }.flatMap { group ->
         (0 until group.length).filter(group::isTrackSupported).map { index ->
             TrackOption(
                 index,
                 group,
                 formatTrackLabel(group.getTrackFormat(index), index),
-                parameters.overrides[group.mediaTrackGroup]?.trackIndices?.contains(index) == true,
+                trackParameters.overrides[group.mediaTrackGroup]?.trackIndices?.contains(index) == true,
             )
         }
     }
@@ -84,7 +95,7 @@ internal fun PlayerTrackSelectionSheet(
                 selected = automaticSelected,
                 onActivate = {
                     applyPlayerTrackSelection(player, trackType, null, null)
-                    selectionRevision++
+                    trackParameters = player.trackSelectionParameters
                     onSelectionApplied()
                     onDismiss()
                 },
@@ -95,7 +106,7 @@ internal fun PlayerTrackSelectionSheet(
                     selected = offSelected,
                     onActivate = {
                         applyPlayerTrackSelection(player, trackType, null, null, disabled = true)
-                        selectionRevision++
+                        trackParameters = player.trackSelectionParameters
                         onSelectionApplied()
                         onDismiss()
                     },
@@ -107,7 +118,7 @@ internal fun PlayerTrackSelectionSheet(
                     selected = option.selected,
                     onActivate = {
                         applyPlayerTrackSelection(player, trackType, option.group, option.trackIndex)
-                        selectionRevision++
+                        trackParameters = player.trackSelectionParameters
                         onSelectionApplied()
                         onDismiss()
                     },
