@@ -52,6 +52,11 @@ class OfflineMetadataCacheAndroidTest {
 
         assertTrue(OfflineMetadataCache.load(context, tree.toString()).isEmpty())
         assertTrue(OfflineMetadataCache.isLookupSuppressed(context, tree.toString(), listOf("film")))
+        assertFalse(
+            "A late automatic response cannot overwrite an explicit removal",
+            OfflineMetadataCache.bind(context, tree.toString(), listOf("film"), movie, respectLookupSuppression = true),
+        )
+        assertTrue(OfflineMetadataCache.isLookupSuppressed(context, tree.toString(), listOf("film")))
         assertTrue("A later explicit choice replaces the suppression", OfflineMetadataCache.bind(context, tree.toString(), listOf("film"), movie))
         assertFalse(OfflineMetadataCache.isLookupSuppressed(context, tree.toString(), listOf("film")))
         assertEquals(mapOf("film" to movie), OfflineMetadataCache.load(context, tree.toString()))

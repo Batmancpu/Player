@@ -280,6 +280,7 @@ internal object OfflineMetadataCache {
         tree: String,
         documentIds: List<String>,
         metadata: CachedTmdbMetadata,
+        respectLookupSuppression: Boolean = false,
     ): Boolean = withContext(Dispatchers.IO) {
         if (documentIds.isEmpty() || documentIds.size > 10_000 || !valid(metadata)) return@withContext false
         val ids = documentIds.toSet()
@@ -289,6 +290,9 @@ internal object OfflineMetadataCache {
                 .filter { it.mediaKind == LocalMediaKind.VIDEO.name }.map { it.documentId }.toSet()
             // A stale search response, subtitle or other tree must not create an orphan/partial match.
             if (!indexedVideos.containsAll(ids)) return@withTransaction false
+            if (respectLookupSuppression && ids.chunked(500).any { db.manualTmdbMatchDao().hasLookupSuppression(tree, it) }) {
+                return@withTransaction false
+            }
             db.cachedTmdbMetadataDao().upsert(metadata)
             val now = System.currentTimeMillis()
             for (id in ids) {

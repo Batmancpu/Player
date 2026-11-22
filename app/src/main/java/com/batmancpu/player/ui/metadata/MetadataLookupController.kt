@@ -120,8 +120,9 @@ internal class MetadataLookupController(
             try {
                 loadVisibleCatalogueTitle(tree, key, title)
             } finally {
+                val completingJob = kotlinx.coroutines.currentCoroutineContext()[Job]
                 synchronized(visibleJobs) {
-                    if (visibleJobs[key] === kotlinx.coroutines.currentCoroutineContext()[Job]) {
+                    if (visibleJobs[key] === completingJob) {
                         visibleJobs.remove(key)
                     }
                 }
@@ -364,7 +365,7 @@ internal class MetadataLookupController(
                         cachedAtEpochMs = System.currentTimeMillis(),
                     )
                     val stored = OfflineMetadataCache.bind(
-                        app, tree, title.files.map { it.documentId }, metadata,
+                        app, tree, title.files.map { it.documentId }, metadata, respectLookupSuppression = true,
                     )
                     if (!active(ticket, tree, title)) return
                     if (!stored) {
@@ -432,10 +433,15 @@ internal class MetadataLookupController(
                 backdropPath = candidate.backdropPath,
                 cachedAtEpochMs = System.currentTimeMillis(),
             )
-            if (!visible(tree, key, title) || !OfflineMetadataCache.bind(app, tree, fileIds, metadata)) return
+            if (!visible(tree, key, title) || !OfflineMetadataCache.bind(
+                    app, tree, fileIds, metadata, respectLookupSuppression = true,
+                )
+            ) return
             mutableCatalogueRevision.update { it + 1 }
+            publishCatalogueMatch(tree, title, metadata)
             val poster = metadata.posterPath?.let { artworkCache.fetch(it, TmdbImageSize.POSTER) }
             val backdrop = metadata.backdropPath?.let { artworkCache.fetch(it, TmdbImageSize.BACKDROP) }
+            publishCatalogueMatch(tree, title, metadata, poster, backdrop)
             if (visible(tree, key, title) && (poster != null || backdrop != null)) {
                 mutableCatalogueRevision.update { it + 1 }
             }
@@ -470,6 +476,28 @@ internal class MetadataLookupController(
     private fun visible(tree: String, key: String, title: LocalTitle): Boolean =
         synchronized(visibleJobs) { visibleJobs[key]?.isActive == true } &&
             currentTree() == tree && isCurrentTitle(tree, title)
+
+    private fun publishCatalogueMatch(
+        tree: String,
+        title: LocalTitle,
+        metadata: CachedTmdbMetadata,
+        poster: File? = null,
+        backdrop: File? = null,
+    ) {
+        val current = mutableState.value
+        if (current.tree == tree && current.titleKey == title.key) {
+            mutableState.value = current.copy(
+                preparing = false,
+                searching = false,
+                cached = metadata,
+                posterFile = poster,
+                backdropFile = backdrop,
+                matchedFiles = title.files.size,
+                candidates = emptyList(),
+                issue = null,
+            )
+        }
+    }
 
     private fun visibilityKey(tree: String, titleKey: String) = "$tree\u0000$titleKey"
 

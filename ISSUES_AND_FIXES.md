@@ -667,3 +667,10 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 - **Fix under test:** explicitly assert disabled consent while token/title terms remain available; use bounded `revealByScrolling` for the offscreen notice. Added a synthetic test for the new visible-card enrichment path.
 - **Verification status:** fixes and feature unverified until a fresh full CI. No new APK/Release. Local static checks pass (7 Python tests, XML parse, `git diff --check`).
 - **Next:** push focused source+documentation commit and inspect fresh Android 15/JVM/build/schema/privacy run; fix any actual failure before the single batch Release.
+
+## 2026-11-22 — R-045 Coroutine cleanup critical section and stale auto-bind race
+- **Evidence:** CI #254 / 44989496794 stopped during `:app:compileDebugKotlin`; Kotlin disallows `currentCoroutineContext()` inside the controller's `synchronized` cleanup block. No instrumentation ran.
+- **Fix under test:** capture the coroutine Job before entering the monitor and remove only the map entry still owned by that Job.
+- **Race found during review:** title removal persisted an opt-out sentinel but a previously in-flight automatic result could overwrite it at bind time. Automatic detail/catalogue binds now test suppression inside the same Room transaction; manual explicit confirmation remains able to replace suppression. A Room regression assertion and open-sheet state refresh were added.
+- **Verification:** source fix pending CI #255. No APK/Release. Static verification must be rerun for this follow-up.
+- **Next:** validate the fix and the full visible-catalogue test suite in CI; continue the metadata batch only after green.
