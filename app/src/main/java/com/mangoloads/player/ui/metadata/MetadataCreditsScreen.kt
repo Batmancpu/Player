@@ -45,7 +45,7 @@ internal fun MetadataCreditsScreen(onBack: () -> Unit) {
                 Text(stringResource(R.string.metadata_back))
             }
             Spacer(Modifier.height(4.dp))
-            Text("Player", style = MaterialTheme.typography.displayMedium, color = PlayerPalette.textPrimary)
+            Text("brrPlayer", style = MaterialTheme.typography.displayMedium, color = PlayerPalette.textPrimary)
             Text(stringResource(R.string.metadata_credits_title), style = MaterialTheme.typography.titleLarge)
             Image(
                 painter = painterResource(R.drawable.tmdb_logo),

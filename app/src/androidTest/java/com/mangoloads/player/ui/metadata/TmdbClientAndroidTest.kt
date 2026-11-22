@@ -104,7 +104,7 @@ class TmdbClientAndroidTest {
         assertEquals(10_000, fixture.connectTimeout)
         assertEquals(15_000, fixture.readTimeout)
         assertEquals("Bearer $token", fixture.getRequestProperty("Authorization"))
-        assertEquals("Player", fixture.getRequestProperty("User-Agent"))
+        assertEquals("brrPlayer", fixture.getRequestProperty("User-Agent"))
         assertTrue(fixture.disconnected.await(5, TimeUnit.SECONDS))
         assertTrue(fixture.streamClosed)
     }

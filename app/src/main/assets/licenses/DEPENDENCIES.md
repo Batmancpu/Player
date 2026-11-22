@@ -1,4 +1,4 @@
-# Player dependency attribution
+# brrPlayer dependency attribution
 
 The Android release uses AndroidX / Jetpack (Android Open Source Project and contributors), Kotlin standard libraries and kotlinx.coroutines (JetBrains and contributors), and Haze (Chris Banes and contributors). These projects use the Apache License 2.0, included as APACHE_2_0.txt. Individual upstream copyright and applicable notices remain with their original owners.
 

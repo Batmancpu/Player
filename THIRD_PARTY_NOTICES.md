@@ -1,6 +1,6 @@
 # Third-party notices
 
-This file records third-party code/assets shipped in the Player APK. Each included dependency or asset must retain its licence text and attribution.
+This file records third-party code/assets shipped in the brrPlayer APK. Each included dependency or asset must retain its licence text and attribution.
 
 ## Lucide icon assets
 - Source project: https://github.com/composablehorizons/compose-icons
@@ -28,7 +28,7 @@ Media3 ExoPlayer and UI 1.11.1, Android Open Source Project/contributors, Apache
 
 ## Coil Compose image rendering
 - Dependency: `io.coil-kt.coil3:coil-compose:3.6.3`, Apache-2.0: https://github.com/coil-kt/coil/blob/3.6.3/LICENSE.txt
-- Used only to decode bounded Player app-private cached artwork from local `File` values. No Coil network module is included; metadata API and artwork CDN transports remain separate, explicit and bounded.
+- Used only to decode bounded brrPlayer app-private cached artwork from local `File` values. No Coil network module is included; metadata API and artwork CDN transports remain separate, explicit and bounded.
 - Apache-2.0 license text is packaged at `app/src/main/assets/licenses/APACHE_2_0.txt`.
 
 

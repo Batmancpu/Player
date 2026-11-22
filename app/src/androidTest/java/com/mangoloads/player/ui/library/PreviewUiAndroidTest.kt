@@ -599,13 +599,13 @@ class PreviewUiAndroidTest {
                 }
             }
             click(text("Manage"))
-            click(text("Remove folder from Player"))
+            click(text("Remove folder from brrPlayer"))
             text("Remove this library?")
-            text("Player will remove its saved library index, playback resume points and folder access. Your original videos and subtitles stay in the folder and will not be deleted.")
+            text("brrPlayer will remove its saved library index, playback resume points and folder access. Your original videos and subtitles stay in the folder and will not be deleted.")
             click(text("Keep library"))
             assertEquals("Cancel must leave the library connected", 0, forgotten.get())
-            click(text("Remove folder from Player"))
-            click(text("Remove from Player"))
+            click(text("Remove folder from brrPlayer"))
+            click(text("Remove from brrPlayer"))
             assertEquals("Only explicit confirmation starts removal", 1, forgotten.get())
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
@@ -690,7 +690,7 @@ class PreviewUiAndroidTest {
             clickTitleCard("Aurora")
             // Wait for the modal entrance to finish before querying its lazy content.
             screenshot("metadata-keyless-details")
-            revealByScrolling("Player’s shared TMDB access is not included in this build yet. You do not need to connect a personal account or add a key; your library remains available offline.")
+            revealByScrolling("brrPlayer’s shared TMDB access is not included in this build yet. You do not need to connect a personal account or add a key; your library remains available offline.")
             assertNull("A keyless release cannot be repaired through a personal token screen", find {
                 it.text?.toString() == "Metadata privacy settings"
             })
@@ -746,12 +746,12 @@ class PreviewUiAndroidTest {
             }
             click(text("About and credits"))
             assertEquals(1, opened.get())
-            revealByScrolling("Player’s shared TMDB access is included in this build. It is a public app credential and can be extracted from the APK. Requests start only after you allow metadata.")
+            revealByScrolling("brrPlayer’s shared TMDB access is included in this build. It is a public app credential and can be extracted from the APK. Requests start only after you allow metadata.")
             assertNull("The shared credential is never shown or requested in settings", find { it.text?.toString() == "API Read Access Token" })
             instrumentation.runOnMainSync {
                 activity.setContent { PlayerTheme { com.mangoloads.player.ui.metadata.MetadataCreditsScreen(onBack = {}) } }
             }
-            text("Player")
+            text("brrPlayer")
             text("This product uses the TMDB API but is not endorsed or certified by TMDB.")
             assertNotNull(awaitNode { it.contentDescription?.toString() == "The Movie Database (TMDB) logo" })
         } finally {

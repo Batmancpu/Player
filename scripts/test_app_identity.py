@@ -40,5 +40,11 @@ class AppIdentityTest(unittest.TestCase):
             for source in root.rglob("*.kt"):
                 self.assertNotIn("com.batmancpu.player", source.read_text(encoding="utf-8"), str(source))
 
+    def test_visible_app_copy_uses_brrplayer_brand(self):
+        for path in (ROOT / "app/src/main/res/values/strings.xml", ROOT / "app/src/main/res/values/metadata_strings.xml"):
+            root = ET.parse(path).getroot()
+            for node in root.iter("string"):
+                self.assertNotRegex(node.text or "", r"\bPlayer\b", f"stale product name in {node.get('name')}")
+
 if __name__ == "__main__":
     unittest.main()

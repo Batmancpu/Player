@@ -158,7 +158,7 @@ internal class HttpsTmdbTransport(
                     active.useCaches = false
                     active.requestMethod = "GET"
                     active.setRequestProperty("Accept", "application/json")
-                    active.setRequestProperty("User-Agent", "Player")
+                    active.setRequestProperty("User-Agent", "brrPlayer")
                     active.setRequestProperty("Authorization", "Bearer $credential")
                     val status = active.responseCode
                     val body = if (status == 200) {

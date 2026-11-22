@@ -54,7 +54,7 @@ internal class HttpsTmdbArtworkTransport(
                     connection.connectTimeout = 10_000
                     connection.readTimeout = 15_000
                     connection.requestMethod = "GET"
-                    connection.setRequestProperty("User-Agent", "Player")
+                    connection.setRequestProperty("User-Agent", "brrPlayer")
                     connection.setRequestProperty("Accept", "image/jpeg,image/png")
                     val status = connection.responseCode
                     if (status != 200) {
