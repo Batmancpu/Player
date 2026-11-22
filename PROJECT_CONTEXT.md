@@ -479,3 +479,6 @@ CI #229 / 44971780524 verified app-source compilation but failed Android test co
 
 ## 2026-11-22 — CI #230 follow-up
 CI #230 / 44972167368: production sources compiled, 53 Android tests ran, 48 passed and 5 failed. Failures revealed Home hero viewport crowding/duplicate CTA text and a picker label node not bound to the radio action. Current source reduces hero min-height to 188dp, gives the featured CTA “Play”, fixes test click semantics, and reorders picker modifiers so selectable owns merged label/state. Revalidation pending.
+
+## 2026-11-22 — CI #231 follow-up
+CI #231 ran 53 Android tests: 51 passed, 2 failed. Compact hero fixed prior Home/series/metadata failures. Remaining picker error was non-clickable matched label semantics; use explicit clearAndSet semantics and import `androidx.compose.ui.semantics.role`. Poster-ratio assertion saw a card clipped by the floating dock; test now scrolls Home first. Full CI pending.

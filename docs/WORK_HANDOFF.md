@@ -9,7 +9,7 @@
 
 ## Verified repository state
 
-- Latest committed main SHA: `e655d2c` fixes the missing hero test helper. CI #230 / `44972167368` ran 53 Android tests: 48 passed, 5 failed. Production compiled. Failures exposed the compact Home hero covering poster cards/duplicating “Play video”, a hero text-node click assertion, and a track-picker label not merged with its radio action. Source now reduces hero min-height to 188dp, uses a distinct “Play” CTA with accessibility ancestor click, and makes selectable own merged label/state semantics; validation is pending. CI #226 / `44969253993` passed 53 Android 15 tests, JVM/build, Room schema 1–4 and privacy checks. Synthetic video screenshots do not prove decoder or device performance. README concept art is explicitly not an app screenshot. CI #226 / `44969253993` passed 53 Android 15 tests, JVM/build, Room schema 1–4 and privacy checks. Synthetic video screenshots do not prove decoder or device performance. README concept art is explicitly not an app screenshot.
+- Latest committed main SHA: `e655d2c` fixes the missing hero test helper. CI #231 / `44972910275` ran 53 Android tests: 51 passed, 2 failed. Compact Home/series/metadata tests now pass. The track picker still lacked a clickable label node; source restores explicit radio/label/selected/onClick semantics with the required `role` extension import. Poster ratio was measured while the card was partly obscured by the bottom dock; test now scrolls Home before measuring. CI #232 pending. CI #226 / `44969253993` passed 53 Android 15 tests, JVM/build, Room schema 1–4 and privacy checks. Synthetic video screenshots do not prove decoder or device performance. README concept art is explicitly not an app screenshot. CI #226 / `44969253993` passed 53 Android 15 tests, JVM/build, Room schema 1–4 and privacy checks. Synthetic video screenshots do not prove decoder or device performance. README concept art is explicitly not an app screenshot.
 - User reported OPPO v0.1.79 recognized four videos with years, retained the catalogue after airplane-mode restart, and switched folders successfully. That report is not validation of the newer catalogue/player/Glass implementation.
 - Latest release recorded in project history is signed v0.1.174. It is an older progress checkpoint, not the integrated candidate. Current signing identity and package must remain intact.
 
@@ -19,7 +19,7 @@ A Compose-owned transport in `LocalPlayerScreen.kt` replaces generic PlayerView 
 
 ## Exact next actions
 
-1. Commit the compact Home/accessibility correction with records; inspect the next full CI, screenshots and all build/schema/privacy gates.
+1. Commit the picker semantics/poster test correction with records; inspect CI #232, screenshots and all build/schema/privacy gates.
 2. Continue the integrated backlog in coherent batches: complete catalogue/detail behavior, player interaction/accessibility, production Glass/navigation, Macrobenchmark/Perfetto and final license/privacy/size/efficiency review. Do not make interim APKs.
 3. Publish one higher-version signed Release after integrated implementation and automated efficiency checks. Provide the concise OPPO checklist then. Real handset acceptance and measured Reno10 frame-time/thermal/battery remain pending; CI cannot establish them.
 

@@ -127,6 +127,17 @@ class PreviewUiAndroidTest {
         assertTrue("No clickable ancestor", target?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true)
     }
 
+    private fun scrollHomeToRevealPosters() {
+        val metrics = context.resources.displayMetrics
+        val x = metrics.widthPixels / 2
+        val startY = metrics.heightPixels * 3 / 4
+        val endY = metrics.heightPixels / 3
+        ParcelFileDescriptor.AutoCloseInputStream(
+            automation.executeShellCommand("input swipe $x $startY $x $endY 300"),
+        ).use { it.readBytes() }
+        SystemClock.sleep(300)
+    }
+
 
     private fun clickLastClickableLabel(label: String) {
         var target: AccessibilityNodeInfo? = null
@@ -686,6 +697,7 @@ class PreviewUiAndroidTest {
             click(featurePlay)
             assertEquals("movie-A", playedDocument.get())
             assertTrue(awaitCondition(3_000) { find { it.contentDescription?.toString()?.startsWith("Aurora,") == true } != null })
+            scrollHomeToRevealPosters()
             val titleNode = titleCard("Aurora")
             var cardNode: AccessibilityNodeInfo? = titleNode
             while (cardNode != null && !cardNode.isClickable) cardNode = cardNode.parent

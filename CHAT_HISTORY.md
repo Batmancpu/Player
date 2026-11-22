@@ -653,3 +653,5 @@ CI #228 found the last picker accessibility adjustment did not compile because t
 CI #229 compiled production Kotlin, then stopped at Android test compilation: Home hero test referenced undefined `awaitText`. Replaced it with existing `text()` bounded node helper. No runtime tests ran; next CI is pending.
 
 CI #230 ran 53 Android tests, 48 passed and 5 failed. The Home hero occupied the compact screen and its duplicate “Play video” text confused node lookup; reduced its minimum height to 188dp and changed its own CTA to “Play”. The new test now clicks through the shared accessibility helper. Picker label/action semantics are reordered so selectable owns the merged label and state. Re-run pending.
+
+CI #231: 51/53 Android tests passed; only picker label click and dock-clipped poster bounds failed. Current source restores one explicit RadioButton semantics node, including the previously missing `role` extension import and onClick. Poster layout test scrolls Home before measuring. CI #232 pending.

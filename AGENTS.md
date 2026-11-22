@@ -519,3 +519,9 @@ When the unfiltered library is open, movie titles and series now appear in separ
 - CI also found the picker label node still lacked the accessible action. Reordered modifiers so the radio `selectable` wraps/owns the merged label/selected semantics; removed a redundant custom click action.
 - `git diff --check` and XML parsing are the local checks; new full CI pending.
 - Next: commit with updated records; inspect all UI tests and synthetic screen artifacts, fix remaining failures, then continue production Glass and performance backlog.
+
+## 2026-11-22 — Restore explicit radio action and measure visible poster
+- CI #231 / 44972910275 ran 53 Android tests; 51 passed, 2 failed. `Subtitles off` still lacked click semantics: modifier ordering alone did not bind the label/action node. Restored one `clearAndSetSemantics` node with `Role.RadioButton`, label, selected/state description and explicit `onClick`; crucially import the Compose `role` extension (the earlier #228 compiler error was this missing import).
+- The remaining test reached the portrait poster but measured its partially dock-obscured bounds. Added an explicit vertical Home scroll before measuring the poster's portrait composition; other Home/details/series/metadata cases passed after the compact hero and distinct CTA.
+- Local `git diff --check` passes; CI #232 pending.
+- Next: verify subtitle picker actions and full Android suite, inspect synthetic screenshots, then continue Glass/performance and release-readiness work.
