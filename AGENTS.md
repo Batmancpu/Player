@@ -697,3 +697,6 @@ Corrected stale handoff claims that metadata CI was pending/unverified, that loc
 
 ## 2026-11-22 — CI #274 synthetic SAF URI guard
 CI #274 (`45003978652`, commit `9908617`) compiled but 7 Android UI tests failed because the new artwork resolver parsed their placeholder `synthetic-tree` values as real DocumentsContract tree URIs. Added a fail-closed factory that returns no resolver for malformed/non-tree/non-external-storage URIs; test previews then retain the existing placeholder UI. Local 19 Python tests and `git diff --check` pass. No data access occurs for invalid fixture IDs. Next: commit the guard to main and inspect full CI #275; no APK before the artwork batch is green.
+
+## 2026-11-22 — CI #275 resolver companion correction
+CI #275 (`45004500275`, commit `9c833d1`) stopped at Kotlin compilation: the guarded URI factory and listing bounds had been put in separate companion objects, which Kotlin forbids. Merged them into the one companion, and tightened the cursor bound to count every directory row (not only files) so a directory containing many subfolders is bounded too. Updated the source-contract check. Local 19 Python tests and `git diff --check` pass. Next: commit and inspect full CI #276; local-artwork feature remains unreleased.

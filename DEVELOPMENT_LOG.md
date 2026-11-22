@@ -1710,3 +1710,6 @@ After publishing the offline Glass batch, started a local-only artwork improveme
 
 ### CI #274 — guard synthetic and malformed tree identifiers
 CI #274 (`45003978652`, commit `9908617`) compiled the local art implementation but failed 7 synthetic UI cases because preview fixtures use opaque `synthetic-tree` identifiers, while the artwork resolver immediately invoked `DocumentsContract.getTreeDocumentId`. The resolver is now constructed via a guarded factory that returns null unless the URI is a valid external-storage SAF tree; cards and hero use their standard generated placeholder when unavailable. Valid persisted SAF trees retain the resolver. Local 19 Python tests and whitespace checks pass; no Android rerun yet and no APK. Next: commit and run complete CI.
+
+### CI #275 — one companion object and row-count bound
+CI #275 (`45004500275`, commit `9c833d1`) failed at Kotlin compile because the guarded factory companion and constants companion conflicted. Combined the factory and constants in one companion object. The same correction counts all cursor rows toward the 2,048 sibling limit, so directories/non-media entries cannot bypass the query bound. Updated Python source-contract test. Local suite: 19/19; diff whitespace passes; Android/Kotlin still awaits CI #276. No APK.

@@ -12,6 +12,7 @@ class LocalArtworkContractTest(unittest.TestCase):
         self.assertIn("buildChildDocumentsUriUsingTree", source)
         self.assertIn("isChildDocument", source)
         self.assertIn("readSafCursor", source)
+        self.assertIn("MAX_SIBLING_ENTRIES", source)
         self.assertIn("LocalArtworkMatcher.choose", source)
         self.assertIn("LocalArtworkResolver.create(context, folder.tree)", screen)
         self.assertNotRegex(source, r"(?i)https?://")

@@ -75,6 +75,9 @@ internal class LocalArtworkResolver private constructor(
     private val siblingCache = LinkedHashMap<String, List<LocalArtworkCandidate>>(16, .75f, true)
 
     companion object {
+        private const val MAX_SIBLING_ENTRIES = 2_048
+        private const val MAX_CACHED_DIRECTORIES = 32
+
         fun create(context: Context, tree: String): LocalArtworkResolver? = runCatching {
             val uri = Uri.parse(tree)
             if (!DocumentsContract.isTreeUri(uri) ||
@@ -123,9 +126,10 @@ internal class LocalArtworkResolver private constructor(
             val nameColumn = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
             val mimeColumn = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_MIME_TYPE)
             val found = ArrayList<LocalArtworkCandidate>()
+            var entriesSeen = 0
             while (cursor.moveToNext()) {
                 checkActive()
-                if (found.size >= MAX_SIBLING_FILES) throw java.io.IOException("Local artwork directory is too large")
+                if (++entriesSeen > MAX_SIBLING_ENTRIES) throw java.io.IOException("Local artwork directory is too large")
                 val id = cursor.getString(idColumn)?.takeIf(String::isNotBlank) ?: continue
                 val name = cursor.getString(nameColumn)?.takeIf(String::isNotBlank) ?: continue
                 val mime = cursor.getString(mimeColumn)?.takeIf(String::isNotBlank) ?: continue
@@ -138,10 +142,5 @@ internal class LocalArtworkResolver private constructor(
         siblingCache[parentId] = children
         if (siblingCache.size > MAX_CACHED_DIRECTORIES) siblingCache.remove(siblingCache.keys.first())
         children
-    }
-
-    private companion object {
-        const val MAX_SIBLING_FILES = 2_048
-        const val MAX_CACHED_DIRECTORIES = 32
     }
 }
