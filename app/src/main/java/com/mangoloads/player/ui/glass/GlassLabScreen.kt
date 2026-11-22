@@ -55,6 +55,7 @@ import com.mangoloads.player.R
 import com.mangoloads.player.ui.glass.backdrop.backdrops.rememberLayerBackdrop
 import com.mangoloads.player.ui.glass.backdrop.backdrops.layerBackdrop
 import com.mangoloads.player.ui.glass.floatingtabbar.rememberFloatingTabBarScrollConnection
+import com.mangoloads.player.ui.glass.rememberSystemReduceMotion
 import com.mangoloads.player.ui.icons.PlayerGlyph
 import com.mangoloads.player.ui.icons.PlayerGlyphIcon
 import com.mangoloads.player.ui.theme.PlayerCorners
@@ -306,14 +307,8 @@ private fun ArtworkTile(
     subtitle: String,
     colors: List<Color>,
 ) {
-    CompositionLocalProvider(
-        LocalLiquidGlassEnabled provides glassEnabled,
-        LocalAppBackdrop provides appBackdrop,
-        LocalReduceMotion provides reduceMotion,
-    ) {
     Box(
-        modifier = modifier.nestedScroll(dockScroll)
-            .height(142.dp)
+        modifier = modifier.height(142.dp)
             .clip(PlayerCorners.artwork)
             .background(Brush.verticalGradient(colors)),
     ) {

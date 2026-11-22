@@ -1683,3 +1683,6 @@ Updated the binding Glass policy and current architecture/design text to remove 
 
 ### Project context commit-state correction
 Updated `PROJECT_CONTEXT.md` to reflect that the Glass integration is pushed as `51be014` and CI #263 is running, rather than uncommitted. No app source changed.
+
+### CI #263 compiler failure and repair
+Run #263 (`44997836152`) failed at `:app:compileDebugKotlin` before Android tests. Diagnostics identified an accidental stale `CompositionLocalProvider` copied into the private `ArtworkTile` helper in `GlassLabScreen.kt` (its captured state belonged to the parent and left the file syntactically incomplete), a missing `rememberSystemReduceMotion` import in `LocalLibraryScreen.kt`, and missing `rubberStretch`/`neighbourPull` transform modifiers referenced by the vendored brrMusic floating dock. Removed the misplaced wrapper and restored these lightweight graphics-layer transforms (bounded spring displacement/scale and adjacent-tab translation). Added the reduced-motion helper import to both screens. Local verification: 17 Python tests pass and `git diff --check` passes. This is not verified as a compiled Android build yet; no APK was signed/published. Next: commit on main and inspect a full CI run before any Glass candidate release.

@@ -657,3 +657,8 @@ Corrected stale handoff claims that metadata CI was pending/unverified, that loc
 - Exact next action: inspect/fix CI #263 against commit `51be014`, then verify its single signed Glass APK if all gates pass. Keep phone acceptance and measured 60/120-Hz, memory, thermal and battery evidence pending until the user reports it.
 
 - **2026-11-22 follow-up:** Glass batch committed and pushed as `51be014`; CI #263 is running. Source/static checks: 17 Python tests, 21 XML parses, `git diff --check` pass. Next action is inspect/fix CI #263 and verify/publish its one signed Glass APK if all gates pass.
+
+## 2026-11-22 — Repair Glass batch compile failures
+- CI #263 (`44997836152`, pinned source `51be014`) failed during Kotlin compilation: Glass Lab had a stale out-of-scope composition-local wrapper and missing closing brace; the library omitted the system reduced-motion import; the vendored dock referenced two absent transform modifiers.
+- Removed the invalid wrapper from generated artwork tiles, imported the reduced-motion helper in both callers, and restored the dock's subtle spring-driven vertical stretch and neighboring-tab pull transforms.
+- Verification: all 17 repository Python tests pass; `git diff --check` passes. Android compilation/instrumentation remain pending a new full CI run; no APK produced. Next: push this fix directly to main, inspect all CI gates, then publish one signed Glass batch APK only if green.

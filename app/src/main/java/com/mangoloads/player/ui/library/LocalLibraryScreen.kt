@@ -61,6 +61,7 @@ import com.mangoloads.player.ui.glass.backdrop.backdrops.rememberLayerBackdrop
 import com.mangoloads.player.ui.glass.backdrop.backdrops.layerBackdrop
 import com.mangoloads.player.ui.glass.floatingtabbar.rememberFloatingTabBarScrollConnection
 import com.mangoloads.player.ui.glass.PlayerUiSettingsStore
+import com.mangoloads.player.ui.glass.rememberSystemReduceMotion
 import com.mangoloads.player.ui.icons.PlayerGlyph
 import com.mangoloads.player.ui.icons.PlayerGlyphIcon
 import com.mangoloads.player.ui.theme.PlayerPalette

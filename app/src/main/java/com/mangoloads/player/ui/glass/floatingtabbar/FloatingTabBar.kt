@@ -106,6 +106,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -124,6 +125,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.mangoloads.player.ui.glass.GlassSpring
 import com.mangoloads.player.ui.glass.LocalReduceMotion
+
+/** Small vertical overshoot used by the brrMusic dock's spring morph. */
+private fun Modifier.rubberStretch(distancePx: Float, fraction: () -> Float): Modifier =
+    graphicsLayer {
+        val amount = fraction().coerceIn(-1f, 1f)
+        translationY = distancePx * amount
+        scaleY = 1f + 0.035f * kotlin.math.abs(amount)
+        transformOrigin = TransformOrigin.Center
+    }
+
+/** Pull neighboring controls subtly toward the tab group while it morphs. */
+private fun Modifier.neighbourPull(fraction: () -> Float, direction: Float): Modifier =
+    graphicsLayer {
+        translationX = 8.dp.toPx() * fraction().coerceIn(-1f, 1f) * direction
+    }
 import com.mangoloads.player.ui.glass.LocalReduceDynamicBlur
 import com.mangoloads.player.ui.glass.LocalGlassIndicator
 import com.mangoloads.player.ui.glass.LocalGlassExport
