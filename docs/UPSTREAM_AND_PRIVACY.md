@@ -100,3 +100,6 @@ CI #271 (`45001123629`, `0ef027a`) passed both jobs, including instrumentation a
 
 ### Release verification — v0.1.272
 CI #272 (`45001848034`) verified the published signed APK manifest contains no Internet permission, backup remains disabled, package/version are correct, and the permanent signing certificate matches project records. APK SHA-256: `575676d2724ab127c6ec4eb1b672eda981568e9f7e6c103c91c165f20420d21c`. These are build/signing checks; no device packet capture has been done. The no-online metadata policy remains binding.
+
+### Local sibling artwork path — pending CI
+Current source adds `LocalArtworkResolver` for image siblings in the selected SAF tree only. It rechecks the persisted read grant and parent ancestry, reads bounded directory names/MIME types only, and produces a content URI for JPG/JPEG/PNG/WebP. No image or video content is copied into Player storage; video bytes are never opened by the artwork resolver; no network calls or provider APIs are used. Matcher tests cover exact matches and ambiguous generic covers. Full Android verification remains pending.

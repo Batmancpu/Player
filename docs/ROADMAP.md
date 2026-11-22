@@ -257,3 +257,6 @@ CI #271 (`45001123629`, `0ef027a`) passed Android 15 instrumentation and the ful
 
 ### Signed Glass/offline candidate published — 2026-11-22
 v0.1.272 (`com.mangoloads.player`, versionCode 272) is published at https://github.com/Batmancpu/Player/releases/tag/v0.1.272 after CI #272 passed instrumentation, unit/build/schema, no-INTERNET APK manifest, permanent signer and hash checks. The current substantial batch adds the brrMusic-derived Glass dock and enforces the offline/no-provider boundary. Actual CPH2531 appearance/performance is still unverified. Next: local artwork/sidecar enrichment, finish remaining player/accessibility coverage and inspect release-like performance without unsupported FPS claims.
+
+### Local artwork/sidecar batch started — 2026-11-22
+The next offline enhancement resolves nearby artwork from the selected SAF tree only: exact image/video basename or safe poster/cover/folder names, bounded to JPG/JPEG/PNG/WebP and small directory listings. Generic movie art is avoided when multiple videos share a folder. Visible cards/hero use local content URIs; no media image indexing, source writes, video reads or network calls are introduced. Matcher JVM/Python tests are added. CI and phone screenshots are pending; no APK yet.

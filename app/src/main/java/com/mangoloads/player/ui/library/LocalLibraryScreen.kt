@@ -189,6 +189,9 @@ internal fun LocalLibraryContent(
     val seriesShelf = remember(results) { results.filter(LocalTitle::isSeries) }
     val selected = titles.firstOrNull { it.key == selectedKey }
     val context = LocalContext.current
+    val localArtworkResolver = remember(context, folder.tree) {
+        LocalArtworkResolver(context, Uri.parse(folder.tree))
+    }
     val uiSettings = remember(context) { PlayerUiSettingsStore(context) }
     var glassEnabled by rememberSaveable { mutableStateOf(uiSettings.glassEnabled()) }
     var selectedCandidateId by rememberSaveable(selectedKey) { mutableStateOf<Long?>(null) }
@@ -300,6 +303,7 @@ internal fun LocalLibraryContent(
                                 title = featuredTitle,
                                 cachedMetadataByDocumentId = cachedMetadataByDocumentId,
                                 artworkCache = artworkCache,
+                                localArtworkResolver = localArtworkResolver,
                                 posterRefreshKey = posterRefreshKey,
                                 onPlay = { onPlay(featuredTitle.files.first()); selectedKey = null },
                                 onDetails = { focus.clearFocus(); selectedKey = featuredTitle.key },
@@ -314,6 +318,7 @@ internal fun LocalLibraryContent(
                                 titles = movieShelf,
                                 cachedMetadataByDocumentId = cachedMetadataByDocumentId,
                                 artworkCache = artworkCache,
+                                localArtworkResolver = localArtworkResolver,
                                 posterRefreshKey = posterRefreshKey,
                                 onCatalogueTitleVisible = onCatalogueTitleVisible,
                                 onCatalogueTitleHidden = onCatalogueTitleHidden,
@@ -329,6 +334,7 @@ internal fun LocalLibraryContent(
                                 titles = seriesShelf,
                                 cachedMetadataByDocumentId = cachedMetadataByDocumentId,
                                 artworkCache = artworkCache,
+                                localArtworkResolver = localArtworkResolver,
                                 posterRefreshKey = posterRefreshKey,
                                 onCatalogueTitleVisible = onCatalogueTitleVisible,
                                 onCatalogueTitleHidden = onCatalogueTitleHidden,
@@ -348,7 +354,7 @@ internal fun LocalLibraryContent(
                 ) {
                     items(results, key = { it.key }) { title ->
                         LocalTitleCard(
-                            folder.tree, title, cachedMetadataByDocumentId, artworkCache, posterRefreshKey,
+                            folder.tree, title, cachedMetadataByDocumentId, artworkCache, localArtworkResolver, posterRefreshKey,
                             onCatalogueTitleVisible, onCatalogueTitleHidden,
                         ) { focus.clearFocus(); selectedKey = title.key }
                     }
@@ -692,6 +698,7 @@ private fun LocalTitleCard(
     title: LocalTitle,
     cachedMetadataByDocumentId: Map<String, CachedTmdbMetadata>,
     artworkCache: TmdbArtworkCache?,
+    localArtworkResolver: LocalArtworkResolver,
     posterRefreshKey: File?,
     onVisible: (String, LocalTitle) -> Unit,
     onHidden: (String, String) -> Unit,
@@ -719,6 +726,8 @@ private fun LocalTitleCard(
         title.files.mapNotNull { cachedMetadataByDocumentId[it.documentId] }
             .distinctBy { it.tmdbId to it.mediaType }.singleOrNull()
     }
+    var localArtwork by remember(tree, title.key) { mutableStateOf<Uri?>(null) }
+    LaunchedEffect(tree, title.key) { localArtwork = localArtworkResolver.find(title) }
     var posterFile by remember(title.key, metadata?.posterPath) { mutableStateOf<File?>(null) }
     LaunchedEffect(metadata?.posterPath, posterRefreshKey) {
         posterFile = if (metadata?.posterPath != null && artworkCache != null) {
@@ -734,9 +743,9 @@ private fun LocalTitleCard(
         colors = CardDefaults.cardColors(containerColor = PlayerPalette.surface),
     ) {
         Box(Modifier.fillMaxWidth().aspectRatio(2f / 3f)) {
-            if (posterFile != null) {
+            if (localArtwork != null || posterFile != null) {
                 AsyncImage(
-                    model = posterFile,
+                    model = localArtwork ?: posterFile,
                     // The clickable card's title/year provide its accessible name. Artwork is
                     // decorative here; a child contentDescription would replace that name.
                     contentDescription = null,
@@ -782,6 +791,7 @@ private fun CatalogueFeatureHero(
     title: LocalTitle,
     cachedMetadataByDocumentId: Map<String, CachedTmdbMetadata>,
     artworkCache: TmdbArtworkCache?,
+    localArtworkResolver: LocalArtworkResolver,
     posterRefreshKey: File?,
     onPlay: () -> Unit,
     onDetails: () -> Unit,
@@ -790,6 +800,8 @@ private fun CatalogueFeatureHero(
         title.files.mapNotNull { cachedMetadataByDocumentId[it.documentId] }
             .distinctBy { it.tmdbId to it.mediaType }.singleOrNull()
     }
+    var localArtwork by remember(title.key) { mutableStateOf<Uri?>(null) }
+    LaunchedEffect(title.key) { localArtwork = localArtworkResolver.find(title) }
     var backdrop by remember(title.key, metadata?.backdropPath) { mutableStateOf<File?>(null) }
     LaunchedEffect(metadata?.backdropPath, posterRefreshKey) {
         backdrop = metadata?.backdropPath?.let { path -> artworkCache?.cached(path, TmdbImageSize.BACKDROP) }
@@ -803,9 +815,9 @@ private fun CatalogueFeatureHero(
         Modifier.fillMaxWidth().heightIn(min = 188.dp).clip(RoundedCornerShape(28.dp))
             .background(Brush.linearGradient(listOf(accent, PlayerPalette.surfaceElevated))),
     ) {
-        if (backdrop != null) {
+        if (localArtwork != null || backdrop != null) {
             AsyncImage(
-                model = backdrop,
+                model = localArtwork ?: backdrop,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
@@ -867,6 +879,7 @@ private fun CatalogueShelf(
     titles: List<LocalTitle>,
     cachedMetadataByDocumentId: Map<String, CachedTmdbMetadata>,
     artworkCache: TmdbArtworkCache?,
+    localArtworkResolver: LocalArtworkResolver,
     posterRefreshKey: File?,
     onCatalogueTitleVisible: (String, LocalTitle) -> Unit,
     onCatalogueTitleHidden: (String, String) -> Unit,
@@ -878,7 +891,7 @@ private fun CatalogueShelf(
             items(titles, key = { it.key }) { item ->
                 Box(Modifier.width(156.dp)) {
                     LocalTitleCard(
-                        tree, item, cachedMetadataByDocumentId, artworkCache, posterRefreshKey,
+                        tree, item, cachedMetadataByDocumentId, artworkCache, localArtworkResolver, posterRefreshKey,
                         onCatalogueTitleVisible, onCatalogueTitleHidden,
                     ) { onSelect(item) }
                 }
