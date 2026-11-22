@@ -1,4 +1,4 @@
-# Current work handoff — 2026-11-21
+# Current work handoff — 2026-11-22
 
 ## Product and release constraints
 
@@ -9,19 +9,18 @@
 
 ## Verified repository state
 
-- Latest committed main SHA: `066cf871464f95d296f2b26dbcf39f954fe2361b` (`fix(ui): reveal full library settings sheet`).
-- CI run #214 / `44961886974` passed 51/51 Android 15 tests plus unit/build/Room v1-v4/privacy gates. Details and Glass On emulator captures were inspected; see `https://github.com/Batmancpu/Player/actions/runs/44961886974`.
+- Latest committed main SHA before current edits: `dee49e5cfecc521967da3f13738c8cd8efdb5c6f` (`test(ui): wait for settings sheet before scrolling`). CI #219 / `44964806410` compiled and ran 52 Android 15 tests, 51 passing. The sole failure was a swipe helper even though the accessibility snapshot showed the Glass switch visible, in bounds and checked. Current test waits for the accessible switch and asserts visible bounds, localized On/Off label, checked state and persisted preference. Next CI run pending.
 - User reported OPPO v0.1.79 recognized four videos with years, retained the catalogue after airplane-mode restart, and switched folders successfully. That report is not validation of the newer catalogue/player/Glass implementation.
 - Latest release recorded in project history is signed v0.1.174. It is an older progress checkpoint, not the integrated candidate. Current signing identity and package must remain intact.
 
-## Current uncommitted batch
+## Current integrated feature batch
 
-A Compose-owned transport in `LocalPlayerScreen.kt` replaces generic PlayerView controls with play/pause, ±10-second seek and an accessible seek slider with elapsed/total timestamps. Native PlayerView controls are disabled to avoid duplication. The seek/time polling is isolated inside the visible transport and updates at 4 Hz; auto-hide pauses while scrubbing. Its nine Android playback tests passed in #216/#218. Full-height Manage sheet is under verification: #216 failed after recreation, while #218 showed a test gesture during sheet entry (only close node existed). Current working test waits for the visible settings heading before scrolling. No local Gradle wrapper/Android SDK.
+A Compose-owned transport in `LocalPlayerScreen.kt` replaces generic PlayerView controls with play/pause, ±10-second seek and an accessible seek slider with elapsed/total timestamps. Native PlayerView controls are disabled to avoid duplication. The seek/time polling is isolated inside the visible transport and updates at 4 Hz; auto-hide pauses while scrubbing. Its nine Android playback tests passed in #216/#218. The production Glass dock persists its setting and Manage opens full-height. The accessibility regression had three diagnoses: initially only top actions after activity recreation, then a #218 sheet-entry race, then #219's unnecessary swipe assertion. The direct accessible-node correction awaits CI.
 
 ## Exact next actions
 
-1. Commit the sheet-entry wait with required context and issue records; run the full suite and verify all 52 tests/screenshots before proceeding.
-2. Continue the remaining approved roadmap: functional caption visibility/delay and local subtitle workflow; cohesive production player/Glass surfaces, navigation and accessibility states; then Macrobenchmark/Perfetto coverage and a release-like APK size/permission/dependency/performance efficiency review.
-3. Produce the single higher-version, permanently signed Release APK only when integrated implementation and automated gates are ready. Give the user a concise OPPO checklist then. Do not claim Reno10 acceptance, FPS, battery or thermal results until actual-device evidence is available.
+1. Commit the direct accessible-switch correction with AGENTS, DEVELOPMENT_LOG, CHAT_HISTORY and R-036; verify the full CI suite and inspect screenshots.
+2. Continue the integrated app backlog in coherent batches: caption selection/visibility and local sidecars, player interaction/accessibility polish, Glass/navigation refinement, Macrobenchmark/Perfetto workflow, then release-size/security/dependency/efficiency review. User wants one signed APK after features and final efficiency review, not an interim APK.
+3. Publish one higher-version signed Release when implementation and automated gates are ready. Provide the concise OPPO checklist then. Real handset acceptance and measured Reno10 FPS/thermal/battery remain pending; CI cannot establish them.
 
 The detailed chronology and failed attempts are in `DEVELOPMENT_LOG.md`, `CHAT_HISTORY.md` and `ISSUES_AND_FIXES.md`; approved phase scope is in `docs/ROADMAP.md`.

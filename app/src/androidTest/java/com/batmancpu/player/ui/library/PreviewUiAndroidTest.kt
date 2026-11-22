@@ -142,29 +142,16 @@ class PreviewUiAndroidTest {
         assertTrue("No clickable navigation item for $label", target?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true)
     }
 
-    private fun revealGlassSetting() {
+    private fun visibleGlassSetting(): AccessibilityNodeInfo {
         val settingsHeading = context.getString(com.batmancpu.player.R.string.catalogue_settings)
         awaitNode {
             it.text?.toString() == settingsHeading && isInsideVisibleAppBounds(it)
         }
-        val visibleSwitch = {
-            find {
-                it.contentDescription?.toString()?.startsWith("Liquid Glass effects,") == true &&
-                    isInsideVisibleAppBounds(it)
-            }
+        val glassSwitch = awaitNode {
+            it.contentDescription?.toString()?.startsWith("Liquid Glass effects,") == true
         }
-        repeat(12) { attempt ->
-            if (visibleSwitch() != null) return
-            val advanced = scrollForwardOnSmallestScrollable()
-            if (!advanced || attempt % 3 == 2) {
-                assertTrue(
-                    "The settings sheet can scroll to its Glass control; ${activeWindowSummary()}",
-                    swipeUpFromVisibleSheetText(),
-                )
-            }
-            SystemClock.sleep(150)
-        }
-        assertNotNull("Glass setting is visibly revealed; ${activeWindowSummary()}", visibleSwitch())
+        assertTrue("Glass switch is inside the visible app bounds; ${activeWindowSummary()}", isInsideVisibleAppBounds(glassSwitch))
+        return glassSwitch
     }
 
     private fun scrollForwardOnSmallestScrollable(): Boolean {
@@ -346,14 +333,10 @@ class PreviewUiAndroidTest {
         try {
             install(activity)
             click(text("Manage"))
-            revealGlassSetting()
             val announcedOn = context.getString(com.batmancpu.player.R.string.settings_glass_on)
             val announcedOff = context.getString(com.batmancpu.player.R.string.settings_glass_off)
-            val glassSwitch = awaitNode {
-                it.contentDescription?.toString()?.let { label ->
-                    label.startsWith("Liquid Glass effects,") && label.endsWith(", $announcedOn")
-                } == true
-            }
+            val glassSwitch = visibleGlassSetting()
+            assertTrue("Glass switch announces its enabled state", glassSwitch.contentDescription?.toString()?.endsWith(", $announcedOn") == true)
             assertTrue("Glass starts enabled and announced; ${activeWindowSummary()}", glassSwitch.isCheckable && glassSwitch.isChecked)
             click(glassSwitch)
             assertTrue("Glass off preference is saved", awaitCondition(3_000) {
@@ -370,15 +353,11 @@ class PreviewUiAndroidTest {
             activity = launch()
             install(activity)
             click(text("Manage"))
-            revealGlassSetting()
-            val restoredSwitch = awaitNode {
-                it.contentDescription?.toString()?.let { label ->
-                    label.startsWith("Liquid Glass effects,") && label.endsWith(", $announcedOff")
-                } == true
-            }
+            val restoredSwitch = visibleGlassSetting()
             assertFalse("Glass off preference survives screen/activity recreation", preferences.getBoolean(
                 com.batmancpu.player.ui.glass.PlayerUiSettingsStore.GLASS_ENABLED_KEY, true,
             ))
+            assertTrue("Glass switch announces its restored disabled state", restoredSwitch.contentDescription?.toString()?.endsWith(", $announcedOff") == true)
             assertTrue("Restored Glass switch exposes its off state; ${activeWindowSummary()}", restoredSwitch.isCheckable && !restoredSwitch.isChecked)
             assertTrue(restoredSwitch.isClickable)
         } finally {

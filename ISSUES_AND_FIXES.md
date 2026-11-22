@@ -536,10 +536,10 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 
 
 ### R-036 — Production Glass semantics and Manage-sheet reachability
-- **Status:** Accessibility follow-up is pending CI #209 after #206/#207 UI failures and #208 compile failure.
+- **Status:** Accessibility follow-up is pending CI #220 after CI #219's sole test-helper failure.
 - **Evidence:** #206 had three failures in 51 tests: selected dock destination not discoverable, switch state not readable via `isChecked`, and setting displaced Forget-folder. In #207 the setting remained offscreen without an accessibility scroll action and Movies selected state remained unassociated with its label.
-- **Fix under verification:** Explicit selected semantics/content descriptions and localized switch state; keep Glass after existing Manage actions; use the safe screen-bounded gesture fallback when Compose exposes no scroll accessibility action. CI #214 passed these checks. CI #216/#217 did not reveal the switch on the second activity launch. Settings sheet now starts full-height. CI #218's active window contained only “Close sheet,” showing the test started scrolling before modal content appeared. Regression now waits for the visible settings heading before bounded scroll/swipe attempts and still requires the switch itself to become visible. Next full Actions verification is pending.
-- **Next:** Confirm all regressions in full CI and inspect screenshots. CI #208 did not reach tests; its compile error was a composable string lookup inside the semantics lambda and is corrected by computing the localized label earlier. No handset observation or Glass performance claim.
+- **Fix under verification:** Explicit selected semantics/content descriptions and localized switch state; keep Glass after existing Manage actions. CI #214 passed those checks. CI #216/#217 initially showed only top actions after activity recreation; settings sheet now starts full-height. CI #218 revealed a sheet-entry race (only “Close sheet” in accessibility tree), fixed by waiting for its visible heading. CI #219 showed the switch visible and checked in the failure snapshot; the remaining failure came from a needless swipe helper returning false. Current test waits for the switch directly, checks safe bounds, localized On/Off description, native check state, and persisted preference. CI #220 pending.
+- **Next:** Confirm all UI regressions in full CI and inspect screenshots/player controls. No handset observation or Glass performance claim.
 
 ### R-037 — Resolve localized descriptions outside Compose semantics lambdas
 - **Status:** Compile failures corrected; CI #211 confirms app compilation.
