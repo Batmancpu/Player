@@ -89,6 +89,8 @@ The local scanner may identify sidecar subtitle files in the selected tree and p
 ## Glass architecture
 Start with a plain Compose build. Upgrade toolchain and add Haze 2.1.0 in isolated commits. Register a bounded backdrop source and put Glass only on navigation/controls/sheets. Use reusable RegularGlassSurface, ClearGlassSurface, GlassIconButton, GlassPill and GlassSheet. Use glass containers only for small groups that visibly merge. Posters remain crisp. Provide opaque fallback for reduced transparency/unsupported rendering; avoid continuous pixel readback for adaptive contrast. Lens/refraction is optional and must pass separate device testing. No native backdrop backend in v1.
 
+**Catalogue feature artwork (2026-11-22):** The Home hero may render a backdrop only when the matching image is already present in Player's bounded app-private artwork cache. It must never trigger TMDB access while browsing, and its fallback is a deterministic local gradient/title initial. Hero play resolves to the indexed SAF document ID and uses the existing local playback route; Details opens the current local title page. Artwork remains crisp above a readable dark scrim. This is a presentation layer over existing cached metadata, not a new network or filesystem capability.
+
 ## Quality gates
 Unit tests and FOSS/debug CI build are required at each milestone. Real-device validation is separate. CI does not prove OPPO GPU stability or 60-Hz smoothness.
 ## Binding premium design and privacy details (2026-11-14)

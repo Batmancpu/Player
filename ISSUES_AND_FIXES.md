@@ -584,3 +584,8 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 - **Status:** Implemented locally, security regression test added, CI pending.
 - **Behavior:** Detail view now renders a wide title hero using a locally generated gradient immediately; when a cached provider backdrop exists it displays that file. Download is attempted only alongside poster fetch after the user explicitly confirms the match. Uses the existing approved CDN, route/type/dimension/size checks, and no-backup cache.
 - **Next:** Ensure CI validates the two-image mock transport, disabled/offline cache reads, compiled app and synthetic screenshots. No provider live request was made.
+
+## 2026-11-22 — Compose picker semantics compile correction
+- CI #227 found missing click semantics on the track option; CI #228 found `role` could not be assigned in `clearAndSetSemantics` using the pinned Compose version.
+- Corrective implementation now lets `selectable` own the RadioButton role and adds merged `semantics` with label, selection state and explicit click. Android CI result pending.
+- No app storage, playback policy, network or permissions changed.

@@ -71,6 +71,8 @@
     <string name="catalogue_card_series">TV series</string>
     <string name="catalogue_local_video">Local video</string>
     <string name="catalogue_play">Play video</string>
+    <string name="catalogue_featured_label">FROM YOUR LIBRARY</string>
+    <string name="catalogue_details_action">Details</string>
     <string name="catalogue_season">Season %1$d</string>
     <string name="catalogue_episode_label">S%1$02d · E%2$02d</string>
     <string name="catalogue_shelf_series">TV Shows</string>

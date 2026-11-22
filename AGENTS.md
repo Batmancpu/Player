@@ -502,3 +502,9 @@ When the unfiltered library is open, movie titles and series now appear in separ
 - CI #184 / 44950921953 compiled the production navigation and ran 49 Android 15 tests. Only the new navigation test failed: it checked the first visible "Movies" label, which was the shelf heading, instead of the selected bottom tab. Movie filtering itself passed.
 - Updated the accessibility helper to inspect every matching label and its ancestors, so duplicate headings cannot mask selected semantics. CI verification pending.
 - Next: rerun full CI; then continue subtitle controls and the production Glass/performance phase.
+
+## 2026-11-22 — Correct track-picker semantics and enrich Home
+- CI #228 / 44971068059 failed while compiling `PlayerTrackSelectionSheet`: the pinned Compose semantics receiver does not expose the attempted `role` assignment inside `clearAndSetSemantics`. Replaced that with merged `semantics`, retaining `selectable` as the source of radio role and adding the option label, selected/state description, and explicit TalkBack activation.
+- Added a Home feature hero for the first local movie/show. It uses only cached app-private backdrop artwork, otherwise a deterministic gradient; Play resolves to the first indexed local document and Details opens its existing page. Added Android UI coverage for hero visibility/action. No new permission, request, or source write.
+- Local verification: `git diff --check` passes. Android SDK/wrapper are not available in this workspace; this code and tests are pending CI.
+- Next: inspect CI compile, all Android tests, synthetic captures, build/schema/privacy gates. Continue integrated player/Glass/performance work; no interim APK.

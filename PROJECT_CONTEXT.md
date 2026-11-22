@@ -471,3 +471,6 @@ Production navigation now switches among Home shelves, movie results, series res
 
 ## 2026-11-21 — Navigation test helper
 CI #184 / 44950921953 ran 49 tests with one assertion failure: duplicated "Movies" text made the helper inspect the shelf heading, not the bottom tab. The actual category filter assertion passed. The helper now scans all matching semantic labels and ancestors. Rerun pending.
+
+## 2026-11-22 continuation checkpoint
+CI #228 / 44971068059 failed at Kotlin compilation: `role` is not writable in the pinned Compose `clearAndSetSemantics` receiver. The current uncommitted correction preserves the radio role via `selectable` and uses merged semantics for label, selected state and accessibility click. A new Home catalogue feature hero is also in progress; it renders only cached app-private artwork or a local deterministic gradient, and its Play/Details callbacks use existing flows. Android coverage is added but not yet validated. User requests a single integrated APK after all planned features and final efficiency review; do not publish incremental APKs or infer handset performance from CI.

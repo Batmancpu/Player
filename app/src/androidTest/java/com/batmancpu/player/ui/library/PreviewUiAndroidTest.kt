@@ -666,6 +666,7 @@ class PreviewUiAndroidTest {
             DiscoveredLocalMedia("movie-A", "Aurora.2022.mp4", LocalMediaKind.VIDEO),
             DiscoveredLocalMedia("episode-A", "North.Star.S01E01.mkv", LocalMediaKind.VIDEO),
         )
+        val playedDocument = AtomicReference<String?>()
         try {
             instrumentation.runOnMainSync {
                 activity.setContent {
@@ -675,11 +676,16 @@ class PreviewUiAndroidTest {
                             LibrarySessionState(tree = "synthetic-tree", media = files, hasCompletedScan = true),
                             CatalogueSnapshot("synthetic-tree", LocalCatalogue.build(files)),
                             onScan = {}, onCancel = {}, scanStillRunning = { false }, onChooseFolder = {},
-                            onPlay = {}, onOpenGlassLab = {},
+                            onPlay = { playedDocument.set(it.documentId) }, onOpenGlassLab = {},
                         )
                     }
                 }
             }
+            assertTrue("The local feature hero is visible", awaitText("FROM YOUR LIBRARY", true))
+            val featurePlay = text("Play video")
+            assertTrue("Feature hero exposes a play action", featurePlay.isClickable)
+            click(featurePlay)
+            assertEquals("movie-A", playedDocument.get())
             assertTrue(awaitCondition(3_000) { find { it.contentDescription?.toString()?.startsWith("Aurora,") == true } != null })
             val titleNode = titleCard("Aurora")
             var cardNode: AccessibilityNodeInfo? = titleNode

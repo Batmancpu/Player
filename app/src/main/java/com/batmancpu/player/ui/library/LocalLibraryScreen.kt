@@ -49,6 +49,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.batmancpu.player.R
 import com.batmancpu.player.ui.glass.PlayerGlassDock
 import com.batmancpu.player.ui.glass.PlayerUiSettingsStore
@@ -275,10 +276,23 @@ internal fun LocalLibraryContent(
                     )
                 }
             } else if (query.isBlank() && filter == CatalogueFilter.ALL) {
+                val featuredTitle = movieShelf.firstOrNull() ?: seriesShelf.firstOrNull()
                 LazyColumn(
                     contentPadding = PaddingValues(top = 16.dp, bottom = 24.dp),
                     verticalArrangement = Arrangement.spacedBy(26.dp),
                 ) {
+                    if (featuredTitle != null) {
+                        item(key = "catalogue-featured") {
+                            CatalogueFeatureHero(
+                                title = featuredTitle,
+                                cachedMetadataByDocumentId = cachedMetadataByDocumentId,
+                                artworkCache = artworkCache,
+                                posterRefreshKey = posterRefreshKey,
+                                onPlay = { onPlay(featuredTitle.files.first()); selectedKey = null },
+                                onDetails = { focus.clearFocus(); selectedKey = featuredTitle.key },
+                            )
+                        }
+                    }
                     if (movieShelf.isNotEmpty()) {
                         item(key = "shelf-movies") {
                             CatalogueShelf(
@@ -698,6 +712,82 @@ private fun LocalTitleCard(
                 else title.year?.toString() ?: stringResource(R.string.catalogue_local_video),
                 color = PlayerPalette.textSecondary, style = MaterialTheme.typography.bodySmall,
             )
+        }
+    }
+}
+
+@Composable
+private fun CatalogueFeatureHero(
+    title: LocalTitle,
+    cachedMetadataByDocumentId: Map<String, CachedTmdbMetadata>,
+    artworkCache: TmdbArtworkCache?,
+    posterRefreshKey: File?,
+    onPlay: () -> Unit,
+    onDetails: () -> Unit,
+) {
+    val metadata = remember(title.key, cachedMetadataByDocumentId) {
+        title.files.mapNotNull { cachedMetadataByDocumentId[it.documentId] }
+            .distinctBy { it.tmdbId to it.mediaType }.singleOrNull()
+    }
+    var backdrop by remember(title.key, metadata?.backdropPath) { mutableStateOf<File?>(null) }
+    LaunchedEffect(metadata?.backdropPath, posterRefreshKey) {
+        backdrop = metadata?.backdropPath?.let { path -> artworkCache?.cached(path, TmdbImageSize.BACKDROP) }
+    }
+    val yearOrCount = if (title.isSeries) {
+        pluralStringResource(R.plurals.catalogue_episodes, title.files.size, title.files.size)
+    } else title.year?.toString() ?: stringResource(R.string.catalogue_local_video)
+    val palette = listOf(Color(0xFF344661), Color(0xFF594358), Color(0xFF31544A), Color(0xFF66513C))
+    val accent = palette[title.key.hashCode().ushr(1) % palette.size]
+    Box(
+        Modifier.fillMaxWidth().heightIn(min = 252.dp).clip(RoundedCornerShape(28.dp))
+            .background(Brush.linearGradient(listOf(accent, PlayerPalette.surfaceElevated))),
+    ) {
+        if (backdrop != null) {
+            AsyncImage(
+                model = backdrop,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize(),
+            )
+        } else {
+            Text(
+                title.title.take(1).uppercase(),
+                modifier = Modifier.align(Alignment.Center),
+                style = MaterialTheme.typography.displayLarge,
+                color = Color.White.copy(alpha = .11f),
+            )
+        }
+        Box(
+            Modifier.fillMaxSize().background(
+                Brush.verticalGradient(listOf(Color.Black.copy(alpha = .04f), Color.Black.copy(alpha = .88f))),
+            ),
+        )
+        Column(
+            Modifier.align(Alignment.BottomStart).fillMaxWidth().padding(horizontal = 20.dp, vertical = 18.dp),
+            verticalArrangement = Arrangement.spacedBy(7.dp),
+        ) {
+            Text(
+                stringResource(R.string.catalogue_featured_label),
+                color = Color.White.copy(alpha = .76f),
+                style = MaterialTheme.typography.labelSmall,
+                letterSpacing = 1.2.sp,
+            )
+            Text(
+                title.title,
+                color = Color.White,
+                style = MaterialTheme.typography.headlineMedium,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(yearOrCount, color = Color.White.copy(alpha = .78f), style = MaterialTheme.typography.bodySmall)
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+                Button(onClick = onPlay, modifier = Modifier.heightIn(min = 48.dp)) {
+                    Text(stringResource(R.string.catalogue_play))
+                }
+                TextButton(onClick = onDetails, modifier = Modifier.heightIn(min = 48.dp)) {
+                    Text(stringResource(R.string.catalogue_details_action), color = Color.White)
+                }
+            }
         }
     }
 }

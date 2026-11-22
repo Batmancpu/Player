@@ -9,7 +9,7 @@
 
 ## Verified repository state
 
-- Latest committed main SHA: `91aabf2` replaces the native track dialog with a Compose picker. CI #226 / `44969253993` passed 53 Android 15 tests, JVM/build, Room schema 1–4 and privacy checks. Its player screenshot shows the title fits; synthetic video remains black. CI #227 / `44970509938` ran 53 tests and failed only because the subtitle-off semantic node was not clickable. Source now places row role, label, selected state and activation in one explicit semantics node; CI #228 pending. `git diff --check` passes. README concept art is explicitly not an app screenshot.
+- Latest committed main SHA: `35e574d` corrects the audio/subtitle picker accessibility action. CI #228 / `44971068059` exposed a Kotlin compile error: `role` cannot be assigned in `clearAndSetSemantics` with the pinned Compose version. The source now preserves the `selectable` radio role and adds label, selected/state description and explicit activation through merged `semantics`; CI after this correction is pending. The same working tree adds a cached-artwork-only catalogue feature hero, with play/details actions and no browsing-time network fetch; its instrumentation coverage is pending. CI #226 / `44969253993` passed 53 Android 15 tests, JVM/build, Room schema 1–4 and privacy checks. Synthetic video screenshots do not prove decoder or device performance. README concept art is explicitly not an app screenshot.
 - User reported OPPO v0.1.79 recognized four videos with years, retained the catalogue after airplane-mode restart, and switched folders successfully. That report is not validation of the newer catalogue/player/Glass implementation.
 - Latest release recorded in project history is signed v0.1.174. It is an older progress checkpoint, not the integrated candidate. Current signing identity and package must remain intact.
 
@@ -19,8 +19,8 @@ A Compose-owned transport in `LocalPlayerScreen.kt` replaces generic PlayerView 
 
 ## Exact next actions
 
-1. Commit the CI #227 accessibility fix and records, then inspect CI #228's picker actions and complete build/schema/privacy gates.
-2. Continue the integrated app backlog in coherent batches: subtitle controls/local sidecars, player interaction/accessibility polish, Glass/navigation refinement, Macrobenchmark/Perfetto workflow, then release-size/security/dependency/efficiency review. User wants one signed APK after features and final efficiency review, not an interim APK.
-3. Publish one higher-version signed Release when implementation and automated gates are ready. Provide the concise OPPO checklist then. Real handset acceptance and measured Reno10 FPS/thermal/battery remain pending; CI cannot establish them.
+1. Commit the corrected accessibility semantics and catalogue feature hero with required records; inspect Android 15 tests, screenshots and all build/schema/privacy gates.
+2. Continue the integrated backlog in coherent batches: complete catalogue/detail behavior, player interaction/accessibility, production Glass/navigation, Macrobenchmark/Perfetto and final license/privacy/size/efficiency review. Do not make interim APKs.
+3. Publish one higher-version signed Release after integrated implementation and automated efficiency checks. Provide the concise OPPO checklist then. Real handset acceptance and measured Reno10 frame-time/thermal/battery remain pending; CI cannot establish them.
 
 The detailed chronology and failed attempts are in `DEVELOPMENT_LOG.md`, `CHAT_HISTORY.md` and `ISSUES_AND_FIXES.md`; approved phase scope is in `docs/ROADMAP.md`.
