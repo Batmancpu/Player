@@ -449,6 +449,8 @@ CI #222 / 44967004412 ran 53 Android 15 tests; the only failure was the new SRT 
 
 CI #223 / 44967664631 passed the explicit local subtitle selection/cue test; its one failure was a shell-injected video tap that did not restore auto-hidden controls. The video surface now exposes an accessible activation, and verbose player header labels are replaced with compact custom icons and accessible state descriptions. CI #224 pending.
 
+Commit `1c19a08` pushed the player surface accessibility/header change to main. Android resource XML parses and `git diff --check` passes locally. CI #224 / 44968650641 is currently running. README's original concept artwork now shows a generic library/player presentation, with an explicit note that it is a visual direction image and not a literal shipped screenshot.
+
 ## 2026-11-21 — Playback completion test correction
 - CI #180 compiled and ran 47 tests; the only failure was a 20-second wait against a 30-second video fixture.
 - The synthetic test now seeks to 29 seconds before playback and continues through the five-second resume timer. Await CI.

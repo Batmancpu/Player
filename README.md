@@ -12,10 +12,10 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/player-library-hero.webp" alt="Original concept artwork showing a dark cinematic library with a small floating navigation dock" width="100%">
+  <img src="docs/images/player-visual-concept.webp" alt="Original visual-direction concept showing a cinematic local film library and separate video player controls on two generic phones" width="100%">
 </p>
 
-<p align="center"><sub>Original concept artwork for Player. It illustrates the visual direction and is not an in-app screenshot.</sub></p>
+<p align="center"><sub>Original concept artwork for Player. It illustrates the visual direction and is not an in-app screenshot or a claim that every shown detail is implemented.</sub></p>
 
 ## What Player is
 
@@ -48,7 +48,7 @@ See [storage and privacy rules](docs/UPSTREAM_AND_PRIVACY.md) and [architecture]
 
 The latest signed build is listed on the [Releases page](https://github.com/Batmancpu/Player/releases/latest). Existing signed installs keep the same package and permanent update certificate. These are development checkpoints; the integrated premium app is still in progress.
 
-The user confirmed that v0.1.79 selected a folder, identified four local videos with titles and years, retained the library after an airplane-mode restart, and handled folder switching. Since then, main has gained title shelves, series season grouping, local Media3 playback, validated same-folder sidecar subtitles and a custom Compose transport. Android 15 CI #221 passed all 52 tests and full build/schema/privacy gates. CI #223 confirmed selected local SRT cues reach Media3 and the Glass Lab dock-clear test passes; a separate overlay test exposed a missing accessible surface action, now fixed in source alongside compact player-header icons. These are synthetic emulator checks, not Reno10 performance or acceptance evidence. The latest signed progress checkpoint remains [Player v0.1.174](https://github.com/Batmancpu/Player/releases/tag/v0.1.174), versionCode 174. The user wants one integrated APK after remaining features and final efficiency review.
+The user confirmed that v0.1.79 selected a folder, identified four local videos with titles and years, retained the library after an airplane-mode restart, and handled folder switching. Since then, main has gained title shelves, series season grouping, local Media3 playback, validated same-folder sidecar subtitles and a custom Compose transport. Android 15 CI #221 passed all 52 tests and full build/schema/privacy gates. CI #223 confirmed selected local SRT cues reach Media3 and the Glass Lab dock-clear test passes; a separate overlay test exposed a missing accessible surface action, fixed in commit `1c19a08` alongside compact player-header icons. CI #224 is now checking the update. Emulator evidence is not Reno10 performance or acceptance. The latest signed progress checkpoint remains [Player v0.1.174](https://github.com/Batmancpu/Player/releases/tag/v0.1.174), versionCode 174. The user wants one integrated APK after remaining features and final efficiency review.
 
 **Glass is still being refined.** Haze 2.1.0 powers both the bounded production library navigation dock and a separate visual lab. The Android treatment is original and does not reproduce Apple's proprietary renderer. The lab is an experiment, not a promise of device-level blur or the final tactile finish. See the [engine review](docs/GLASS_ENGINE_REVIEW.md).
 
