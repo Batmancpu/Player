@@ -16,14 +16,11 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -38,15 +35,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -64,27 +56,22 @@ internal fun MetadataSettingsScreen(
     MetadataSettingsContent(state, model::save, model::disable, model::clear, onBack, onOpenCredits)
 }
 
-/** Stateless persisted state; an unsaved token belongs only to this composition. */
+/** Consent only; publisher credentials are never entered or displayed here. */
 @Composable
 internal fun MetadataSettingsContent(
     state: MetadataSettingsUiState,
-    onSave: (String?, Boolean) -> Unit,
+    onSave: (Boolean) -> Unit,
     onDisable: () -> Unit,
     onClear: () -> Unit,
     onBack: () -> Unit,
     onOpenCredits: () -> Unit = {},
 ) {
-    // Do not use rememberSaveable: a password must never enter the activity bundle.
-    var token by remember { mutableStateOf("") }
     var enabled by remember(state.settings.enabled) { mutableStateOf(state.settings.enabled) }
-    val focus = LocalFocusManager.current
     val activity = LocalContext.current.activity()
     DisposableEffect(activity, state.settings.enabled) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_STOP) {
-                token = ""
                 enabled = state.settings.enabled
-                focus.clearFocus()
             }
         }
         activity?.lifecycle?.addObserver(observer)
@@ -92,10 +79,7 @@ internal fun MetadataSettingsContent(
     }
     fun save() {
         if (state.loading) return
-        val submitted = token.takeIf { it.isNotBlank() }
-        token = ""
-        focus.clearFocus()
-        onSave(submitted, enabled)
+        onSave(enabled)
     }
     Surface(Modifier.fillMaxSize(), color = PlayerPalette.background) {
         Column(
@@ -104,7 +88,7 @@ internal fun MetadataSettingsContent(
                 .padding(horizontal = PlayerSpacing.screenHorizontal, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
-            TextButton(onClick = { token = ""; focus.clearFocus(); onBack() }) {
+            TextButton(onClick = onBack) {
                 Text(stringResource(R.string.metadata_back))
             }
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -112,7 +96,7 @@ internal fun MetadataSettingsContent(
                 Text(stringResource(R.string.metadata_title), style = MaterialTheme.typography.displayMedium)
                 Text(stringResource(R.string.metadata_description), style = MaterialTheme.typography.bodyLarge, color = PlayerPalette.textSecondary)
             }
-            TextButton(onClick = { token = ""; focus.clearFocus(); onOpenCredits() }) {
+            TextButton(onClick = onOpenCredits) {
                 Text(stringResource(R.string.metadata_open_credits))
             }
             if (state.loading && !state.settings.credentialConfigured) {
@@ -127,12 +111,11 @@ internal fun MetadataSettingsContent(
                         Text(stringResource(R.string.metadata_consent_title), modifier = Modifier.weight(1f), style = MaterialTheme.typography.titleLarge)
                         Switch(
                             checked = enabled,
-                            enabled = !state.loading && !state.settings.storageError,
+                            enabled = !state.loading && !state.settings.storageError &&
+                                (state.settings.appCredentialAvailable || state.settings.enabled),
                             onCheckedChange = { checked ->
                                 enabled = checked
                                 if (!checked) {
-                                    token = ""
-                                    focus.clearFocus()
                                     onDisable()
                                 }
                             },
@@ -142,40 +125,22 @@ internal fun MetadataSettingsContent(
                     Text(stringResource(R.string.metadata_local_boundary), style = MaterialTheme.typography.bodySmall, color = PlayerPalette.textTertiary)
                 }
             }
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text(
-                    stringResource(if (state.settings.credentialConfigured) R.string.metadata_saved_token else R.string.metadata_missing_token),
-                    style = MaterialTheme.typography.titleLarge,
-                )
-                Text(stringResource(R.string.metadata_token_description), color = PlayerPalette.textSecondary)
-                OutlinedTextField(
-                    value = token,
-                    onValueChange = { if (it.length <= 2048) token = it },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = !state.loading,
-                    singleLine = true,
-                    label = { Text(stringResource(if (state.settings.credentialConfigured) R.string.metadata_token_replace_label else R.string.metadata_token_label)) },
-                    placeholder = { Text(stringResource(R.string.metadata_token_hint)) },
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.None,
-                        autoCorrectEnabled = false,
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done,
-                    ),
-                    keyboardActions = KeyboardActions(onDone = { save() }),
-                    isError = state.settings.tokenRejected,
-                    supportingText = if (state.settings.credentialConfigured) ({ Text(stringResource(R.string.metadata_token_retained)) }) else null,
-                )
-                Button(
-                    onClick = ::save,
-                    enabled = !state.loading && (token.isNotBlank() || state.settings.credentialConfigured),
-                    modifier = Modifier.fillMaxWidth(),
-                ) { Text(stringResource(if (state.loading) R.string.metadata_saving else R.string.metadata_save)) }
-                if (state.settings.credentialConfigured || state.settings.storageError) {
-                    OutlinedButton(onClick = { token = ""; focus.clearFocus(); enabled = false; onClear() }, enabled = !state.loading, modifier = Modifier.fillMaxWidth()) {
-                        Text(stringResource(R.string.metadata_remove))
-                    }
+            Text(
+                stringResource(when {
+                    state.settings.appCredentialAvailable -> R.string.metadata_app_credential_status
+                    state.settings.credentialConfigured -> R.string.metadata_previous_credential_status
+                    else -> R.string.metadata_app_credential_missing
+                }),
+                color = PlayerPalette.textSecondary,
+                style = MaterialTheme.typography.bodySmall,
+            )
+            if (state.settings.appCredentialAvailable) {
+                Button(onClick = ::save, enabled = !state.loading, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(if (state.loading) R.string.metadata_saving else R.string.metadata_save))
+                }
+            } else if (state.settings.credentialConfigured || state.settings.storageError) {
+                OutlinedButton(onClick = { enabled = false; onClear() }, enabled = !state.loading, modifier = Modifier.fillMaxWidth()) {
+                    Text(stringResource(R.string.metadata_remove_previous_token))
                 }
             }
             val message = when {

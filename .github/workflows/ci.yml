@@ -200,6 +200,8 @@ jobs:
 
       - name: Assemble signed release APK
         if: ${{ steps.release_signing.outputs.enabled == 'true' }}
+        env:
+          PLAYER_TMDB_READ_ACCESS_TOKEN: ${{ secrets.PLAYER_TMDB_READ_ACCESS_TOKEN }}
         run: gradle --no-daemon --stacktrace :app:assembleRelease
 
       - name: Verify production manifest privacy boundary

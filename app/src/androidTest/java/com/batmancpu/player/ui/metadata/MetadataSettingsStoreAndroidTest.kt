@@ -53,6 +53,28 @@ class MetadataSettingsStoreAndroidTest {
         assertFalse(store.load().toString().contains(TOKEN))
     }
 
+    @Test fun publisherCredentialNeedsLocalConsentAndNeedsNoPerUserToken() = runBlocking {
+        val namespace = UUID.randomUUID().toString()
+        val store = MetadataSettingsStore(context, namespace, APP_TOKEN)
+        try {
+            assertEquals(
+                MetadataSettingsState(credentialConfigured = true, appCredentialAvailable = true),
+                store.load(),
+            )
+            assertNull("App-wide credential must remain unusable before local opt-in", store.credentialIfEnabled())
+            assertTrue(store.save(token = null, enabled = true).enabled)
+            assertEquals(APP_TOKEN, store.credentialIfEnabled())
+            val reopened = MetadataSettingsStore(context, namespace, APP_TOKEN)
+            assertEquals(APP_TOKEN, reopened.credentialIfEnabled())
+            assertFalse("Provider credential must not be stored in the encrypted user-settings blob",
+                store.storageFile.readBytes().toString(Charsets.ISO_8859_1).contains(APP_TOKEN))
+            store.disable()
+            assertNull("Revoking consent must revoke the shared credential too", reopened.credentialIfEnabled())
+        } finally {
+            store.clear()
+        }
+    }
+
     @Test fun disableAndClearRevokeAccessAcrossInstances() = isolated { store, namespace ->
         assertTrue(store.save(TOKEN, enabled = true).enabled)
         val other = MetadataSettingsStore(context, namespace)
@@ -140,5 +162,6 @@ class MetadataSettingsStoreAndroidTest {
 
     companion object {
         private const val TOKEN = "player.synthetic-fixture.not-a-real-api-token_2026"
+        private const val APP_TOKEN = "player.shared.public.fixture-token_2026"
     }
 }

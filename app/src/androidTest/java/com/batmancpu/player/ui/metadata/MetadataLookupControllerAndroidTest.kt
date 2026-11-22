@@ -25,7 +25,7 @@ import org.junit.Test
 /** Uses a fake transport and synthetic Room rows; never opens a socket or user media. */
 class MetadataLookupControllerAndroidTest {
     @Test(timeout = 30_000)
-    fun openingDetailsIsOfflineAndOnlyManualSearchCanBeConfirmed() = runBlocking {
+    fun automaticLookupRequiresConsentAndOnlyExactUniqueMatchesAreCached() = runBlocking {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val suffix = UUID.randomUUID().toString()
         val tree = "content://com.example.synthetic/tree/$suffix"
@@ -38,6 +38,12 @@ class MetadataLookupControllerAndroidTest {
             calls.incrementAndGet()
             assertEquals("synthetic.read.token", token)
             assertEquals("api.themoviedb.org", uri.host)
+            assertEquals("/3/search/movie", uri.path)
+            assertTrue(uri.rawQuery.contains("query=Aurora"))
+            assertTrue(uri.rawQuery.contains("year=2022"))
+            assertTrue(uri.rawQuery.contains("include_adult=false"))
+            assertFalse(uri.toString().contains(".mp4"))
+            assertFalse(uri.toString().contains(suffix))
             TmdbHttpResponse(
                 200,
                 """{"results":[{"id":42,"title":"Aurora","release_date":"2022-01-01","overview":"Synthetic provider description","poster_path":"/poster_A.jpg","backdrop_path":"/backdrop_A.jpg"}]}""".toByteArray(),
@@ -56,33 +62,40 @@ class MetadataLookupControllerAndroidTest {
         )
         try {
             OfflineLibraryIndex.saveSuccessfulScan(context, treeUri, listOf(file))
-            settings.save("synthetic.read.token", enabled = true)
+            settings.save("synthetic.read.token", enabled = false)
             controller.prepare(title)
             val prepared = withTimeout(5_000) { controller.state.first { !it.preparing } }
             assertTrue(prepared.settingsEnabled && prepared.credentialConfigured && prepared.searchable)
             assertEquals("Opening details must not search", 0, calls.get())
             assertEquals("Opening details must not fetch artwork", 0, artworkCalls.get())
 
-            controller.search(title)
-            val found = withTimeout(5_000) { controller.state.first { !it.searching } }
-            assertEquals(1, calls.get())
-            assertEquals("Aurora", found.candidates.single().title)
-
-            controller.confirm(title, found.candidates.single())
-            val confirmed = withTimeout(5_000) { controller.state.first { !it.confirming && it.posterFile != null && it.backdropFile != null } }
-            assertEquals("Aurora", confirmed.cached?.title)
-            assertEquals(1, confirmed.matchedFiles)
-            assertEquals("A user-confirmed title may cache one poster and one backdrop", 2, artworkCalls.get())
-            assertTrue(confirmed.posterFile?.isFile == true)
-            assertTrue(confirmed.backdropFile?.isFile == true)
+            settings.save(token = null, enabled = true)
+            controller.clear()
+            controller.prepare(title)
+            val automatic = withTimeout(5_000) {
+                controller.state.first { it.cached?.title == "Aurora" && !it.searching && it.posterFile != null && it.backdropFile != null }
+            }
+            assertEquals("Explicit consent allows exact, unique metadata to bind without a second confirmation", 1, calls.get())
+            assertEquals("Automatic lookup fetches one poster and one backdrop", 2, artworkCalls.get())
+            assertEquals(1, automatic.matchedFiles)
+            assertTrue(automatic.posterFile?.isFile == true)
+            assertTrue(automatic.backdropFile?.isFile == true)
             assertEquals("Aurora", OfflineMetadataCache.load(context, tree)[file.documentId]?.title)
             assertNull("Untrusted image paths must not reach the transport", artwork.fetch("https://example.invalid/poster.jpg", TmdbImageSize.POSTER))
             assertEquals("Invalid routes are rejected locally", 2, artworkCalls.get())
+
+            controller.remove(title)
+            withTimeout(5_000) { controller.state.first { !it.preparing && it.cached == null } }
+            assertTrue(OfflineMetadataCache.isLookupSuppressed(context, tree, listOf(file.documentId)))
+            controller.prepare(title)
+            withTimeout(5_000) { controller.state.first { !it.preparing && it.cached == null } }
+            assertEquals("Explicit removal suppresses automatic lookup across detail reopens", 1, calls.get())
+
             settings.disable()
-            assertEquals("Confirmed artwork remains readable offline after disabling TMDB", confirmed.posterFile, artwork.cached("/poster_A.jpg", TmdbImageSize.POSTER))
+            assertEquals("Downloaded artwork remains readable offline after disabling TMDB", automatic.posterFile, artwork.cached("/poster_A.jpg", TmdbImageSize.POSTER))
             assertNull("Disabled settings prevent another artwork request", artwork.fetch("/poster_A.jpg", TmdbImageSize.POSTER))
             assertEquals("Offline cache reads do not call the network", 2, artworkCalls.get())
-            assertEquals(confirmed.backdropFile, artwork.cached("/backdrop_A.jpg", TmdbImageSize.BACKDROP))
+            assertEquals(automatic.backdropFile, artwork.cached("/backdrop_A.jpg", TmdbImageSize.BACKDROP))
         } finally {
             controller.clear()
             scope.cancel()

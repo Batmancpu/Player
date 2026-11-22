@@ -37,7 +37,7 @@ internal data class IndexedMedia(
     @ColumnInfo(defaultValue = "''") val parentDocumentId: String = "",
 )
 
-/** A user-confirmed TMDB match, private to one selected SAF tree/document. */
+/** A validated TMDB binding, private to one selected SAF tree/document. */
 @Entity(tableName = "manual_tmdb_matches", primaryKeys = ["treeUri", "documentId"])
 internal data class ManualTmdbMatch(
     val treeUri: String,
@@ -107,6 +107,9 @@ internal interface IndexedMediaDao {
 internal interface ManualTmdbMatchDao {
     @Query("SELECT * FROM manual_tmdb_matches WHERE treeUri = :tree AND documentId = :documentId")
     suspend fun forDocument(tree: String, documentId: String): ManualTmdbMatch?
+
+    @Query("SELECT EXISTS(SELECT 1 FROM manual_tmdb_matches WHERE treeUri = :tree AND documentId IN (:documentIds) AND tmdbId = 0 AND mediaType = 'NONE')")
+    suspend fun hasLookupSuppression(tree: String, documentIds: List<String>): Boolean
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(match: ManualTmdbMatch)
@@ -264,7 +267,7 @@ internal object OfflineLibraryIndex {
     }
 }
 
-/** Only indexed videos can receive a confirmed match; every binding is atomic. */
+/** Only indexed videos can receive a validated match; every binding is atomic. */
 internal object OfflineMetadataCache {
     suspend fun load(context: Context, tree: String): Map<String, CachedTmdbMetadata> =
         withContext(Dispatchers.IO) {
@@ -272,7 +275,7 @@ internal object OfflineMetadataCache {
                 .associate { it.documentId to it.metadata }
         }
 
-    suspend fun confirm(
+    suspend fun bind(
         context: Context,
         tree: String,
         documentIds: List<String>,
@@ -297,16 +300,32 @@ internal object OfflineMetadataCache {
         }
     }
 
-    suspend fun remove(context: Context, tree: String, documentIds: List<String>): Unit =
+    suspend fun suppressLookup(context: Context, tree: String, documentIds: List<String>): Unit =
         withContext(Dispatchers.IO) {
+            if (documentIds.isEmpty() || documentIds.size > 10_000) return@withContext
             val db = PlayerLibraryDatabase.get(context)
             db.withTransaction {
-                for (id in documentIds.distinct()) {
+                val ids = documentIds.distinct()
+                val indexedVideos = db.mediaDao().forTree(tree)
+                    .filter { it.mediaKind == LocalMediaKind.VIDEO.name }.map { it.documentId }.toSet()
+                if (!indexedVideos.containsAll(ids)) return@withTransaction
+                val timestamp = System.currentTimeMillis()
+                for (id in ids) {
                     currentCoroutineContext().ensureActive()
-                    db.manualTmdbMatchDao().remove(tree, id)
+                    // Preserve an explicit user dismissal across restarts without
+                    // adding another Room table/migration. The sentinel never joins
+                    // cached metadata and a later explicit bind replaces it.
+                    db.manualTmdbMatchDao().upsert(ManualTmdbMatch(tree, id, 0, "NONE", timestamp))
                 }
                 db.cachedTmdbMetadataDao().removeOrphans()
             }
+        }
+
+    suspend fun isLookupSuppressed(context: Context, tree: String, documentIds: List<String>): Boolean =
+        withContext(Dispatchers.IO) {
+            if (documentIds.isEmpty()) return@withContext false
+            val dao = PlayerLibraryDatabase.get(context).manualTmdbMatchDao()
+            documentIds.distinct().chunked(500).any { dao.hasLookupSuppression(tree, it) }
         }
 
     private fun valid(metadata: CachedTmdbMetadata): Boolean =

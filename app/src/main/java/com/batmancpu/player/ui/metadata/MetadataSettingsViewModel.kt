@@ -28,9 +28,9 @@ internal class MetadataSettingsViewModel(application: Application) : AndroidView
 
     fun reload() = change(MetadataSettingsNotice.NONE) { store.load() }
 
-    /** The token is scoped to this write and is never assigned to UI/saved state. */
-    fun save(token: String?, enabled: Boolean) = change(MetadataSettingsNotice.SAVED) {
-        store.save(token, enabled)
+    /** Only the publisher-configured app credential is exposed to the UI flow. */
+    fun save(enabled: Boolean) = change(MetadataSettingsNotice.SAVED) {
+        store.save(token = null, enabled = enabled)
     }
 
     fun disable() = change(MetadataSettingsNotice.DISABLED) { store.disable() }

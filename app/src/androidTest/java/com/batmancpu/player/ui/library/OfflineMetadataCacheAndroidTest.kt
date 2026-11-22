@@ -32,23 +32,36 @@ class OfflineMetadataCacheAndroidTest {
         db.cachedTmdbMetadataDao().upsert(movie)
         assertTrue(OfflineMetadataCache.load(context, tree.toString()).isEmpty())
 
-        assertTrue(OfflineMetadataCache.confirm(context, tree.toString(), listOf("film"), movie))
+        assertTrue(OfflineMetadataCache.bind(context, tree.toString(), listOf("film"), movie))
         assertEquals(mapOf("film" to movie), OfflineMetadataCache.load(context, tree.toString()))
     }
 
     @Test fun confirmationRejectsUnknownDocumentsAndUnsafeProviderImagePaths() = runBlocking {
         OfflineLibraryIndex.saveSuccessfulScan(context, tree, listOf(video("film")))
-        assertFalse(OfflineMetadataCache.confirm(context, tree.toString(), listOf("film", "other"), movie))
+        assertFalse(OfflineMetadataCache.bind(context, tree.toString(), listOf("film", "other"), movie))
         val unsafe = movie.copy(posterPath = "https://unapproved.invalid/poster.jpg")
-        assertFalse(OfflineMetadataCache.confirm(context, tree.toString(), listOf("film"), unsafe))
+        assertFalse(OfflineMetadataCache.bind(context, tree.toString(), listOf("film"), unsafe))
         assertTrue(OfflineMetadataCache.load(context, tree.toString()).isEmpty())
+    }
+
+    @Test fun explicitRemovalPersistsNoRematchUntilAUserBindsAgain() = runBlocking {
+        OfflineLibraryIndex.saveSuccessfulScan(context, tree, listOf(video("film")))
+        assertTrue(OfflineMetadataCache.bind(context, tree.toString(), listOf("film"), movie))
+
+        OfflineMetadataCache.suppressLookup(context, tree.toString(), listOf("film"))
+
+        assertTrue(OfflineMetadataCache.load(context, tree.toString()).isEmpty())
+        assertTrue(OfflineMetadataCache.isLookupSuppressed(context, tree.toString(), listOf("film")))
+        assertTrue("A later explicit choice replaces the suppression", OfflineMetadataCache.bind(context, tree.toString(), listOf("film"), movie))
+        assertFalse(OfflineMetadataCache.isLookupSuppressed(context, tree.toString(), listOf("film")))
+        assertEquals(mapOf("film" to movie), OfflineMetadataCache.load(context, tree.toString()))
     }
 
     @Test fun successfulRescanRemovesStaleMatchAndUnreferencedMetadata() = runBlocking {
         OfflineLibraryIndex.saveSuccessfulScan(context, tree, listOf(video("keep"), video("remove")))
-        assertTrue(OfflineMetadataCache.confirm(context, tree.toString(), listOf("keep"), movie))
+        assertTrue(OfflineMetadataCache.bind(context, tree.toString(), listOf("keep"), movie))
         val second = movie.copy(tmdbId = 43L, title = "Stale Match")
-        assertTrue(OfflineMetadataCache.confirm(context, tree.toString(), listOf("remove"), second))
+        assertTrue(OfflineMetadataCache.bind(context, tree.toString(), listOf("remove"), second))
 
         OfflineLibraryIndex.saveSuccessfulScan(context, tree, listOf(video("keep")))
 

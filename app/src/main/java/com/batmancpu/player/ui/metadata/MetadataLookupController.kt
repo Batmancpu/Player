@@ -1,6 +1,7 @@
 package com.batmancpu.player.ui.metadata
 
 import android.content.Context
+import android.os.SystemClock
 import com.batmancpu.player.ui.library.CachedTmdbMetadata
 import com.batmancpu.player.ui.library.LocalTitle
 import com.batmancpu.player.ui.library.MediaNameParser
@@ -12,9 +13,12 @@ import java.io.File
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 internal enum class MetadataLookupIssue {
     NEEDS_SETUP, NO_SAFE_TITLE, NO_RESULTS, UNAUTHORIZED, RATE_LIMITED, UNAVAILABLE, INVALID_RESPONSE, STALE_LIBRARY, LOCAL_ERROR,
@@ -39,8 +43,9 @@ internal data class MetadataLookupUiState(
 )
 
 /**
- * Explicit, foreground-only lookup coordinator. It never starts a search from
- * library loading, scanning, scrolling, restoration or process startup.
+ * Foreground-only lookup coordinator. Automatic searches are allowed only while
+ * an opted-in title's detail is open. It never searches during library loading,
+ * scanning, catalogue scrolling, restoration or process startup.
  */
 internal class MetadataLookupController(
     context: Context,
@@ -56,6 +61,10 @@ internal class MetadataLookupController(
     val state = mutableState.asStateFlow()
     @Volatile private var generation = 0L
     private var work: Job? = null
+    private var attemptTree: String? = null
+    private val automaticAttempts = LinkedHashSet<String>()
+    private val automaticRequestGate = Mutex()
+    @Volatile private var lastAutomaticRequestElapsedRealtimeMs = 0L
 
     fun prepare(title: LocalTitle) {
         val tree = currentTree()
@@ -73,6 +82,7 @@ internal class MetadataLookupController(
                 val fileIds = title.files.map { it.documentId }
                 val localMatches = fileIds.mapNotNull(cachedByDocument::get)
                     .distinctBy { it.tmdbId to it.mediaType }
+                val lookupSuppressed = OfflineMetadataCache.isLookupSuppressed(app, tree, fileIds)
                 val searchable = searchTerms(title) != null
                 val cachedMatch = localMatches.singleOrNull()
                 val posterFile = cachedMatch?.posterPath?.let { artworkCache.cached(it, TmdbImageSize.POSTER) }
@@ -96,6 +106,23 @@ internal class MetadataLookupController(
                         else -> null
                     },
                 )
+                val canAutomaticallySearch = configured.enabled && configured.credentialConfigured &&
+                    searchable && localMatches.isEmpty() && !lookupSuppressed
+                if (canAutomaticallySearch) {
+                    searchTerms(title)?.let { terms ->
+                        if (markAutomaticAttempt(tree, title.key)) {
+                            runAutomaticLookup(ticket, tree, title, terms)
+                        }
+                    }
+                } else if (configured.enabled && cachedMatch != null) {
+                    // Metadata may outlive an evicted image file; refill only
+                    // while the user is viewing the title and has opted in.
+                    val poster = cachedMatch.posterPath?.let { artworkCache.fetch(it, TmdbImageSize.POSTER) }
+                    val backdrop = cachedMatch.backdropPath?.let { artworkCache.fetch(it, TmdbImageSize.BACKDROP) }
+                    if (active(ticket, tree, title) && (poster != null || backdrop != null)) {
+                        mutableState.value = mutableState.value.copy(posterFile = poster, backdropFile = backdrop)
+                    }
+                }
             } catch (cancelled: CancellationException) {
                 throw cancelled
             } catch (_: Exception) {
@@ -176,7 +203,7 @@ internal class MetadataLookupController(
                     backdropPath = offered.backdropPath,
                     cachedAtEpochMs = System.currentTimeMillis(),
                 )
-                val stored = OfflineMetadataCache.confirm(
+                val stored = OfflineMetadataCache.bind(
                     app, tree, title.files.map { it.documentId }, metadata,
                 )
                 if (!active(ticket, tree, title)) return@launch
@@ -219,7 +246,7 @@ internal class MetadataLookupController(
         mutableState.value = before.copy(preparing = true, confirming = false, issue = null)
         work = scope.launch {
             try {
-                OfflineMetadataCache.remove(app, tree, title.files.map { it.documentId })
+                OfflineMetadataCache.suppressLookup(app, tree, title.files.map { it.documentId })
                 if (!active(ticket, tree, title)) return@launch
                 mutableState.value = before.copy(preparing = false, cached = null, matchedFiles = 0, candidates = emptyList(), issue = null)
             } catch (cancelled: CancellationException) {
@@ -237,6 +264,113 @@ internal class MetadataLookupController(
         mutableState.value = MetadataLookupUiState()
     }
 
+    private suspend fun runAutomaticLookup(
+        ticket: Long,
+        tree: String,
+        title: LocalTitle,
+        terms: TmdbSearchTerms,
+    ) {
+        try {
+            if (!active(ticket, tree, title) || settings.credentialIfEnabled() == null) return
+            mutableState.value = mutableState.value.copy(searching = true)
+            val response = automaticSearch(ticket, tree, title, terms)
+            when (response) {
+                is TmdbResult.Success -> {
+                    if (!active(ticket, tree, title)) return
+                    val candidate = TmdbAutoMatchPolicy.uniqueExactMatch(terms, response.value)
+                    if (candidate == null) {
+                        // Keep ambiguous/non-exact suggestions visible for the
+                        // existing explicit confirmation flow; never guess.
+                        mutableState.value = mutableState.value.copy(
+                            searching = false,
+                            candidates = response.value,
+                            issue = if (response.value.isEmpty()) MetadataLookupIssue.NO_RESULTS else null,
+                        )
+                        return
+                    }
+                    val metadata = CachedTmdbMetadata(
+                        tmdbId = candidate.id,
+                        mediaType = candidate.mediaType.name,
+                        title = candidate.title,
+                        year = candidate.year,
+                        overview = candidate.overview,
+                        posterPath = candidate.posterPath,
+                        backdropPath = candidate.backdropPath,
+                        cachedAtEpochMs = System.currentTimeMillis(),
+                    )
+                    val stored = OfflineMetadataCache.bind(
+                        app, tree, title.files.map { it.documentId }, metadata,
+                    )
+                    if (!active(ticket, tree, title)) return
+                    if (!stored) {
+                        publishIssue(ticket, tree, title, MetadataLookupIssue.STALE_LIBRARY)
+                        return
+                    }
+                    mutableState.value = mutableState.value.copy(
+                        searching = false,
+                        cached = metadata,
+                        matchedFiles = title.files.size,
+                        candidates = emptyList(),
+                        issue = null,
+                    )
+                    val poster = metadata.posterPath?.let { artworkCache.fetch(it, TmdbImageSize.POSTER) }
+                    val backdrop = metadata.backdropPath?.let { artworkCache.fetch(it, TmdbImageSize.BACKDROP) }
+                    if (active(ticket, tree, title) && (poster != null || backdrop != null)) {
+                        mutableState.value = mutableState.value.copy(posterFile = poster, backdropFile = backdrop)
+                    }
+                }
+                TmdbResult.Disabled -> publishIssue(ticket, tree, title, MetadataLookupIssue.NEEDS_SETUP)
+                TmdbResult.Unauthorized -> publishIssue(ticket, tree, title, MetadataLookupIssue.UNAUTHORIZED)
+                TmdbResult.RateLimited -> publishIssue(ticket, tree, title, MetadataLookupIssue.RATE_LIMITED)
+                TmdbResult.Unavailable -> publishIssue(ticket, tree, title, MetadataLookupIssue.UNAVAILABLE)
+                TmdbResult.InvalidResponse -> publishIssue(ticket, tree, title, MetadataLookupIssue.INVALID_RESPONSE)
+            }
+        } catch (cancelled: CancellationException) {
+            forgetAutomaticAttempt(tree, title.key)
+            throw cancelled
+        } catch (_: Exception) {
+            publishIssue(ticket, tree, title, MetadataLookupIssue.UNAVAILABLE)
+        }
+    }
+
+    private suspend fun automaticSearch(
+        ticket: Long,
+        tree: String,
+        title: LocalTitle,
+        terms: TmdbSearchTerms,
+    ): TmdbResult<List<TmdbCandidate>> {
+        automaticRequestGate.lock()
+        try {
+            if (!active(ticket, tree, title) || settings.credentialIfEnabled() == null) return TmdbResult.Disabled
+            val elapsed = SystemClock.elapsedRealtime()
+            val waitMs = MIN_AUTOMATIC_REQUEST_INTERVAL_MS - (elapsed - lastAutomaticRequestElapsedRealtimeMs)
+            if (waitMs > 0) delay(waitMs)
+            if (!active(ticket, tree, title) || settings.credentialIfEnabled() == null) return TmdbResult.Disabled
+            lastAutomaticRequestElapsedRealtimeMs = SystemClock.elapsedRealtime()
+            return client.search(terms)
+        } finally {
+            automaticRequestGate.unlock()
+        }
+    }
+
+    @Synchronized
+    private fun markAutomaticAttempt(tree: String, titleKey: String): Boolean {
+        if (attemptTree != tree) {
+            automaticAttempts.clear()
+            attemptTree = tree
+        }
+        if (!automaticAttempts.add(titleKey)) return false
+        while (automaticAttempts.size > MAX_AUTOMATIC_ATTEMPTS) {
+            automaticAttempts.iterator().run { next(); remove() }
+        }
+        return true
+    }
+
+    @Synchronized
+    private fun forgetAutomaticAttempt(tree: String, titleKey: String) {
+        if (attemptTree == tree) automaticAttempts.remove(titleKey)
+    }
+
     private fun searchTerms(title: LocalTitle): TmdbSearchTerms? {
         val firstVideo = title.files.firstOrNull() ?: return null
         if (firstVideo.kind != com.batmancpu.player.ui.library.LocalMediaKind.VIDEO) return null
@@ -252,5 +386,10 @@ internal class MetadataLookupController(
         if (active(ticket, tree, title)) {
             mutableState.value = mutableState.value.copy(preparing = false, searching = false, confirming = false, issue = issue)
         }
+    }
+
+    private companion object {
+        const val MAX_AUTOMATIC_ATTEMPTS = 512
+        const val MIN_AUTOMATIC_REQUEST_INTERVAL_MS = 800L
     }
 }

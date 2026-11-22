@@ -705,3 +705,15 @@ CI #235: app compiled; 51/53 Android tests passed. The new Media3 assertion read
 - Published signed `v0.1.250` (`versionCode` 250) after CI #250 passed all 55 Android 15 instrumentation tests, unit/debug build, Room v1–v4, manifest privacy, permanent signature, and release artifact checks. APK SHA-256 `445ef633f4ac0f09fb27dfd1affad43e5d250c73cd245b4a17ed266601b964b1`.
 - User clarified TMDB should be automatic without per-install configuration. Chosen direction: one publisher-configured app credential, explicitly disclosed as extractable/public, plus local opt-in and direct TMDB requests carrying only normalized title/year/type. No credential is currently configured, so missing-key behavior must stay offline and fail closed.
 - Next: implement and validate the automatic metadata/artwork flow as one substantial batch; publish one signed APK only when its combined changes pass.
+
+## 2026-11-22 continuation — Automatic title-match foundation
+
+- The caption batch was published as signed v0.1.250. Current source/docs checkout is ahead by local documentation commit `5bbb83f`; push is blocked by the workspace proxy, so this commit is not yet on GitHub and no CI ran.
+- Added a pure match-selection policy and six JVM tests for exact normalized matches, year/type mismatches, ambiguity and duplicate IDs. This does not yet trigger requests or display posters automatically.
+- Next: integrate it behind local explicit opt-in, configure shared app-credential injection (default empty/off), automatically bind only unique matches, cache/fetch artwork, test the offline and revoke/cancel paths. No app credential is configured yet; do not claim online metadata works until it is configured and tested.
+
+## 2026-11-22 continuation — Automatic metadata integration in progress
+
+- Added the app-wide credential build path, injected only from a release CI secret and kept out of local storage; the UI no longer asks users for a personal key. Local opt-in remains off by default. An exact unique title/type/year match on an open title detail can save metadata and private artwork; ambiguous choices still require confirmation. Catalogue scan and scrolling remain offline-only.
+- Added match unit cases and Android integration/storage cases. They are not run because this workspace has no Gradle/Android SDK and the GitHub proxy is unreachable. Documentation records this explicitly. v0.1.250 remains the latest published APK; this source is not yet verified/released and no publisher key is configured.
+- Next: CI validation, fixes, bounded opt-in catalogue poster enrichment, full privacy review, then one signed APK when the metadata batch is complete. Do not claim phone acceptance or live metadata before the app credential is configured and tested.

@@ -4,6 +4,7 @@ import android.content.Context
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.AtomicFile
+import com.batmancpu.player.BuildConfig
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
@@ -30,17 +31,25 @@ import kotlinx.coroutines.withContext
 internal data class MetadataSettingsState(
     val enabled: Boolean = false,
     val credentialConfigured: Boolean = false,
+    val appCredentialAvailable: Boolean = false,
     val storageError: Boolean = false,
     val tokenRejected: Boolean = false,
 )
 
 /**
- * Optional user-owned TMDB credential and explicit consent, atomically encrypted
- * with an Android Keystore AES-GCM key. Nothing is written to the media tree.
+ * Explicit local consent is atomically encrypted with an Android Keystore
+ * AES-GCM key. A publisher credential remains in generated app configuration;
+ * the current UI never asks a user to enter one. Legacy user tokens stay
+ * encrypted for compatibility and are used only with their prior saved consent.
+ * Nothing is written to the media tree.
  * Reading a missing/invalid file or missing key never creates a key or enables
  * metadata. Callers must read credentialIfEnabled again before every request.
  */
-internal class MetadataSettingsStore(context: Context, testNamespace: String? = null) {
+internal class MetadataSettingsStore(
+    context: Context,
+    testNamespace: String? = null,
+    appCredential: String = BuildConfig.TMDB_READ_ACCESS_TOKEN,
+) {
     private val app = context.applicationContext
     private val suffix = testNamespace?.also {
         require(it.matches(Regex("[A-Za-z0-9_-]{1,48}")))
@@ -49,6 +58,7 @@ internal class MetadataSettingsStore(context: Context, testNamespace: String? = 
     internal val keyAlias = "com.batmancpu.player.metadata$suffix"
     private val file = AtomicFile(storageFile)
     private val gate = gates.getOrPut(keyAlias) { AccessGate() }
+    private val publisherCredential = validatedToken(appCredential)
 
     suspend fun load(): MetadataSettingsState = withContext(Dispatchers.IO) {
         gate.mutex.withLock {
@@ -58,7 +68,7 @@ internal class MetadataSettingsStore(context: Context, testNamespace: String? = 
                 throw cancelled
             } catch (_: Exception) {
                 gate.denied = true
-                MetadataSettingsState(storageError = true)
+                failureState()
             }
         }
     }
@@ -76,11 +86,11 @@ internal class MetadataSettingsStore(context: Context, testNamespace: String? = 
                     currentCoroutineContext().ensureActive()
                     // Only a fresh, explicit token can replace unreadable state.
                     val existing = if (validated == null) read() else null
-                    val credential = validated ?: existing?.token
-                    if (credential == null) {
+                    val localCredential = validated ?: existing?.token
+                    if (localCredential == null && publisherCredential == null) {
                         return@withLock MetadataSettingsState(tokenRejected = enabled)
                     }
-                    val payload = Payload(enabled, credential)
+                    val payload = Payload(enabled, localCredential)
                     write(payload)
                     if (gate.revision.get() == revision) gate.denied = !enabled
                     state(payload)
@@ -91,7 +101,7 @@ internal class MetadataSettingsStore(context: Context, testNamespace: String? = 
                     // If persisting revocation fails, invalidate the credential
                     // rather than leaving an older enabled blob usable after restart.
                     if (!enabled) runCatching { keyStore().deleteEntry(keyAlias) }
-                    MetadataSettingsState(storageError = true)
+                    failureState()
                 }
             }
         }
@@ -115,13 +125,14 @@ internal class MetadataSettingsStore(context: Context, testNamespace: String? = 
                         throw IOException("Credential removal failed")
                     }
                     keyStore().deleteEntry(keyAlias)
-                    MetadataSettingsState()
+                    state(null)
                 } catch (cancelled: CancellationException) {
                     throw cancelled
                 } catch (_: Exception) {
                     // Also revoke the key if removing the ciphertext failed.
                     runCatching { keyStore().deleteEntry(keyAlias) }
-                    MetadataSettingsState(storageError = true)
+                    MetadataSettingsState(storageError = true, appCredentialAvailable = publisherCredential != null,
+                        credentialConfigured = publisherCredential != null)
                 }
             }
         }
@@ -134,7 +145,9 @@ internal class MetadataSettingsStore(context: Context, testNamespace: String? = 
                 if (gate.denied) return@withLock null
                 try {
                     val payload = read()
-                    payload?.token?.takeIf { payload.enabled && !gate.denied }
+                    payload?.takeIf { it.enabled && !gate.denied }?.let {
+                        publisherCredential ?: it.token
+                    }
                 } catch (cancelled: CancellationException) {
                     throw cancelled
                 } catch (_: Exception) {
@@ -146,16 +159,23 @@ internal class MetadataSettingsStore(context: Context, testNamespace: String? = 
     }
 
     private fun state(payload: Payload?): MetadataSettingsState = MetadataSettingsState(
-        enabled = payload?.enabled == true && !gate.denied,
-        credentialConfigured = payload != null,
+        enabled = payload?.enabled == true && (publisherCredential != null || payload.token != null) && !gate.denied,
+        credentialConfigured = payload?.token != null || publisherCredential != null,
+        appCredentialAvailable = publisherCredential != null,
     )
 
     private fun safelyReadState(): MetadataSettingsState = try {
         state(read())
     } catch (_: Exception) {
         gate.denied = true
-        MetadataSettingsState(storageError = true)
+        failureState()
     }
+
+    private fun failureState() = MetadataSettingsState(
+        storageError = true,
+        appCredentialAvailable = publisherCredential != null,
+        credentialConfigured = publisherCredential != null,
+    )
 
     private fun read(): Payload? {
         val bytes = try {
@@ -177,25 +197,31 @@ internal class MetadataSettingsStore(context: Context, testNamespace: String? = 
         require(bytes.size >= MAGIC.size + 1 + IV_BYTES + TAG_BYTES)
         val encrypted = DataInputStream(ByteArrayInputStream(bytes))
         val magic = ByteArray(MAGIC.size).also(encrypted::readFully)
-        require(magic.contentEquals(MAGIC) && encrypted.readUnsignedByte() == FORMAT_VERSION)
+        val version = encrypted.readUnsignedByte()
+        require(magic.contentEquals(MAGIC) && version in LEGACY_FORMAT_VERSION..FORMAT_VERSION)
         val iv = ByteArray(IV_BYTES).also(encrypted::readFully)
         val ciphertext = ByteArray(encrypted.available()).also(encrypted::readFully)
         val key = (keyStore().getEntry(keyAlias, null) as? KeyStore.SecretKeyEntry)?.secretKey
             ?: throw IOException("Credential key unavailable")
         val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(Cipher.DECRYPT_MODE, key, GCMParameterSpec(TAG_BYTES * 8, iv))
-        cipher.updateAAD(associatedData())
+        cipher.updateAAD(associatedData(version))
         val plaintext = cipher.doFinal(ciphertext)
         return try {
             DataInputStream(ByteArrayInputStream(plaintext)).use { data ->
-                require(data.readUnsignedByte() == FORMAT_VERSION)
+                require(data.readUnsignedByte() == version)
                 val enabled = data.readUnsignedByte().also { require(it in 0..1) } == 1
-                val length = data.readUnsignedShort().also { require(it in 1..MAX_TOKEN_CHARS) }
+                val length = data.readUnsignedShort().also {
+                    require(it in (if (version == LEGACY_FORMAT_VERSION) 1..MAX_TOKEN_CHARS else 0..MAX_TOKEN_CHARS))
+                }
                 require(data.available() == length)
-                val tokenBytes = ByteArray(length).also(data::readFully)
-                val token = tokenBytes.toString(Charsets.US_ASCII)
-                tokenBytes.fill(0)
-                require(validatedToken(token) == token)
+                val token = if (length == 0) null else {
+                    val tokenBytes = ByteArray(length).also(data::readFully)
+                    val parsed = tokenBytes.toString(Charsets.US_ASCII)
+                    tokenBytes.fill(0)
+                    require(validatedToken(parsed) == parsed)
+                    parsed
+                }
                 Payload(enabled, token)
             }
         } finally {
@@ -208,11 +234,11 @@ internal class MetadataSettingsStore(context: Context, testNamespace: String? = 
             ?: createKey()
         val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(Cipher.ENCRYPT_MODE, key)
-        cipher.updateAAD(associatedData())
+        cipher.updateAAD(associatedData(FORMAT_VERSION))
         val iv = cipher.iv.also { require(it.size == IV_BYTES) }
         val output = ByteArrayOutputStream()
         DataOutputStream(output).use { data ->
-            val tokenBytes = payload.token.toByteArray(Charsets.US_ASCII)
+            val tokenBytes = payload.token?.toByteArray(Charsets.US_ASCII) ?: byteArrayOf()
             data.writeByte(FORMAT_VERSION)
             data.writeByte(if (payload.enabled) 1 else 0)
             data.writeShort(tokenBytes.size)
@@ -249,10 +275,10 @@ internal class MetadataSettingsStore(context: Context, testNamespace: String? = 
             .build())
     }.generateKey()
 
-    private fun associatedData(): ByteArray = "${app.packageName}:$keyAlias:$FORMAT_VERSION".toByteArray(Charsets.UTF_8)
+    private fun associatedData(version: Int): ByteArray = "${app.packageName}:$keyAlias:$version".toByteArray(Charsets.UTF_8)
 
     // A regular class avoids an automatically generated toString containing the secret.
-    private class Payload(val enabled: Boolean, val token: String)
+    private class Payload(val enabled: Boolean, val token: String?)
     private class AccessGate {
         val mutex = Mutex()
         val revision = AtomicLong()
@@ -262,7 +288,8 @@ internal class MetadataSettingsStore(context: Context, testNamespace: String? = 
     companion object {
         private const val KEYSTORE = "AndroidKeyStore"
         private const val TRANSFORMATION = "AES/GCM/NoPadding"
-        private const val FORMAT_VERSION = 1
+        private const val LEGACY_FORMAT_VERSION = 1
+        private const val FORMAT_VERSION = 2
         private const val IV_BYTES = 12
         private const val TAG_BYTES = 16
         private const val MAX_TOKEN_CHARS = 2048
