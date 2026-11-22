@@ -9,7 +9,7 @@
 
 ## Verified repository state
 
-- Latest committed main SHA: `b8b1639`. CI #240 / `44978138086` passed 53/53 Android 15 tests and the separate unit/build/Room v1–v4/privacy verification job. The Manage sheet now honors navigation insets and the 100dp-density readiness wait passes; selected track state and Movies poster geometry pass. Current working tree adds adjustable/persisted caption size and height controls to the independent SubtitleView. Local `git diff --check`, 15 Android resource XML parses and the Python 7/7 privacy/release checker pass; Android CI is pending for captions. No signed APK has been made during this edit/debug sequence. Synthetic tests do not prove Reno10 playback/performance. README concept art is not a product screenshot.
+- Latest committed main SHA: `afe04f1`. CI #241 / `44980134384` stopped at Kotlin compilation because the caption `ModalBottomSheet` omitted Material3's experimental API opt-in; instrumentation did not run. Working tree adds `@OptIn(ExperimentalMaterial3Api::class)`. Caption UI/persistence tests, stable Media3 setters and downstream build/schema/privacy gates still need a full run. CI #240 / `44978138086` passed 53/53 Android 15 tests and unit/build/Room v1–v4/privacy checks. No signed APK has been made during this edit/debug sequence. Synthetic tests do not prove Reno10 playback/performance. README concept art is not a product screenshot.
 - User reported OPPO v0.1.79 recognized four videos with years, retained the catalogue after airplane-mode restart, and switched folders successfully. That report is not validation of the newer catalogue/player/Glass implementation.
 - Latest release recorded in project history is signed v0.1.174. It is an older progress checkpoint, not the integrated candidate. Current signing identity and package must remain intact.
 
@@ -19,7 +19,7 @@ A Compose-owned transport in `LocalPlayerScreen.kt` replaces generic PlayerView 
 
 ## Exact next actions
 
-1. Finish the caption appearance feature in the working tree; inspect CI compilation, slider/accessibility/preferences, screenshots and all privacy/schema gates, fixing any errors within the batch.
+1. Commit the Material3 caption-sheet opt-in and rerun full CI; inspect caption compilation, slider/accessibility/preferences, screenshots and all privacy/schema gates, fixing any errors within the batch.
 2. Implement the user-requested automatic normalized-title metadata/artwork flow using only a Player-wide application credential and direct approved TMDB hosts. No credential currently exists in the repo; ask for its one-time setup only after other implementation prep. Keep user paths/media local and preserve an off switch/cache/offline use.
 3. Continue in no more than five substantial batches: player/captions, metadata/artwork, premium Glass/navigation, performance/reliability, final security/size/efficiency. Produce one signed higher-version APK at each completed batch boundary; do not wait for phone acceptance between batches. Actual Reno10 performance and phase acceptance remain evidence only the handset/user can supply.
 

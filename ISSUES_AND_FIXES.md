@@ -14,6 +14,7 @@ A risk is not a confirmed defect. Record evidence, confidence and status precise
 
 ## 2026-11-22 — Subtitle appearance batch pending
 - Added independent text-size and bottom-spacing sliders, local preference storage/clamping, reset semantics, and player auto-hide suspension in the working tree. Instrumentation covers sliders, preference persistence, and independent viewport. Local XML/privacy checks pass; Android CI is pending. No handset legibility or performance evidence.
+- CI #241 / 44980134384 stopped at `compileDebugKotlin`: `ModalBottomSheet` in the pinned Material3 release needs `@OptIn(ExperimentalMaterial3Api::class)`. The scoped opt-in is now in the working tree. No instrumentation ran; retest full caption batch. No signed APK.
 
 ## Historical device incidents
 
