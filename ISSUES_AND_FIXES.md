@@ -541,6 +541,18 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 - **Verified fix:** Explicit selected semantics/content descriptions and localized switch state; keep Glass after existing Manage actions. CI #214 passed the base checks. CI #216/#217 initially showed only top actions after activity recreation; the settings sheet now starts full-height. CI #218 caught the sheet-entry race (only “Close sheet” in the accessibility tree), fixed by waiting for its visible heading. CI #219's snapshot showed the switch visible and checked; its only remaining failure was a needless swipe helper returning false. The direct node/bounds/state/persistence assertions passed in CI #220.
 - **Next:** Confirm all UI regressions in full CI and inspect screenshots/player controls. No handset observation or Glass performance claim.
 
+### R-040 — Glass Lab content overlapped floating dock
+- **Status:** Viewport padding and scroll regression pending CI #222.
+- **Evidence:** CI #220 `glass-on.png` shows the lower generated artwork row continuing behind the floating four-tab dock. Tabs were clickable and in bounds; issue is visual/content occlusion, not dock reachability.
+- **Fix under test:** Reduce the lab's vertical-scroll viewport by 114dp for the dock plus navigation inset; assert all three artwork labels can be scrolled fully above the dock while tab accessibility remains available.
+- **Next:** Inspect #222 screenshot and all Android tests. This is an isolated visual lab, not a claim of production Glass quality or OPPO blur behavior.
+
+### R-041 — Subtitle cue decode and runtime delay API
+- **Status:** Synthetic cue-render assertion pending CI #222; delay UI is deferred until stable API availability.
+- **Evidence:** Existing test found a supported local SRT track and opened the Media3 selector, but did not assert cue delivery. Media3 1.11.1 stable is pinned. Official 1.12.0-beta01 release notes add the sideloaded cue offset API; current API reference marks `setTimeOffsetUs` unstable. Do not upgrade production playback to beta for this feature.
+- **Fix under test:** Wait for the generated SRT phrase in `Player.Listener.onCues`; retain the `SubtitleView` sibling-of-video-frame assertion for Fit/Zoom independence.
+- **Next:** Verify cue and layout tests in #222. Recheck Media3 stable release notes before implementing adjustable subtitle delay/reset.
+
 ### R-037 — Resolve localized descriptions outside Compose semantics lambdas
 - **Status:** Compile failures corrected; CI #211 confirms app compilation.
 - **Evidence:** CI #208 found `stringResource` inside the dock semantics lambda; CI #209 found the same in the offline poster semantics lambda. Neither run reached instrumentation.

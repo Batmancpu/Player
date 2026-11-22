@@ -78,6 +78,8 @@ The player must expose embedded audio and subtitle tracks. It must also support 
 
 Track selection and subtitle delay are functional requirements. The initial playback engine milestone needs only the controls required to start, pause, seek and resume a local file, plus track discovery/selection. A later UI milestone adds a compact audio/subtitle sheet, external subtitle search/download, subtitle visibility and fine-grained subtitle offset with reset. Keep video content unobstructed and do not add clutter.
 
+**Media3 offset API check (2026-11-22):** The project pins Media3 1.11.1 stable. Android's release page lists 1.12.0-beta01 as the current beta; `SubtitleConfiguration.Builder.setTimeOffsetUs` is marked `@UnstableApi` and documented in that beta release line. Do not expose a nonfunctional delay control or move production playback to a beta solely for offset support. Recheck stable release notes/API before implementation; keep the offset and reset controls as explicit backlog requirements.
+
 ## Subtitle retrieval and privacy boundary
 
 The local scanner may identify sidecar subtitle files in the selected tree and pair them locally with a movie/episode. Embedded tracks are read by the playback engine. Online subtitle discovery is a separate provider integration, not part of TMDB. The provider must be selected only after API terms, credentials, language coverage, rate limits and privacy are reviewed. Requests may include normalized title/year/season/episode identifiers only; never include the full filename, SAF URI, directory name or file contents. Save downloaded subtitle assets in Player's private storage by default.

@@ -236,6 +236,24 @@ class PreviewUiAndroidTest {
         return awaitNode { it.text?.toString() == value && isInsideVisibleAppBounds(it) }
     }
 
+    private fun revealAboveFloatingDock(value: String, dockTop: Int): AccessibilityNodeInfo {
+        repeat(12) {
+            find { it.text?.toString() == value }?.let { node ->
+                val bounds = Rect().also { node.getBoundsInScreen(it) }
+                if (bounds.height() > 0 && bounds.bottom <= dockTop) return node
+            }
+            if (!scrollForwardOnSmallestScrollable()) {
+                assertTrue("Could not scroll $value above the floating dock; ${activeWindowSummary()}", swipeUpFromVisibleSheetText())
+            }
+            SystemClock.sleep(150)
+        }
+        return awaitNode {
+            if (it.text?.toString() != value) return@awaitNode false
+            val bounds = Rect().also(it::getBoundsInScreen)
+            bounds.height() > 0 && bounds.bottom <= dockTop
+        }
+    }
+
     private fun screenshot(name: String) {
         SystemClock.sleep(400) // Let the finite sheet/selection transition finish.
         // AGP uninstalls tested packages after connected tests and removes their external dirs.
@@ -618,6 +636,25 @@ class PreviewUiAndroidTest {
             text("Back to library")
             click(text("Back to library"))
             assertEquals("Preview provides an explicit route back to the library", 1, backCount.get())
+        } finally {
+            instrumentation.runOnMainSync { activity.finish() }
+        }
+    }
+
+    @Test(timeout = 25_000) fun glassLabArtworkCanScrollClearOfFloatingDock() {
+        val activity = launch()
+        try {
+            instrumentation.runOnMainSync {
+                activity.setContent { PlayerTheme { GlassLabScreen() } }
+            }
+            val metrics = context.resources.displayMetrics
+            val dockTop = metrics.heightPixels - (114 * metrics.density).toInt()
+            listOf("Beyond", "Nocturne", "Stillwater").forEach { title ->
+                val artworkTitle = revealAboveFloatingDock(title, dockTop)
+                val bounds = Rect().also { artworkTitle.getBoundsInScreen(it) }
+                assertTrue("$title clears the floating Glass dock: $bounds vs dock top $dockTop", bounds.bottom <= dockTop)
+            }
+            assertNotNull("The dock remains accessible while artwork scrolls", find { it.contentDescription?.toString() == "Home" })
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
         }

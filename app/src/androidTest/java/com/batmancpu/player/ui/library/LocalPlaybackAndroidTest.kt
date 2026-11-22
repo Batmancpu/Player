@@ -68,6 +68,7 @@ class LocalPlaybackAndroidTest {
         SyntheticSafProvider.playbackFile = fixture
         SyntheticSafProvider.subtitleContents = "1\n00:00:00,000 --> 00:00:02,000\nSynthetic local subtitle\n".toByteArray()
         val frame = CountDownLatch(1)
+        val subtitleCue = CountDownLatch(1)
         val failure = AtomicReference<String?>()
         val reference = AtomicReference<ExoPlayer>()
         val activity = instrumentation.startActivitySync(Intent(context, PreviewTestActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
@@ -79,6 +80,9 @@ class LocalPlaybackAndroidTest {
                 activity.setContentView(PlayerView(activity).apply { this.player = player })
                 player.addListener(object : Player.Listener {
                     override fun onRenderedFirstFrame() { frame.countDown() }
+                    override fun onCues(cueGroup: androidx.media3.common.text.CueGroup) {
+                        if (cueGroup.cues.any { it.text?.contains("Synthetic local subtitle") == true }) subtitleCue.countDown()
+                    }
                     override fun onPlayerError(error: PlaybackException) { failure.set(error.errorCodeName); frame.countDown() }
                 })
                 player.setMediaItem(createLocalMediaItem(LocalPlaybackTarget(
@@ -94,6 +98,7 @@ class LocalPlaybackAndroidTest {
             }
             assertTrue("No synthetic first frame", frame.await(20, TimeUnit.SECONDS))
             assertNull(failure.get())
+            assertTrue("Local sidecar cue reaches Media3's subtitle renderer", subtitleCue.await(5, TimeUnit.SECONDS))
             instrumentation.runOnMainSync {
                 val player = reference.get()
                 assertTrue(player.duration > 0)

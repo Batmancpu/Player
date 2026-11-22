@@ -89,6 +89,9 @@ internal fun GlassLabScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .windowInsetsPadding(WindowInsets.statusBars)
+                    // Keep the scroll viewport above the floating dock instead of drawing
+                    // artwork and text underneath its translucent surface.
+                    .padding(bottom = glassLabDockReservedHeight)
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = PlayerSpacing.screenHorizontal),
             ) {
@@ -260,6 +263,8 @@ internal fun GlassLabScreen(
         )
     }
 }
+
+private val glassLabDockReservedHeight = 114.dp
 
 @Composable
 private fun GlassLabBackdrop(selectedTab: Int) {

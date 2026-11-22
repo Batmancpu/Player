@@ -442,6 +442,9 @@ CI #219 ran 52 Android 15 tests with 51 passes. Its sole failure was test-helper
 ## 2026-11-22 — Glass regression resolved; transport visual QA added
 CI #220 / 44965653928 passed 52/52 Android 15 tests, JVM/build and Room/privacy checks. The Glass Manage regression is resolved. Synthetic CI captures still lack the production player transport, so the active synthetic playback test now captures `player-controls.png`; inspect the next artifact before considering player presentation visually reviewed. README now matches current main capabilities and Glass scope. No signed release or handset performance data was produced.
 
+## 2026-11-22 — Player screenshot review and follow-up
+CI #221 / 44966329372 passed 52/52 Android 15 tests, JVM/build/schema/privacy gates and uploaded `player-controls.png`; this is synthetic emulator UI only. Inspection found cramped/plain controls and a black video surface in that capture; keep presentation and actual decoder evidence open. The prior `glass-on.png` showed lab artwork obscured by the dock. Source now adds a caption-cue delivery assertion and reserves viewport area above that dock, with scroll regression; CI #222 pending. Subtitle delay remains deferred: stable Media3 1.11.1 is pinned and current docs mark the 1.12 offset builder unstable.
+
 ## 2026-11-21 — Playback completion test correction
 - CI #180 compiled and ran 47 tests; the only failure was a 20-second wait against a 30-second video fixture.
 - The synthetic test now seeks to 29 seconds before playback and continues through the five-second resume timer. Await CI.
