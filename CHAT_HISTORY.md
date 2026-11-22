@@ -60,6 +60,7 @@ This file is the durable, accumulating record of important user requests, produc
 - User specifically rejected Termux. The initial helper script and its CI syntax check were removed. Do not reintroduce Termux or device-side terminal steps for signing.
 
 ### Current status and next actions
+- 2026-11-22: CI #220 passed all 52 Android 15 tests plus JVM/build/schema/privacy checks. Confirmed #219's lone failure was an obsolete swipe helper; the direct accessible Glass switch assertion passes. Added synthetic player-controls screenshot capture and corrected README's feature/Glass status; CI #221 pending. Continue to one integrated APK after remaining features and final efficiency review.
 - 2026-11-22: CI #219 ran 52 Android 15 tests (51 passed). Its sole Glass settings failure snapshot actually contained the visible, checked switch; an unnecessary swipe fallback caused the assertion. Simplified the test to await the accessible node and assert visible bounds, localized On/Off semantics, native state and persistence. Next: full CI #220, then continue captions/player polish. No APK until integrated feature completion and efficiency review.
 1. User downloads and securely backs up `player-release.jks`, saves the password in Proton Pass, and enters the four GitHub secrets using repository Settings.
 2. Trigger Android CI. Verify the signed Release artifact exists and its certificate fingerprint exactly matches the public fingerprint recorded above.

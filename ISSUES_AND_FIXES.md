@@ -536,9 +536,9 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 
 
 ### R-036 — Production Glass semantics and Manage-sheet reachability
-- **Status:** Accessibility follow-up is pending CI #220 after CI #219's sole test-helper failure.
+- **Status:** Resolved in CI #220; the updated player screenshot capture is independently pending CI #221.
 - **Evidence:** #206 had three failures in 51 tests: selected dock destination not discoverable, switch state not readable via `isChecked`, and setting displaced Forget-folder. In #207 the setting remained offscreen without an accessibility scroll action and Movies selected state remained unassociated with its label.
-- **Fix under verification:** Explicit selected semantics/content descriptions and localized switch state; keep Glass after existing Manage actions. CI #214 passed those checks. CI #216/#217 initially showed only top actions after activity recreation; settings sheet now starts full-height. CI #218 revealed a sheet-entry race (only “Close sheet” in accessibility tree), fixed by waiting for its visible heading. CI #219 showed the switch visible and checked in the failure snapshot; the remaining failure came from a needless swipe helper returning false. Current test waits for the switch directly, checks safe bounds, localized On/Off description, native check state, and persisted preference. CI #220 pending.
+- **Verified fix:** Explicit selected semantics/content descriptions and localized switch state; keep Glass after existing Manage actions. CI #214 passed the base checks. CI #216/#217 initially showed only top actions after activity recreation; the settings sheet now starts full-height. CI #218 caught the sheet-entry race (only “Close sheet” in the accessibility tree), fixed by waiting for its visible heading. CI #219's snapshot showed the switch visible and checked; its only remaining failure was a needless swipe helper returning false. The direct node/bounds/state/persistence assertions passed in CI #220.
 - **Next:** Confirm all UI regressions in full CI and inspect screenshots/player controls. No handset observation or Glass performance claim.
 
 ### R-037 — Resolve localized descriptions outside Compose semantics lambdas

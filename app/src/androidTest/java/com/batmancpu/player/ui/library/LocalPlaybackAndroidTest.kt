@@ -52,6 +52,15 @@ class LocalPlaybackAndroidTest {
         return containsText(value) == expected
     }
 
+    private fun captureSyntheticScreenshot(name: String) {
+        SystemClock.sleep(350)
+        fun shell(command: String) {
+            ParcelFileDescriptor.AutoCloseInputStream(automation.executeShellCommand(command)).use { it.readBytes() }
+        }
+        shell("mkdir -p /sdcard/Download/player-preview-screens")
+        shell("screencap -p /sdcard/Download/player-preview-screens/$name.png")
+    }
+
     @Test(timeout = 30_000) fun contentOnlyEngineRendersOwnedH264Fixture() {
         val fixture = File(context.cacheDir, "synthetic-video.mp4")
         instrumentation.context.assets.open("synthetic-video.mp4").use { input -> fixture.outputStream().use { output -> input.copyTo(output) } }
@@ -158,6 +167,7 @@ class LocalPlaybackAndroidTest {
             assertTrue("Compose transport should expose a seek slider", awaitText("Playback position", true))
             assertTrue("Compose transport should expose a forward seek", awaitText("Seek forward 10 seconds", true))
             assertTrue("Synthetic video should begin before the auto-hide check", playbackStarted.await(15, TimeUnit.SECONDS))
+            captureSyntheticScreenshot("player-controls")
             assertTrue("Header should auto-hide during active playback", awaitText("Synthetic feature", false, 8_000))
             val metrics = context.resources.displayMetrics
             ParcelFileDescriptor.AutoCloseInputStream(

@@ -9,7 +9,7 @@
 
 ## Verified repository state
 
-- Latest committed main SHA before current edits: `dee49e5cfecc521967da3f13738c8cd8efdb5c6f` (`test(ui): wait for settings sheet before scrolling`). CI #219 / `44964806410` compiled and ran 52 Android 15 tests, 51 passing. The sole failure was a swipe helper even though the accessibility snapshot showed the Glass switch visible, in bounds and checked. Current test waits for the accessible switch and asserts visible bounds, localized On/Off label, checked state and persisted preference. Next CI run pending.
+- Latest committed main SHA before current edits: `f100879d1b1fa938a8d740979db909a1531a5ed2` (`test(ui): assert Glass setting without swipe fallback`). CI #220 / `44965653928` passed 52/52 Android 15 tests, unit/build/schema and privacy gates. The accessible Glass control is verified visible/stateful and preference persists. Release signing was skipped because this was not a candidate release. Current uncommitted QA adds a synthetic playback screenshot and README reconciliation; CI pending.
 - User reported OPPO v0.1.79 recognized four videos with years, retained the catalogue after airplane-mode restart, and switched folders successfully. That report is not validation of the newer catalogue/player/Glass implementation.
 - Latest release recorded in project history is signed v0.1.174. It is an older progress checkpoint, not the integrated candidate. Current signing identity and package must remain intact.
 
@@ -19,7 +19,7 @@ A Compose-owned transport in `LocalPlayerScreen.kt` replaces generic PlayerView 
 
 ## Exact next actions
 
-1. Commit the direct accessible-switch correction with AGENTS, DEVELOPMENT_LOG, CHAT_HISTORY and R-036; verify the full CI suite and inspect screenshots.
+1. Commit the synthetic active-player screenshot capture and README/context reconciliation; verify CI and inspect `player-controls.png`.
 2. Continue the integrated app backlog in coherent batches: caption selection/visibility and local sidecars, player interaction/accessibility polish, Glass/navigation refinement, Macrobenchmark/Perfetto workflow, then release-size/security/dependency/efficiency review. User wants one signed APK after features and final efficiency review, not an interim APK.
 3. Publish one higher-version signed Release when implementation and automated gates are ready. Provide the concise OPPO checklist then. Real handset acceptance and measured Reno10 FPS/thermal/battery remain pending; CI cannot establish them.
 

@@ -439,6 +439,9 @@ Artwork behavior is verified by CI #122 and #123 attempt 2. CI #123 attempt 1 hi
 ## 2026-11-22 — Glass settings regression test diagnosis
 CI #219 ran 52 Android 15 tests with 51 passes. Its sole failure was test-helper logic: the snapshot showed the production Glass toggle on-screen and checked, but an unnecessary generic swipe returned false. The helper now awaits the accessible switch and asserts visible bounds/state directly, while retaining localized state and preference-persistence checks. Full CI is pending. Continue to one integrated signed APK after feature completion and final efficiency review; do not infer OPPO performance or acceptance from CI.
 
+## 2026-11-22 — Glass regression resolved; transport visual QA added
+CI #220 / 44965653928 passed 52/52 Android 15 tests, JVM/build and Room/privacy checks. The Glass Manage regression is resolved. Synthetic CI captures still lack the production player transport, so the active synthetic playback test now captures `player-controls.png`; inspect the next artifact before considering player presentation visually reviewed. README now matches current main capabilities and Glass scope. No signed release or handset performance data was produced.
+
 ## 2026-11-21 — Playback completion test correction
 - CI #180 compiled and ran 47 tests; the only failure was a 20-second wait against a 30-second video fixture.
 - The synthetic test now seeks to 29 seconds before playback and continues through the five-second resume timer. Await CI.

@@ -48,9 +48,9 @@ See [storage and privacy rules](docs/UPSTREAM_AND_PRIVACY.md) and [architecture]
 
 The latest signed build is listed on the [Releases page](https://github.com/Batmancpu/Player/releases/latest). Existing signed installs keep the same package and permanent update certificate. These are development checkpoints; the integrated premium app is still in progress.
 
-The user confirmed that v0.1.79 selected a folder, identified four local videos with titles and years, retained the library after an airplane-mode restart, and handled folder switching. Since then, main has gained title shelves, series season grouping, local playback and sidecar subtitle handling. The complete Android 15 integration suite and unit, schema, privacy and identity gates passed on main at CI #173. The first signed progress checkpoint from this work is published: [Player v0.1.174](https://github.com/Batmancpu/Player/releases/tag/v0.1.174). The 32.3 MB `Player-release-174.apk` has versionCode 174 and permanent-key signature (certificate SHA-256 `4D:2F:17:89:ED:27:D3:96:13:35:FE:36:45:64:55:BD:9A:31:0B:0D:CD:F4:1E:8C:CC:92:53:98:33:9E:80:BF`). APK SHA-256: `87d6af82c695ce61a8ca14dd117340086bd085cfe7f2622325152f5e9a1f2eb2`. This is a development checkpoint; work continues.
+The user confirmed that v0.1.79 selected a folder, identified four local videos with titles and years, retained the library after an airplane-mode restart, and handled folder switching. Since then, main has gained title shelves, series season grouping, local Media3 playback, validated same-folder sidecar subtitles and a custom Compose transport. Android 15 CI #220 passed all 52 instrumentation tests, the unit suite, Room v1-v4 schema checks, and build/privacy gates. This confirms synthetic/emulator behavior only; it is not a Reno10 performance or acceptance result. The latest signed progress checkpoint remains [Player v0.1.174](https://github.com/Batmancpu/Player/releases/tag/v0.1.174), versionCode 174, with the recorded permanent certificate and SHA-256 below. The user wants one integrated APK after remaining features and the final efficiency review.
 
-**Glass is still experimental.** Haze 2.1.0 powers the Glass Lab preview only. It is an original Android treatment, not Apple’s Liquid Glass renderer, and the current preview does not yet deliver the requested production-level tactile finish. See the [engine review](docs/GLASS_ENGINE_REVIEW.md).
+**Glass is still being refined.** Haze 2.1.0 powers both the bounded production library navigation dock and a separate visual lab. The Android treatment is original and does not reproduce Apple's proprietary renderer. The lab is an experiment, not a promise of device-level blur or the final tactile finish. See the [engine review](docs/GLASS_ENGINE_REVIEW.md).
 
 ## Work plan
 
@@ -87,4 +87,4 @@ Player uses original Android code and generated concept artwork. It does not inc
 
 
 
-**Glass Lab note:** The current lab is a selection-motion preview with a visible return to the library. Its tabs are not production navigation and the Haze effect remains an experiment; the full tactile Glass design is still in progress.
+**Glass Lab note:** The current lab previews a bounded selection dock over generated artwork and has a visible return to the library. Its tabs do not navigate the catalogue. The real library's separate dock is functional and has an effects-off fallback. Further visual tuning and Reno10 profiling remain in progress.
