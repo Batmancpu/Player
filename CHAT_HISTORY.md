@@ -8,6 +8,9 @@
 - Commit `5b59246` is on main. CI #237 compiled and ran 53 Android tests: the track-picker selected-state regression passed; one Glass settings test still failed. The accessibility snapshot placed the switch below the configured gesture-safe boundary (y528–576 with safe bottom y544 on a 320×640 viewport).
 - This identifies a production layout accessibility issue. Manage settings now applies navigation-bar insets before its scrolling content so controls can move fully above system gestures. Local validation and CI are pending. Continue the integrated feature work after green verification. No APK or handset claim.
 
+## 2026-11-22 — CI #238 modal-entry timing follow-up
+- CI #238 / 44977098444: 53 Android tests ran; the track picker passed. Only the Glass settings test failed, because y599 was treated as upper-half by a helper using `displayMetrics.heightPixels`, while accessibility coordinates use a different density scale. Its tree contained only the sheet heading during entry. The test now waits for the heading to be within the top third before scrolling. Re-run full CI and confirm the inset fix. No APK/device claim.
+
 This file is the durable, accumulating record of important user requests, product decisions, implementation history and unresolved actions. It is written for future AI agents to continue work without depending on a lost chat context.
 
 **Format:** decision-focused session summaries, not a verbatim export of every message. Preserve the meaning of user requests and reasons behind decisions. Never include private signing files, passwords, base64 secret values, API keys, tokens or other credentials.

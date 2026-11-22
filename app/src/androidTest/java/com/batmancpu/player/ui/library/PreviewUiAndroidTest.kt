@@ -148,9 +148,10 @@ class PreviewUiAndroidTest {
             if (it.text?.toString() != settingsHeading || !isInsideVisibleAppBounds(it)) return@awaitNode false
             val bounds = Rect()
             it.getBoundsInScreen(bounds)
-            // A partially expanded modal can expose its heading before its content is ready
-            // for scroll gestures. Wait until the heading has settled in the upper half.
-            bounds.top < metrics.heightPixels / 2
+            // Accessibility bounds are reported in physical pixels while displayMetrics can
+            // vary by density in the emulator. Require the heading near the top so a sheet
+            // sliding up from the bottom cannot be mistaken for a settled, scrollable sheet.
+            bounds.top < metrics.heightPixels / 3
         }
         repeat(12) {
             find {
