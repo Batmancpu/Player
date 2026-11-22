@@ -88,3 +88,7 @@ Audio wording was a misinterpretation. User confirms all four movie videos are r
 ## 2026-11-15 — Signed v0.1.91 preview (automated only)
 
 Release [v0.1.91](https://github.com/Batmancpu/Player/releases/tag/v0.1.91), versionCode 91, APK SHA-256 `7c9ff8287405be9b1f607259608d84a256e5aed1fcc4cea24e3f9b882dd05e17`, source `36e6c684f8191037c183603139de2e0891b832c8`, CI [#91](https://github.com/Batmancpu/Player/actions/runs/43726886945). CI passed 15/15 Android15 emulator tests, JVM/build, signed manifest/privacy/identity and pinned certificate. The user has not reported installing this build; v0.1.79 phone report remains the only current handset evidence. No frame-time, codec breadth, Glass quality or thermal data is available.
+
+## 2026-11-22 — Signed v0.1.250 caption-controls preview (automated only)
+
+Release [v0.1.250](https://github.com/Batmancpu/Player/releases/tag/v0.1.250), versionCode 250, package `com.batmancpu.player`, APK SHA-256 `445ef633f4ac0f09fb27dfd1affad43e5d250c73cd245b4a17ed266601b964b1`, source `df6aaa216774a9086d3d98382bf6c65657d25e3c`, CI [#250](https://github.com/Batmancpu/Player/actions/runs/44985028603). CI passed 55/55 Android 15 tests, JVM/build, Room schemas v1–v4, merged-manifest privacy, signature and permanent certificate. Synthetic 320×640 screenshot verifies caption size/position/reset visibility and accessibility. The user has not reported testing this release. v0.1.79 folder/offline report remains only physical evidence. No frame-time, codec breadth, actual Glass quality or thermal data is available.

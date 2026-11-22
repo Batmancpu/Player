@@ -1,6 +1,6 @@
 # Offline browsing and playback preview
 
-Signed preview release: [v0.1.91](https://github.com/Batmancpu/Player/releases/tag/v0.1.91). This adds useful local parts of catalogue and playback before online metadata. It uses only the already selected read-only folder. Titles come from filenames; the coloured cards are local placeholders, not retrieved posters. No network permission, shared API credential or backend is added. Embedded subtitle controls use Media3; sidecar loading, custom track sheets and subtitle delay remain later work.
+Signed preview release: [v0.1.250](https://github.com/Batmancpu/Player/releases/tag/v0.1.250). This adds local catalogue/playback and caption presentation controls. It uses the selected read-only folder. Titles come from filenames; poster art remains a local fallback unless the existing manual TMDB opt-in/search/match flow is configured. The user-requested automatic app-wide metadata connection is the next batch, not present in this release. Player sends only normalized query details through its existing explicit direct-TMDB flow; no Player backend is used. Captions remain outside the video zoom frame. This synthetic test checklist does not establish OPPO decoder/Glass quality or performance.
 
 ## Optional phone check when convenient
 
