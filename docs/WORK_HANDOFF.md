@@ -52,3 +52,6 @@ The user will not provide a postal address to obtain TMDB credentials. Remove pu
 
 ## Current metadata decision — 2026-11-22
 Supersedes the keyless-provider proposal: the user says online metadata must not be opted in because results can mislead and could cause fees. Do not implement or call TMDB, Wikidata, Commons or any metadata provider; do not ask for an address/key. Plan a local-only privacy cleanup: remove INTERNET permission, metadata online toggles/actions and transport in a focused tested batch, while keeping local media scanning/playback and local artwork/sidecar options. Until removal is verified, do not trigger online requests or claim the shipped app is fully offline.
+
+### CI #270 update
+CI #270 (`45000255823`, commit `180d193`) compiled the offline-only permission/credential source and ran all 59 Android tests; 58 passed. One dock-collapse test sampled accessible bounds before its finite animation settled. The regression now waits for collapsed bounds. Next: run full CI against that test fix and check the release manifest/signature gate. No APK yet.

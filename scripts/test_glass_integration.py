@@ -40,7 +40,7 @@ class GlassIntegrationTest(unittest.TestCase):
         self.assertIn("scrollConnection = dockScroll", source)
         self.assertIn("glassEnabled && isGlassSupported()", source)
         self.assertIn("glassEnabled && isGlassSupported()", lab)
-        self.assertIn("Scrolling down collapses the accessible dock tab", test)
+        self.assertIn("expandedHomeBounds.height()", test)
 
 
 if __name__ == "__main__":

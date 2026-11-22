@@ -807,12 +807,10 @@ class PreviewUiAndroidTest {
                 val bounds = Rect().also { artworkTitle.getBoundsInScreen(it) }
                 assertTrue("$title clears the floating Glass dock: $bounds vs dock top $dockTop", bounds.bottom <= dockTop)
             }
-            val collapsedHome = awaitNode { it.contentDescription?.toString() == "Home" }
-            val collapsedHomeBounds = Rect().also(collapsedHome::getBoundsInScreen)
-            assertTrue(
-                "Scrolling down collapses the accessible dock tab",
-                collapsedHomeBounds.height() < expandedHomeBounds.height(),
-            )
+            awaitNode {
+                if (it.contentDescription?.toString() != "Home") return@awaitNode false
+                Rect().also(it::getBoundsInScreen).height() < expandedHomeBounds.height()
+            }
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
         }

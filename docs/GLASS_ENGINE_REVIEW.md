@@ -25,3 +25,6 @@ The dock should remain legible over busy artwork with an opaque contrast backing
 ## Earlier experiments
 
 Haze 2.1.0 was previously used for a dock/lab proof of concept. Its emulator screenshots and tests established only bounds/fallback behavior, not visual quality. The Haze dependencies and implementation are removed by the current Glass batch; historical CI notes in `DEVELOPMENT_LOG.md` remain as historical evidence, not current implementation claims.
+
+## CI and privacy status — 2026-11-22
+Glass compile fixes cleared CI #269 (`44999320588`): Android 15 instrumentation and normal unit/build/schema/privacy checks passed. CI #269 did not sign or publish an APK and its source predates the final no-network permission change. The latest `main` commit `180d193` removes INTERNET permission and release credential injection per the user's explicit offline-only direction; CI #270 is still verifying the merged manifest. Do not call this a phone-accepted or performance-verified engine. Next release candidate should be one signed batch APK only after #270 and release signature/privacy gates pass. The phone user has not inspected this Glass version yet; synthetic emulator screenshots do not measure CPH2531 appearance, frame time, thermal load or battery.
