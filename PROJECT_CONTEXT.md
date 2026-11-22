@@ -1,6 +1,6 @@
 ## Current implementation update — 2026-11-22
 
-User's latest instruction is to complete the integrated app and final efficiency review before producing one signed APK; do not make interim APKs or pause for routine phone checks. Latest committed main is `28169e1`; CI #238 / 44977098444 compiled and ran 53 Android tests. Track picker passed. The settings sheet now accounts for navigation-bar insets, but its test started gestures before entrance completed because display metrics and screen bounds differed in density; working-tree helper requires the heading in the top third first. Re-run full CI and confirm safe bounds/persistence. No APK, Reno10 acceptance or FPS claim.
+User's latest instruction is to complete the integrated app and final efficiency review before producing one signed APK; do not make interim APKs or pause for routine phone checks. Latest committed main is `9d58fed`; CI #239 / 44977605927 compiled and ran 53 Android tests. Track picker passed. The settings sheet accounts for navigation-bar insets, but its test still began before entrance finished because displayMetrics and accessibility bounds use different scales. Working tree now requires the heading inside a density-normalized top 100dp band. Re-run full CI and confirm safe bounds/persistence. No APK, Reno10 acceptance or FPS claim.
 
 ## Current implementation update — 2026-11-21
 

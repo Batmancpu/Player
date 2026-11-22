@@ -11,6 +11,9 @@
 ## 2026-11-22 — CI #238 modal-entry timing follow-up
 - CI #238 / 44977098444: 53 Android tests ran; the track picker passed. Only the Glass settings test failed, because y599 was treated as upper-half by a helper using `displayMetrics.heightPixels`, while accessibility coordinates use a different density scale. Its tree contained only the sheet heading during entry. The test now waits for the heading to be within the top third before scrolling. Re-run full CI and confirm the inset fix. No APK/device claim.
 
+## 2026-11-22 — CI #239 density-normalized sheet wait
+- CI #239 / 44977605927: 53 tests ran, track selection passed, and the same Manage-sheet transition still failed. The proportional height threshold remained too permissive because the two coordinate scales differ. Test now uses a fixed 100dp top band converted through display density; the in-flight heading was observed at y599, while the settled heading had previously appeared at y72. Next: inspect CI #240 for safe switch placement, state persistence and all downstream gates. No APK or device claim.
+
 This file is the durable, accumulating record of important user requests, product decisions, implementation history and unresolved actions. It is written for future AI agents to continue work without depending on a lost chat context.
 
 **Format:** decision-focused session summaries, not a verbatim export of every message. Preserve the meaning of user requests and reasons behind decisions. Never include private signing files, passwords, base64 secret values, API keys, tokens or other credentials.

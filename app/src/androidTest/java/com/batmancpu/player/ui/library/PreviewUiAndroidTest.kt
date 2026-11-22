@@ -148,10 +148,10 @@ class PreviewUiAndroidTest {
             if (it.text?.toString() != settingsHeading || !isInsideVisibleAppBounds(it)) return@awaitNode false
             val bounds = Rect()
             it.getBoundsInScreen(bounds)
-            // Accessibility bounds are reported in physical pixels while displayMetrics can
-            // vary by density in the emulator. Require the heading near the top so a sheet
-            // sliding up from the bottom cannot be mistaken for a settled, scrollable sheet.
-            bounds.top < metrics.heightPixels / 3
+            // Accessibility screen bounds and displayMetrics.heightPixels can use different
+            // scales on the emulator. Compare against a dp-sized top band instead: a title
+            // still near the bottom during entrance cannot be mistaken for a settled sheet.
+            bounds.top < (100 * metrics.density).toInt()
         }
         repeat(12) {
             find {

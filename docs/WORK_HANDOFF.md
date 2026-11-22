@@ -9,7 +9,7 @@
 
 ## Verified repository state
 
-- Latest committed main SHA: `28169e1`. CI #238 / `44977098444` compiled and ran 53 Android tests; the picker selected-state case passed, but the Glass settings test found the sheet still entering (only the heading at y599 was in the accessibility tree). The existing helper compared that bound with half of displayMetrics, which used a different density scale; working tree now requires the heading in the top third before scrolling. The production `WindowInsets.navigationBars` adjustment compiled. Follow-up CI must verify safe switch bounds and preference persistence. CI #226 / `44969253993` passed 53 Android 15 tests, JVM/build, Room schema 1–4 and privacy checks. Synthetic screenshots do not prove Reno10 playback/performance. README concept art is explicitly not an app screenshot.
+- Latest committed main SHA: `9d58fed`. CI #239 / `44977605927` compiled and ran 53 Android tests; track picker passed. The Manage sheet still exposed only its heading at accessibility y599 during attempted scrolling. Proportional checks against `displayMetrics.heightPixels` use a mismatched scale; the working-tree test now waits for the heading inside a density-normalized top 100dp band. The navigation-inset code compiles; switch safe-bound/persistence verification still awaits CI. CI #226 / `44969253993` passed 53 Android 15 tests, JVM/build, Room schema 1–4 and privacy checks. Synthetic screenshots do not prove Reno10 playback/performance. README concept art is explicitly not an app screenshot.
 - User reported OPPO v0.1.79 recognized four videos with years, retained the catalogue after airplane-mode restart, and switched folders successfully. That report is not validation of the newer catalogue/player/Glass implementation.
 - Latest release recorded in project history is signed v0.1.174. It is an older progress checkpoint, not the integrated candidate. Current signing identity and package must remain intact.
 
@@ -19,7 +19,7 @@ A Compose-owned transport in `LocalPlayerScreen.kt` replaces generic PlayerView 
 
 ## Exact next actions
 
-1. Commit the settled-sheet test wait with records and inspect full CI; confirm Manage switch safe bounds/persistence, plus build/schema/privacy gates.
+1. Commit the density-normalized sheet wait with records and inspect full CI; confirm Manage switch safe bounds/persistence, plus build/schema/privacy gates.
 2. Continue the integrated backlog in coherent batches: complete catalogue/detail behavior, player interaction/accessibility, production Glass/navigation, Macrobenchmark/Perfetto and final license/privacy/size/efficiency review. Do not make interim APKs.
 3. Publish one higher-version signed Release after integrated implementation and automated efficiency checks. Provide the concise OPPO checklist then. Real handset acceptance and measured Reno10 frame-time/thermal/battery remain pending; CI cannot establish them.
 

@@ -7,6 +7,7 @@ A risk is not a confirmed defect. Record evidence, confidence and status precise
 - Affected: synthetic Android 15 CI only; no user device reproduction. Fix/regression status: pending CI. Next: inspect Android accessibility tree on failure, then validate all CI gates. No APK or device claim.
 - CI #237 confirmed the picker state fix. The sole remaining test failure exposed that the Liquid Glass switch was below the 32dp safe-bottom boundary (bounds y528–576; boundary y544) in the compact 320×640 settings sheet. The scroll container had only a 28dp content tail and did not account for system navigation insets. Added `WindowInsets.navigationBars` before vertical scrolling. This production fix is pending CI; no OPPO reproduction or APK.
 - CI #238 still failed the Glass-settings test, now on modal entrance: only the heading at y599 was exposed, but `displayMetrics.heightPixels / 2` was a loose threshold compared with the accessibility coordinate scale. Tightened the helper to wait until the heading is above one-third of the reported viewport. Product insets code compiled; selected track test passed. Re-run pending.
+- CI #239 showed a top-third comparison against `heightPixels` still admitted y599 due to the same scale mismatch. The helper now compares accessibility top bounds against `100dp * density`, which separates the observed unsettled y599 from the previously settled y72. This is synthetic-test timing, not a production defect. CI #240 will validate the threshold and insets fix.
 
 ## Historical device incidents
 
