@@ -93,9 +93,14 @@ class PreviewUiAndroidTest {
     private fun isInsideVisibleAppBounds(node: AccessibilityNodeInfo): Boolean {
         val bounds = Rect()
         node.getBoundsInScreen(bounds)
-        val safeBottom = context.resources.displayMetrics.heightPixels -
-            (32 * context.resources.displayMetrics.density).toInt()
-        return bounds.width() > 0 && bounds.height() > 0 && bounds.top >= 0 && bounds.bottom <= safeBottom
+        val screen = activeScreenBounds()
+        val safeBottom = screen.bottom - maxOf(24, screen.height() / 20)
+        return bounds.width() > 0 && bounds.height() > 0 && bounds.top >= screen.top && bounds.bottom <= safeBottom
+    }
+
+    /** Accessibility bounds and DisplayMetrics used different scales in CI; stay in one coordinate space. */
+    private fun activeScreenBounds(): Rect = Rect().also { bounds ->
+        automation.rootInActiveWindow?.getBoundsInScreen(bounds)
     }
 
     private fun text(value: String) = awaitNode {
@@ -200,11 +205,12 @@ class PreviewUiAndroidTest {
 
     private fun swipeUpFromVisibleSheetText(): Boolean {
         val root = automation.rootInActiveWindow ?: return false
-        val metrics = context.resources.displayMetrics
-        val safeTop = metrics.heightPixels / 3
+        val screen = activeScreenBounds()
+        if (screen.isEmpty) return false
+        val safeTop = screen.top + screen.height() / 3
         // Stay clear of Android's bottom gesture/navigation region: an upward swipe there can
         // leave the app and make a sheet-scroll test look like a product dismissal bug.
-        val safeBottom = metrics.heightPixels - (64 * metrics.density).toInt()
+        val safeBottom = screen.bottom - maxOf(24, screen.height() / 20)
         val candidates = mutableListOf<Pair<Rect, AccessibilityNodeInfo>>()
         fun visit(node: AccessibilityNodeInfo) {
             val bounds = Rect()
@@ -218,8 +224,8 @@ class PreviewUiAndroidTest {
         // Anchor the gesture to the actual modal sheet, then stay clear of both its drag
         // handle and Android's bottom Home gesture area.
         val handleBounds = Rect()
-        find { it.contentDescription?.toString() == "Close sheet" }?.getBoundsInScreen(handleBounds)
-        val sheetContentTop = maxOf(safeTop, handleBounds.bottom + (24 * metrics.density).toInt())
+        find { it.contentDescription?.toString() == "Drag handle" }?.getBoundsInScreen(handleBounds)
+        val sheetContentTop = maxOf(safeTop, handleBounds.bottom + maxOf(16, screen.height() / 40))
         val target = candidates
             .filter { it.first.centerY() in sheetContentTop..safeBottom }
             .maxByOrNull { it.first.bottom }
@@ -227,10 +233,10 @@ class PreviewUiAndroidTest {
             // LazyColumn may keep offscreen virtual descendants in the accessibility tree. If
             // none are currently safe to anchor on, swipe inside the known bottom-sheet body.
             if (handleBounds.isEmpty || handleBounds.bottom >= safeBottom) return false
-            val startY = (safeBottom - (36 * metrics.density).toInt()).coerceAtLeast(sheetContentTop + 1)
-            val endY = (startY - (260 * metrics.density).toInt()).coerceAtLeast(sheetContentTop + (48 * metrics.density).toInt())
+            val startY = (safeBottom - maxOf(24, screen.height() / 18)).coerceAtLeast(sheetContentTop + 1)
+            val endY = (startY - screen.height() / 3).coerceAtLeast(sheetContentTop + maxOf(32, screen.height() / 12))
             if (endY >= startY) return false
-            val centerX = metrics.widthPixels / 2
+            val centerX = screen.centerX()
             ParcelFileDescriptor.AutoCloseInputStream(
                 automation.executeShellCommand("input swipe $centerX $startY $centerX $endY 300"),
             ).use { it.readBytes() }
@@ -238,8 +244,7 @@ class PreviewUiAndroidTest {
         }
         val fromX = target.first.centerX()
         val fromY = target.first.centerY().coerceAtMost(safeBottom)
-        val distance = (180 * metrics.density).toInt()
-        val toY = (fromY - distance).coerceAtLeast(safeTop)
+        val toY = (fromY - screen.height() / 3).coerceAtLeast(safeTop)
         if (toY >= fromY) return false
         ParcelFileDescriptor.AutoCloseInputStream(
             automation.executeShellCommand("input swipe $fromX $fromY $fromX $toY 300"),
