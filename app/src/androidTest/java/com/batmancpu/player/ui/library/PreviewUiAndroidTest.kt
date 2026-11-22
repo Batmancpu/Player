@@ -143,6 +143,10 @@ class PreviewUiAndroidTest {
     }
 
     private fun revealGlassSetting() {
+        val settingsHeading = context.getString(com.batmancpu.player.R.string.catalogue_settings)
+        awaitNode {
+            it.text?.toString() == settingsHeading && isInsideVisibleAppBounds(it)
+        }
         val visibleSwitch = {
             find {
                 it.contentDescription?.toString()?.startsWith("Liquid Glass effects,") == true &&

@@ -635,3 +635,5 @@ CI #209 stopped before Android tests because the new poster accessibility descri
 ## 2026-11-21 — CI #216 exposed Manage-sheet reveal regression
 - Transport compiled and all nine local-player tests passed. Android 15 total was 51/52; the existing Glass preference persistence test could not reveal the toggle after activity recreation. The active accessibility snapshot showed only the top Manage actions.
 - Changed the settings sheet to start expanded and strengthened its test to require a visible control, with accessibility scroll and safe swipe fallback. Updated R-036 and current handoff. `git diff --check` passes; CI pending. Next: push and verify all 52 Android 15 tests plus build/privacy/schema gates.
+## 2026-11-22 — CI #218 sheet-entry timing diagnosis
+- CI #218 compiled the app and reached all 52 Android tests. The settings test failed before scrolling because it acted during the full-height sheet's entrance; active accessibility tree only contained “Close sheet.” Wait for the localized settings heading and visible bounds before gestures. Product control remains required to be revealed. Next: push correction and verify the full suite.
