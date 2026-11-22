@@ -527,3 +527,6 @@ Title details previously mixed missing publisher credential with missing local c
 
 ## 2026-11-22 — Latest metadata follow-up
 Current remote main remains `0eb7e3f`; CI #256 (`44990549563`) compiled and ran 58 Android 15 tests, 57 passed. One test failed because the About row was offscreen after scrolling the same activity; the test now relaunches between states and opens About before the scroll. Local pending changes also clarify the missing publisher key versus user consent and add a keyless details regression. Local diff check, 7 Python checks and edited XML parses pass. Next is main-only push and full CI #257. No APK produced; do not publish until the whole batch is green and a publisher credential exists.
+
+## 2026-11-22 — CI #257 result
+Main commit `b6a08d6` compiled production and androidTest sources; 58/59 Android 15 tests passed. The new keyless-details regression raced the details modal entrance/lazy content and saw only its Close control. The local fix adds the adjacent test's finite screenshot transition-settle before querying sheet contents. Next: main push and CI #258. No APK or later JVM/schema/privacy/signing gates ran.

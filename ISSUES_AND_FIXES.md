@@ -696,3 +696,8 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 - Evidence: CI #256 / 44990549563 ran 58 Android 15 tests; 57 passed. The sole failure reused a scrolled activity for two different settings states and attempted an offscreen About row.
 - Fix under test: relaunch between states; exercise About before scrolling the status copy. Product detail states also now separate missing publisher key from disabled consent, avoiding a personal-key prompt/dead-end action. Added a keyless-details regression.
 - Verification: local Python/XML/diff checks pass; next full GitHub Actions run required. No APK/Release.
+
+## 2026-11-22 — R-050 Keyless-detail assertion raced modal entrance
+- Evidence: CI #257 / 44991307788 ran 59 Android 15 tests; 58 passed. The newly added keyless-details regression could not reveal the long message because the bottom-sheet entrance/lazy content had not settled; accessibility showed only the Close action.
+- Fix under test: use the neighboring details test's bounded screenshot transition settle before querying/scrolling modal content.
+- Verification: CI #258 required. No APK/Release.

@@ -230,3 +230,6 @@ The first visible-card change is pushed on `main` as `4fcb20b`; lifecycle/suppre
 
 ## Metadata setup clarity follow-up — 2026-11-22 (unverified)
 Local UI copy now separates missing publisher credential from viewer consent. A keyless build explains that users do not need a personal key/account and does not offer a dead-end settings button; only a key-configured build with consent off links to privacy settings. Old personal token-entry resource strings are removed. CI #256 was already running on earlier source, so this change still needs Android UI/privacy CI before release.
+
+## CI #257 test timing follow-up — 2026-11-22
+CI #257 (`44991307788`) compiled app/test sources; 58/59 Android 15 tests passed. The new keyless-details UI regression ran before its bottom-sheet entrance/lazy content settled, so accessibility exposed only Close. The test now waits through the existing bounded screenshot settle before reading/scanning sheet contents. This is local/unverified; next is full CI #258. No APK or downstream gate ran.

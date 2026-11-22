@@ -688,6 +688,8 @@ class PreviewUiAndroidTest {
                 }
             }
             clickTitleCard("Aurora")
+            // Wait for the modal entrance to finish before querying its lazy content.
+            screenshot("metadata-keyless-details")
             revealByScrolling("Player’s shared TMDB access is not included in this build yet. You do not need to connect a personal account or add a key; your library remains available offline.")
             assertNull("A keyless release cannot be repaired through a personal token screen", find {
                 it.text?.toString() == "Metadata privacy settings"
