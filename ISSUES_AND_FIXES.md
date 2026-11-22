@@ -631,3 +631,7 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 ## 2026-11-22 — CI #235 wrong-thread assertion and modal visibility
 - 51/53 tests passed. The Media3 parameter assertion must run on the Player application thread; fixed with `runOnMainSync`.
 - Glass settings test assumed an offscreen switch was visible. It now scrolls the modal to the actual visible switch. Movies-destination poster geometry passed. CI #236 pending.
+
+## 2026-11-22 — CI #245 caption range semantics and compact reset reachability
+- CI #243 passed 54/55; the caption size label lacked range info. CI #244 failed compilation due to a missing Compose extension import. CI #245 compiled, then passed 53/55; explicit range semantics still appeared separately from the label, and one existing metadata test looked for its confirmation without scrolling.
+- CI artifact `caption-settings.png` at 320×640 showed Reset below the usable viewport. The working tree now defines one `clearAndSetSemantics` node per slider (label, range, `setProgress`), scrolls the caption sheet within navigation insets, tests reaching Reset, and reveals the metadata confirmation through the scroll helper. Next full run pending; no APK has been produced for this batch.

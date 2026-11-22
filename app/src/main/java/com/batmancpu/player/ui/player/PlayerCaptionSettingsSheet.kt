@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.material3.MaterialTheme
@@ -22,8 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.progressBarRangeInfo
-import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.setProgress
 import androidx.compose.ui.unit.dp
 import com.batmancpu.player.R
 import com.batmancpu.player.ui.glass.PlayerUiSettingsStore
@@ -51,6 +54,7 @@ internal fun PlayerCaptionSettingsSheet(
         Column(
             Modifier.fillMaxWidth()
                 .windowInsetsPadding(WindowInsets.navigationBars)
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp)
                 .padding(bottom = 24.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -67,9 +71,16 @@ internal fun PlayerCaptionSettingsSheet(
                 },
                 onValueChangeFinished = { onTextSizeChangeFinished(currentTextSize) },
                 valueRange = CAPTION_TEXT_SIZE_RANGE,
-                modifier = Modifier.semantics(mergeDescendants = true) {
+                modifier = Modifier.clearAndSetSemantics {
                     contentDescription = textSizeLabel
                     progressBarRangeInfo = ProgressBarRangeInfo(currentTextSize, CAPTION_TEXT_SIZE_RANGE)
+                    setProgress { requested ->
+                        val value = requested.coerceIn(CAPTION_TEXT_SIZE_RANGE.start, CAPTION_TEXT_SIZE_RANGE.endInclusive)
+                        currentTextSize = value
+                        onTextSizeChange(value)
+                        onTextSizeChangeFinished(value)
+                        true
+                    }
                 },
             )
 
@@ -82,9 +93,16 @@ internal fun PlayerCaptionSettingsSheet(
                 },
                 onValueChangeFinished = { onBottomPaddingChangeFinished(currentBottomPadding) },
                 valueRange = CAPTION_BOTTOM_PADDING_RANGE,
-                modifier = Modifier.semantics(mergeDescendants = true) {
+                modifier = Modifier.clearAndSetSemantics {
                     contentDescription = positionLabel
                     progressBarRangeInfo = ProgressBarRangeInfo(currentBottomPadding, CAPTION_BOTTOM_PADDING_RANGE)
+                    setProgress { requested ->
+                        val value = requested.coerceIn(CAPTION_BOTTOM_PADDING_RANGE.start, CAPTION_BOTTOM_PADDING_RANGE.endInclusive)
+                        currentBottomPadding = value
+                        onBottomPaddingChange(value)
+                        onBottomPaddingChangeFinished(value)
+                        true
+                    }
                 },
             )
 

@@ -31,7 +31,7 @@ Apple: https://developer.apple.com/documentation/technologyoverviews/liquid-glas
 
 ## Subtitle viewport and controls
 - Keep Media3 `SubtitleView` as a sibling of `AspectRatioFrameLayout`, so Fit/Fill/Zoom changes only the video. Caption size and vertical placement adjust the independent subtitle viewport; never transform captions together with the video crop.
-- The current caption batch uses bounded fractional text-size/bottom-spacing sliders with local persistence, a reset action and accessible values. Keep the controls in a transient sheet, preserve the same behavior with Glass disabled, and pause player chrome auto-hide while editing. No target-device legibility or performance claim until tested on CPH2531.
+- The current caption batch uses bounded fractional text-size/bottom-spacing sliders with local persistence, a reset action and accessible range/set-progress semantics. Keep the controls in a transient, vertically scrollable sheet with navigation insets so Reset remains reachable on compact displays; preserve behavior with Glass disabled and pause player chrome auto-hide while editing. CI #245 found the range on a different accessibility node and Reset offscreen at 320×640; corrections are pending CI. No target-device legibility or performance claim until tested on CPH2531.
 
 ## Implementation: Haze 2.1.0 and render rules
 - Existing `PlayerGlass.kt` and `GlassLabScreen.kt` are **experiments**, not production acceptance. Begin with source-backed `hazeSource` + `HazeInput.Sources`, `GlassStyle.regular` or existing Clear option and `HazePerformanceMode.Default` (Balanced). Profile before tuning to Quality/Performance; preserve user-selectable effects-off mode.

@@ -563,3 +563,7 @@ When the unfiltered library is open, movie titles and series now appear in separ
 ## 2026-11-22 — Import Compose slider range semantics explicitly
 - CI #244 / 44981445066 stopped at app compilation because `progressBarRangeInfo` is an extension property and its import was missing. Added the explicit Compose semantics import; no tests ran and no APK was produced. Local XML and whitespace checks pass.
 - Next: push the compile correction and inspect the full CI #245 run; then rerun/fix until caption accessibility and every downstream gate pass.
+
+## 2026-11-22 — Bind caption labels/actions and keep reset reachable
+- CI #245 / 44981754235 compiled and ran 55 Android 15 tests; 53 passed. Caption size still exposed its label without adjustable range on the same Android node. Replaced wrapper semantics with one explicit clear-and-set label/range/set-progress contract; both size and position commit accessible changes. The captured 320×640 caption sheet also put Reset below the visible viewport, so the sheet now scrolls and its test reveals Reset above navigation gestures before activating it. A metadata confirmation test also assumed its long-list action was already visible; it now scrolls the visible detail sheet to that action.
+- Next: push and run all instrumentation, build, Room and privacy checks. Do not issue the batch APK until the corrected caption semantics, reset reachability and suite pass.
