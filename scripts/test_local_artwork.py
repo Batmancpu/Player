@@ -13,7 +13,7 @@ class LocalArtworkContractTest(unittest.TestCase):
         self.assertIn("isChildDocument", source)
         self.assertIn("readSafCursor", source)
         self.assertIn("LocalArtworkMatcher.choose", source)
-        self.assertIn("LocalArtworkResolver(context, Uri.parse(folder.tree))", screen)
+        self.assertIn("LocalArtworkResolver.create(context, folder.tree)", screen)
         self.assertNotRegex(source, r"(?i)https?://")
         self.assertNotIn("openOutputStream", source)
         self.assertNotIn("deleteDocument", source)

@@ -64,3 +64,6 @@ The Glass/offline batch is published as [brrPlayer v0.1.272](https://github.com/
 
 ### Next batch — local artwork (pending CI)
 New `LocalArtworkResolver.kt` performs lazy, read-only lookup of exact-title and safe generic JPG/JPEG/PNG/WebP images beside local media in the selected SAF parent. It validates the persisted tree grant and ancestry, uses bounded cancellation-aware cursor reads, and keeps a small per-screen cache. Matcher JUnit/Python contracts are added and the library's cards/hero now prefer local art. This work is uncommitted to the live GitHub main at this handoff point and has only 19 passing local Python tests plus whitespace checks; no Android compile/instrumentation yet and no APK. Next: commit on main, inspect full CI, repair failures, then one signed APK only after the substantial local-art batch is green.
+
+### Local artwork CI #274 correction pending verification
+CI #274 compiled source, then 7 Android synthetic UI tests failed because their placeholder `synthetic-tree` string is not a DocumentsContract tree URI. A guarded `LocalArtworkResolver.create` now returns null for invalid/non-tree/unsupported-authority fixture values; screen cards fall back to original placeholder visuals. 19 Python tests and diff checks pass. Next: CI #275; inspect compile, unit/JVM matcher and Android suite. This feature remains unreleased.

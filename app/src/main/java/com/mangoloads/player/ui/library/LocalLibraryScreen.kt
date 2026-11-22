@@ -190,7 +190,7 @@ internal fun LocalLibraryContent(
     val selected = titles.firstOrNull { it.key == selectedKey }
     val context = LocalContext.current
     val localArtworkResolver = remember(context, folder.tree) {
-        LocalArtworkResolver(context, Uri.parse(folder.tree))
+        LocalArtworkResolver.create(context, folder.tree)
     }
     val uiSettings = remember(context) { PlayerUiSettingsStore(context) }
     var glassEnabled by rememberSaveable { mutableStateOf(uiSettings.glassEnabled()) }
@@ -698,7 +698,7 @@ private fun LocalTitleCard(
     title: LocalTitle,
     cachedMetadataByDocumentId: Map<String, CachedTmdbMetadata>,
     artworkCache: TmdbArtworkCache?,
-    localArtworkResolver: LocalArtworkResolver,
+    localArtworkResolver: LocalArtworkResolver?,
     posterRefreshKey: File?,
     onVisible: (String, LocalTitle) -> Unit,
     onHidden: (String, String) -> Unit,
@@ -727,7 +727,7 @@ private fun LocalTitleCard(
             .distinctBy { it.tmdbId to it.mediaType }.singleOrNull()
     }
     var localArtwork by remember(tree, title.key) { mutableStateOf<Uri?>(null) }
-    LaunchedEffect(tree, title.key) { localArtwork = localArtworkResolver.find(title) }
+    LaunchedEffect(tree, title.key) { localArtwork = localArtworkResolver?.find(title) }
     var posterFile by remember(title.key, metadata?.posterPath) { mutableStateOf<File?>(null) }
     LaunchedEffect(metadata?.posterPath, posterRefreshKey) {
         posterFile = if (metadata?.posterPath != null && artworkCache != null) {
@@ -791,7 +791,7 @@ private fun CatalogueFeatureHero(
     title: LocalTitle,
     cachedMetadataByDocumentId: Map<String, CachedTmdbMetadata>,
     artworkCache: TmdbArtworkCache?,
-    localArtworkResolver: LocalArtworkResolver,
+    localArtworkResolver: LocalArtworkResolver?,
     posterRefreshKey: File?,
     onPlay: () -> Unit,
     onDetails: () -> Unit,
@@ -801,7 +801,7 @@ private fun CatalogueFeatureHero(
             .distinctBy { it.tmdbId to it.mediaType }.singleOrNull()
     }
     var localArtwork by remember(title.key) { mutableStateOf<Uri?>(null) }
-    LaunchedEffect(title.key) { localArtwork = localArtworkResolver.find(title) }
+    LaunchedEffect(title.key) { localArtwork = localArtworkResolver?.find(title) }
     var backdrop by remember(title.key, metadata?.backdropPath) { mutableStateOf<File?>(null) }
     LaunchedEffect(metadata?.backdropPath, posterRefreshKey) {
         backdrop = metadata?.backdropPath?.let { path -> artworkCache?.cached(path, TmdbImageSize.BACKDROP) }
@@ -879,7 +879,7 @@ private fun CatalogueShelf(
     titles: List<LocalTitle>,
     cachedMetadataByDocumentId: Map<String, CachedTmdbMetadata>,
     artworkCache: TmdbArtworkCache?,
-    localArtworkResolver: LocalArtworkResolver,
+    localArtworkResolver: LocalArtworkResolver?,
     posterRefreshKey: File?,
     onCatalogueTitleVisible: (String, LocalTitle) -> Unit,
     onCatalogueTitleHidden: (String, String) -> Unit,

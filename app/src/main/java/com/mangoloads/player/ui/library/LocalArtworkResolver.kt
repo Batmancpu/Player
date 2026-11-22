@@ -63,7 +63,7 @@ internal object LocalArtworkMatcher {
  * bytes or adding images to the persistent media index. Directory listings are
  * bounded and cached briefly for this screen instance only.
  */
-internal class LocalArtworkResolver(
+internal class LocalArtworkResolver private constructor(
     context: Context,
     private val treeUri: Uri,
 ) {
@@ -73,6 +73,15 @@ internal class LocalArtworkResolver(
     private val rootUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, rootId)
     private val gate = Mutex()
     private val siblingCache = LinkedHashMap<String, List<LocalArtworkCandidate>>(16, .75f, true)
+
+    companion object {
+        fun create(context: Context, tree: String): LocalArtworkResolver? = runCatching {
+            val uri = Uri.parse(tree)
+            if (!DocumentsContract.isTreeUri(uri) ||
+                uri.authority != "com.android.externalstorage.documents") return null
+            LocalArtworkResolver(context, uri)
+        }.getOrNull()
+    }
 
     suspend fun find(title: LocalTitle): Uri? {
         if (!DocumentsContract.isTreeUri(treeUri) ||
