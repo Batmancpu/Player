@@ -1459,3 +1459,8 @@ CI #209 / 44958254084 failed Kotlin compilation at `LocalLibraryScreen.kt:601`: 
 - Implemented the Home feature hero using existing `LocalTitle`, Media3 local-play route, detail sheet and `TmdbArtworkCache.cached` lookup. It does not fetch artwork from the network on browsing; absence uses a deterministic local gradient/initial. Added Android UI assertions that the hero label and Play video action exist and invoke the first indexed document.
 - Updated README, architecture, roadmap and handoff to describe actual scope and pending evidence. Local `git diff --check` passes; no Android SDK or Gradle wrapper is available locally. CI is required to validate Kotlin/API compatibility and UI behavior.
 - Next: run the combined fix/hero through CI, inspect test report and captures, repair any failures, then continue feature batches. Preserve the one-final-APK plan; no Reno10 performance or acceptance claim.
+
+## 2026-11-22 — Fix hero test compilation
+- CI #229 / 44971780524 confirmed the main app source, including the track-picker semantics correction and catalogue hero, compiled. The Android test task then stopped because the new test called `awaitText`, which is absent from `PreviewUiAndroidTest`. Replaced it with the existing `text()` helper, which performs a bounded wait and includes an accessibility snapshot on timeout.
+- The Android UI suite did not execute, and downstream unit/build/schema/privacy jobs were skipped after the instrumentation task failed. No product runtime failure was observed.
+- Next: run the full workflow with this test-only correction; inspect Android test outcome and screenshots, then continue app work.

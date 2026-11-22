@@ -9,7 +9,7 @@
 
 ## Verified repository state
 
-- Latest committed main SHA: `35e574d` corrects the audio/subtitle picker accessibility action. CI #228 / `44971068059` exposed a Kotlin compile error: `role` cannot be assigned in `clearAndSetSemantics` with the pinned Compose version. The source now preserves the `selectable` radio role and adds label, selected/state description and explicit activation through merged `semantics`; CI after this correction is pending. The same working tree adds a cached-artwork-only catalogue feature hero, with play/details actions and no browsing-time network fetch; its instrumentation coverage is pending. CI #226 / `44969253993` passed 53 Android 15 tests, JVM/build, Room schema 1–4 and privacy checks. Synthetic video screenshots do not prove decoder or device performance. README concept art is explicitly not an app screenshot.
+- Latest committed main SHA: `fba37e1` corrects the audio/subtitle picker accessibility action and adds a cached-artwork Home feature hero. CI #229 / `44971780524` compiled production source but Android test compilation stopped because the new hero test called a nonexistent `awaitText`. The test now uses the class-local bounded `text()` helper; rerun is pending. CI #226 / `44969253993` passed 53 Android 15 tests, JVM/build, Room schema 1–4 and privacy checks. Synthetic video screenshots do not prove decoder or device performance. README concept art is explicitly not an app screenshot. CI #226 / `44969253993` passed 53 Android 15 tests, JVM/build, Room schema 1–4 and privacy checks. Synthetic video screenshots do not prove decoder or device performance. README concept art is explicitly not an app screenshot.
 - User reported OPPO v0.1.79 recognized four videos with years, retained the catalogue after airplane-mode restart, and switched folders successfully. That report is not validation of the newer catalogue/player/Glass implementation.
 - Latest release recorded in project history is signed v0.1.174. It is an older progress checkpoint, not the integrated candidate. Current signing identity and package must remain intact.
 
@@ -19,7 +19,7 @@ A Compose-owned transport in `LocalPlayerScreen.kt` replaces generic PlayerView 
 
 ## Exact next actions
 
-1. Commit the corrected accessibility semantics and catalogue feature hero with required records; inspect Android 15 tests, screenshots and all build/schema/privacy gates.
+1. Commit the UI-test helper correction and records; rerun CI and inspect Android 15 tests, screenshots and all build/schema/privacy gates.
 2. Continue the integrated backlog in coherent batches: complete catalogue/detail behavior, player interaction/accessibility, production Glass/navigation, Macrobenchmark/Perfetto and final license/privacy/size/efficiency review. Do not make interim APKs.
 3. Publish one higher-version signed Release after integrated implementation and automated efficiency checks. Provide the concise OPPO checklist then. Real handset acceptance and measured Reno10 frame-time/thermal/battery remain pending; CI cannot establish them.
 

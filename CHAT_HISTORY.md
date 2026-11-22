@@ -649,3 +649,5 @@ CI #209 stopped before Android tests because the new poster accessibility descri
 
 ## 2026-11-22 continuation — Home hero and picker regression
 CI #228 found the last picker accessibility adjustment did not compile because the pinned Compose API rejects setting `role` inside `clearAndSetSemantics`. Current source retains `selectable` radio semantics and merges the accessible label/selected state/activation. A Home hero was added with local Play/Details actions and cached-artwork-only rendering. The UI test covers the hero action; all code/tests are pending CI. The correction and feature are documented in AGENTS.md, DEVELOPMENT_LOG.md, roadmap and handoff. Continue implementation; user wants one APK after integrated feature completion and final efficiency review.
+
+CI #229 compiled production Kotlin, then stopped at Android test compilation: Home hero test referenced undefined `awaitText`. Replaced it with existing `text()` bounded node helper. No runtime tests ran; next CI is pending.

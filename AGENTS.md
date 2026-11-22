@@ -508,3 +508,8 @@ When the unfiltered library is open, movie titles and series now appear in separ
 - Added a Home feature hero for the first local movie/show. It uses only cached app-private backdrop artwork, otherwise a deterministic gradient; Play resolves to the first indexed local document and Details opens its existing page. Added Android UI coverage for hero visibility/action. No new permission, request, or source write.
 - Local verification: `git diff --check` passes. Android SDK/wrapper are not available in this workspace; this code and tests are pending CI.
 - Next: inspect CI compile, all Android tests, synthetic captures, build/schema/privacy gates. Continue integrated player/Glass/performance work; no interim APK.
+
+## 2026-11-22 — Correct hero instrumentation helper
+- CI #229 / 44971780524 compiled app source successfully; Android test compilation failed because the new Home hero assertion called an undefined `awaitText` helper in `PreviewUiAndroidTest`. Replaced it with the class-local bounded `text()` helper.
+- `git diff --check` and resource XML parse pass; Android UI rerun pending.
+- Next: push this test-only correction with updated records; inspect full CI and captures before continuing the next implementation batch.

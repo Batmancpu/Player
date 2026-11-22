@@ -681,7 +681,7 @@ class PreviewUiAndroidTest {
                     }
                 }
             }
-            assertTrue("The local feature hero is visible", awaitText("FROM YOUR LIBRARY", true))
+            text("FROM YOUR LIBRARY")
             val featurePlay = text("Play video")
             assertTrue("Feature hero exposes a play action", featurePlay.isClickable)
             click(featurePlay)

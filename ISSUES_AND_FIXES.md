@@ -589,3 +589,7 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 - CI #227 found missing click semantics on the track option; CI #228 found `role` could not be assigned in `clearAndSetSemantics` using the pinned Compose version.
 - Corrective implementation now lets `selectable` own the RadioButton role and adds merged `semantics` with label, selection state and explicit click. Android CI result pending.
 - No app storage, playback policy, network or permissions changed.
+
+## 2026-11-22 — Fix Home hero test helper reference
+- CI #229 compiled product sources, but `PreviewUiAndroidTest` did not compile because `awaitText` is not defined in that class.
+- Use its existing bounded `text()` accessibility helper for the hero label; full validation is pending.
