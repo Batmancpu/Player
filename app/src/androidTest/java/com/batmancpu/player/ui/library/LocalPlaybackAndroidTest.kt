@@ -188,15 +188,16 @@ class LocalPlaybackAndroidTest {
             assertTrue("Synthetic video should begin before the auto-hide check", playbackStarted.await(15, TimeUnit.SECONDS))
             captureSyntheticScreenshot("player-controls")
             assertTrue("Header should auto-hide during active playback", awaitText("Synthetic feature", false, 8_000))
-            val metrics = context.resources.displayMetrics
-            ParcelFileDescriptor.AutoCloseInputStream(
-                automation.executeShellCommand("input tap ${metrics.widthPixels / 2} ${metrics.heightPixels / 2}"),
-            ).use { it.readBytes() }
+            val videoSurface = awaitNode {
+                it.contentDescription?.toString() == context.getString(com.batmancpu.player.R.string.player_video_surface)
+            }
+            assertTrue("Video surface exposes an accessible tap action", videoSurface.isClickable)
+            assertTrue("Activating the video surface restores player controls", videoSurface.performAction(AccessibilityNodeInfo.ACTION_CLICK))
             assertTrue("Touching the video restores the header", awaitText("Synthetic feature", true, 4_000))
             assertTrue("Full-screen action is reachable", awaitText("Full screen", true, 2_000))
             fun findLabel(current: AccessibilityNodeInfo?): AccessibilityNodeInfo? {
                 if (current == null) return null
-                if (current.text?.toString() == "Full screen") return current
+                if (current.text?.toString() == "Full screen" || current.contentDescription?.toString() == "Full screen") return current
                 for (index in 0 until current.childCount) findLabel(current.getChild(index))?.let { return it }
                 return null
             }

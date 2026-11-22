@@ -87,6 +87,7 @@
     <string name="catalogue_scan_started">Scan started. Your saved library stays available.</string>
     <string name="catalogue_scan_finished">Scan complete. Your library is up to date.</string>
     <string name="player_back">Back to library</string>
+    <string name="player_video_surface">Video surface</string>
     <string name="player_enter_fullscreen">Full screen</string>
     <string name="player_exit_fullscreen">Exit full screen</string>
     <string name="player_resize_fit">Fit</string>

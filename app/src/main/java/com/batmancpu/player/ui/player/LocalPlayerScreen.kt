@@ -1,15 +1,15 @@
 package com.batmancpu.player.ui.player
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -20,6 +20,8 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.batmancpu.player.R
+import com.batmancpu.player.ui.icons.PlayerGlyph
+import com.batmancpu.player.ui.icons.PlayerGlyphIcon
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.media3.common.PlaybackException
@@ -44,6 +46,7 @@ internal fun LocalPlayerScreen(
     onIsPlayingChanged: (Boolean) -> Unit = {},
 ) {
     val context = LocalContext.current
+    val videoSurfaceDescription = stringResource(R.string.player_video_surface)
     val checkpoint by rememberUpdatedState(onCheckpoint)
     val playingChanged by rememberUpdatedState(onIsPlayingChanged)
     var isPlaying by remember(target.uri) { mutableStateOf(false) }
@@ -62,6 +65,7 @@ internal fun LocalPlayerScreen(
             prepare()
         }
     }
+    val videoSurfaceInteraction = remember(player) { MutableInteractionSource() }
     var savedPlayIntent by remember(target.uri) { mutableStateOf(target.playWhenReady) }
     fun saveCurrentCheckpoint(playIntent: Boolean = player.playWhenReady) {
         val (position, effectivePlayIntent) = playbackResumeCheckpoint(
@@ -155,22 +159,26 @@ internal fun LocalPlayerScreen(
             },
             modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing),
         )
-        Box(Modifier.fillMaxSize().pointerInput(controlsVisible, chromeInteractionEpoch) {
-            detectTapGestures {
+        Box(
+            Modifier.fillMaxSize()
+                .clickable(
+                    interactionSource = videoSurfaceInteraction,
+                    indication = null,
+                    onClickLabel = videoSurfaceDescription,
+                ) {
                 if (!controlsVisible) {
                     controlsVisible = true
-                    chromeInteractionEpoch++
-                } else {
-                    chromeInteractionEpoch++
                 }
+                chromeInteractionEpoch++
             }
-        })
+            .semantics { contentDescription = videoSurfaceDescription },
+        )
         val audioTitle = stringResource(R.string.player_audio_tracks)
         val subtitleTitle = stringResource(R.string.player_subtitle_tracks)
         if (controlsVisible) Column(Modifier.align(Alignment.TopStart).fillMaxWidth().background(Color.Black.copy(alpha = .72f))
             .windowInsetsPadding(WindowInsets.statusBars).padding(horizontal = 8.dp, vertical = 4.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                TextButton(onClick = onClose) { Text(stringResource(R.string.player_back), color = Color.White) }
+                PlayerBackButton(onClick = onClose)
                 Text(target.label, color = Color.White, maxLines = 1, modifier = Modifier.weight(1f))
                 PlayerResizeButton(resizeMode) {
                     resizeMode = nextPlayerResizeMode(resizeMode)
@@ -317,7 +325,9 @@ internal fun formatPlaybackTime(positionMs: Long): String {
 @Composable
 internal fun PlayerFullscreenButton(isFullScreen: Boolean, onToggle: () -> Unit) {
     val label = stringResource(if (isFullScreen) R.string.player_exit_fullscreen else R.string.player_enter_fullscreen)
-    TextButton(onClick = onToggle, modifier = Modifier.semantics { contentDescription = label }) { Text(label, color = Color.White) }
+    IconButton(onClick = onToggle, modifier = Modifier.sizeIn(minWidth = 48.dp, minHeight = 48.dp).semantics { contentDescription = label }) {
+        PlayerGlyphIcon(if (isFullScreen) PlayerGlyph.FULLSCREEN_EXIT else PlayerGlyph.FULLSCREEN, null, tint = Color.White)
+    }
 }
 
 
@@ -337,8 +347,16 @@ internal fun PlayerResizeButton(resizeMode: Int, onNext: () -> Unit) {
         },
     )
     val description = stringResource(R.string.player_resize_description, label)
-    TextButton(onClick = onNext, modifier = Modifier.semantics { contentDescription = description }) {
-        Text(label, color = Color.White)
+    IconButton(onClick = onNext, modifier = Modifier.sizeIn(minWidth = 48.dp, minHeight = 48.dp).semantics { contentDescription = description }) {
+        PlayerGlyphIcon(PlayerGlyph.ASPECT_RATIO, null, tint = Color.White)
+    }
+}
+
+@Composable
+private fun PlayerBackButton(onClick: () -> Unit) {
+    val label = stringResource(R.string.player_back)
+    IconButton(onClick = onClick, modifier = Modifier.sizeIn(minWidth = 48.dp, minHeight = 48.dp).semantics { contentDescription = label }) {
+        PlayerGlyphIcon(PlayerGlyph.ARROW_BACK, null, tint = Color.White)
     }
 }
 

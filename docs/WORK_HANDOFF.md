@@ -9,7 +9,7 @@
 
 ## Verified repository state
 
-- Latest committed main SHA before current edits: `2998d2b4730c3497aba9ceac9ae9ba8cab2e0bff` (`fix(ui): keep Glass Lab content clear of dock`). CI #222 / `44967004412` ran 53 Android 15 tests: 52 passed, including Glass Lab content scrolling above the dock; one new cue test failed because it did not explicitly select the SRT sidecar. Current test selects the supported track and seeks to cue start; CI #223 pending. Unit/build/schema gates were skipped after the instrumentation failure.
+- Latest committed main SHA before current edits: `e13631f518a750518c7af50424c20129ce4175ab` (`test(player): select sidecar before cue assertion`). CI #223 / `44967664631` ran 53 Android 15 tests; SRT track selection/cue delivery passed; one overlay test failed because shell-injected touch did not restore controls. Current uncommitted source adds an accessible surface click and compact original icon buttons for Back, resize and fullscreen; CI #224 pending. Unit/build/schema gates were skipped after the instrumentation failure.
 - User reported OPPO v0.1.79 recognized four videos with years, retained the catalogue after airplane-mode restart, and switched folders successfully. That report is not validation of the newer catalogue/player/Glass implementation.
 - Latest release recorded in project history is signed v0.1.174. It is an older progress checkpoint, not the integrated candidate. Current signing identity and package must remain intact.
 
@@ -19,7 +19,7 @@ A Compose-owned transport in `LocalPlayerScreen.kt` replaces generic PlayerView 
 
 ## Exact next actions
 
-1. Commit the explicitly selected SRT cue assertion and updated CI failure evidence; verify full CI and inspect player/Glass Lab screenshots. Dock-clear scroll test already passed #222.
+1. Commit accessible control restoration and compact player header with current CI diagnosis; verify full CI and inspect player screenshot. Subtitle cue and Glass dock-clear tests passed Android jobs #222/#223.
 2. Continue the integrated app backlog in coherent batches: caption selection/visibility and local sidecars, player interaction/accessibility polish, Glass/navigation refinement, Macrobenchmark/Perfetto workflow, then release-size/security/dependency/efficiency review. User wants one signed APK after features and final efficiency review, not an interim APK.
 3. Publish one higher-version signed Release when implementation and automated gates are ready. Provide the concise OPPO checklist then. Real handset acceptance and measured Reno10 FPS/thermal/battery remain pending; CI cannot establish them.
 

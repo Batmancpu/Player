@@ -18,6 +18,10 @@ internal enum class PlayerGlyph(@DrawableRes val drawableRes: Int) {
     MOVIES(R.drawable.ic_player_movies),
     SHOWS(R.drawable.ic_player_shows),
     SEARCH(R.drawable.ic_player_search),
+    ARROW_BACK(R.drawable.ic_player_arrow_back),
+    ASPECT_RATIO(R.drawable.ic_player_aspect_ratio),
+    FULLSCREEN(R.drawable.ic_player_fullscreen),
+    FULLSCREEN_EXIT(R.drawable.ic_player_fullscreen_exit),
 }
 
 @Composable

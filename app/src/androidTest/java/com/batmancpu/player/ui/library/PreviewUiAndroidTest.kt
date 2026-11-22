@@ -296,11 +296,11 @@ class PreviewUiAndroidTest {
                     }
                 }
             }
-            click(text("Fit"))
+            click(awaitNode { it.contentDescription?.toString() == "Video scaling: Fit" })
             assertEquals(AspectRatioFrameLayout.RESIZE_MODE_FILL, mode.value)
-            click(text("Fill"))
+            click(awaitNode { it.contentDescription?.toString() == "Video scaling: Fill" })
             assertEquals(AspectRatioFrameLayout.RESIZE_MODE_ZOOM, mode.value)
-            click(text("Zoom"))
+            click(awaitNode { it.contentDescription?.toString() == "Video scaling: Zoom" })
             assertEquals(AspectRatioFrameLayout.RESIZE_MODE_FIT, mode.value)
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
