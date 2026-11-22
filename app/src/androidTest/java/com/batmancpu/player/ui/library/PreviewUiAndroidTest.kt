@@ -392,7 +392,7 @@ class PreviewUiAndroidTest {
             assertTrue("Subtitle height slider accepts accessible progress", positionControl.performAction(setProgressAction, args))
             assertEquals(0.075f, committedSize.get(), 0.001f)
             assertEquals(0.075f, committedPosition.get(), 0.001f)
-            val reset = revealByScrolling(context.getString(com.batmancpu.player.R.string.player_caption_reset))
+            val reset = text(context.getString(com.batmancpu.player.R.string.player_caption_reset))
             assertTrue("Caption reset remains reachable above the navigation area", isInsideVisibleAppBounds(reset))
             click(reset)
             assertEquals(com.batmancpu.player.ui.player.DEFAULT_CAPTION_TEXT_SIZE, textSize.floatValue, 0.0001f)
