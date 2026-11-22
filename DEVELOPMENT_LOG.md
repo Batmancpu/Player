@@ -1676,3 +1676,6 @@ Committed and pushed `51be014` (`release(test): integrate brrMusic glass dock`) 
 
 ### Handoff correction — CI run is executing against committed source
 Updated the active handoff to distinguish the pushed Glass commit from its still-pending CI/release result. No app source changed. Next: inspect run #263 and record its instrumentation, screenshot, signature and publication outcome.
+
+### Canonical design record supersession
+Updated the binding Glass policy and current architecture/design text to remove stale Haze-as-current statements. Haze results are now marked historical; D-038/brrMusic migration and CI #263 pending status are authoritative. No app source changed.

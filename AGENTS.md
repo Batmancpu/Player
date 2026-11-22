@@ -80,9 +80,9 @@ Use Apple's public Human Interface Guidelines as design guidance; do not copy pr
 
 ## Liquid Glass policy
 
-Haze 2.1.0 is the preferred candidate for a proof of concept, not yet an approved production dependency. Its Glass API became stable in 2.1.0; that release updates Kotlin to 2.4.21 and Compose Multiplatform to 1.12.2. Verify the exact Android build/toolchain compatibility before adopting it.
+Historical Haze evaluation; superseded by D-038. The user authorized brrMusic’s GPL-3.0 Glass integration and generic dock motion. Current source is pinned to `654aecdb7b2777363db3585d1f59f3952aabb603` and vendors Kyant0/backdrop 2.0.0 (Apache-2.0) with notices. Haze is not a current dependency.
 
-Compare the Haze implementation with the user's FC Zenith implementation and the vendored Kyant0 Backdrop engine. FC Zenith is a visual/performance reference, not a source file bundle to copy wholesale. Its glass integration depends on Zenith-specific composition locals, settings, player/navigation state, and vendored code.
+Use the inspected brrMusic source and pinned renderer as documented in `docs/GLASS_ENGINE_REVIEW.md`; do not import its music screens. Keep the keyboard-app reference strictly for launcher-icon inspiration; copy no keyboard code/assets.
 
 Keep expensive effects to a small number of important controls. Do not put a glass effect on every poster card. Do not use continuous per-frame pixel readback to compute contrast. Use deterministic scrims/tints or bounded, throttled sampling if necessary. Always provide an opaque/frosted fallback and accessibility controls for reduced transparency and reduced motion.
 
