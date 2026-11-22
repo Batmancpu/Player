@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.batmancpu.player.R
@@ -65,7 +66,10 @@ internal fun PlayerCaptionSettingsSheet(
                 },
                 onValueChangeFinished = { onTextSizeChangeFinished(currentTextSize) },
                 valueRange = CAPTION_TEXT_SIZE_RANGE,
-                modifier = Modifier.semantics { contentDescription = textSizeLabel },
+                modifier = Modifier.semantics(mergeDescendants = true) {
+                    contentDescription = textSizeLabel
+                    progressBarRangeInfo = ProgressBarRangeInfo(currentTextSize, CAPTION_TEXT_SIZE_RANGE)
+                },
             )
 
             Text(stringResource(R.string.player_caption_position_value, (bottomPadding * 100).roundToInt()), style = MaterialTheme.typography.labelLarge)
@@ -77,7 +81,10 @@ internal fun PlayerCaptionSettingsSheet(
                 },
                 onValueChangeFinished = { onBottomPaddingChangeFinished(currentBottomPadding) },
                 valueRange = CAPTION_BOTTOM_PADDING_RANGE,
-                modifier = Modifier.semantics { contentDescription = positionLabel },
+                modifier = Modifier.semantics(mergeDescendants = true) {
+                    contentDescription = positionLabel
+                    progressBarRangeInfo = ProgressBarRangeInfo(currentBottomPadding, CAPTION_BOTTOM_PADDING_RANGE)
+                },
             )
 
             TextButton(onClick = {

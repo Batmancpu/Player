@@ -555,3 +555,7 @@ When the unfiltered library is open, movie titles and series now appear in separ
 - An existing Glass preference test matched its switch while it was below the safe viewport. Its helper now scrolls the settings sheet until the switch is actually visible, then clicks/asserts it. This is a test-fixture visibility correction; no production Glass behavior changed.
 - `git diff --check` pending; CI #236 pending.
 - Next: inspect Media3 disabled state and picker selected semantics, complete all gates, then continue the remaining production Glass/performance backlog.
+
+## 2026-11-22 — Expose caption slider ranges to accessibility
+- CI #243 compiled the caption UI and ran 55 Android tests; 54 passed. Its sole failure showed the custom-labelled subtitle size Slider did not expose Android range info to accessibility. Added merged slider semantics with explicit bounded `ProgressBarRangeInfo` for size and independent bottom position. This verification remains pending a full rerun; no APK was produced.
+- Next: run CI #244 and check both sliders, reset/persistence, synthetic screenshots and downstream build/schema/privacy checks before making one signed APK for the completed caption batch.

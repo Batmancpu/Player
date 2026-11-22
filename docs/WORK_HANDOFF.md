@@ -9,7 +9,7 @@
 
 ## Verified repository state
 
-- Latest committed main SHA: `ca0ce74`. CI #242 / `44980533537` compiled production sources but stopped at Android-test compilation: the caption test referenced a screenshot helper defined only in another test class and used the wrong progress-action constant. Working tree now adds a local synthetic capture helper and uses `AccessibilityAction.ACTION_SET_PROGRESS.id`. Caption instrumentation and downstream build/schema/privacy gates still need a full run. CI #240 / `44978138086` passed 53/53 Android 15 tests and unit/build/Room v1–v4/privacy checks. No signed APK has been made during this edit/debug sequence. Synthetic tests do not prove Reno10 playback/performance. README concept art is not a product screenshot.
+- Latest committed main SHA: `05216cf`. CI #243 / `44980944579` compiled production and Android test source, then ran 55 Android 15 tests; 54 passed. The sole failure found that the labelled caption size Slider did not expose range info. The working tree now explicitly merges labelled size/position slider semantics and provides bounded `ProgressBarRangeInfo` for each. This correction is uncommitted and awaits a full rerun. CI #240 / `44978138086` passed 53/53 Android 15 tests and unit/build/Room v1–v4/privacy checks. No signed APK has been made during this caption batch. Synthetic tests do not prove Reno10 playback/performance. README concept art is not a product screenshot.
 - User reported OPPO v0.1.79 recognized four videos with years, retained the catalogue after airplane-mode restart, and switched folders successfully. That report is not validation of the newer catalogue/player/Glass implementation.
 - Latest release recorded in project history is signed v0.1.174. It is an older progress checkpoint, not the integrated candidate. Current signing identity and package must remain intact.
 
@@ -19,7 +19,7 @@ A Compose-owned transport in `LocalPlayerScreen.kt` replaces generic PlayerView 
 
 ## Exact next actions
 
-1. Commit the caption-test harness fix and rerun full CI; inspect slider/accessibility/preferences, screenshots and all privacy/schema gates, fixing any errors within the batch.
+1. Commit the caption range-semantics correction and rerun full CI; inspect slider/accessibility/preferences, screenshots and all privacy/schema gates, fixing any errors within the batch.
 2. Implement the user-requested automatic normalized-title metadata/artwork flow using only a Player-wide application credential and direct approved TMDB hosts. No credential currently exists in the repo; ask for its one-time setup only after other implementation prep. Keep user paths/media local and preserve an off switch/cache/offline use.
 3. Continue in no more than five substantial batches: player/captions, metadata/artwork, premium Glass/navigation, performance/reliability, final security/size/efficiency. Produce one signed higher-version APK at each completed batch boundary; do not wait for phone acceptance between batches. Actual Reno10 performance and phase acceptance remain evidence only the handset/user can supply.
 
