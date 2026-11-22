@@ -682,8 +682,7 @@ class PreviewUiAndroidTest {
                 }
             }
             text("FROM YOUR LIBRARY")
-            val featurePlay = text("Play video")
-            assertTrue("Feature hero exposes a play action", featurePlay.isClickable)
+            val featurePlay = text("Play")
             click(featurePlay)
             assertEquals("movie-A", playedDocument.get())
             assertTrue(awaitCondition(3_000) { find { it.contentDescription?.toString()?.startsWith("Aurora,") == true } != null })

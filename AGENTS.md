@@ -513,3 +513,9 @@ When the unfiltered library is open, movie titles and series now appear in separ
 - CI #229 / 44971780524 compiled app source successfully; Android test compilation failed because the new Home hero assertion called an undefined `awaitText` helper in `PreviewUiAndroidTest`. Replaced it with the class-local bounded `text()` helper.
 - `git diff --check` and resource XML parse pass; Android UI rerun pending.
 - Next: push this test-only correction with updated records; inspect full CI and captures before continuing the next implementation batch.
+
+## 2026-11-22 — Refine Home viewport and track action semantics
+- CI #230 / 44972167368 ran 53 Android tests; 48 passed and 5 exposed integration issues. The Home feature hero obscured poster cards on the compact CI viewport, duplicated the detail sheet's “Play video” label, and the test incorrectly expected the text child itself to be clickable. Reduced the responsive minimum hero height from 252dp to 188dp, gave the hero a concise distinct “Play” action, and updated its test to perform an accessibility click through the clickable ancestor.
+- CI also found the picker label node still lacked the accessible action. Reordered modifiers so the radio `selectable` wraps/owns the merged label/selected semantics; removed a redundant custom click action.
+- `git diff --check` and XML parsing are the local checks; new full CI pending.
+- Next: commit with updated records; inspect all UI tests and synthetic screen artifacts, fix remaining failures, then continue production Glass and performance backlog.

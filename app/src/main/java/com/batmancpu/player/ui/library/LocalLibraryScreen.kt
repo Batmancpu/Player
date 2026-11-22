@@ -739,7 +739,7 @@ private fun CatalogueFeatureHero(
     val palette = listOf(Color(0xFF344661), Color(0xFF594358), Color(0xFF31544A), Color(0xFF66513C))
     val accent = palette[title.key.hashCode().ushr(1) % palette.size]
     Box(
-        Modifier.fillMaxWidth().heightIn(min = 252.dp).clip(RoundedCornerShape(28.dp))
+        Modifier.fillMaxWidth().heightIn(min = 188.dp).clip(RoundedCornerShape(28.dp))
             .background(Brush.linearGradient(listOf(accent, PlayerPalette.surfaceElevated))),
     ) {
         if (backdrop != null) {
@@ -782,7 +782,7 @@ private fun CatalogueFeatureHero(
             Text(yearOrCount, color = Color.White.copy(alpha = .78f), style = MaterialTheme.typography.bodySmall)
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
                 Button(onClick = onPlay, modifier = Modifier.heightIn(min = 48.dp)) {
-                    Text(stringResource(R.string.catalogue_play))
+                    Text(stringResource(R.string.catalogue_feature_play))
                 }
                 TextButton(onClick = onDetails, modifier = Modifier.heightIn(min = 48.dp)) {
                     Text(stringResource(R.string.catalogue_details_action), color = Color.White)

@@ -593,3 +593,7 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 ## 2026-11-22 — Fix Home hero test helper reference
 - CI #229 compiled product sources, but `PreviewUiAndroidTest` did not compile because `awaitText` is not defined in that class.
 - Use its existing bounded `text()` accessibility helper for the hero label; full validation is pending.
+
+## 2026-11-22 — Compact Home feature and radio accessibility action
+- CI #230 ran 53 Android tests: 48 passed, 5 failed. The hero displaced poster items on the compact viewport and duplicated “Play video”; test clicked the text child. Compact hero min-height to 188dp, use a distinct “Play” action, and click via the shared accessibility helper.
+- `Subtitles off` label still did not carry click semantics because the merged label was nested beneath the selectable semantics node. Reverse modifier order so the selectable radio owns merged label/state/action. CI verification pending.

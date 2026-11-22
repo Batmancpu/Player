@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -125,16 +124,12 @@ private fun TrackOptionRow(label: String, selected: Boolean, onActivate: () -> U
     val state = stringResource(if (selected) R.string.nav_item_selected else R.string.nav_item_not_selected)
     Row(
         Modifier.fillMaxWidth()
-            .selectable(selected = selected, role = Role.RadioButton, onClick = onActivate)
             .semantics(mergeDescendants = true) {
                 contentDescription = label
                 this.selected = selected
                 stateDescription = state
-                onClick(label) {
-                    onActivate()
-                    true
-                }
             }
+            .selectable(selected = selected, role = Role.RadioButton, onClick = onActivate)
             .padding(horizontal = 8.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
