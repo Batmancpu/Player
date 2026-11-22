@@ -23,8 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.selected
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.C
@@ -81,7 +82,7 @@ internal fun PlayerTrackSelectionSheet(
             TrackOptionRow(
                 label = stringResource(R.string.player_tracks_automatic),
                 selected = automaticSelected,
-                onClick = {
+                onActivate = {
                     applyPlayerTrackSelection(player, trackType, null, null)
                     selectionRevision++
                     onSelectionApplied()
@@ -92,7 +93,7 @@ internal fun PlayerTrackSelectionSheet(
                 TrackOptionRow(
                     label = stringResource(R.string.player_subtitles_off),
                     selected = offSelected,
-                    onClick = {
+                    onActivate = {
                         applyPlayerTrackSelection(player, trackType, null, null, disabled = true)
                         selectionRevision++
                         onSelectionApplied()
@@ -104,7 +105,7 @@ internal fun PlayerTrackSelectionSheet(
                 TrackOptionRow(
                     label = option.label,
                     selected = option.selected,
-                    onClick = {
+                    onActivate = {
                         applyPlayerTrackSelection(player, trackType, option.group, option.trackIndex)
                         selectionRevision++
                         onSelectionApplied()
@@ -120,14 +121,20 @@ internal fun PlayerTrackSelectionSheet(
 }
 
 @Composable
-private fun TrackOptionRow(label: String, selected: Boolean, onClick: () -> Unit) {
+private fun TrackOptionRow(label: String, selected: Boolean, onActivate: () -> Unit) {
     val state = stringResource(if (selected) R.string.nav_item_selected else R.string.nav_item_not_selected)
     Row(
-        Modifier.fillMaxWidth().selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
-            .semantics {
+        Modifier.fillMaxWidth()
+            .selectable(selected = selected, role = Role.RadioButton, onClick = onActivate)
+            .clearAndSetSemantics {
+                role = Role.RadioButton
                 contentDescription = label
                 this.selected = selected
                 stateDescription = state
+                onClick(label) {
+                    onActivate()
+                    true
+                }
             }
             .padding(horizontal = 8.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,

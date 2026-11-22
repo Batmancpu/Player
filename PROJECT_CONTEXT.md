@@ -453,7 +453,9 @@ Commit `1c19a08` pushed the player surface accessibility/header change to main. 
 
 CI #224 completed with failure before instrumentation: Android test compilation reports `awaitNode` unresolved in `LocalPlaybackAndroidTest`; production code compilation passed. Added the helper in source. README/artwork-only commit `8b3eeca` triggered #225 against the same code, so #226 is the first run that can validate the correction.
 
-The current uncommitted player work replaces platform track dialogs with a Compose audio/subtitle sheet. It exposes decoder-supported track labels, selected radio semantics, Automatic restore and Subtitles off. The generated SRT test now checks switching between Off, Automatic and the local subtitle. This is a UI-only local playback change; online subtitle retrieval and delay remain out of scope until reviewed/stable.
+Commit `91aabf2` replaces platform track dialogs with a Compose audio/subtitle sheet. It exposes decoder-supported track labels, selected radio semantics, Automatic restore and Subtitles off. The generated SRT/AAC test switches between subtitle Off, Automatic, local SRT and supported audio selection. CI #227 is pending; online subtitle retrieval and delay remain out of scope until reviewed/stable.
+
+CI #227 / 44970509938 compiled product and test sources, then ran 53 Android 15 tests with one failure: the subtitle-off accessible node was not clickable. The issue was a semantics/action-node split. Source now combines radio role, label, checked state and activation in one `clearAndSetSemantics` node; CI #228 is required to verify all Off/Automatic/SRT/AAC interactions.
 
 CI #226 / 44969253993 passed the clickable-surface correction: 53 Android 15 instrumentation tests, unit/build, Room v1-v4 schema and privacy checks all passed. The `player-controls.png` capture shows the movie title no longer truncated after the compact icon row; its black video area is synthetic and does not prove device codec output.
 

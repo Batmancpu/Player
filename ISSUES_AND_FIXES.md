@@ -562,10 +562,10 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 - **Next:** Keep regression coverage while the Compose track picker is integrated; validate on real device in final checklist.
 
 ### R-043 — Native track picker did not match the player presentation
-- **Status:** Replaced in source with a custom accessible Compose sheet; CI validation pending.
-- **Evidence:** The player transport was Compose-owned while audio/subtitle selection opened a platform dialog. That left one visually inconsistent surface and the native dialog was only smoke-tested for opening, not selection behavior.
-- **Fix under test:** Add a bounded audio/subtitle selector that lists decoder-supported tracks using labels/languages/channel counts, offers Automatic restore for both types and Subtitles off, announces selected state, and applies Media3 track parameters. The new synthetic playback test selects Off, restores Automatic and selects the generated local SRT by its display label. No network subtitle provider or source-file modification is added.
-- **Next:** Verify APIs compile against pinned Media3 1.11.1 and test real selection, dismissal, accessibility and full CI. Keep subtitle offset UI pending stable support.
+- **Status:** Compose picker committed in `91aabf2`; CI #227 found and exposed a missing accessibility click action, now fixed in source pending CI #228.
+- **Evidence:** The player transport was Compose-owned while track selection opened a platform dialog. CI #227's only failure showed the subtitle-off label existed in the accessibility tree but `isClickable` was false, so TalkBack could not activate that node. The test did not report Media3 compile or runtime playback failures.
+- **Fix under test:** Add a bounded audio/subtitle selector that lists decoder-supported tracks using labels/languages/channel counts, offers Automatic restore for both types and Subtitles off, announces selected state, and applies Media3 track parameters. Put role, label, selected state and `onClick` into one explicit radio semantics node. The synthetic test selects Off, restores Automatic, selects generated local SRT and AAC. No network subtitle provider or source-file modification is added.
+- **Next:** Verify accessibility action, state transitions, dismissal and full CI #228 against pinned Media3 1.11.1. Keep subtitle offset UI pending stable support.
 
 ### R-037 — Resolve localized descriptions outside Compose semantics lambdas
 - **Status:** Compile failures corrected; CI #211 confirms app compilation.
