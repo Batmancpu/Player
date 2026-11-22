@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.media3.common.Player
 import androidx.media3.common.C
 import androidx.media3.common.PlaybackException
+import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import androidx.media3.ui.AspectRatioFrameLayout
@@ -98,6 +99,19 @@ class LocalPlaybackAndroidTest {
             }
             assertTrue("No synthetic first frame", frame.await(20, TimeUnit.SECONDS))
             assertNull(failure.get())
+            instrumentation.runOnMainSync {
+                val player = reference.get()
+                val subtitleGroup = player.currentTracks.groups.firstOrNull {
+                    it.type == C.TRACK_TYPE_TEXT && it.isSupported
+                }
+                assertNotNull("Synthetic SRT sidecar is exposed as a supported track", subtitleGroup)
+                player.trackSelectionParameters = player.trackSelectionParameters.buildUpon()
+                    .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
+                    .setOverrideForType(TrackSelectionOverride(checkNotNull(subtitleGroup).mediaTrackGroup, listOf(0)))
+                    .build()
+                player.seekTo(0L)
+                player.play()
+            }
             assertTrue("Local sidecar cue reaches Media3's subtitle renderer", subtitleCue.await(5, TimeUnit.SECONDS))
             instrumentation.runOnMainSync {
                 val player = reference.get()

@@ -542,16 +542,17 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 - **Next:** Confirm all UI regressions in full CI and inspect screenshots/player controls. No handset observation or Glass performance claim.
 
 ### R-040 — Glass Lab content overlapped floating dock
-- **Status:** Viewport padding and scroll regression pending CI #222.
+- **Status:** Resolved by viewport padding and regression in CI #222 Android tests.
 - **Evidence:** CI #220 `glass-on.png` shows the lower generated artwork row continuing behind the floating four-tab dock. Tabs were clickable and in bounds; issue is visual/content occlusion, not dock reachability.
 - **Fix under test:** Reduce the lab's vertical-scroll viewport by 114dp for the dock plus navigation inset; assert all three artwork labels can be scrolled fully above the dock while tab accessibility remains available.
-- **Next:** Inspect #222 screenshot and all Android tests. This is an isolated visual lab, not a claim of production Glass quality or OPPO blur behavior.
+- **Next:** Inspect the #223 updated screenshot after the next Android run. This is an isolated visual lab, not a claim of production Glass quality or OPPO blur behavior.
 
 ### R-041 — Subtitle cue decode and runtime delay API
-- **Status:** Synthetic cue-render assertion pending CI #222; delay UI is deferred until stable API availability.
+- **Status:** Cue assertion needs explicit track selection; correction pending CI #223. Delay UI is deferred until stable API availability.
 - **Evidence:** Existing test found a supported local SRT track and opened the Media3 selector, but did not assert cue delivery. Media3 1.11.1 stable is pinned. Official 1.12.0-beta01 release notes add the sideloaded cue offset API; current API reference marks `setTimeOffsetUs` unstable. Do not upgrade production playback to beta for this feature.
-- **Fix under test:** Wait for the generated SRT phrase in `Player.Listener.onCues`; retain the `SubtitleView` sibling-of-video-frame assertion for Fit/Zoom independence.
-- **Next:** Verify cue and layout tests in #222. Recheck Media3 stable release notes before implementing adjustable subtitle delay/reset.
+- **CI #222 evidence:** The only failure was the new cue assertion. The SRT track is configured and discoverable, but the synthetic player did not select it automatically. Explicitly select the supported text track in the test, seek back to the opening cue and then wait for cue callback; do not mislabel this as a decoder failure.
+- **Fix under test:** Apply `TrackSelectionOverride` for the discovered sidecar, then assert delivery of the generated phrase in `Player.Listener.onCues`; retain the `SubtitleView` sibling-of-video-frame assertion for Fit/Zoom independence.
+- **Next:** Verify explicit selection, cue delivery and layout in #223. Recheck Media3 stable release notes before implementing adjustable subtitle delay/reset.
 
 ### R-037 — Resolve localized descriptions outside Compose semantics lambdas
 - **Status:** Compile failures corrected; CI #211 confirms app compilation.

@@ -445,6 +445,8 @@ CI #220 / 44965653928 passed 52/52 Android 15 tests, JVM/build and Room/privacy 
 ## 2026-11-22 — Player screenshot review and follow-up
 CI #221 / 44966329372 passed 52/52 Android 15 tests, JVM/build/schema/privacy gates and uploaded `player-controls.png`; this is synthetic emulator UI only. Inspection found cramped/plain controls and a black video surface in that capture; keep presentation and actual decoder evidence open. The prior `glass-on.png` showed lab artwork obscured by the dock. Source now adds a caption-cue delivery assertion and reserves viewport area above that dock, with scroll regression; CI #222 pending. Subtitle delay remains deferred: stable Media3 1.11.1 is pinned and current docs mark the 1.12 offset builder unstable.
 
+CI #222 / 44967004412 ran 53 Android 15 tests; the only failure was the new SRT cue callback test, which had not explicitly selected the discovered sidecar track. The Glass Lab dock-clear scroll regression passed. The test now explicitly selects the supported track, returns playback to cue start, then awaits the callback. Unit/build/schema verification was skipped after the UI test failure; CI #223 will run the full suite.
+
 ## 2026-11-21 — Playback completion test correction
 - CI #180 compiled and ran 47 tests; the only failure was a 20-second wait against a 30-second video fixture.
 - The synthetic test now seeks to 29 seconds before playback and continues through the five-second resume timer. Await CI.

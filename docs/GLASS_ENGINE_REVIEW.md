@@ -1,5 +1,8 @@
 # Glass engine review — 2026-11-15
 
+## Current status update — 2026-11-22
+Player uses Haze 2.1.0 (Apache-2.0) for a bounded production library navigation dock as well as the separate Glass Lab. The player/video canvas does not use live video-backed Glass. CI #220 confirmed the production dock preference and fallback; #222 confirmed Glass Lab artwork can scroll above its dock after a viewport repair. Haze remains a useful maintained Compose renderer for small source-backed blur surfaces, but it is not Apple's Liquid Glass engine and Player's custom controls do not yet reproduce the reference app's complete tactile/lens behavior. Its real Reno10 visual quality, battery cost and frame time have not been measured. Keep the effects-off fallback and avoid expanding blur coverage until device profiling.
+
 The user reports the floating dock in v0.1.79 looks broken on OPPO Reno10 CPH2531. This is a real visual defect report. A successful build never established visual quality, frame rate or thermal efficiency. The preview remains experimental; production library and video rendering do not apply Glass.
 
 ## What is currently used
