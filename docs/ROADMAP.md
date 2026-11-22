@@ -233,3 +233,6 @@ Local UI copy now separates missing publisher credential from viewer consent. A 
 
 ## CI #257 test timing follow-up — 2026-11-22
 CI #257 (`44991307788`) compiled app/test sources; 58/59 Android 15 tests passed. The new keyless-details UI regression ran before its bottom-sheet entrance/lazy content settled, so accessibility exposed only Close. The test now waits through the existing bounded screenshot settle before reading/scanning sheet contents. This is local/unverified; next is full CI #258. No APK or downstream gate ran.
+
+## 2026-11-22 — Metadata source CI verified
+CI #258 (`44991846015`, commit `76ae8d7`) passed all 59 Android 15 tests, release-checker fixtures, unit tests, debug assembly and Room v1–v4 schema verification. Release-only signing/privacy/certificate/publication steps were skipped on a regular source push. No Obtainium APK exists for this change. Automatic TMDB results still need the one-time publisher Actions credential; user-specific token setup is removed, while local opt-in remains explicit. Continue the next substantial Glass/navigation/player batch. Defer a single signed higher-version APK until the credential is present and all release-only gates pass.

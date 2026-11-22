@@ -530,3 +530,6 @@ Current remote main remains `0eb7e3f`; CI #256 (`44990549563`) compiled and ran 
 
 ## 2026-11-22 — CI #257 result
 Main commit `b6a08d6` compiled production and androidTest sources; 58/59 Android 15 tests passed. The new keyless-details regression raced the details modal entrance/lazy content and saw only its Close control. The local fix adds the adjacent test's finite screenshot transition-settle before querying sheet contents. Next: main push and CI #258. No APK or later JVM/schema/privacy/signing gates ran.
+
+## 2026-11-22 — CI #258 result
+Commit `76ae8d7` passed full non-release CI: Android 15 instrumentation 59/59; Python release-checker fixtures, unit tests, CI-only debug assembly and Room v1–v4 schema checks passed. Release-only signing, manifest, signature and GitHub publication steps were skipped by the normal push trigger. No APK/release. Automatic title/artwork source is green but no TMDB results occur until `PLAYER_TMDB_READ_ACCESS_TOKEN` is set once by the repository publisher. No user token is requested; consent remains explicit/default-off. Next: production Glass/navigation/player batch, with OPPO acceptance/performance pending.

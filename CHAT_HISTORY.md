@@ -745,3 +745,6 @@ CI #256 compiled and ran 58 Android 15 tests, 57 passing. One UI test itself reu
 
 ## 2026-11-22 — CI #257 follow-up
 The publisher-key/consent detail changes were included in CI #257. Production and tests compiled; 58/59 Android 15 tests passed. The sole new regression test queried a long message before the details sheet entrance completed, so the accessibility window only exposed Close. Added the same finite screenshot settle used by adjacent details tests. This correction is local pending CI #258; the instrumentation failure skipped later verification and no APK was produced.
+
+## 2026-11-22 — Metadata UX batch CI green
+The modal timing correction passed CI #258. All 59 Android 15 tests passed, along with unit tests, CI-only debug assembly, release-checker fixtures, and Room v1–v4 checks. This was a normal push, so signed release, manifest/certificate and publication checks were skipped; no APK was built for Obtainium. The UI no longer asks for a personal TMDB key. A poster-capable release still requires one repository-level publisher credential; its public/extractable nature and TMDB network-IP receipt are disclosed, and local consent remains opt-in. Next: continue Glass/navigation/player production work and package one signed APK at a completed batch boundary.

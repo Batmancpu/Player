@@ -701,3 +701,6 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 - Evidence: CI #257 / 44991307788 ran 59 Android 15 tests; 58 passed. The newly added keyless-details regression could not reveal the long message because the bottom-sheet entrance/lazy content had not settled; accessibility showed only the Close action.
 - Fix under test: use the neighboring details test's bounded screenshot transition settle before querying/scrolling modal content.
 - Verification: CI #258 required. No APK/Release.
+
+## 2026-11-22 — R-050 verified by CI #258
+CI #258 (`44991846015`) passed the Android 15 suite (59/59), Python release-checker fixtures, JVM tests, CI-only debug build and Room v1–v4 schema checks. The transition settle fixes the regression. Release-only signing/manifest/certificate/publication gates were skipped on this normal push; no APK/Release exists. No remaining test issue in this batch.
