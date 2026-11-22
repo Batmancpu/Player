@@ -12,10 +12,13 @@ import com.batmancpu.player.ui.library.TmdbSearchTerms
 import java.io.File
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -43,9 +46,10 @@ internal data class MetadataLookupUiState(
 )
 
 /**
- * Foreground-only lookup coordinator. Automatic searches are allowed only while
- * an opted-in title's detail is open. It never searches during library loading,
- * scanning, catalogue scrolling, restoration or process startup.
+ * Foreground-only lookup coordinator. Automatic searches are allowed only for
+ * composed catalogue cards or an opened detail, after local opt-in. Card jobs
+ * are bounded, serialized and cancelled when their cards leave composition.
+ * It never searches during scanning, restoration or process startup.
  */
 internal class MetadataLookupController(
     context: Context,
@@ -59,12 +63,73 @@ internal class MetadataLookupController(
     private val app = context.applicationContext
     private val mutableState = MutableStateFlow(MetadataLookupUiState())
     val state = mutableState.asStateFlow()
+    private val mutableCatalogueRevision = MutableStateFlow(0L)
+    val catalogueRevision: StateFlow<Long> = mutableCatalogueRevision.asStateFlow()
     @Volatile private var generation = 0L
     private var work: Job? = null
     private var attemptTree: String? = null
     private val automaticAttempts = LinkedHashSet<String>()
+    private val visibleJobs = LinkedHashMap<String, Job>()
+    private val visibleTitles = LinkedHashMap<String, Pair<String, LocalTitle>>()
+    @Volatile private var catalogueForeground = true
     private val automaticRequestGate = Mutex()
     @Volatile private var lastAutomaticRequestElapsedRealtimeMs = 0L
+
+    /** Queue work only for cards that are currently composed in the foreground catalogue. */
+    fun catalogueTitleVisible(tree: String, title: LocalTitle) {
+        if (currentTree() != tree || !isCurrentTitle(tree, title)) return
+        val key = visibilityKey(tree, title.key)
+        synchronized(visibleJobs) {
+            if (visibleTitles.containsKey(key) || visibleTitles.size >= MAX_VISIBLE_CATALOGUE_TITLES) return
+            visibleTitles[key] = tree to title
+            if (catalogueForeground) startVisibleLocked(key, tree, title)
+        }
+    }
+
+    fun catalogueTitleHidden(tree: String, titleKey: String) {
+        val key = visibilityKey(tree, titleKey)
+        val job = synchronized(visibleJobs) {
+            visibleTitles.remove(key)
+            visibleJobs.remove(key)
+        }
+        job?.cancel()
+    }
+
+    fun pauseCatalogueEnrichment() {
+        catalogueForeground = false
+        val jobs = synchronized(visibleJobs) {
+            visibleJobs.values.toList().also { visibleJobs.clear() }
+        }
+        jobs.forEach { it.cancel() }
+    }
+
+    fun resumeCatalogueEnrichment() {
+        catalogueForeground = true
+        synchronized(visibleJobs) {
+            visibleTitles.forEach { (key, value) ->
+                if (visibleJobs[key]?.isActive != true) {
+                    visibleJobs.remove(key)
+                    startVisibleLocked(key, value.first, value.second)
+                }
+            }
+        }
+    }
+
+    private fun startVisibleLocked(key: String, tree: String, title: LocalTitle) {
+        val job = scope.launch(start = CoroutineStart.LAZY) {
+            try {
+                loadVisibleCatalogueTitle(tree, key, title)
+            } finally {
+                synchronized(visibleJobs) {
+                    if (visibleJobs[key] === kotlinx.coroutines.currentCoroutineContext()[Job]) {
+                        visibleJobs.remove(key)
+                    }
+                }
+            }
+        }
+        visibleJobs[key] = job
+        job.start()
+    }
 
     fun prepare(title: LocalTitle) {
         val tree = currentTree()
@@ -333,6 +398,81 @@ internal class MetadataLookupController(
         }
     }
 
+    private suspend fun loadVisibleCatalogueTitle(tree: String, key: String, title: LocalTitle) {
+        try {
+            val configured = settings.load()
+            if (!configured.enabled || !configured.credentialConfigured || !visible(tree, key, title)) return
+            val cachedByDocument = OfflineMetadataCache.load(app, tree)
+            val fileIds = title.files.map { it.documentId }
+            val localMatches = fileIds.mapNotNull(cachedByDocument::get).distinctBy { it.tmdbId to it.mediaType }
+            if (localMatches.size > 1) return
+            val cached = localMatches.singleOrNull()
+            if (cached != null) {
+                val poster = cached.posterPath?.let { artworkCache.fetch(it, TmdbImageSize.POSTER) }
+                val backdrop = cached.backdropPath?.let { artworkCache.fetch(it, TmdbImageSize.BACKDROP) }
+                if (visible(tree, key, title) && (poster != null || backdrop != null)) {
+                    mutableCatalogueRevision.update { it + 1 }
+                }
+                return
+            }
+            if (OfflineMetadataCache.isLookupSuppressed(app, tree, fileIds) || !visible(tree, key, title)) return
+            val terms = searchTerms(title) ?: return
+            if (!markAutomaticAttempt(tree, title.key)) return
+            if (settings.credentialIfEnabled() == null || !visible(tree, key, title)) return
+            val result = automaticCatalogueSearch(tree, key, title, terms) ?: return
+            if (result !is TmdbResult.Success || !visible(tree, key, title)) return
+            val candidate = TmdbAutoMatchPolicy.uniqueExactMatch(terms, result.value) ?: return
+            val metadata = CachedTmdbMetadata(
+                tmdbId = candidate.id,
+                mediaType = candidate.mediaType.name,
+                title = candidate.title,
+                year = candidate.year,
+                overview = candidate.overview,
+                posterPath = candidate.posterPath,
+                backdropPath = candidate.backdropPath,
+                cachedAtEpochMs = System.currentTimeMillis(),
+            )
+            if (!visible(tree, key, title) || !OfflineMetadataCache.bind(app, tree, fileIds, metadata)) return
+            mutableCatalogueRevision.update { it + 1 }
+            val poster = metadata.posterPath?.let { artworkCache.fetch(it, TmdbImageSize.POSTER) }
+            val backdrop = metadata.backdropPath?.let { artworkCache.fetch(it, TmdbImageSize.BACKDROP) }
+            if (visible(tree, key, title) && (poster != null || backdrop != null)) {
+                mutableCatalogueRevision.update { it + 1 }
+            }
+        } catch (cancelled: CancellationException) {
+            forgetAutomaticAttempt(tree, title.key)
+            throw cancelled
+        } catch (_: Exception) {
+            // Catalogue enrichment is opportunistic; local browsing and playback stay available.
+        }
+    }
+
+    private suspend fun automaticCatalogueSearch(
+        tree: String,
+        key: String,
+        title: LocalTitle,
+        terms: TmdbSearchTerms,
+    ): TmdbResult<List<TmdbCandidate>>? {
+        automaticRequestGate.lock()
+        try {
+            if (!visible(tree, key, title) || settings.credentialIfEnabled() == null) return null
+            val elapsed = SystemClock.elapsedRealtime()
+            val waitMs = MIN_AUTOMATIC_REQUEST_INTERVAL_MS - (elapsed - lastAutomaticRequestElapsedRealtimeMs)
+            if (waitMs > 0) delay(waitMs)
+            if (!visible(tree, key, title) || settings.credentialIfEnabled() == null) return null
+            lastAutomaticRequestElapsedRealtimeMs = SystemClock.elapsedRealtime()
+            return client.search(terms)
+        } finally {
+            automaticRequestGate.unlock()
+        }
+    }
+
+    private fun visible(tree: String, key: String, title: LocalTitle): Boolean =
+        synchronized(visibleJobs) { visibleJobs[key]?.isActive == true } &&
+            currentTree() == tree && isCurrentTitle(tree, title)
+
+    private fun visibilityKey(tree: String, titleKey: String) = "$tree\u0000$titleKey"
+
     private suspend fun automaticSearch(
         ticket: Long,
         tree: String,
@@ -390,6 +530,7 @@ internal class MetadataLookupController(
 
     private companion object {
         const val MAX_AUTOMATIC_ATTEMPTS = 512
+        const val MAX_VISIBLE_CATALOGUE_TITLES = 12
         const val MIN_AUTOMATIC_REQUEST_INTERVAL_MS = 800L
     }
 }

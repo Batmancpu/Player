@@ -660,3 +660,10 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 ## 2026-11-22 — CI #251 test compilation import
 - The automatic-metadata source compiled in CI #251, but Android-test compilation failed on two missing `assertFalse` references in `MetadataLookupControllerAndroidTest`; added the JUnit import. No instrumentation tests or release gates ran.
 - Commit `8f35759` corrected a different UI test helper but does not include this import, so CI #252 may repeat the compile failure. Next run is needed before further feature work is considered verified.
+
+## 2026-11-22 — R-044 Visible catalogue metadata CI regressions
+- **Symptoms/evidence:** CI #253 / 44988296254 compiled application sources and ran 57 Android 15 tests; 55 passed. `automaticLookupRequiresConsentAndOnlyExactUniqueMatchesAreCached` failed because its setup saved `enabled=false` but then asserted settings were enabled. `metadataSettingsOpenCreditsAndShowTheRequiredAttribution` failed because it searched for the missing-key notice with a visible-only helper while the notice had moved below the current viewport.
+- **Classification:** test expectation/viewport regressions; no production compile error or observed Android runtime defect.
+- **Fix under test:** explicitly assert disabled consent while token/title terms remain available; use bounded `revealByScrolling` for the offscreen notice. Added a synthetic test for the new visible-card enrichment path.
+- **Verification status:** fixes and feature unverified until a fresh full CI. No new APK/Release. Local static checks pass (7 Python tests, XML parse, `git diff --check`).
+- **Next:** push focused source+documentation commit and inspect fresh Android 15/JVM/build/schema/privacy run; fix any actual failure before the single batch Release.

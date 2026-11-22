@@ -61,7 +61,12 @@ internal class LibraryViewModel(application: Application) : AndroidViewModel(app
         isCurrentTitle = ::isCurrentTitle,
     )
     val metadataLookup = metadataLookupController.state
+    val catalogueMetadataRevision = metadataLookupController.catalogueRevision
     fun prepareMetadata(title: LocalTitle) = metadataLookupController.prepare(title)
+    fun catalogueTitleVisible(tree: String, title: LocalTitle) = metadataLookupController.catalogueTitleVisible(tree, title)
+    fun catalogueTitleHidden(tree: String, titleKey: String) = metadataLookupController.catalogueTitleHidden(tree, titleKey)
+    fun pauseCatalogueMetadata() = metadataLookupController.pauseCatalogueEnrichment()
+    fun resumeCatalogueMetadata() = metadataLookupController.resumeCatalogueEnrichment()
     fun searchMetadata(title: LocalTitle) = metadataLookupController.search(title)
     fun confirmMetadata(title: LocalTitle, candidate: TmdbCandidate) = metadataLookupController.confirm(title, candidate)
     fun removeMetadata(title: LocalTitle) = metadataLookupController.remove(title)

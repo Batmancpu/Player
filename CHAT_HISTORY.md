@@ -721,3 +721,9 @@ CI #235: app compiled; 51/53 Android tests passed. The new Media3 assertion read
 ## 2026-11-22 continuation — First automatic metadata CI compile result
 
 - CI #251 compiled the app, then test compilation found a missing JUnit `assertFalse` import in the new controller privacy assertions. Added the import. The earlier UI test correction was also pushed separately; the queued CI #252 does not include this later import. Next run must pass test compilation and the Android 15 suite before more metadata work is merged.
+
+## 2026-11-22 — User requests automatic posters with minimal disclosure
+
+The user confirmed Player is currently non-commercial, wants the most private workable method, and does not want each install to configure a personal TMDB account. They clarified that the only app-level information allowed to leave is the normalized movie/show title and any necessary year/type. Continue the existing direct-to-TMDB design with one publisher key, explicit local opt-in and clear disclosure that TMDB also sees the public key and network IP; no backend or source media data. User explicitly objected to frequent APK generation; the last APK remains v0.1.250 and the metadata batch gets at most one Release after integrated fixes and green checks.
+
+CI #253 compiled app code but had two Android test failures: expected-enabled state after persisting disabled consent, and an offscreen settings status assertion without a scroll. Both test fixes and new foreground visible-card enrichment are now local and unverified. The user wants ongoing substantial progress without waiting after each batch; no routine phone prompt should block independent implementation, but actual phase/device acceptance must not be invented.

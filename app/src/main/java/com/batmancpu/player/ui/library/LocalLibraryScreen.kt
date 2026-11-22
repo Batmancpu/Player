@@ -78,7 +78,14 @@ internal fun LocalLibraryScreen(
     val activity = context.activity()
     DisposableEffect(activity, model) {
         val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_STOP) model.clearMetadata()
+            when (event) {
+                Lifecycle.Event.ON_START -> model.resumeCatalogueMetadata()
+                Lifecycle.Event.ON_STOP -> {
+                    model.clearMetadata()
+                    model.pauseCatalogueMetadata()
+                }
+                else -> Unit
+            }
         }
         activity?.lifecycle?.addObserver(observer)
         onDispose { activity?.lifecycle?.removeObserver(observer) }
@@ -87,10 +94,11 @@ internal fun LocalLibraryScreen(
     val library by model.session.state.collectAsState()
     val snapshot by model.catalogue.collectAsState()
     val metadataState by model.metadataLookup.collectAsState()
+    val catalogueMetadataRevision by model.catalogueMetadataRevision.collectAsState()
     val artworkCache = remember(appContext) { TmdbArtworkCache(appContext, MetadataSettingsStore(appContext)) }
     val folder = folderState.folder
     var cachedMetadataByDocumentId by remember(folderState.folder?.tree) { mutableStateOf(emptyMap<String, CachedTmdbMetadata>()) }
-    LaunchedEffect(folder?.tree, snapshot, metadataState.cached?.tmdbId, metadataState.cached?.cachedAtEpochMs, metadataState.posterFile) {
+    LaunchedEffect(folder?.tree, snapshot, metadataState.cached?.tmdbId, metadataState.cached?.cachedAtEpochMs, metadataState.posterFile, catalogueMetadataRevision) {
         val tree = folder?.tree
         cachedMetadataByDocumentId = if (tree != null && snapshot.tree == tree) {
             OfflineMetadataCache.load(appContext, tree)
@@ -117,6 +125,9 @@ internal fun LocalLibraryScreen(
         cachedMetadataByDocumentId = cachedMetadataByDocumentId,
         artworkCache = artworkCache,
         posterRefreshKey = metadataState.posterFile,
+        catalogueMetadataRevision = catalogueMetadataRevision,
+        onCatalogueTitleVisible = model::catalogueTitleVisible,
+        onCatalogueTitleHidden = model::catalogueTitleHidden,
         onPrepareMetadata = model::prepareMetadata,
         onSearchMetadata = model::searchMetadata,
         onConfirmMetadata = model::confirmMetadata,
@@ -148,6 +159,9 @@ internal fun LocalLibraryContent(
     cachedMetadataByDocumentId: Map<String, CachedTmdbMetadata> = emptyMap(),
     artworkCache: TmdbArtworkCache? = null,
     posterRefreshKey: File? = null,
+    catalogueMetadataRevision: Long = 0L,
+    onCatalogueTitleVisible: (String, LocalTitle) -> Unit = { _, _ -> },
+    onCatalogueTitleHidden: (String, String) -> Unit = { _, _ -> },
 ) {
     val titles = snapshot.takeIf { it.tree == folder.tree }?.titles.orEmpty()
     val matchingLibrary = library.takeIf { it.tree == folder.tree }
@@ -296,11 +310,14 @@ internal fun LocalLibraryContent(
                     if (movieShelf.isNotEmpty()) {
                         item(key = "shelf-movies") {
                             CatalogueShelf(
+                                tree = folder.tree,
                                 title = R.string.nav_movies,
                                 titles = movieShelf,
                                 cachedMetadataByDocumentId = cachedMetadataByDocumentId,
                                 artworkCache = artworkCache,
                                 posterRefreshKey = posterRefreshKey,
+                                onCatalogueTitleVisible = onCatalogueTitleVisible,
+                                onCatalogueTitleHidden = onCatalogueTitleHidden,
                                 onSelect = { focus.clearFocus(); selectedKey = it.key },
                             )
                         }
@@ -308,11 +325,14 @@ internal fun LocalLibraryContent(
                     if (seriesShelf.isNotEmpty()) {
                         item(key = "shelf-series") {
                             CatalogueShelf(
+                                tree = folder.tree,
                                 title = R.string.catalogue_shelf_series,
                                 titles = seriesShelf,
                                 cachedMetadataByDocumentId = cachedMetadataByDocumentId,
                                 artworkCache = artworkCache,
                                 posterRefreshKey = posterRefreshKey,
+                                onCatalogueTitleVisible = onCatalogueTitleVisible,
+                                onCatalogueTitleHidden = onCatalogueTitleHidden,
                                 onSelect = { focus.clearFocus(); selectedKey = it.key },
                             )
                         }
@@ -328,7 +348,10 @@ internal fun LocalLibraryContent(
                     horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(18.dp),
                 ) {
                     items(results, key = { it.key }) { title ->
-                        LocalTitleCard(title, cachedMetadataByDocumentId, artworkCache, posterRefreshKey) { focus.clearFocus(); selectedKey = title.key }
+                        LocalTitleCard(
+                            folder.tree, title, cachedMetadataByDocumentId, artworkCache, posterRefreshKey,
+                            onCatalogueTitleVisible, onCatalogueTitleHidden,
+                        ) { focus.clearFocus(); selectedKey = title.key }
                     }
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Text(stringResource(R.string.catalogue_local_note), color = PlayerPalette.textTertiary, style = MaterialTheme.typography.bodySmall)
@@ -643,12 +666,19 @@ internal fun LocalLibraryContent(
 
 @Composable
 private fun LocalTitleCard(
+    tree: String,
     title: LocalTitle,
     cachedMetadataByDocumentId: Map<String, CachedTmdbMetadata>,
     artworkCache: TmdbArtworkCache?,
     posterRefreshKey: File?,
+    onVisible: (String, LocalTitle) -> Unit,
+    onHidden: (String, String) -> Unit,
     onClick: () -> Unit,
 ) {
+    DisposableEffect(tree, title.key) {
+        onVisible(tree, title)
+        onDispose { onHidden(tree, title.key) }
+    }
     val palettes = listOf(Color(0xFF3B465C), Color(0xFF514350), Color(0xFF294D47), Color(0xFF5A4835))
     val color = palettes[title.key.hashCode().ushr(1) % palettes.size]
     val titleKind = stringResource(if (title.isSeries) R.string.catalogue_card_series else R.string.catalogue_card_movie)
@@ -810,11 +840,14 @@ private tailrec fun Context.activity(): ComponentActivity? = when (this) {
 
 @Composable
 private fun CatalogueShelf(
+    tree: String,
     title: Int,
     titles: List<LocalTitle>,
     cachedMetadataByDocumentId: Map<String, CachedTmdbMetadata>,
     artworkCache: TmdbArtworkCache?,
     posterRefreshKey: File?,
+    onCatalogueTitleVisible: (String, LocalTitle) -> Unit,
+    onCatalogueTitleHidden: (String, String) -> Unit,
     onSelect: (LocalTitle) -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -822,7 +855,10 @@ private fun CatalogueShelf(
         LazyRow(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
             items(titles, key = { it.key }) { item ->
                 Box(Modifier.width(156.dp)) {
-                    LocalTitleCard(item, cachedMetadataByDocumentId, artworkCache, posterRefreshKey) { onSelect(item) }
+                    LocalTitleCard(
+                        tree, item, cachedMetadataByDocumentId, artworkCache, posterRefreshKey,
+                        onCatalogueTitleVisible, onCatalogueTitleHidden,
+                    ) { onSelect(item) }
                 }
             }
         }

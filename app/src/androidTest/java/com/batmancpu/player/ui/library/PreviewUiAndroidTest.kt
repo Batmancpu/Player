@@ -677,7 +677,7 @@ class PreviewUiAndroidTest {
                     }
                 }
             }
-            text("The shared TMDB connection is not configured for this build yet. Player does not ask each person for a token; your local library and playback continue to work offline.")
+            revealByScrolling("The shared TMDB connection is not configured for this build yet. Player does not ask each person for a token; your local library and playback continue to work offline.")
             assertNull("Settings must not request a per-user API token", find { it.text?.toString() == "API Read Access Token" })
             instrumentation.runOnMainSync {
                 activity.setContent {

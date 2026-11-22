@@ -148,3 +148,6 @@ The Compose presentation layer exposes Home, Movies, Shows and Search over the l
 
 ## 2026-11-21 — Navigation test lookup adjustment
 The CI #184 run built successfully and executed 49 Android tests; its only failure was the selected-state test choosing the Movies shelf heading before the tab. The filter itself passed. Test helper now searches all matches/ancestors; validation pending.
+
+## Foreground catalogue metadata enrichment — 2026-11-22
+`LocalTitleCard` registers only while composed in a lazy shelf/grid. `MetadataLookupController` checks the selected tree, Room/offline mapping, local suppression and encrypted consent before any request; it caps active composed registrations, serializes requests and cancels on card disposal or Activity stop. The API request uses the parser's normalized title plus optional year and media type only; strict unique exact matching guards Room binding. Provider images are validated, bounded and cached privately. A revision Flow causes the catalogue to reload Room mappings and draw the local poster File; Coil has no network module. Foreground restoration requeues cards that are still composed. This feature requires a publisher app credential supplied only at release build time and a separate local opt-in. Scanning/restoration and background operation remain network-free.

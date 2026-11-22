@@ -14,6 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -25,6 +26,64 @@ import org.junit.Test
 
 /** Uses a fake transport and synthetic Room rows; never opens a socket or user media. */
 class MetadataLookupControllerAndroidTest {
+    @Test(timeout = 30_000)
+    fun visibleCatalogueCardsEnrichOnlyAfterConsentAndCacheArtworkOffline() = runBlocking {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val suffix = UUID.randomUUID().toString()
+        val tree = "content://com.example.synthetic/tree/$suffix"
+        val file = DiscoveredLocalMedia("synthetic-$suffix", "Aurora.2022.mp4", LocalMediaKind.VIDEO)
+        val title = LocalCatalogue.build(listOf(file)).single()
+        val settings = MetadataSettingsStore(context, "catalogue_$suffix")
+        val calls = AtomicInteger()
+        val client = TmdbClient(settings::credentialIfEnabled, TmdbTransport { uri, token ->
+            calls.incrementAndGet()
+            assertEquals("synthetic.read.token", token)
+            assertEquals("api.themoviedb.org", uri.host)
+            assertFalse(uri.toString().contains(file.displayName))
+            assertFalse(uri.toString().contains(suffix))
+            TmdbHttpResponse(
+                200,
+                """{"results":[{"id":42,"title":"Aurora","release_date":"2022-01-01","overview":"Synthetic description","poster_path":"/poster_A.jpg","backdrop_path":"/backdrop_A.jpg"}]}""".toByteArray(),
+            )
+        })
+        val artworkCalls = AtomicInteger()
+        val artwork = TmdbArtworkCache(context, settings, TmdbArtworkTransport { uri ->
+            artworkCalls.incrementAndGet()
+            assertEquals("image.tmdb.org", uri.host)
+            TmdbArtworkResponse(200, Base64.decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNQaLjwHwAEpAJw/IFNkwAAAABJRU5ErkJggg==", Base64.DEFAULT), "image/png")
+        }, testNamespace = suffix)
+        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+        val controller = MetadataLookupController(
+            context, scope, settings, client, artworkCache = artwork, currentTree = { tree },
+            isCurrentTitle = { candidateTree, candidate -> candidateTree == tree && candidate.key == title.key },
+        )
+        try {
+            OfflineLibraryIndex.saveSuccessfulScan(context, android.net.Uri.parse(tree), listOf(file))
+            settings.save("synthetic.read.token", enabled = false)
+            controller.catalogueTitleVisible(tree, title)
+            delay(150)
+            assertEquals("Visible cards make no request before local consent", 0, calls.get())
+            controller.catalogueTitleHidden(tree, title.key)
+
+            settings.save(token = null, enabled = true)
+            controller.catalogueTitleVisible(tree, title)
+            withTimeout(10_000) { controller.catalogueRevision.first { it >= 2L } }
+            assertEquals(1, calls.get())
+            assertEquals("Aurora", OfflineMetadataCache.load(context, tree)[file.documentId]?.title)
+            assertEquals(2, artworkCalls.get())
+            controller.catalogueTitleHidden(tree, title.key)
+            assertTrue("Cached artwork remains local when read again",
+                artwork.cached("/poster_A.jpg", TmdbImageSize.POSTER)?.isFile == true)
+        } finally {
+            controller.catalogueTitleHidden(tree, title.key)
+            controller.clear()
+            scope.cancel()
+            OfflineLibraryIndex.forgetTree(context, android.net.Uri.parse(tree))
+            settings.clear()
+            artwork.directory.deleteRecursively()
+        }
+    }
+
     @Test(timeout = 30_000)
     fun automaticLookupRequiresConsentAndOnlyExactUniqueMatchesAreCached() = runBlocking {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -66,7 +125,8 @@ class MetadataLookupControllerAndroidTest {
             settings.save("synthetic.read.token", enabled = false)
             controller.prepare(title)
             val prepared = withTimeout(5_000) { controller.state.first { !it.preparing } }
-            assertTrue(prepared.settingsEnabled && prepared.credentialConfigured && prepared.searchable)
+            assertFalse("Metadata remains disabled until explicit consent", prepared.settingsEnabled)
+            assertTrue(prepared.credentialConfigured && prepared.searchable)
             assertEquals("Opening details must not search", 0, calls.get())
             assertEquals("Opening details must not fetch artwork", 0, artworkCalls.get())
 
