@@ -678,7 +678,7 @@ class PreviewUiAndroidTest {
                 }
             }
             text("The shared TMDB connection is not configured for this build yet. Player does not ask each person for a token; your local library and playback continue to work offline.")
-            assertNull("Settings must not request a per-user API token", awaitNode { it.text?.toString() == "API Read Access Token" })
+            assertNull("Settings must not request a per-user API token", find { it.text?.toString() == "API Read Access Token" })
             instrumentation.runOnMainSync {
                 activity.setContent {
                     PlayerTheme {
@@ -700,7 +700,7 @@ class PreviewUiAndroidTest {
                 }
             }
             text("Player’s shared TMDB connection is available. It is a public app credential and can be extracted from the APK. Requests start only after you enable metadata.")
-            assertNull("The shared credential is never shown or requested in settings", awaitNode { it.text?.toString() == "API Read Access Token" })
+            assertNull("The shared credential is never shown or requested in settings", find { it.text?.toString() == "API Read Access Token" })
             click(text("About and credits"))
             assertEquals(1, opened.get())
             instrumentation.runOnMainSync {

@@ -652,3 +652,7 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 - User reported no posters and per-user TMDB connection prompts. Root cause is the shipped manual search/confirmation path and absent app-owned key. Implemented release-only app credential injection, consent-only settings UI, format-v2 encrypted consent with v1 compatibility, and exact unique title/type/year detail matching with private artwork fetch. No app-wide TMDB credential is configured, so no live query can yet succeed in a release.
 - Six JVM match tests and Android credential/controller integration assertions are added. `git diff --check` passes. There is no local Android SDK/Gradle wrapper or executable, and GitHub push cannot reach the configured proxy; tests/CI are not verified. Do not issue an APK or call this batch complete yet.
 - Next: get the current main-only commits to GitHub, run Android 15 tests and fix any failures, then implement bounded opted-in catalogue poster enrichment and verify keyless/offline/cancellation behavior before the batch Release.
+
+## 2026-11-22 — UI absence assertion helper mismatch
+- The new token-field absence assertions incorrectly used `awaitNode`, a helper that throws if a node is missing. Replaced it with nullable `find`. This was caught by source review while CI #251 was still setting up, before the test executed.
+- Next CI run must verify the correction and the whole automatic-metadata batch. No APK is produced at this intermediate test correction.
