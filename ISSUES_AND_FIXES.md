@@ -608,3 +608,7 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 
 ## 2026-11-22 — Remove invalid onDispose import
 - CI #233 failed app compilation because `onDispose` is a `DisposableEffectScope` member, not a top-level import. Removed the import; cleanup call stays in the effect receiver. Validation pending.
+
+## 2026-11-22 — CI #234 selected semantics and poster viewport
+- CI #234 compiled and ran 53 tests; 51 passed, 2 failed. Added an immediate Media3 disabled-track assertion after clicking Subtitles Off to distinguish engine selection from accessibility selected-state reporting.
+- Home's inaccessible scroll test action did not move the list. Poster ratio verification now occurs on the Movies tab, where the card is presented fully, with a synthetic `movies.png` capture.

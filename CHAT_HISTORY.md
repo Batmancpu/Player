@@ -659,3 +659,5 @@ CI #231: 51/53 Android tests passed; only picker label click and dock-clipped po
 CI #232 compiled and ran 53 tests (51 passed, 2 failed): picker click works but selected state stays stale; poster bounds remained clipped after the shell swipe. Current fix observes Media3 parameter changes into Compose state and scrolls the largest accessibility scroll container, with a new scrolled-home capture. CI #233 pending.
 
 CI #233 stopped before tests: `onDispose` was incorrectly imported as a top-level Compose symbol. Removed the import (the call remains in `DisposableEffect` scope). CI #234 pending.
+
+CI #234 compiled the app; 51/53 Android tests passed. Subtitles Off clicks but the selected accessibility state still fails; new assertion checks Media3 disabled parameters immediately after click. Poster bounds stayed clipped because the scroll action made no progress; artwork ratio check now runs after opening Movies and captures `movies.png`. CI #235 pending.

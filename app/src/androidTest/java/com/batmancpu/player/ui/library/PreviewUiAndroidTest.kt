@@ -127,27 +127,6 @@ class PreviewUiAndroidTest {
         assertTrue("No clickable ancestor", target?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true)
     }
 
-    private fun scrollHomeToRevealPosters() {
-        val root = checkNotNull(automation.rootInActiveWindow)
-        val scrollables = mutableListOf<Pair<Long, AccessibilityNodeInfo>>()
-        fun visit(node: AccessibilityNodeInfo) {
-            if (node.isScrollable && node.actionList.any {
-                    it.id == AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD.id
-                }) {
-                val bounds = Rect().also(node::getBoundsInScreen)
-                scrollables += bounds.width().toLong() * bounds.height() to node
-            }
-            for (index in 0 until node.childCount) node.getChild(index)?.let(::visit)
-        }
-        visit(root)
-        val homeList = checkNotNull(scrollables.maxByOrNull { it.first }?.second) {
-            "Home has no accessible vertical scroll container; ${activeWindowSummary()}"
-        }
-        assertTrue("Home list scrolls to reveal title cards", homeList.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD))
-        SystemClock.sleep(300)
-    }
-
-
     private fun clickLastClickableLabel(label: String) {
         var target: AccessibilityNodeInfo? = null
         fun visit(node: AccessibilityNodeInfo) {
@@ -706,14 +685,6 @@ class PreviewUiAndroidTest {
             click(featurePlay)
             assertEquals("movie-A", playedDocument.get())
             assertTrue(awaitCondition(3_000) { find { it.contentDescription?.toString()?.startsWith("Aurora,") == true } != null })
-            scrollHomeToRevealPosters()
-            screenshot("catalogue-scrolled")
-            val titleNode = titleCard("Aurora")
-            var cardNode: AccessibilityNodeInfo? = titleNode
-            while (cardNode != null && !cardNode.isClickable) cardNode = cardNode.parent
-            val artworkBounds = Rect()
-            checkNotNull(cardNode) { "The title must remain accessible on its clickable card" }.getBoundsInScreen(artworkBounds)
-            assertTrue("Offline poster artwork uses a portrait composition; bounds=$artworkBounds", artworkBounds.height() >= artworkBounds.width() * 1.4f)
             assertTrue("Home is selected initially", hasSelectedSemanticsOnLabelOrParent("Home"))
 
             clickLastClickableLabel("Movies")
@@ -724,6 +695,13 @@ class PreviewUiAndroidTest {
             assertTrue("Movies tab exposes selected semantics; ${activeWindowSummary()}", awaitCondition(3_000) {
                 hasSelectedSemanticsOnLabelOrParent("Movies")
             })
+            screenshot("movies")
+            val titleNode = titleCard("Aurora")
+            var cardNode: AccessibilityNodeInfo? = titleNode
+            while (cardNode != null && !cardNode.isClickable) cardNode = cardNode.parent
+            val artworkBounds = Rect()
+            checkNotNull(cardNode) { "The title must remain accessible on its movie card" }.getBoundsInScreen(artworkBounds)
+            assertTrue("Movie card artwork uses a portrait composition; bounds=$artworkBounds", artworkBounds.height() >= artworkBounds.width() * 1.4f)
 
             clickLastClickableLabel("Shows")
             assertTrue("Shows selection filters the catalogue", awaitCondition(3_000) {

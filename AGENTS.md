@@ -536,3 +536,9 @@ When the unfiltered library is open, movie titles and series now appear in separ
 - CI #233 / 44974218075 stopped at `compileDebugKotlin`: `onDispose` is a receiver member of `DisposableEffectScope`, not an importable top-level Compose symbol. Removed the invalid import; listener cleanup remains inside `DisposableEffect`.
 - No Android tests ran. `git diff --check` passes; rerun CI pending.
 - Next: commit this correction and verify reactive picker state, Home scroll capture, full Android suite and privacy/build gates.
+
+## 2026-11-22 — Isolate Media3 selection from UI state and poster viewport tests
+- CI #234 compiled and ran 53 Android tests; 51 passed, 2 failed. The subtitle-off action still did not produce a selected accessibility node despite the parameter observer. Added an immediate assertion that Media3 marks text tracks disabled after the row action; this distinguishes engine selection from Compose selected semantics.
+- The poster bounds stayed at its dock-clipped Home coordinates because the test scroll action made no progress. Removed that helper; Home is tested for hero/Play, then the Movies destination is opened before verifying full portrait-card geometry and capturing `movies.png`.
+- `git diff --check` and resource XML validation pending; CI #235 pending.
+- Next: inspect whether Media3 state or semantic rendering is at fault, then continue Glass/performance and release-readiness batches.

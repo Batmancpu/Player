@@ -165,6 +165,10 @@ class LocalPlaybackAndroidTest {
             val offOption = awaitNode { it.contentDescription?.toString() == context.getString(com.batmancpu.player.R.string.player_subtitles_off) }
             assertTrue("Subtitles-off row is accessible", offOption.isClickable)
             assertTrue("Subtitles-off row activates", offOption.performAction(AccessibilityNodeInfo.ACTION_CLICK))
+            assertTrue(
+                "Subtitles-off action updates Media3 track parameters",
+                C.TRACK_TYPE_TEXT in player.trackSelectionParameters.disabledTrackTypes,
+            )
             assertTrue("Selecting subtitles off marks the accessible row selected", awaitNode {
                 it.contentDescription?.toString() == context.getString(com.batmancpu.player.R.string.player_subtitles_off) && it.isSelected
             }.isSelected)

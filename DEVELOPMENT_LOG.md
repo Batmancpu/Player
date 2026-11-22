@@ -1484,3 +1484,8 @@ CI #209 / 44958254084 failed Kotlin compilation at `LocalLibraryScreen.kt:601`: 
 ## 2026-11-22 — Correct DisposableEffect cleanup import
 - CI #233 / 44974218075 failed before instrumentation at `compileDebugKotlin` due to `Unresolved reference 'onDispose'` from an invalid `androidx.compose.runtime.onDispose` import. The method is available on the `DisposableEffectScope` receiver, so removed the explicit import and retain `onDispose { player.removeListener(listener) }` in the effect body. No tests ran.
 - Next: rerun CI #234 to check compilation, subtitle selected state, scrolled poster bounds and all downstream gates.
+
+## 2026-11-22 — CI #234 diagnostics and destination-based artwork check
+- CI #234 / 44974536206 compiled the app and ran 53 Android tests; 51 passed, 2 failed. The picker row was found and its ACTION_CLICK succeeded, but no selected accessibility node appeared after activation even with `onTrackSelectionParametersChanged` observed. Added a direct assertion that `C.TRACK_TYPE_TEXT` is in `player.trackSelectionParameters.disabledTrackTypes` immediately after clicking Off. That separates an engine policy failure from Compose/Accessibility selected-state rendering.
+- The poster test remained at bounds `Rect(20, 503 - 176, 551)`: the supposed accessible scroll action did not move the Home list. Removed that fragile helper and now navigates to Movies before verifying/capturing the complete poster card. The Home test separately verifies its hero and Play action.
+- `git diff --check` and Android resource XML parsing pending. CI #235 will validate. No device-performance claim or APK.

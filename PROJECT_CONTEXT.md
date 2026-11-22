@@ -488,3 +488,6 @@ CI #232 / 44973573949: 51/53 Android tests pass. Track option click exists but s
 
 ## 2026-11-22 — CI #233 compile correction
 CI #233 / 44974218075 stopped at app compile: `onDispose` is a `DisposableEffectScope` member, not importable as a top-level symbol. Removed the invalid import; no Android tests ran. CI #234 pending.
+
+## 2026-11-22 — CI #234 follow-up
+CI #234 / 44974536206: app compiled, 51/53 Android tests passed. Picker click succeeds but selected node is absent; test now first asserts Media3's text-track-disabled state. Poster bounds remained at dock-clipped Home coordinates, so portrait check moves to the full Movies destination instead of relying on a no-op scroll action. CI #235 pending.
