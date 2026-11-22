@@ -506,8 +506,11 @@ internal fun LocalLibraryContent(
                                 style = MaterialTheme.typography.bodySmall,
                                 color = PlayerPalette.textSecondary,
                             )
-                            !lookup.settingsEnabled || !lookup.credentialConfigured -> {
-                                Text(stringResource(R.string.metadata_lookup_setup_required), color = PlayerPalette.textSecondary)
+                            !lookup.credentialConfigured -> {
+                                Text(stringResource(R.string.metadata_lookup_shared_key_missing), color = PlayerPalette.textSecondary)
+                            }
+                            !lookup.settingsEnabled -> {
+                                Text(stringResource(R.string.metadata_lookup_consent_required), color = PlayerPalette.textSecondary)
                                 OutlinedButton(
                                     onClick = { selectedKey = null; onOpenMetadataSettings() },
                                     modifier = Modifier.fillMaxWidth(),
@@ -526,7 +529,9 @@ internal fun LocalLibraryContent(
                                     MetadataLookupIssue.RATE_LIMITED -> R.string.metadata_lookup_rate_limited
                                     MetadataLookupIssue.UNAVAILABLE -> R.string.metadata_lookup_unavailable
                                     MetadataLookupIssue.INVALID_RESPONSE -> R.string.metadata_lookup_invalid_response
-                                    MetadataLookupIssue.NEEDS_SETUP -> R.string.metadata_lookup_setup_required
+                                    MetadataLookupIssue.NEEDS_SETUP -> if (lookup.credentialConfigured) {
+                                        R.string.metadata_lookup_consent_required
+                                    } else R.string.metadata_lookup_shared_key_missing
                                     MetadataLookupIssue.STALE_LIBRARY -> R.string.metadata_lookup_stale
                                     MetadataLookupIssue.LOCAL_ERROR -> R.string.metadata_lookup_local_error
                                     MetadataLookupIssue.NO_SAFE_TITLE, null -> null

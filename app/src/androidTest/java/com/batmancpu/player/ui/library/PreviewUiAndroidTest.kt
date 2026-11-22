@@ -667,8 +667,38 @@ class PreviewUiAndroidTest {
         }
     }
 
-    @Test(timeout = 25_000) fun metadataSettingsOpenCreditsAndShowTheRequiredAttribution() {
+    @Test(timeout = 25_000) fun keylessTitleDetailsDoNotAskViewerToConnectPersonalTmdbAccount() {
         val activity = launch()
+        val file = DiscoveredLocalMedia("movie-A", "Aurora.2022.mp4", LocalMediaKind.VIDEO)
+        try {
+            instrumentation.runOnMainSync {
+                activity.setContent {
+                    PlayerTheme {
+                        LocalLibraryContent(
+                            LocalFolder("synthetic-tree", "Synthetic local folder"),
+                            LibrarySessionState(tree = "synthetic-tree", media = listOf(file), hasCompletedScan = true),
+                            CatalogueSnapshot("synthetic-tree", LocalCatalogue.build(listOf(file))),
+                            onScan = {}, onCancel = {}, scanStillRunning = { false }, onChooseFolder = {},
+                            onPlay = {}, onOpenGlassLab = {},
+                            metadataState = MetadataLookupUiState(
+                                tree = "synthetic-tree", titleKey = "file:movie-A", searchable = true,
+                            ),
+                        )
+                    }
+                }
+            }
+            clickTitleCard("Aurora")
+            revealByScrolling("Player’s shared TMDB access is not included in this build yet. You do not need to connect a personal account or add a key; your library remains available offline.")
+            assertNull("A keyless release cannot be repaired through a personal token screen", find {
+                it.text?.toString() == "Metadata privacy settings"
+            })
+        } finally {
+            instrumentation.runOnMainSync { activity.finish() }
+        }
+    }
+
+    @Test(timeout = 25_000) fun metadataSettingsOpenCreditsAndShowTheRequiredAttribution() {
+        var activity = launch()
         val opened = AtomicInteger(0)
         try {
             instrumentation.runOnMainSync {
@@ -688,8 +718,10 @@ class PreviewUiAndroidTest {
                     }
                 }
             }
-            revealByScrolling("The shared TMDB connection is not configured for this build yet. Player does not ask each person for a token; your local library and playback continue to work offline.")
+            revealByScrolling("Shared TMDB access is not included in this build yet. You do not need your own key; your library and playback continue to work offline.")
             assertNull("Settings must not request a per-user API token", find { it.text?.toString() == "API Read Access Token" })
+            instrumentation.runOnMainSync { activity.finish() }
+            activity = launch()
             instrumentation.runOnMainSync {
                 activity.setContent {
                     PlayerTheme {
@@ -710,10 +742,10 @@ class PreviewUiAndroidTest {
                     }
                 }
             }
-            revealByScrolling("Player’s shared TMDB connection is available. It is a public app credential and can be extracted from the APK. Requests start only after you enable metadata.")
-            assertNull("The shared credential is never shown or requested in settings", find { it.text?.toString() == "API Read Access Token" })
             click(text("About and credits"))
             assertEquals(1, opened.get())
+            revealByScrolling("Player’s shared TMDB access is included in this build. It is a public app credential and can be extracted from the APK. Requests start only after you allow metadata.")
+            assertNull("The shared credential is never shown or requested in settings", find { it.text?.toString() == "API Read Access Token" })
             instrumentation.runOnMainSync {
                 activity.setContent { PlayerTheme { com.batmancpu.player.ui.metadata.MetadataCreditsScreen(onBack = {}) } }
             }

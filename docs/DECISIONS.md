@@ -219,3 +219,6 @@ The official VideoLAN `libvlc-all` Maven package is available for Android; curre
 
 #### D-037 implementation follow-up — 2026-11-22
 The source now includes opt-in enrichment of currently composed foreground Home/grid cards, capped at 12, serialized at 800 ms, with cancellation and app-private offline image rendering. CI #255 compiled and ran 58 Android 15 tests; the automatic match/cache and atomic suppression tests passed. Two unrelated Compose accessibility timing/viewport test helpers failed and are fixed locally. A cancellation/re-entry race correction plus test awaits CI. No APK or live request is available: the publisher credential remains unconfigured. TMDB still receives the public app auth credential and connection IP; no paths/media/subtitles are in request fields.
+
+#### D-037 UI clarification — publisher setup versus viewer consent (2026-11-22)
+A missing app-level credential is a release-publisher condition, not a user setup step. Details must not present it as a personal “connection” action. Once the public shared credential is present, the user gets a separate default-off local consent switch with network/IP/key disclosure. This clarification is implemented locally; CI #256 does not include it, and verification remains pending.

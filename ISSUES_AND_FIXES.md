@@ -685,3 +685,14 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 - **Fix under test:** click helper resolves fresh accessibility snapshots for up to 3 seconds until the target is clickable and includes active-window diagnostics; both long status assertions scroll explicitly.
 - **Verification:** pending CI #256; no APK/Release. The separate JVM/debug/schema/privacy job was skipped because instrumentation had failures.
 - **Next:** validate the updated UI helpers together with cancelled card requeue, then continue the metadata batch only after a fully green workflow.
+
+## 2026-11-22 — R-048 Missing publisher key offered a dead-end user connection action
+- **Symptom:** Details could say to open “connection settings” whenever credentials or local consent were absent. In a keyless release the settings screen cannot create publisher-level TMDB access, so it could read as a request for the viewer's personal token.
+- **Root cause:** The UI combined missing shared app credential and disabled local consent into one branch and used old connection-oriented copy.
+- **Fix under test:** Split the states. Missing app key now states no personal account/key is required and offers no dead-end button. Configured key with consent off links to local metadata privacy settings. Settings strings explain the shared key is app-level, public/extractable, and remove unused personal-token entry copy.
+- **Verification:** local/unverified; CI #256 predates this change. Next full CI #257. No APK/Release.
+
+## 2026-11-22 — R-049 CI #256 offscreen credits test
+- Evidence: CI #256 / 44990549563 ran 58 Android 15 tests; 57 passed. The sole failure reused a scrolled activity for two different settings states and attempted an offscreen About row.
+- Fix under test: relaunch between states; exercise About before scrolling the status copy. Product detail states also now separate missing publisher key from disabled consent, avoiding a personal-key prompt/dead-end action. Added a keyless-details regression.
+- Verification: local Python/XML/diff checks pass; next full GitHub Actions run required. No APK/Release.
