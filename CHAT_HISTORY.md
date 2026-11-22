@@ -775,3 +775,6 @@ Published signed brrPlayer v0.1.272 from CI #272 (`45001848034`, commit `8abf4a9
 
 ### 2026-11-22 — Continue after v0.1.272: local artwork batch
 The signed Glass/offline batch is published and docs record its release/hash/checklist. I continued into local artwork rather than pausing for a phone report. Added SAF-bounded sibling image resolution/matching for JPG/JPEG/PNG/WebP, exact video/title names and carefully limited generic covers; no network, media-byte reads, or writes. UI cards/hero prefer this local artwork. Added JVM matcher and Python privacy contract tests (19 Python checks now pass). Kotlin/CI and visual behavior are not yet verified; no new APK. Next: commit, inspect CI, fix issues, then one next-batch APK after green.
+
+### Local art CI #276 and matcher corrections
+CI #276 passed Android compilation and all 59 Android 15 tests. The JVM suite found one incorrect expected string in the new local art matcher test (expected display name, actual candidate document ID); test is corrected. A further false-positive review added protection against assigning a generic series poster in a folder with episodes from multiple shows. CI #277 needed for unit/JVM verification; no APK.

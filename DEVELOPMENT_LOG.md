@@ -1713,3 +1713,6 @@ CI #274 (`45003978652`, commit `9908617`) compiled the local art implementation 
 
 ### CI #275 — one companion object and row-count bound
 CI #275 (`45004500275`, commit `9c833d1`) failed at Kotlin compile because the guarded factory companion and constants companion conflicted. Combined the factory and constants in one companion object. The same correction counts all cursor rows toward the 2,048 sibling limit, so directories/non-media entries cannot bypass the query bound. Updated Python source-contract test. Local suite: 19/19; diff whitespace passes; Android/Kotlin still awaits CI #276. No APK.
+
+### CI #276 — Android UI passed; matcher expectation and mixed-series safety
+CI #276 (`45010374889`, `d6934c5`) passed Kotlin compile and all 59 Android 15 tests, including invalid synthetic-tree fallback. The separate unit test job failed one matcher assertion because it expected `poster` rather than the fixture's document ID `art-poster`; implementation behavior was correct. Corrected the expected ID. Additional edge review found a generic series poster could apply in a directory containing episodes from multiple different shows. It now permits generic series art only if sibling episodes resolve to that one series, and a JVM regression covers mixed shows. Local 19 Python checks and diff check pass; Android/JVM rerun pending, no APK.

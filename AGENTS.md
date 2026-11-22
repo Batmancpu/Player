@@ -700,3 +700,6 @@ CI #274 (`45003978652`, commit `9908617`) compiled but 7 Android UI tests failed
 
 ## 2026-11-22 — CI #275 resolver companion correction
 CI #275 (`45004500275`, commit `9c833d1`) stopped at Kotlin compilation: the guarded URI factory and listing bounds had been put in separate companion objects, which Kotlin forbids. Merged them into the one companion, and tightened the cursor bound to count every directory row (not only files) so a directory containing many subfolders is bounded too. Updated the source-contract check. Local 19 Python tests and `git diff --check` pass. Next: commit and inspect full CI #276; local-artwork feature remains unreleased.
+
+## 2026-11-22 — CI #276 matcher assertion and mixed-series guard
+CI #276 (`45010374889`, commit `d6934c5`) passed all 59 Android 15 integration tests, but the JVM job found one new matcher test expected a display filename rather than its actual document ID (`art-poster`). Corrected the assertion. Also tightened generic series-art matching: when a sibling listing contains episode files, a generic poster is accepted only if they all identify the same series; mixed-show folders now fall back. Added that regression. Local Python checks (19) and `git diff --check` pass; Kotlin/JVM revalidation awaits CI #277. No APK.

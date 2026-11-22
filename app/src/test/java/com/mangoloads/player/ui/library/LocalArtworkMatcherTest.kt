@@ -24,10 +24,17 @@ class LocalArtworkMatcherTest {
     }
 
     @Test fun seriesCanUseOneFolderPosterAndImageMustBeSupported() {
-        val video = video("Example.Show.S01E01.mkv")
-        val title = LocalTitle("series:example", "Example Show", null, true, listOf(video))
-        assertEquals("poster", LocalArtworkMatcher.choose(title, video, listOf(image("poster.jpg"))))
-        assertNull(LocalArtworkMatcher.choose(title, video, listOf(image("poster.svg"))))
+        val episode = video("Example.Show.S01E01.mkv")
+        val title = LocalTitle("series:example", "Example Show", null, true, listOf(episode))
+        assertEquals("art-poster", LocalArtworkMatcher.choose(title, episode, listOf(videoCandidate(episode), image("poster.jpg"))))
+        assertNull(LocalArtworkMatcher.choose(title, episode, listOf(image("poster.svg"))))
+    }
+
+    @Test fun seriesDoesNotInheritGenericArtFromAnotherShowInSharedFolder() {
+        val episode = video("Example.Show.S01E01.mkv")
+        val otherShow = videoCandidate(video("Another.Show.S01E01.mkv"))
+        val title = LocalTitle("series:example", "Example Show", null, true, listOf(episode))
+        assertNull(LocalArtworkMatcher.choose(title, episode, listOf(otherShow, image("poster.jpg"))))
     }
 
     private fun movie(title: String, year: Int, name: String) = LocalTitle(
@@ -39,5 +46,11 @@ class LocalArtworkMatcherTest {
     private fun image(name: String) = LocalArtworkCandidate(
         documentId = "art-${name.substringBeforeLast('.')}", displayName = name, mimeType = "image/${name.substringAfterLast('.')}"
             .replace("jpg", "jpeg"),
+    )
+
+    private fun videoCandidate(media: DiscoveredLocalMedia) = LocalArtworkCandidate(
+        documentId = media.documentId,
+        displayName = media.displayName,
+        mimeType = "video/x-matroska",
     )
 }

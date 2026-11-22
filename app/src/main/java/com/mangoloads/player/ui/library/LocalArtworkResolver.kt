@@ -24,6 +24,13 @@ internal object LocalArtworkMatcher {
         val videoStem = normalized(video.displayName)
         val titleStem = normalized(title.title + (title.year?.toString().orEmpty()))
         val videoCount = siblings.count { isVideo(it.displayName, it.mimeType) }
+        val siblingSeries = siblings.asSequence()
+            .filter { isVideo(it.displayName, it.mimeType) }
+            .mapNotNull { (MediaNameParser.parse(it.displayName) as? ParsedMediaName.Episode)?.series }
+            .map(::normalized)
+            .toSet()
+        val genericSeriesAllowed = title.isSeries &&
+            (siblingSeries.isEmpty() || siblingSeries == setOf(normalized(title.title)))
         return siblings.asSequence()
             .filter(::isImage)
             .mapNotNull { image ->
@@ -35,7 +42,7 @@ internal object LocalArtworkMatcher {
                     imageStem == titleStem -> 400
                     stripped == titleStem -> 350
                     title.isSeries && stripped == normalized(title.title) -> 300
-                    title.isSeries && imageStem in genericNames -> 200
+                    genericSeriesAllowed && imageStem in genericNames -> 200
                     videoCount == 1 && imageStem in genericNames -> 150
                     else -> return@mapNotNull null
                 }

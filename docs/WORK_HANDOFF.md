@@ -69,3 +69,6 @@ New `LocalArtworkResolver.kt` performs lazy, read-only lookup of exact-title and
 CI #274 compiled source, then 7 Android synthetic UI tests failed because their placeholder `synthetic-tree` string is not a DocumentsContract tree URI. A guarded `LocalArtworkResolver.create` now returns null for invalid/non-tree/unsupported-authority fixture values; screen cards fall back to original placeholder visuals. 19 Python tests and diff checks pass. Next: CI #275; inspect compile, unit/JVM matcher and Android suite. This feature remains unreleased.
 
 CI #275 compile correction: Kotlin permits one companion object per class; merged the guarded factory and the bounded listing/cache constants. Also made the SAF row-count bound apply to directories and files. Local 19 Python checks pass; run #276 must verify Android compilation and integration. No APK.
+
+### CI #276 local artwork update
+All Android 15 tests passed under CI #276; JVM unit tests failed only the new poster test's expected document ID (`art-poster`). The test is corrected. Matcher now also refuses a generic TV poster when sibling episodes belong to multiple series, with a regression test. Local Python checks/diff pass; rerun CI #277. No candidate APK.
