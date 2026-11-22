@@ -61,8 +61,8 @@ Implementation steps in small commits:
 ## Phase 2 — TMDB identification, artwork and offline metadata
 
 **User-visible outcome:** recognizable posters/backdrops/details for local titles; pending/ambiguous matching states and manual correction; previously indexed media/metadata/artwork browsable offline.
-- Confirm privacy-safe direct TMDB API credential model. No shared extractable APK secret, Player server or proxy. Credential optional; no metadata when absent.
-- Match normalized titles/year/type, never local path, document URI, raw filename or video bytes. Match series once; resolve season/episode identity separately.
+- Use a publisher-configured Player-wide TMDB application credential so users do not configure individual accounts. This is an extractable public client identifier in a no-backend APK, never a secret; keep it out of source/logs. Require one explicit local metadata opt-in; no credential or opt-in means no metadata request. No Player server/proxy.
+- Send only normalized title/year/type to the approved TMDB API; do not send local path, document URI, full filename or video bytes. Deduplicate/throttle safely; auto-apply only strong, unambiguous title/year matches; preserve manual corrections and resolve episode identity locally.
 - Rate limits, timeouts, conservative candidate ranking, retries/cancellation, no ambiguous automatic overwrite, persistent user overrides.
 - Download validated TMDB image URLs to bounded app-private cache, use maintained image loader and preserve downloaded offline metadata.
 - Verify TMDB credits/approved logo, privacy requests and all failure/offline modes.
@@ -214,6 +214,11 @@ The user requested a signed APK checkpoint now and wants implementation to conti
 - CI #203 / 44952898549 passed 50/50 Android 15 instrumentation tests, unit tests, app build and Room v1-v4 schema export. This verifies the production navigation selected-state announcements and local playback-speed menu selection.
 - Release-specific signing, manifest and certificate jobs were skipped on the development push. No APK or release was produced. OPPO device experience and performance remain unverified.
 - Next engineering slice: address the user's Glass Lab dock report, continue subtitle/player controls, then production Glass and the final efficiency/performance review before one integrated signed APK.
+
+## 2026-11-22 — Caption controls batch: CI verified, release run pending
+- Local playback now has persisted, bounded subtitle text-size and bottom-position controls that operate on Media3's independent caption viewport (captions remain outside video Fit/Fill/Zoom transforms). The dedicated sheet opens expanded, scrolls with navigation insets, provides reset and accessible range/set-progress actions.
+- CI #247 passed 55/55 Android 15 tests, JVM unit tests, debug assembly, Room v1–v4 schema checks and release-checker fixtures. Reviewed the 320×640 screenshot; Reset and both sliders are in safe bounds. The ordinary development push skipped release-only manifest/signature checks, so one release-trigger run remains before this batch APK.
+- Next: run a signed release candidate through the existing permanent-certificate workflow, then continue to automatic normalized-title TMDB lookup/artwork implementation and tests. No Reno10 performance or phase acceptance is implied.
 
 
 ## 2026-11-21 build correction
