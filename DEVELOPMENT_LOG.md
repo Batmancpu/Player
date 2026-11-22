@@ -1672,3 +1672,7 @@ Added instrumentation coverage asserting that scrolling collapses the dock while
 
 ### Glass batch source commit and CI start
 Committed and pushed `51be014` (`release(test): integrate brrMusic glass dock`) directly to main. GitHub Actions release candidate #263 / `44997836152` is queued/running against that exact SHA; no APK has been produced yet. Worktree is clean. Local test results remain 17/17 Python, 21/21 XML parse, and passing `git diff --check`. Next: inspect Android instrumentation and signed release jobs, repair any failures, and only report an APK if the one candidate passes signing/privacy checks.
+
+
+### Handoff correction — CI run is executing against committed source
+Updated the active handoff to distinguish the pushed Glass commit from its still-pending CI/release result. No app source changed. Next: inspect run #263 and record its instrumentation, screenshot, signature and publication outcome.
