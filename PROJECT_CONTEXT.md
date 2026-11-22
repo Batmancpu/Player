@@ -537,3 +537,7 @@ Main commit `b6a08d6` compiled production and androidTest sources; 58/59 Android
 
 ## 2026-11-22 — CI #258 result
 Commit `76ae8d7` passed full non-release CI: Android 15 instrumentation 59/59; Python release-checker fixtures, unit tests, CI-only debug assembly and Room v1–v4 schema checks passed. Release-only signing, manifest, signature and GitHub publication steps were skipped by the normal push trigger. No APK/release. Automatic title/artwork source is green but no TMDB results occur until `PLAYER_TMDB_READ_ACCESS_TOKEN` is set once by the repository publisher. No user token is requested; consent remains explicit/default-off. Next: production Glass/navigation/player batch, with OPPO acceptance/performance pending.
+
+
+## 2026-11-22 — Identity and Glass source clarification
+The first brrPlayer signed APK is v0.1.262 (versionCode 262), package `com.mangoloads.player`, release link https://github.com/Batmancpu/Player/releases/tag/v0.1.262. It coexists with legacy `com.batmancpu.player`; Android will not migrate the legacy app's Room database or persisted folder grant. The APK is the identity/offline-preview batch and does not contain the new Glass engine. The user clarified the Music app is the only Liquid Glass code/behavior reference; the keyboard app is icon inspiration only, with no keyboard code/art reuse. The current uncommitted Glass integration is tracked in `docs/WORK_HANDOFF.md` and `docs/GLASS_ENGINE_REVIEW.md`; CI and OPPO checks remain pending.

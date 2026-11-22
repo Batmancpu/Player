@@ -19,11 +19,11 @@ Persist indexed files, matches, metadata and artwork locally. Previously indexed
 ### D-005 — Apple-inspired, content-first visual language
 Apple TV cinematic media presentation; iOS 27-inspired Liquid Glass for functional controls only. Do not apply Glass indiscriminately to posters.
 
-### D-006 — Do not transplant FC Zenith's Glass implementation wholesale
-Use FC Zenith as a visual/engineering reference. Its implementation depends on Zenith-specific settings, composition locals, player/navigation state and vendored Backdrop internals.
+### D-006 — Do not transplant FC Zenith's Glass implementation wholesale (superseded by D-038)
+Historical decision. Its application-specific code required adaptation; the later explicit user instruction authorizes the selected brrMusic Glass renderer and generic collapse behavior, integrated as brrPlayer components with provenance and license compliance.
 
-### D-007 — Haze 2.1.0 is the first Glass proof-of-concept candidate
-Proposed pending build/device validation. Its stable Glass API requires matching Kotlin 2.4.21 and Compose Multiplatform 1.12.2; upgrade in isolated commits. The library release is not proof of OPPO compatibility.
+### D-007 — Haze 2.1.0 was the first Glass proof-of-concept candidate (superseded by D-038)
+Historical experiment; Haze is not an app dependency after the brrMusic renderer integration.
 
 ### D-008 — No custom native UI/rendering path in v1
 Do not add custom C/C++, NDK, JNI, native shader libraries, experimental native window-backdrop or custom RenderEffect rendering for the UI. The user's CurrentLens history includes an OPPO CPH2531 Android 15 native SIGSEGV, although the exact root cause is unverified. This decision does not automatically prohibit a third-party native media decoder; that requires the separate playback-engine and licensing review in O-006.
@@ -45,7 +45,7 @@ CI build/test success and OPPO handset validation must be reported separately.
 - **O-002 Local provider support:** initially support Android external-storage DocumentsProvider; add OPPO/OEM authorities only after testing; unknown providers default-deny.
 - **O-003 SDK floor:** choose minSdk/targetSdk after the project skeleton and SAF capability check; do not inherit Flux's values blindly.
 - **O-004 Brand/package/signing:** Player is temporary. Do not change package identity or signing after release without a migration plan.
-- **O-005 Glass engine:** compare Haze 2.1.0 against the FC Zenith Backdrop reference on CPH2531 before final adoption.
+- **O-005 Glass engine:** resolved by D-038. Integrate the inspected brrMusic renderer; OPPO performance and visual acceptance remain open device checks.
 - **O-006 Playback engine:** compare current AndroidX Media3 with LibVLC for local SAF URIs, real container/codec coverage, embedded track selection, external subtitles, hardware decoding, smoothness on CPH2531, APK/ABI footprint and full licence obligations. Media3 is the first candidate, not a final selection. Reassess the current stable release at implementation time; 1.11.1 was the official stable release shown on 2026-11-14.
 - **O-007 Subtitle search/download provider:** evaluate provider API terms, supported languages/releases, account/key requirements, rate limits, privacy, availability and file licensing before selecting one. Send only normalized media identifiers; never send local paths, full filenames, SAF URIs or video/subtitle contents.
 
@@ -71,16 +71,12 @@ CI build/test success and OPPO handset validation must be reported separately.
 **Reason:** Lucide is a consistent, permissively licensed line-icon family; selective vectors reduce the asset footprint and avoid bundling the full library or Apple-owned SF glyph artwork.
 
 
-### D-015 — Use Haze source-backed rendering; keep experimental native window backdrop disabled
-**Status:** Accepted  
-**Decision:** The Glass lab and initial implementation use explicit HazeInput.Sources and hazeSource. Do not enable HazeFeatureFlags.isPlatformBackdropEnabled or use the experimental native Android window-backdrop path in v1.  
-**Reason:** Native Android window-backdrop rendering is experimental, eligible only on Android 17/API 37.2+ and can draw a frame without source input when unavailable. The target device is Android 15. Haze source-backed rendering is the controllable cross-version path and must be benchmarked on the actual handset.
+### D-015 — Haze source-backed rendering (historical; superseded by D-038)
+The previous Haze experiment was source-backed and did not use Android 17 native window backdrop. Haze was removed when the user directed reuse of brrMusic Glass. The platform-native backdrop remains out of scope.
 
  
-### D-016 — First Glass screen is a source-backed laboratory
-**Status:** Accepted  
-**Decision:** Implement an isolated Glass lab with a fixed local artwork/gradient source, one small four-control morphing cluster and explicit disabled/fallback path. Use Haze 2.1.0 stable API, HazeInput.Sources, hazeSource and Default/Balanced performance.  
-**Reason:** Proves the visual engine on the target Android codebase without mixing it with media scanning, TMDB or main library UI. Avoids the experimental native Android window-backdrop path.
+### D-016 — First Glass screen was a source-backed Haze laboratory (historical; superseded by D-038)
+The lab is now intended to exercise the same brrMusic-backed renderer and dock as the library using generated local artwork only.
 
 ### D-017 — Local playback and subtitle controls are approved product scope
 **Status:** Accepted (user instruction, 2026-11-14)  

@@ -800,12 +800,19 @@ class PreviewUiAndroidTest {
             }
             val metrics = context.resources.displayMetrics
             val dockTop = metrics.heightPixels - (114 * metrics.density).toInt()
+            val expandedHome = awaitNode { it.contentDescription?.toString() == "Home" }
+            val expandedHomeBounds = Rect().also(expandedHome::getBoundsInScreen)
             listOf("Beyond", "Nocturne", "Stillwater").forEach { title ->
                 val artworkTitle = revealAboveFloatingDock(title, dockTop)
                 val bounds = Rect().also { artworkTitle.getBoundsInScreen(it) }
                 assertTrue("$title clears the floating Glass dock: $bounds vs dock top $dockTop", bounds.bottom <= dockTop)
             }
-            assertNotNull("The dock remains accessible while artwork scrolls", find { it.contentDescription?.toString() == "Home" })
+            val collapsedHome = awaitNode { it.contentDescription?.toString() == "Home" }
+            val collapsedHomeBounds = Rect().also(collapsedHome::getBoundsInScreen)
+            assertTrue(
+                "Scrolling down collapses the accessible dock tab",
+                collapsedHomeBounds.height() < expandedHomeBounds.height(),
+            )
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
         }

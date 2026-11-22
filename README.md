@@ -10,6 +10,7 @@
   <a href="https://github.com/Batmancpu/Player/actions/workflows/ci.yml"><img alt="Android CI" src="https://github.com/Batmancpu/Player/actions/workflows/ci.yml/badge.svg?branch=main"></a>
   <img alt="Android 10 and newer" src="https://img.shields.io/badge/Android-10%2B-3DDC84?logo=android&logoColor=white">
   <img alt="Local first" src="https://img.shields.io/badge/library-local--first-3978FF">
+  <img alt="GPL-3.0 license" src="https://img.shields.io/badge/license-GPL--3.0-blue">
 </p>
 
 <p align="center"><sub>The banner is original generated concept art, not an app screenshot. It is a visual direction, not a claim that every illustrated finish is already implemented.</sub></p>
@@ -37,7 +38,7 @@ See [storage and privacy rules](docs/UPSTREAM_AND_PRIVACY.md) and [architecture]
 
 The requested identity is **brrPlayer**, package `com.mangoloads.player`. The older signed Player app used `com.batmancpu.player`; Android treats these as separate apps. A brrPlayer release therefore installs alongside the legacy app and cannot automatically inherit its saved folder grant or library database. The existing release signing certificate is preserved.
 
-The latest published APK belongs to the legacy package: [Player v0.1.250](https://github.com/Batmancpu/Player/releases/tag/v0.1.250). The brrPlayer identity and visual assets are in development; this README does not imply that the new signed package has already been released. New signed APKs will be published once a substantial batch passes automated privacy, identity and signing checks.
+The prior legacy APK is [Player v0.1.250](https://github.com/Batmancpu/Player/releases/tag/v0.1.250). brrPlayer v0.1.262 is the first signed APK for the new package. It installs alongside the old app and requires first-time folder selection. Later brrPlayer versions update this package in place. See [GitHub Releases](https://github.com/Batmancpu/Player/releases/tag/v0.1.262).
 
 The user reported that v0.1.79 found four local videos, displayed their names and years, retained the library after an airplane-mode restart and switched folders correctly. Later catalogue, Media3 playback and caption work has emulator/CI coverage; it still needs real-device checks on the OPPO Reno10 5G. No FPS, heat or battery target is claimed without measurements on that handset.
 
@@ -70,8 +71,8 @@ Implementation continues between checkpoints. A phone acceptance report is still
 ## Design references
 
 - [Apple Human Interface Guidelines — Materials](https://developer.apple.com/design/human-interface-guidelines/materials)
-- [Haze Glass documentation](https://chrisbanes.github.io/haze/2.1.0/)
-- [brrMusic](https://github.com/Batmancpu/brrMusic) — Glass engine and dock interaction research only, subject to its license and attribution.
+- [brrMusic](https://github.com/Batmancpu/brrMusic) — source for the adapted Liquid Glass renderer integration and collapsing dock only; GPL-3.0 notices are retained. Its music screens are not reused.
+- brrrBoard is consulted only for broad launcher-icon identity inspiration; no keyboard-app code or artwork is included.
 - [brrrBoard](https://github.com/Batmancpu/brrrBoard) — icon-design inspiration only; no keyboard UI, artwork or code is included.
 - [TMDB API documentation](https://developer.themoviedb.org/docs/getting-started)
 

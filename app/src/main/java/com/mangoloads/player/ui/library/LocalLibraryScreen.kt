@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.onClick
@@ -52,6 +53,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mangoloads.player.R
 import com.mangoloads.player.ui.glass.PlayerGlassDock
+import com.mangoloads.player.ui.glass.LocalAppBackdrop
+import com.mangoloads.player.ui.glass.LocalLiquidGlassEnabled
+import com.mangoloads.player.ui.glass.LocalReduceMotion
+import com.mangoloads.player.ui.glass.isGlassSupported
+import com.mangoloads.player.ui.glass.backdrop.backdrops.rememberLayerBackdrop
+import com.mangoloads.player.ui.glass.backdrop.backdrops.layerBackdrop
+import com.mangoloads.player.ui.glass.floatingtabbar.rememberFloatingTabBarScrollConnection
 import com.mangoloads.player.ui.glass.PlayerUiSettingsStore
 import com.mangoloads.player.ui.icons.PlayerGlyph
 import com.mangoloads.player.ui.icons.PlayerGlyphIcon
@@ -62,8 +70,6 @@ import com.mangoloads.player.ui.metadata.TmdbCandidate
 import com.mangoloads.player.ui.metadata.MetadataSettingsStore
 import com.mangoloads.player.ui.metadata.TmdbArtworkCache
 import com.mangoloads.player.ui.metadata.TmdbImageSize
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -206,36 +212,28 @@ internal fun LocalLibraryContent(
             scope.launch { snackbar.showSnackbar(started) }
         }
     }
-    val hazeState = rememberHazeState()
-    val glassSource = if (glassEnabled) Modifier.hazeSource(state = hazeState) else Modifier
+    val appBackdrop = rememberLayerBackdrop()
+    val dockScroll = rememberFloatingTabBarScrollConnection(
+        initialIsInline = false, inlineBehavior = com.mangoloads.player.ui.glass.floatingtabbar.FloatingTabBarInlineBehavior.OnScrollDown,
+    )
+    val reduceMotion = rememberSystemReduceMotion()
+    CompositionLocalProvider(
+        LocalLiquidGlassEnabled provides glassEnabled,
+        LocalReduceMotion provides reduceMotion,
+        LocalAppBackdrop provides appBackdrop,
+    ) {
+    Box(Modifier.fillMaxSize()) {
+    val glassSource = if (glassEnabled && isGlassSupported()) Modifier.layerBackdrop(appBackdrop) else Modifier
     Scaffold(
+        modifier = Modifier.nestedScroll(dockScroll).then(glassSource),
         containerColor = PlayerPalette.background,
         contentColor = PlayerPalette.textPrimary,
-        snackbarHost = { SnackbarHost(snackbar) },
-        contentWindowInsets = WindowInsets.safeDrawing,
-        bottomBar = {
-            PlayerGlassDock(
-                hazeState = hazeState,
-                enabled = glassEnabled,
-                selected = selectedDestination,
-                onSelected = { index ->
-                    selectedDestination = index
-                    selectedKey = null
-                    if (index == 3) {
-                        searchFocusRequester.requestFocus()
-                    } else {
-                        query = ""
-                        focus.clearFocus()
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .windowInsetsPadding(WindowInsets.navigationBars)
-                    .padding(horizontal = 18.dp, vertical = 8.dp),
-            )
-        },
+        snackbarHost = { SnackbarHost(snackbar, modifier = Modifier.padding(bottom = 112.dp)) },
+        contentWindowInsets = WindowInsets.safeDrawing.only(
+            androidx.compose.foundation.layout.WindowInsetsSides.Horizontal + androidx.compose.foundation.layout.WindowInsetsSides.Top,
+        ),
     ) { padding ->
-        Column(Modifier.fillMaxSize().padding(padding).padding(horizontal = 20.dp).then(glassSource)) {
+        Column(Modifier.fillMaxSize().padding(padding).padding(horizontal = 20.dp)) {
             Row(Modifier.fillMaxWidth().padding(top = 16.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
                     Text(stringResource(R.string.catalogue_kicker), style = MaterialTheme.typography.labelSmall, color = PlayerPalette.accentMuted)
@@ -292,7 +290,7 @@ internal fun LocalLibraryContent(
             } else if (query.isBlank() && filter == CatalogueFilter.ALL) {
                 val featuredTitle = movieShelf.firstOrNull() ?: seriesShelf.firstOrNull()
                 LazyColumn(
-                    contentPadding = PaddingValues(top = 16.dp, bottom = 24.dp),
+                    contentPadding = PaddingValues(top = 16.dp, bottom = 112.dp),
                     verticalArrangement = Arrangement.spacedBy(26.dp),
                 ) {
                     if (featuredTitle != null) {
@@ -344,7 +342,7 @@ internal fun LocalLibraryContent(
             } else {
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(132.dp),
-                    contentPadding = PaddingValues(top = 16.dp, bottom = 24.dp),
+                    contentPadding = PaddingValues(top = 16.dp, bottom = 112.dp),
                     horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(18.dp),
                 ) {
                     items(results, key = { it.key }) { title ->
@@ -581,6 +579,24 @@ internal fun LocalLibraryContent(
                 }
             }
         }
+    }
+    PlayerGlassDock(
+        selected = selectedDestination,
+        scrollConnection = dockScroll,
+        onSelected = { index ->
+            selectedDestination = index
+            selectedKey = null
+            if (index == 3) searchFocusRequester.requestFocus() else {
+                query = ""
+                focus.clearFocus()
+            }
+        },
+        modifier = Modifier.align(Alignment.BottomCenter)
+            .fillMaxWidth()
+            .windowInsetsPadding(WindowInsets.navigationBars)
+            .padding(horizontal = 18.dp, vertical = 8.dp),
+    )
+    }
     }
     if (settings) {
         ModalBottomSheet(

@@ -1,11 +1,12 @@
 # brrPlayer dependency attribution
 
-The Android release uses AndroidX / Jetpack (Android Open Source Project and contributors), Kotlin standard libraries and kotlinx.coroutines (JetBrains and contributors), and Haze (Chris Banes and contributors). These projects use the Apache License 2.0, included as APACHE_2_0.txt. Individual upstream copyright and applicable notices remain with their original owners.
+brrPlayer is distributed under GPL-3.0; the complete license is in `GPL-3.0.txt`. This app adapts the brrMusic Glass renderer integration and reusable collapsing navigation behavior at the pinned commit listed in the root `THIRD_PARTY_NOTICES.md`. It does not include brrMusic screens or music features.
 
-- AndroidX / Compose / Room / Activity / Core: https://android.googlesource.com/platform/frameworks/support/
-- AndroidX Media3 ExoPlayer/UI 1.11.1 (Android Open Source Project): https://github.com/androidx/media/tree/1.11.1 — Apache-2.0; no additional native codec package bundled.
-- Kotlin: https://github.com/JetBrains/kotlin
-- kotlinx.coroutines: https://github.com/Kotlin/kotlinx.coroutines
-- Haze 2.1.0 (core, Glass, Material integration): https://github.com/chrisbanes/haze/tree/2.1.0
+- Kyant0/backdrop 2.0.0: Apache-2.0; vendored Android renderer with per-file notices. Full license: `APACHE_2_0.txt`.
+- Original floating tab-bar base: `elyesmansour/compose-floating-tab-bar` v1.0.1, Apache-2.0; modifications inherited from brrMusic are GPL-3.0.
+- `liquid_glass_easy` 4.3.4 selected-pill motion port: MIT; copyright Ahmed Gamil 2025; see `MIT_LIQUID_GLASS_EASY.txt`.
+- AndroidX/Jetpack, Media3, Kotlin and kotlinx.coroutines: Apache-2.0.
+- Coil Compose 3.6.3: Apache-2.0; no Coil network module is included.
+- Lucide adapted vectors: ISC/MIT notices in `LUCIDE_ICONS_LICENSE.md`.
 
-Lucide vector attribution and full ISC/MIT notices are in LUCIDE_ICONS_LICENSE.md. No Apple fonts, SF Symbols glyphs or proprietary graphics are distributed. Dependency versions are pinned in the Gradle build; no upstream application was transplanted.
+Full asset attribution and the app's changes are in the repository root `THIRD_PARTY_NOTICES.md`. No Apple proprietary fonts or symbols are bundled.

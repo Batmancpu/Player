@@ -704,3 +704,9 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 
 ## 2026-11-22 — R-050 verified by CI #258
 CI #258 (`44991846015`) passed the Android 15 suite (59/59), Python release-checker fixtures, JVM tests, CI-only debug build and Room v1–v4 schema checks. The transition settle fixes the regression. Release-only signing/manifest/certificate/publication gates were skipped on this normal push; no APK/Release exists. No remaining test issue in this batch.
+
+## 2026-11-22 — R-051 brrMusic Glass dock migration awaits Android CI
+- **Context:** User reported the previous Glass Lab/dock looked visually broken and clarified that brrMusic is the only Glass-engine/dock-motion reference; the keyboard app is icon-only inspiration.
+- **Change under verification:** Replaced Haze with the pinned brrMusic-derived Backdrop/FloatingTabBar implementation; detached source recording when Glass is off; adapted Home/Movies/Shows/Search and overlay placement; added system reduce-motion observation, attribution/licensing, and a scroll-collapse Android UI regression.
+- **Local evidence:** 17 Python tests pass, 21 main XML files parse, `git diff --check` passes. This execution environment has no Gradle wrapper/executable or Android SDK.
+- **Status:** Kotlin/Compose compilation, Android instrumentation, synthetic screenshots and signed Glass release are pending. There is no OPPO frame-time/thermal/battery or visual acceptance evidence. Fix all CI failures before producing one Glass-batch APK.

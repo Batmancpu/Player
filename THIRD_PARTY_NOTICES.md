@@ -1,41 +1,25 @@
 # Third-party notices
 
-This file records third-party code/assets shipped in the brrPlayer APK. Each included dependency or asset must retain its licence text and attribution.
+This file records code and assets shipped with brrPlayer. Each imported component retains its upstream license, copyright, and modification notes. The repository is distributed under GPL-3.0 because the integrated brrMusic Glass glue and collapse motion are GPL-3.0; see `LICENSE` and the packaged `app/src/main/assets/licenses/GPL-3.0.txt`.
 
-## Lucide icon assets
-- Source project: https://github.com/composablehorizons/compose-icons
-- Source release/tag: 2.2.1
-- Upstream module: `icons-lucide-android`
-- Assets adapted: house, clapperboard, TV, search.
-- Local files: `app/src/main/res/drawable/ic_player_*.xml`
-- Adaptation: vector stroke width changed from 2.0 to 1.8 for the app's optical scale.
-- License: ISC, with MIT terms for portions derived from Feather. The complete notice is packaged at `app/src/main/assets/licenses/LUCIDE_ICONS_LICENSE.md`.
+## brrMusic Glass integration and collapsing dock
+- Source application: https://github.com/Batmancpu/brrMusic
+- Pinned source commit reviewed: `654aecdb7b2777363db3585d1f59f3952aabb603`
+- License: GPL-3.0. Adapted Glass integration, floating dock collapse/expand behavior, and selection-pill interaction are used as an Android movie-library navigation control.
+- Scope: engine and generic navigation/collapse behavior only. No music-library screens, songs, mini-player, playback UI, or music branding were copied. Keyboard-app reference is limited to broad icon identity inspiration; no keyboard code/assets are included.
+- Original reusable floating tab bar: `elyesmansour/compose-floating-tab-bar` v1.0.1, Apache-2.0; its upstream notice is retained in the source header. brrMusic's inline/expanded animation modifications are GPL-3.0.
+- Selected pill motion port: `liquid_glass_easy` 4.3.4, MIT, Copyright (c) 2025 Ahmed Gamil. Notice packaged as `app/src/main/assets/licenses/MIT_LIQUID_GLASS_EASY.txt`.
 
-## Material caption icon
-- Source: Google Material Icons `closed_caption`, Apache License 2.0: https://developers.google.com/fonts/docs/material_icons
-- Local adaptation: `app/src/main/res/drawable/ic_player_captions.xml`, rendered as a 24dp vector for the player caption-appearance control.
-- The Apache-2.0 notice is already packaged in `app/src/main/assets/licenses/APACHE_2_0.txt`.
+## Backdrop renderer
+- Project: https://github.com/Kyant0/backdrop
+- Version: 2.0.0 (`io.github.kyant0:backdrop`)
+- Copyright 2025 Kyant0; Apache License 2.0.
+- Vendored Android Kotlin renderer in `app/src/main/java/com/mangoloads/player/ui/glass/backdrop/`. Per-file attribution is retained. Local changes: package rename, Android-only source consolidation, bounded resolution scaling, and one-pass recording/composition. Full Apache text is packaged as `APACHE_2_0.txt`.
 
-No Apple SF Symbols glyphs, Apple logos or SF font files are bundled.
+## Other bundled components
+- AndroidX/Jetpack, Kotlin/kotlinx.coroutines and Media3 1.11.1: Apache-2.0; full text in `APACHE_2_0.txt`.
+- Coil Compose 3.6.3: Apache-2.0; used for local app-private artwork files only; no Coil network module.
+- Lucide vectors: ISC/MIT-derived notices in `LUCIDE_ICONS_LICENSE.md`.
+- Material `closed_caption` vector: Apache-2.0.
 
-
-## Runtime libraries
-AndroidX/Jetpack (Android Open Source Project and contributors), Kotlin/kotlinx.coroutines (JetBrains and contributors), and Haze 2.1.0 (Chris Banes and contributors) use Apache-2.0. Packaged license/attribution: `app/src/main/assets/licenses/APACHE_2_0.txt` and `DEPENDENCIES.md`. Haze license verified at tag 2.1.0: https://github.com/chrisbanes/haze/blob/2.1.0/LICENSE. Build tooling and AndroidX Test/JUnit are development/test dependencies, not runtime feature additions. Retain upstream per-file copyright and any applicable NOTICE when adapting code.
-
-## AndroidX Media3 local playback
-Media3 ExoPlayer and UI 1.11.1, Android Open Source Project/contributors, Apache-2.0: https://github.com/androidx/media/tree/1.11.1 (LICENSE). Included through pinned Maven dependencies; packaged Apache-2.0 text and dependency attribution above apply. Uses platform decoders; no separate GPL/native codec bundle or Zenith application source is included.
-
-
-## Coil Compose image rendering
-- Dependency: `io.coil-kt.coil3:coil-compose:3.6.3`, Apache-2.0: https://github.com/coil-kt/coil/blob/3.6.3/LICENSE.txt
-- Used only to decode bounded brrPlayer app-private cached artwork from local `File` values. No Coil network module is included; metadata API and artwork CDN transports remain separate, explicit and bounded.
-- Apache-2.0 license text is packaged at `app/src/main/assets/licenses/APACHE_2_0.txt`.
-
-
-## Coil Compose
-Coil Compose 3.6.3 (Apache-2.0): https://github.com/coil-kt/coil/blob/3.6.3/LICENSE.txt. Used for local app-private artwork File decoding only; no network module. Apache text is already packaged in APACHE_2_0.txt.
-
-
-### Media3 player layout adaptation
-
-`app/src/main/res/layout/exo_player_view.xml` adapts the Media3 UI layout under the Apache License 2.0, moving `SubtitleView` outside the aspect-ratio content frame so captions do not inherit video resize/crop geometry. Original: https://github.com/androidx/media/blob/release/libraries/ui/src/main/res/layout/exo_player_view.xml
+No Apple SF Symbols, SF fonts, Apple logos, or proprietary artwork are bundled. README concept artwork and launcher identity artwork are original generated assets.

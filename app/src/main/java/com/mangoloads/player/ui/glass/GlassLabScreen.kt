@@ -31,6 +31,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +40,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -50,17 +52,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mangoloads.player.R
+import com.mangoloads.player.ui.glass.backdrop.backdrops.rememberLayerBackdrop
+import com.mangoloads.player.ui.glass.backdrop.backdrops.layerBackdrop
+import com.mangoloads.player.ui.glass.floatingtabbar.rememberFloatingTabBarScrollConnection
 import com.mangoloads.player.ui.icons.PlayerGlyph
 import com.mangoloads.player.ui.icons.PlayerGlyphIcon
 import com.mangoloads.player.ui.theme.PlayerCorners
 import com.mangoloads.player.ui.theme.PlayerPalette
 import com.mangoloads.player.ui.theme.PlayerSpacing
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.rememberHazeState
 
 /**
- * Temporary visual laboratory for tuning Haze Glass on a real Android device.
+ * Local visual laboratory for the brrPlayer Glass renderer; no network/media access.
  * All background artwork is generated locally; this screen makes no requests
  * and does not access the user's media folder.
  */
@@ -69,19 +71,29 @@ internal fun GlassLabScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {},
 ) {
-    val hazeState = rememberHazeState()
+    val appBackdrop = rememberLayerBackdrop()
+    val dockScroll = rememberFloatingTabBarScrollConnection(
+        inlineBehavior = com.mangoloads.player.ui.glass.floatingtabbar.FloatingTabBarInlineBehavior.OnScrollDown,
+    )
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     var glassEnabled by rememberSaveable { mutableStateOf(true) }
+    val glassSource = if (glassEnabled && isGlassSupported()) Modifier.layerBackdrop(appBackdrop) else Modifier
 
+    val reduceMotion = rememberSystemReduceMotion()
+    CompositionLocalProvider(
+        LocalLiquidGlassEnabled provides glassEnabled,
+        LocalAppBackdrop provides appBackdrop,
+        LocalReduceMotion provides reduceMotion,
+    ) {
     Box(
-        modifier = modifier
+        modifier = modifier.nestedScroll(dockScroll)
             .fillMaxSize()
             .background(PlayerPalette.background),
     ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .hazeSource(state = hazeState),
+                .then(glassSource),
         ) {
             GlassLabBackdrop(selectedTab = selectedTab)
 
@@ -255,12 +267,13 @@ internal fun GlassLabScreen(
         )
 
         PlayerGlassDock(
-            hazeState = hazeState, enabled = glassEnabled, selected = selectedTab,
+            selected = selectedTab, scrollConnection = dockScroll,
             onSelected = { selectedTab = it },
             modifier = Modifier.align(Alignment.BottomCenter)
                 .windowInsetsPadding(WindowInsets.navigationBars)
                 .padding(horizontal = 18.dp).padding(bottom = 14.dp),
         )
+    }
     }
 }
 
@@ -293,8 +306,13 @@ private fun ArtworkTile(
     subtitle: String,
     colors: List<Color>,
 ) {
+    CompositionLocalProvider(
+        LocalLiquidGlassEnabled provides glassEnabled,
+        LocalAppBackdrop provides appBackdrop,
+        LocalReduceMotion provides reduceMotion,
+    ) {
     Box(
-        modifier = modifier
+        modifier = modifier.nestedScroll(dockScroll)
             .height(142.dp)
             .clip(PlayerCorners.artwork)
             .background(Brush.verticalGradient(colors)),

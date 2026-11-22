@@ -238,3 +238,7 @@ CI #257 (`44991307788`) compiled app/test sources; 58/59 Android 15 tests passed
 
 ## 2026-11-22 — Metadata source CI verified
 CI #258 (`44991846015`, commit `76ae8d7`) passed all 59 Android 15 tests, release-checker fixtures, unit tests, debug assembly and Room v1–v4 schema verification. Release-only signing/privacy/certificate/publication steps were skipped on a regular source push. No Obtainium APK exists for this change. Automatic TMDB results still need the one-time publisher Actions credential; user-specific token setup is removed, while local opt-in remains explicit. Continue the next substantial Glass/navigation/player batch. Defer a single signed higher-version APK until the credential is present and all release-only gates pass.
+
+
+## 2026-11-22 — brrPlayer identity release and next Glass batch
+The signed identity/offline-preview build v0.1.262 passed the release gate and is published at https://github.com/Batmancpu/Player/releases/tag/v0.1.262. This is a new package; first-run SAF selection is required. It is not the brrMusic-backed Glass build. The user clarified that brrMusic is the sole Liquid Glass engine/dock reference and the keyboard app is only for icon inspiration. Current in-progress Glass changes replace Haze with the selected brrMusic renderer/dock and include GPL/third-party compliance, system reduced motion, effects-off fallback and collapse UI coverage. This batch remains pending CI and a later signed release; no OPPO smoothness/thermal claims are made.
