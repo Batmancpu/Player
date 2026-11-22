@@ -422,7 +422,7 @@ internal fun FlatSelectionPill(
                     lens(
                         refractionHeight = PILL_LENS_HEIGHT.toPx() * ind.restRefractionWidth,
                         refractionAmount = PILL_LENS_AMOUNT.toPx() * ind.restRefraction,
-                        depthEffect = ind.depth,
+                        depthEffect = ind.depth > 0f,
                         chromaticAberration = false,
                     )
                 }
@@ -553,7 +553,7 @@ internal fun GlassSelectionPill(
                     lens(
                         refractionHeight = restHeight + (liftHeight - restHeight) * motion.glassPresence,
                         refractionAmount = restAmount + (liftAmount - restAmount) * motion.material,
-                        depthEffect = ind.depth,
+                        depthEffect = ind.depth > 0f,
                         chromaticAberration = ind.rainbow > 0f,
                         chromaticStrength = PILL_CHROMATIC_STRENGTH * ind.rainbow * motion.material,
                     )

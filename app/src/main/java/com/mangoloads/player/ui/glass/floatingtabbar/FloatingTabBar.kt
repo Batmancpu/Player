@@ -126,6 +126,19 @@ import androidx.compose.ui.zIndex
 import com.mangoloads.player.ui.glass.GlassSpring
 import com.mangoloads.player.ui.glass.LocalReduceMotion
 
+import com.mangoloads.player.ui.glass.LocalReduceDynamicBlur
+import com.mangoloads.player.ui.glass.LocalGlassIndicator
+import com.mangoloads.player.ui.glass.LocalGlassExport
+import com.mangoloads.player.ui.glass.PILL_INSET
+import com.mangoloads.player.ui.glass.backdrop.backdrops.layerBackdrop
+import com.mangoloads.player.ui.glass.backdrop.backdrops.rememberLayerBackdrop
+import com.mangoloads.player.ui.glass.isGlassSupported
+import kotlin.math.abs
+import kotlin.math.roundToInt
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
 /** Small vertical overshoot used by the brrMusic dock's spring morph. */
 private fun Modifier.rubberStretch(distancePx: Float, fraction: () -> Float): Modifier =
     graphicsLayer {
@@ -140,18 +153,6 @@ private fun Modifier.neighbourPull(fraction: () -> Float, direction: Float): Mod
     graphicsLayer {
         translationX = 8.dp.toPx() * fraction().coerceIn(-1f, 1f) * direction
     }
-import com.mangoloads.player.ui.glass.LocalReduceDynamicBlur
-import com.mangoloads.player.ui.glass.LocalGlassIndicator
-import com.mangoloads.player.ui.glass.LocalGlassExport
-import com.mangoloads.player.ui.glass.PILL_INSET
-import com.mangoloads.player.ui.glass.backdrop.backdrops.layerBackdrop
-import com.mangoloads.player.ui.glass.backdrop.backdrops.rememberLayerBackdrop
-import com.mangoloads.player.ui.glass.isGlassSupported
-import kotlin.math.abs
-import kotlin.math.roundToInt
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /** Hoisted so the default is one stable lambda rather than a new one per call. */
 /**

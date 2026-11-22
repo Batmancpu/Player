@@ -29,6 +29,12 @@ internal fun PlayerGlassDock(
     modifier: Modifier = Modifier,
 ) {
     val labels = listOf(R.string.nav_home, R.string.nav_movies, R.string.nav_shows, R.string.nav_search)
+    val labelTexts = listOf(
+        stringResource(R.string.nav_home),
+        stringResource(R.string.nav_movies),
+        stringResource(R.string.nav_shows),
+        stringResource(R.string.nav_search),
+    )
     val icons = listOf(PlayerGlyph.HOME, PlayerGlyph.MOVIES, PlayerGlyph.SHOWS, PlayerGlyph.SEARCH)
     val shape = RoundedCornerShape(30.dp)
     FloatingTabBar(
@@ -51,8 +57,8 @@ internal fun PlayerGlassDock(
             tabSpacing = 4.dp,
         ),
     ) {
-        labels.forEachIndexed { index, labelRes ->
-            val label = stringResource(labelRes)
+        labels.forEachIndexed { index, _ ->
+            val label = labelTexts[index]
             tab(
                 key = index,
                 title = {

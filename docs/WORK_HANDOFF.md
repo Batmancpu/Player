@@ -46,3 +46,6 @@ The current work changes display name/package identity to brrPlayer / `com.mango
 
 ## 2026-11-22 Glass compiler repair handoff
 CI #263 (`44997836152`) failed at Kotlin compilation due to an invalid stale Glass Lab wrapper, missing reduced-motion helper imports, and missing transforms called by the vendored brrMusic dock. The local fix removes the invalid wrapper, imports the helper, and restores subtle spring stretch/neighbor pull graphics modifiers. 17 Python tests and diff whitespace checks pass; Android compile remains unverified and no Glass APK exists. Next: commit directly on main and inspect the complete CI run; release one signed batch APK only after all gates pass.
+
+## Metadata provider update — 2026-11-22
+The user will not provide a postal address to obtain TMDB credentials. Remove publisher-key availability as a release prerequisite and do not request address/token again. TMDB currently has no anonymous lookup endpoint. Investigate keyless Wikidata title search and Commons image/license metadata (partial coverage; image may not be a poster) as an explicit opt-in option that transmits only normalized title/year/type. Keep Phase 1 offline and local artwork/NFO available. Must validate provider terms, User-Agent/rate limits, license credits, destinations, bounds and cancellation before production network integration.

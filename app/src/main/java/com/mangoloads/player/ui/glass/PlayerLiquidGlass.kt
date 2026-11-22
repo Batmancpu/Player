@@ -113,7 +113,7 @@ fun Modifier.liquidGlass(
             colorControls(saturation = 1.08f)
             blur(blurPx)
             if (refract && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                lens(refractionHeight = lensDimension, refractionAmount = lensDimension, depthEffect = .35f, chromaticAberration = false)
+                lens(refractionHeight = lensDimension, refractionAmount = lensDimension, depthEffect = true, chromaticAberration = false)
             }
         },
         highlight = { Highlight.Default.copy(alpha = .8f) },
