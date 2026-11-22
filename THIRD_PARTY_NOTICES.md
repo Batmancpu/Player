@@ -11,6 +11,11 @@ This file records third-party code/assets shipped in the Player APK. Each includ
 - Adaptation: vector stroke width changed from 2.0 to 1.8 for the app's optical scale.
 - License: ISC, with MIT terms for portions derived from Feather. The complete notice is packaged at `app/src/main/assets/licenses/LUCIDE_ICONS_LICENSE.md`.
 
+## Material caption icon
+- Source: Google Material Icons `closed_caption`, Apache License 2.0: https://developers.google.com/fonts/docs/material_icons
+- Local adaptation: `app/src/main/res/drawable/ic_player_captions.xml`, rendered as a 24dp vector for the player caption-appearance control.
+- The Apache-2.0 notice is already packaged in `app/src/main/assets/licenses/APACHE_2_0.txt`.
+
 No Apple SF Symbols glyphs, Apple logos or SF font files are bundled.
 
 

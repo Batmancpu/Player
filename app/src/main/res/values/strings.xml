@@ -99,6 +99,13 @@
     <string name="player_resize_description">Video scaling: %1$s</string>
     <string name="player_audio_tracks">Audio</string>
     <string name="player_subtitle_tracks">Subtitles</string>
+    <string name="player_caption_appearance">Caption appearance</string>
+    <string name="player_caption_appearance_description">Adjust subtitle size and screen position. Captions stay independent of video zoom.</string>
+    <string name="player_caption_size">Subtitle text size</string>
+    <string name="player_caption_size_value">Text size %1$d%%</string>
+    <string name="player_caption_position">Subtitle height</string>
+    <string name="player_caption_position_value">Bottom spacing %1$d%%</string>
+    <string name="player_caption_reset">Reset caption appearance</string>
     <string name="player_subtitles_off">Subtitles off</string>
     <string name="player_tracks_automatic">Automatic</string>
     <string name="player_tracks_unavailable">No supported tracks are available.</string>

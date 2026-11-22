@@ -22,6 +22,7 @@ internal enum class PlayerGlyph(@DrawableRes val drawableRes: Int) {
     ASPECT_RATIO(R.drawable.ic_player_aspect_ratio),
     FULLSCREEN(R.drawable.ic_player_fullscreen),
     FULLSCREEN_EXIT(R.drawable.ic_player_fullscreen_exit),
+    CAPTIONS(R.drawable.ic_player_captions),
 }
 
 @Composable

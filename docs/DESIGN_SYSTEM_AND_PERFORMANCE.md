@@ -29,6 +29,10 @@ Apple: https://developer.apple.com/documentation/technologyoverviews/liquid-glas
 | Settings toggles and segments | Selective transient interaction Glass | No idle rendering cost when equivalent static surface suffices | 6 |
 | Folder setup, scan errors and permissions | **Plain, polished, solid Compose** | Must work without Glass or network | 1 |
 
+## Subtitle viewport and controls
+- Keep Media3 `SubtitleView` as a sibling of `AspectRatioFrameLayout`, so Fit/Fill/Zoom changes only the video. Caption size and vertical placement adjust the independent subtitle viewport; never transform captions together with the video crop.
+- The current caption batch uses bounded fractional text-size/bottom-spacing sliders with local persistence, a reset action and accessible values. Keep the controls in a transient sheet, preserve the same behavior with Glass disabled, and pause player chrome auto-hide while editing. No target-device legibility or performance claim until tested on CPH2531.
+
 ## Implementation: Haze 2.1.0 and render rules
 - Existing `PlayerGlass.kt` and `GlassLabScreen.kt` are **experiments**, not production acceptance. Begin with source-backed `hazeSource` + `HazeInput.Sources`, `GlassStyle.regular` or existing Clear option and `HazePerformanceMode.Default` (Balanced). Profile before tuning to Quality/Performance; preserve user-selectable effects-off mode.
 - **Do not activate experimental native Android 17 window-backdrop rendering** on Android 15. Avoid custom shaders/JNI/pixel-readback. Use a bounded source and retain clear or opaque fallback, reduced motion/transparency behavior. Evaluate `HazeSourceRetention.ClearWhenUnavailable` for transient sensitive content.

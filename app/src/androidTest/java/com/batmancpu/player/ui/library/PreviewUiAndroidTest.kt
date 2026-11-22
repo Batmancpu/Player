@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.test.platform.app.InstrumentationRegistry
 import com.batmancpu.player.ui.glass.GlassLabScreen
@@ -335,6 +336,55 @@ class PreviewUiAndroidTest {
             assertNotNull("Speed options appear after opening the control", awaitNode { it.text?.toString() == "1.25×" })
             click(text("1.5×"))
             assertEquals(1.5f, speed.value)
+        } finally {
+            instrumentation.runOnMainSync { activity.finish() }
+        }
+    }
+
+    @Test(timeout = 30_000) fun captionAppearanceExposesAccessibleControlsAndReset() {
+        val activity = launch()
+        val textSize = mutableFloatStateOf(com.batmancpu.player.ui.player.DEFAULT_CAPTION_TEXT_SIZE)
+        val position = mutableFloatStateOf(com.batmancpu.player.ui.player.DEFAULT_CAPTION_BOTTOM_PADDING)
+        val committedSize = AtomicReference(0f)
+        val committedPosition = AtomicReference(0f)
+        try {
+            instrumentation.runOnMainSync {
+                activity.setContent {
+                    PlayerTheme {
+                        com.batmancpu.player.ui.player.PlayerCaptionSettingsSheet(
+                            textSize = textSize.floatValue,
+                            bottomPadding = position.floatValue,
+                            onTextSizeChange = { textSize.floatValue = it },
+                            onTextSizeChangeFinished = { committedSize.set(it) },
+                            onBottomPaddingChange = { position.floatValue = it },
+                            onBottomPaddingChangeFinished = { committedPosition.set(it) },
+                            onDismiss = {},
+                        )
+                    }
+                }
+            }
+            assertNotNull("Caption appearance sheet opens", awaitNode {
+                it.text?.toString() == context.getString(com.batmancpu.player.R.string.player_caption_appearance)
+            })
+            captureSyntheticScreenshot("caption-settings")
+            val sizeControl = awaitNode {
+                it.contentDescription?.toString() == context.getString(com.batmancpu.player.R.string.player_caption_size)
+            }
+            val positionControl = awaitNode {
+                it.contentDescription?.toString() == context.getString(com.batmancpu.player.R.string.player_caption_position)
+            }
+            assertNotNull("Subtitle size exposes an adjustable range", sizeControl.rangeInfo)
+            assertNotNull("Subtitle height exposes an independent adjustable range", positionControl.rangeInfo)
+            val args = Bundle().apply {
+                putFloat(AccessibilityNodeInfo.ACTION_ARGUMENT_PROGRESS_VALUE, 0.075f)
+            }
+            assertTrue("Subtitle size slider accepts accessible progress", sizeControl.performAction(AccessibilityNodeInfo.ACTION_SET_PROGRESS, args))
+            assertTrue("Subtitle height slider accepts accessible progress", positionControl.performAction(AccessibilityNodeInfo.ACTION_SET_PROGRESS, args))
+            assertEquals(0.075f, committedSize.get(), 0.001f)
+            assertEquals(0.075f, committedPosition.get(), 0.001f)
+            click(text(context.getString(com.batmancpu.player.R.string.player_caption_reset)))
+            assertEquals(com.batmancpu.player.ui.player.DEFAULT_CAPTION_TEXT_SIZE, textSize.floatValue, 0.0001f)
+            assertEquals(com.batmancpu.player.ui.player.DEFAULT_CAPTION_BOTTOM_PADDING, position.floatValue, 0.0001f)
         } finally {
             instrumentation.runOnMainSync { activity.finish() }
         }

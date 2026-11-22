@@ -22,6 +22,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.batmancpu.player.R
 import com.batmancpu.player.ui.icons.PlayerGlyph
 import com.batmancpu.player.ui.icons.PlayerGlyphIcon
+import com.batmancpu.player.ui.glass.PlayerUiSettingsStore
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.media3.common.PlaybackException
@@ -31,6 +32,8 @@ import androidx.media3.common.C
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.PlayerView
+import androidx.media3.ui.SubtitleView
+import androidx.media3.ui.R as Media3R
 import androidx.media3.ui.AspectRatioFrameLayout
 import kotlinx.coroutines.delay
 
@@ -46,6 +49,7 @@ internal fun LocalPlayerScreen(
     onIsPlayingChanged: (Boolean) -> Unit = {},
 ) {
     val context = LocalContext.current
+    val uiSettings = remember(context) { PlayerUiSettingsStore(context) }
     val videoSurfaceDescription = stringResource(R.string.player_video_surface)
     val checkpoint by rememberUpdatedState(onCheckpoint)
     val playingChanged by rememberUpdatedState(onIsPlayingChanged)
@@ -60,6 +64,9 @@ internal fun LocalPlayerScreen(
     var chromeInteractionEpoch by remember(target.uri) { mutableIntStateOf(0) }
     var resizeMode by remember(target.uri) { mutableIntStateOf(AspectRatioFrameLayout.RESIZE_MODE_FIT) }
     var isScrubbing by remember(target.uri) { mutableStateOf(false) }
+    var captionSettingsVisible by remember(target.uri) { mutableStateOf(false) }
+    var captionTextSize by remember(target.uri) { mutableFloatStateOf(uiSettings.captionTextSize()) }
+    var captionBottomPadding by remember(target.uri) { mutableFloatStateOf(uiSettings.captionBottomPadding()) }
     val player = remember(target.uri) {
         createLocalPlayer(context).apply {
             setMediaItem(createLocalMediaItem(target))
@@ -144,8 +151,8 @@ internal fun LocalPlayerScreen(
             }
         }
     }
-    LaunchedEffect(player, controlsVisible, isPlaying, isScrubbing, chromeInteractionEpoch) {
-        if (controlsVisible && isPlaying && !isScrubbing) {
+    LaunchedEffect(player, controlsVisible, isPlaying, isScrubbing, captionSettingsVisible, trackPickerType, chromeInteractionEpoch) {
+        if (controlsVisible && isPlaying && !isScrubbing && !captionSettingsVisible && trackPickerType == C.TRACK_TYPE_UNKNOWN) {
             delay(PLAYER_CHROME_AUTO_HIDE_MS)
             controlsVisible = false
         }
@@ -159,6 +166,10 @@ internal fun LocalPlayerScreen(
             update = {
                 it.keepScreenOn = isPlaying
                 it.setResizeMode(resizeMode)
+                it.findViewById<SubtitleView>(Media3R.id.exo_subtitles)?.apply {
+                    setFractionalTextSize(captionTextSize, true)
+                    setBottomPaddingFraction(captionBottomPadding)
+                }
             },
             modifier = Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing),
         )
@@ -203,6 +214,15 @@ internal fun LocalPlayerScreen(
                         chromeInteractionEpoch++
                         trackPickerType = C.TRACK_TYPE_TEXT
                     }) { Text(subtitleTitle, color = Color.White) }
+                    if (hasSubtitleTracks) {
+                        val captionDescription = stringResource(R.string.player_caption_appearance)
+                        IconButton(onClick = {
+                            chromeInteractionEpoch++
+                            captionSettingsVisible = true
+                        }) {
+                            PlayerGlyphIcon(PlayerGlyph.CAPTIONS, contentDescription = captionDescription, tint = Color.White)
+                        }
+                    }
                 }
                 Spacer(Modifier.weight(1f))
                 PlayerSpeedButton(playbackSpeed) { speed ->
@@ -245,6 +265,20 @@ internal fun LocalPlayerScreen(
                 trackType = trackPickerType,
                 onDismiss = { trackPickerType = C.TRACK_TYPE_UNKNOWN },
                 onSelectionApplied = { availableTracks = player.currentTracks },
+            )
+        }
+        if (captionSettingsVisible) {
+            PlayerCaptionSettingsSheet(
+                textSize = captionTextSize,
+                bottomPadding = captionBottomPadding,
+                onTextSizeChange = { captionTextSize = it },
+                onTextSizeChangeFinished = uiSettings::setCaptionTextSize,
+                onBottomPaddingChange = { captionBottomPadding = it },
+                onBottomPaddingChangeFinished = uiSettings::setCaptionBottomPadding,
+                onDismiss = {
+                    captionSettingsVisible = false
+                    chromeInteractionEpoch++
+                },
             )
         }
     }

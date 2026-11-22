@@ -219,9 +219,36 @@ class LocalPlaybackAndroidTest {
         assertSame("Video keeps its resize-managed content frame", view, videoFrame.parent)
         assertSame("Captions use the independent player viewport", view, subtitles.parent)
         assertNotSame("Caption layout is never nested in the zoomable video frame", videoFrame, subtitles.parent)
+        subtitles.setFractionalTextSize(0.08f, true)
+        subtitles.setBottomPaddingFraction(0.18f)
         view.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM)
         assertEquals(1f, subtitles.scaleX)
         assertEquals(1f, subtitles.scaleY)
+    }
+
+    @Test fun captionAppearancePreferencesPersistAndClampToSupportedValues() {
+        val preferences = context.getSharedPreferences(
+            com.batmancpu.player.ui.glass.PlayerUiSettingsStore.PREFERENCES_NAME,
+            android.content.Context.MODE_PRIVATE,
+        )
+        preferences.edit().clear().commit()
+        try {
+            val store = com.batmancpu.player.ui.glass.PlayerUiSettingsStore(context)
+            assertEquals(0.0533f, store.captionTextSize(), 0.0001f)
+            assertEquals(0.08f, store.captionBottomPadding(), 0.0001f)
+            store.setCaptionTextSize(0.072f)
+            store.setCaptionBottomPadding(0.16f)
+            store.setCaptionTextSize(0.4f)
+            val reopened = com.batmancpu.player.ui.glass.PlayerUiSettingsStore(context)
+            assertEquals(0.09f, reopened.captionTextSize(), 0.0001f)
+            reopened.setCaptionTextSize(0.072f)
+            assertEquals(0.072f, reopened.captionTextSize(), 0.0001f)
+            assertEquals(0.16f, reopened.captionBottomPadding(), 0.0001f)
+            reopened.setCaptionBottomPadding(-0.5f)
+            assertEquals(0f, com.batmancpu.player.ui.glass.PlayerUiSettingsStore(context).captionBottomPadding(), 0.0001f)
+        } finally {
+            preferences.edit().clear().commit()
+        }
     }
 
     @Test(timeout = 45_000) fun playerOverlayFollowsTransportControllerVisibility() {

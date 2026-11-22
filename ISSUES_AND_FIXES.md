@@ -2,12 +2,18 @@
 
 A risk is not a confirmed defect. Record evidence, confidence and status precisely.
 
-## 2026-11-22 — Track picker selected-state and Glass settings entrance (open)
+## 2026-11-22 — Track picker selected-state and Glass settings entrance (resolved in CI #240)
 - CI #236 / 44975472542: the Subtitles Off click action worked and Media3's disabled track type was verified on the player thread, but the test could not find the row with `isSelected=true`. Root cause confidence: moderate; selected-state reporting/recomposition remains to be confirmed by a new run. The Glass settings control test also started while the modal was partway through entrance. A working-tree correction keeps the disabled flag as its own Compose state, accepts the explicit selected `stateDescription` for radio rows, and waits until the heading is settled before gestures.
 - Affected: synthetic Android 15 CI only; no user device reproduction. Fix/regression status: pending CI. Next: inspect Android accessibility tree on failure, then validate all CI gates. No APK or device claim.
 - CI #237 confirmed the picker state fix. The sole remaining test failure exposed that the Liquid Glass switch was below the 32dp safe-bottom boundary (bounds y528–576; boundary y544) in the compact 320×640 settings sheet. The scroll container had only a 28dp content tail and did not account for system navigation insets. Added `WindowInsets.navigationBars` before vertical scrolling. This production fix is pending CI; no OPPO reproduction or APK.
 - CI #238 still failed the Glass-settings test, now on modal entrance: only the heading at y599 was exposed, but `displayMetrics.heightPixels / 2` was a loose threshold compared with the accessibility coordinate scale. Tightened the helper to wait until the heading is above one-third of the reported viewport. Product insets code compiled; selected track test passed. Re-run pending.
-- CI #239 showed a top-third comparison against `heightPixels` still admitted y599 due to the same scale mismatch. The helper now compares accessibility top bounds against `100dp * density`, which separates the observed unsettled y599 from the previously settled y72. This is synthetic-test timing, not a production defect. CI #240 will validate the threshold and insets fix.
+- CI #239 showed a top-third comparison against `heightPixels` still admitted y599 due to the same scale mismatch. The helper now compares accessibility top bounds against `100dp * density`, which separates the observed unsettled y599 from the previously settled y72. CI #240 / 44978138086 passed 53/53 Android 15 tests and all unit/build/schema/privacy gates. The selected-state and Glass reachability regressions are resolved in synthetic CI; no OPPO reproduction/performance claim.
+
+## 2026-11-22 — Automatic TMDB metadata requires app credential (open prerequisite)
+- User asks for no per-user setup and only title/year/type fields sent. Official TMDB application requests require a key/token; the app currently has only the user-owned encrypted token/manual flow, and no Player-wide credential is in repository configuration. User says current use is non-commercial and wants the best private method. Planned resolution: add an app-wide read credential through release CI configuration, never commit/log it, and treat it as public/extractable in the APK. Automatic matching stays inactive until this publisher prerequisite exists; no backend or new provider. Product lookup/cache implementation pending. No network request/release claim.
+
+## 2026-11-22 — Subtitle appearance batch pending
+- Added independent text-size and bottom-spacing sliders, local preference storage/clamping, reset semantics, and player auto-hide suspension in the working tree. Instrumentation covers sliders, preference persistence, and independent viewport. Local XML/privacy checks pass; Android CI is pending. No handset legibility or performance evidence.
 
 ## Historical device incidents
 
