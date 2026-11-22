@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Player"
+rootProject.name = "brrPlayer"
 include(":app")

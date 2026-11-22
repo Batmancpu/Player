@@ -15,7 +15,7 @@ class ReleaseManifestTest(unittest.TestCase):
         if provider:
             xmltree += "\nSyntheticSafProvider"
         responses = {
-            "badging": f"package: name='com.batmancpu.player' versionCode='{version}'",
+            "badging": f"package: name='com.mangoloads.player' versionCode='{version}'",
             "permissions": "" if permission is None else f"uses-permission: name='{permission}'",
             "xmltree": xmltree,
         }
@@ -47,7 +47,7 @@ class ReleaseManifestTest(unittest.TestCase):
         self.assertNotEqual(0, self.check_apk("false", permission="android.permission.ACCESS_NETWORK_STATE").returncode)
         self.assertNotEqual(0, self.check_apk("false", provider=True).returncode)
         self.assertNotEqual(0, self.check_apk("false", version=4).returncode)
-        self.assertEqual(0, self.check_apk("false", permission="com.batmancpu.player.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION").returncode)
+        self.assertEqual(0, self.check_apk("false", permission="com.mangoloads.player.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION").returncode)
 
 
 if __name__ == "__main__":

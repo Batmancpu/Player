@@ -99,7 +99,7 @@ CI build/test success and OPPO handset validation must be reported separately.
 ### D-019 — Stable self-managed Android release signing
 **Status:** Accepted  
 **Decision:** Use one long-lived RSA 2048 Android release keystore with a validity of 10,000 days and alias player-release. Generate it locally on the user's Android device; keep a separate offline backup. Never commit the private keystore or passwords. Store the base64 keystore and passwords only in GitHub Actions repository secrets. CI signs a release APK with the same key on every main-branch build and verifies its certificate; debug APKs are labelled CI-only. Use the monotonically increasing GitHub Actions run number as versionCode.  
-**Identity constraint:** Keep applicationId=com.batmancpu.player unchanged after the first signed install. The visible app label/brand can be renamed without changing application identity.  
+**Historical identity constraint (superseded by D-038):** Keep applicationId=com.batmancpu.player unchanged after the first signed install. The visible app label/brand can be renamed without changing application identity.
 **Reason:** Android checks the signing certificate when installing an update; the stable certificate and a higher versionCode avoid the repeated uninstall/reinstall cycle.
 ### D-020 — Pre-release signing key reset explicitly approved by user (2026-11-14)
 **Status:** Accepted. The user directly requested a completely NEW signing key because no signed Player release existed. This supersedes D-019's previously generated key identity and all older “never rotate” directions that referred to that old key. The new key was generated and validated in the current ChatGPT session, and private files were delivered through that conversation only. Current certificate SHA-256: `4D:2F:17:89:ED:27:D3:96:13:35:FE:36:45:64:55:BD:9A:31:0B:0D:CD:F4:1E:8C:CC:92:53:98:33:9E:80:BF`; alias `player-release`; JKS/RSA-3072. The repo CI certificate verification and `docs/ANDROID_SIGNING.md` now use this public fingerprint. No secret/password/Base64 was committed. DO NOT regenerate again after the first signed APK installation, because update continuity then matters.
@@ -222,3 +222,9 @@ The source now includes opt-in enrichment of currently composed foreground Home/
 
 #### D-037 UI clarification — publisher setup versus viewer consent (2026-11-22)
 A missing app-level credential is a release-publisher condition, not a user setup step. Details must not present it as a personal “connection” action. Once the public shared credential is present, the user gets a separate default-off local consent switch with network/IP/key disclosure. This clarification is implemented locally; CI #256 does not include it, and verification remains pending.
+
+
+### D-038 — brrPlayer identity migration and reference separation (2026-11-22)
+**Status:** Accepted by explicit user instruction.
+**Decision:** Change the visible product name to brrPlayer and applicationId to `com.mangoloads.player`, keeping the existing long-lived release signing certificate and monotonically increasing CI run-number versionCode. The published `com.batmancpu.player` release remains a separate legacy app; no in-place update, data, Room database or SAF grant transfer is possible. Consult the user's music repository only for the Liquid Glass engine and collapsing dock interaction. Consult the keyboard repository only for original icon-design inspiration; do not copy its artwork/code or any keyboard UI.
+**Reason:** The user requested a complete identity change and explicitly clarified the two source repositories' separate roles.

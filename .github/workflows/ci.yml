@@ -142,7 +142,7 @@ jobs:
           import json
           from pathlib import Path
 
-          schema_dir = Path("app/schemas/com.batmancpu.player.ui.library.PlayerLibraryDatabase")
+          schema_dir = Path("app/schemas/com.mangoloads.player.ui.library.PlayerLibraryDatabase")
           schemas = {path.stem: json.loads(path.read_text(encoding="utf-8")) for path in schema_dir.glob("*.json")}
           if set(schemas) != {"1", "2", "3", "4"}:
               raise SystemExit(f"Expected exact Room schema snapshots 1 through 4; found {sorted(schemas)}")
@@ -193,7 +193,7 @@ jobs:
       - name: Upload exported Room v1 through v4 schemas for review
         uses: actions/upload-artifact@v7
         with:
-          name: Player-Room-Schema-${{ github.sha }}
+          name: brrPlayer-Room-Schema-${{ github.sha }}
           path: app/schemas/**/*.json
           if-no-files-found: error
           retention-days: 14
@@ -221,7 +221,7 @@ jobs:
         if: ${{ steps.release_signing.outputs.enabled == 'true' }}
         uses: actions/upload-artifact@v7
         with:
-          name: Player-release-v${{ github.run_number }}-${{ github.sha }}
+          name: brrPlayer-release-v${{ github.run_number }}-${{ github.sha }}
           path: app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
           retention-days: 30
@@ -257,27 +257,27 @@ jobs:
           set -euo pipefail
           tag="v0.1.${GITHUB_RUN_NUMBER}"
           apk="app/build/outputs/apk/release/app-release.apk"
-          release_apk="$RUNNER_TEMP/Player-release-${GITHUB_RUN_NUMBER}.apk"
+          release_apk="$RUNNER_TEMP/brrPlayer-release-${GITHUB_RUN_NUMBER}.apk"
           cp "$apk" "$release_apk"
           hash="$(sha256sum "$release_apk" | cut -d ' ' -f1)"
           {
-            echo "Android package: com.batmancpu.player"
+            echo "Android package: com.mangoloads.player"
             echo "Version: 0.1.${GITHUB_RUN_NUMBER} (versionCode ${GITHUB_RUN_NUMBER})"
             echo "Git commit: ${GITHUB_SHA}"
             echo
-            echo "This APK was signed with the permanent Player release key. Use this APK, never the CI-only debug artifact. Later releases can update it in place."
+            echo "This brrPlayer APK uses the existing permanent release certificate. It is a separate Android app from legacy com.batmancpu.player and requires first-time folder selection. Use this signed APK, never the CI-only debug artifact. Later brrPlayer releases keep this package/certificate and can update in place."
             echo
             echo "APK SHA-256: ${hash}"
             echo "Certificate SHA-256: 4D:2F:17:89:ED:27:D3:96:13:35:FE:36:45:64:55:BD:9A:31:0B:0D:CD:F4:1E:8C:CC:92:53:98:33:9E:80:BF"
             echo
             echo "OFFLINE LIBRARY + PLAYBACK PREVIEW: searchable movie/show grid, title/episode details, built-in local Media3 playback with pause/seek/private resume, clearer scan feedback and a single-surface Glass preview dock. Includes background-safe SAF/index fix. One selected read-only local folder, offline Room persistence; optional direct TMDB requests require explicit opt-in and manual title search; no broad storage, source-media writes or backup."
             echo
-            echo "Optional next phone check when available: update without uninstalling, search a movie, open details and Play video; pause/seek, return/reopen and check resume; try airplane mode and folder switching. Compare Glass preview on/off. No file deletion is required."
+            echo "Phone check: install brrPlayer alongside legacy Player, select the test folder once, scan, search a title, open details, Play, pause/seek and verify resume; restart in airplane mode and switch folders. Compare Glass only when its integrated controls are available. No source file deletion is needed."
             echo "Full checklist: https://github.com/Batmancpu/Player/blob/main/docs/PHASE1_PHONE_TEST.md"
-            echo "v0.1.79 device report confirmed four videos/titles/years, offline restart and folder switching. New playback/appearance, format coverage and remaining recovery checks need OPPO evidence; no handset FPS measurement or later-phase acceptance is claimed. Development continues independently while the user is away."
+            echo "Legacy Player v0.1.79 device report confirmed four videos/titles/years, offline restart and folder switching. New playback/appearance, format coverage and remaining recovery checks need OPPO evidence; no handset FPS measurement or later-phase acceptance is claimed. Development continues independently while the user is away."
           } > "$RUNNER_TEMP/release-notes.md"
           gh release create "$tag" "$release_apk" \
-            --title "Player ${tag} — Offline library and playback preview" \
+            --title "brrPlayer ${tag} — Offline library and playback preview" \
             --notes-file "$RUNNER_TEMP/release-notes.md" \
             --latest \
             --target "${GITHUB_SHA}"
@@ -338,7 +338,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: Player-Android15-tests-${{ github.sha }}
+          name: brrPlayer-Android15-tests-${{ github.sha }}
           path: |
             app/build/reports/androidTests/connected/
             app/build/outputs/androidTest-results/connected/

@@ -11,11 +11,11 @@ def dump(*args):
 
 badging = dump("badging")
 package = re.search(r"package: name='([^']+)' versionCode='(\d+)'", badging)
-assert package and package[1] == "com.batmancpu.player", "Application identity changed"
+assert package and package[1] == "com.mangoloads.player", "Application identity changed"
 assert int(package[2]) == int(os.environ["GITHUB_RUN_NUMBER"]), "Unexpected versionCode"
 permissions = dump("permissions")
 allowed = {
-    "com.batmancpu.player.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+    "com.mangoloads.player.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
     # Used only by the explicit, consent-gated direct TMDB request flow.
     "android.permission.INTERNET",
 }
@@ -31,5 +31,5 @@ assert backup and re.fullmatch(
 print("Verified allowBackup representation:", backup[1].strip())
 assert "fullBackupContent" in xml and "dataExtractionRules" in xml, "Explicit legacy/cloud/device-transfer backup rules must be attached"
 print("Verified explicit legacy and modern backup-rule resources are attached.")
-assert "SyntheticSafProvider" not in xml and "com.batmancpu.player.synthetic" not in xml, "Debug provider entered release"
+assert "SyntheticSafProvider" not in xml and "com.mangoloads.player.synthetic" not in xml, "Debug provider entered release"
 print("Release manifest verified: stable identity/version, only consent-gated Internet access, no broad storage, backup disabled, no debug provider.")

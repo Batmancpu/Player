@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Player</string>
+    <string name="app_name">brrPlayer</string>
 
     <string name="glass_lab_kicker">MATERIAL PREVIEW</string>
     <string name="glass_lab_title">Glass preview</string>
@@ -28,17 +28,17 @@
 
     <string name="folder_setup_kicker">YOUR LIBRARY</string>
     <string name="folder_setup_title">Your films.\nYour space.</string>
-    <string name="folder_setup_description">Choose one folder on this device. Player will search only inside that folder and its subfolders, then build your movie and series library.</string>
+    <string name="folder_setup_description">Choose one folder on this device. brrPlayer will search only inside that folder and its subfolders, then build your movie and series library.</string>
     <string name="folder_setup_restoring">Checking saved folder access…</string>
     <string name="folder_setup_selected_label">LIBRARY FOLDER</string>
     <string name="folder_setup_access_saved">Read-only folder access is saved on this device. Scan now to build or refresh the offline library.</string>
     <string name="folder_setup_change_folder">Choose a different folder</string>
     <string name="folder_setup_no_folder">Your library is not connected yet. Choose a local folder to get started.</string>
     <string name="folder_setup_choose_folder">Choose library folder</string>
-    <string name="folder_setup_privacy">Your video files stay on this device. Player does not upload or modify your media. Only the folder you select will be used.</string>
+    <string name="folder_setup_privacy">Your video files stay on this device. brrPlayer does not upload or modify your media. Only the folder you select will be used.</string>
     <string name="folder_setup_glass_lab">Open Glass Lab · developer preview</string>
     <string name="folder_setup_unsupported_provider">This storage provider is not supported yet. Choose a folder from local device storage.</string>
-    <string name="folder_setup_permission_failed">Player could not save read access to that folder. Please choose it again.</string>
+    <string name="folder_setup_permission_failed">brrPlayer could not save read access to that folder. Please choose it again.</string>
     <string name="folder_setup_permission_lost">Saved folder access is no longer available. Choose the library folder again.</string>
     <string name="folder_setup_fallback_name">Selected local folder</string>
     <string name="library_scan_start">Scan this folder</string>
@@ -78,12 +78,12 @@
     <string name="catalogue_episode_label">S%1$02d · E%2$02d</string>
     <string name="catalogue_shelf_series">TV Shows</string>
     <string name="catalogue_settings">Library settings</string>
-    <string name="catalogue_forget_folder">Remove folder from Player</string>
+    <string name="catalogue_forget_folder">Remove folder from brrPlayer</string>
     <string name="catalogue_forget_title">Remove this library?</string>
-    <string name="catalogue_forget_explanation">Player will remove its saved library index, playback resume points and folder access. Your original videos and subtitles stay in the folder and will not be deleted.</string>
-    <string name="catalogue_forget_confirm">Remove from Player</string>
+    <string name="catalogue_forget_explanation">brrPlayer will remove its saved library index, playback resume points and folder access. Your original videos and subtitles stay in the folder and will not be deleted.</string>
+    <string name="catalogue_forget_confirm">Remove from brrPlayer</string>
     <string name="catalogue_forget_cancel">Keep library</string>
-    <string name="folder_setup_forget_failed">Player could not finish removing this folder. Retry to clear its saved access. Your original media were not changed.</string>
+    <string name="folder_setup_forget_failed">brrPlayer could not finish removing this folder. Retry to clear its saved access. Your original media were not changed.</string>
     <string name="folder_setup_retry_forget">Retry removing folder</string>
     <string name="catalogue_glass_preview">Glass preview</string>
     <string name="catalogue_glass_note">A separate rendering preview. It does not affect your library or enable online access.</string>

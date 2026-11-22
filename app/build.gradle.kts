@@ -51,12 +51,12 @@ val releaseSigningConfigured = listOf(
 ).all { !it.isNullOrBlank() }
 
 android {
-    namespace = "com.batmancpu.player"
+    namespace = "com.mangoloads.player"
     compileSdk = 37
 
     defaultConfig {
-        // Keep applicationId stable after the first signed install.
-        applicationId = "com.batmancpu.player"
+        // brrPlayer is a separate app identity from the legacy Player package.
+        applicationId = "com.mangoloads.player"
         minSdk = 29
         targetSdk = 37
         versionCode = buildNumber

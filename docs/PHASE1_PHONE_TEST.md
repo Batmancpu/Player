@@ -1,8 +1,8 @@
-Current larger offline preview checklist (search/details/playback/Glass): [OFFLINE_PREVIEW_TEST.md](OFFLINE_PREVIEW_TEST.md). v0.1.79 core phone successes are recorded below; remaining physical checks do not pause independent implementation per D-026.
+Current offline-preview checklist: [OFFLINE_PREVIEW_TEST.md](OFFLINE_PREVIEW_TEST.md). The user's v0.1.79 legacy Player successes are recorded below; independent implementation continues without routine phone-test pauses.
 
-# Phase 1 — OPPO phone checks (partially performed)
+# brrPlayer — OPPO phone checks
 
-**Target:** OPPO Reno10 5G CPH2531, Android 15. Use a **signed** Player APK from GitHub Releases, never the CI-only debug artifact. Current release: [v0.1.250](https://github.com/Batmancpu/Player/releases/tag/v0.1.250), versionCode 250, APK SHA-256 `445ef633f4ac0f09fb27dfd1affad43e5d250c73cd245b4a17ed266601b964b1`. CI #250 passed 55 Android 15 tests plus JVM/build/schema/privacy/signature/permanent-certificate gates. Update the existing installation through Obtainium without uninstalling. The user reports that v0.1.79 correctly recognized four video titles/years, retained the library after airplane-mode restart and switched folders. The newer catalogue/player/Glass/caption controls still need OPPO evidence. Phase 1 is not accepted; performance is unmeasured. No original-file deletion is required for this test.
+**Target:** OPPO Reno10 5G CPH2531, Android 15. Use a **signed brrPlayer APK from GitHub Releases**, never the CI-only debug artifact. The latest published v0.1.250 is the legacy package `com.batmancpu.player`; it is not a brrPlayer update and must not be installed as the brrPlayer candidate. When the first `com.mangoloads.player` signed build is released, install it alongside the old app and select the media folder again. Android does not transfer the legacy package's app-private database or persisted SAF grant. Preserve the signing certificate and higher versionCode for future brrPlayer updates. The user reports legacy v0.1.79 correctly recognized four video titles/years, retained the library after airplane-mode restart and switched folders. Newer catalogue/player/Glass/caption behavior still needs OPPO evidence. Phase acceptance and performance remain pending. No original-file deletion is required.
 
 ## Preparing a safe test folder
 Use Android's file manager to create a small test folder of media you already own or are permitted to test, including:
@@ -12,30 +12,21 @@ Use Android's file manager to create a small test folder of media you already ow
 - A separate unrelated video **outside** the selected folder (to verify isolation).
 Never share private media paths or file contents in GitHub issues or logs.
 
-## Install / update
-1. The agent verifies tests/signing and publishes the Phase 1 candidate. No further signing-secret setup is needed.
-2. Open https://github.com/Batmancpu/Player/releases, select the newly created version and install its single Player-release-*.apk. Record tag, APK SHA-256, build/versionCode and Android installer result.
-3. Add https://github.com/Batmancpu/Player to Obtainium as a GitHub source. Later releases should install over the existing app with no uninstall or data loss, provided the package ID and signing certificate remain unchanged.
+## Install brrPlayer
+1. Verify the release tag, APK SHA-256, versionCode, package `com.mangoloads.player`, signing certificate and passing release checks.
+2. Download the one signed brrPlayer APK from the release. Install it without uninstalling legacy Player; Android will show them as separate apps.
+3. Add the GitHub Releases source in Obtainium. Later brrPlayer releases should update in place while package, certificate and versionCode progression remain valid.
+4. Open brrPlayer, choose the local folder using Android's system folder picker and scan. Do not grant all-files access or another provider.
 
-## Short v0.1.91 preview check
-
-1. Update through Obtainium without uninstalling; confirm the four existing videos still appear.
-2. Search, open a title, tap **Play video**, pause/seek, go back and reopen to check resume. If **Caption appearance** is available, move text size/position, Reset, and verify captions stay independent from video zoom.
-3. Turn on airplane mode and confirm the library remains.
-4. Open **Glass preview**, tap each tab and compare the effects-on/effects-off layouts. Report clipping or unreadable labels; no file deletion is required.
-
-## Phase 1 acceptance test
-- In **Manage → Remove folder from Player**, confirm the library and saved resume state are cleared and Player returns to folder setup. Verify the original videos/subtitles remain in the phone's file manager. Select the same folder again and confirm it can be rescanned.
-- Launch Player and choose the test folder using Android's **system folder picker**. Decline all other providers, and confirm Player never requests "all files" or access to photos/media outside that folder.
+## Core offline-library acceptance
 - Tap **Scan this folder**; confirm nested video names are shown and the unrelated outside file is absent. Subtitle count should include SRT; non-media text files should be ignored.
-- Close Player completely and reopen it, including with airplane mode on. The previously scanned library should still appear without a rescan.
-- Optional rescan check: tap Rescan when useful; no file addition or removal is needed. Player intentionally has no delete control and must not modify originals. Folder switching can be checked independently.
-- Change to another local folder. Previously chosen folder's entries must not mix with the new library. Observe whether the OEM picker supports Android external-storage DocumentsProvider.
-- Start a scan of a reasonably large nested folder and cancel it. No app crash; the prior complete library remains.
-- Revoke the selected folder permission through Android settings if available; app should request folder reconnection instead of crashing or showing files from ungranted sources.
-- During a scan, rotate the phone if supported; return from Glass Lab and verify the same scan/library state. Switch A→B→A and confirm only the current folder’s results appear; cancel/rescan and confirm old work cannot replace newer results.
-- If possible test 100+ mixed files for reasonable scrolling and restart behavior. Check filenames for TV episode identifiers, Unicode and year extraction.
+- Close brrPlayer completely and reopen it, including with airplane mode on. The scanned library should remain without a rescan.
+- Search, open a title, tap **Play video**, pause/seek, return and reopen to check resume. If **Caption appearance** is available, adjust and reset text size/position; verify captions stay independent from video zoom.
+- Check Rescan and cancellation if useful; the last complete library must remain intact. No files need to be added or deleted.
+- Use **Manage → Remove folder from brrPlayer** only if you want to test the explicit library-removal option. Confirm original videos/subtitles remain unchanged. Select and scan the folder again.
+- Change to another local folder. Confirm results do not mix. Revoke the selected folder permission through Android settings if available; brrPlayer should request reconnection instead of crashing or showing ungranted files.
+- During a scan, rotate the phone if supported; return from Glass and verify the same scan/library state. Switch A→B→A and confirm stale scans cannot replace newer results.
+- If convenient, test 100+ mixed files and report filename parsing, scrolling, restart behavior and any performance/heat symptoms. No FPS goal is claimed without device traces.
 
 ## Report
-Please report **pass/fail** for each scenario, the GitHub release tag, the phone OS build and screenshot(s) of any wrong UI. For a crash, share sanitized error/logcat only if available. The AI agent must record findings in docs/DEVICE_TESTING.md, DEVELOPMENT_LOG.md, CHAT_HISTORY.md and ISSUES_AND_FIXES.md. Do not claim this checklist passed until the actual user submits evidence.
-
+Please report pass/fail by scenario, release tag, phone OS build, and screenshot(s) of any wrong UI. For a crash, share sanitized error/logcat only if available. Record actual findings in `docs/DEVICE_TESTING.md`, `DEVELOPMENT_LOG.md`, `CHAT_HISTORY.md` and `ISSUES_AND_FIXES.md`; do not mark phase acceptance until the user submits real handset evidence.

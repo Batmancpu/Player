@@ -1,3 +1,5 @@
+> **Identity update (2026-11-22):** Product name/package are now requested as brrPlayer / `com.mangoloads.player`; the published `com.batmancpu.player` app remains a separate legacy installation. Identity migration, README/icon and new Glass integration are being completed as substantial batches. The music app is the only Glass/collapse reference; keyboard app is icon inspiration only.
+
 ## 2026-11-22 current batch direction
 - CI #240 / 44978138086 passed 53/53 Android 15 tests plus unit/build/Room v1–v4/privacy gates. Manage-sheet navigation-inset/transition readiness and subtitle picker selection are verified in CI.
 - Active batch: independent subtitle appearance controls (size and vertical position) with local persistence/accessibility; CI is pending. The user clarified one signed APK per substantial, green batch, not per edit; continue between batches without routine phone-check pauses.

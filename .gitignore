@@ -8,3 +8,7 @@ local.properties
 *.keystore
 *.p12
 *.pfx
+
+# Python test caches
+__pycache__/
+*.py[cod]

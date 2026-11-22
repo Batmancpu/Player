@@ -3,11 +3,11 @@
     <application>
         <!-- Synthetic SAF fixture is debug-only; keep it out of every release variant. -->
         <provider
-            android:name="com.batmancpu.player.ui.library.SyntheticSafProvider"
+            android:name="com.mangoloads.player.ui.library.SyntheticSafProvider"
             android:authorities="${applicationId}.synthetic"
             android:exported="false" />
         <activity
-            android:name="com.batmancpu.player.ui.library.PreviewTestActivity"
+            android:name="com.mangoloads.player.ui.library.PreviewTestActivity"
             android:exported="false" />
     </application>
 </manifest>

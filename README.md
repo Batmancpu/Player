@@ -1,67 +1,57 @@
-# Player
+# brrPlayer
 
 <p align="center">
-  <strong>Your library, on your terms.</strong><br>
-  A private, local-first Android library and player for the films and shows you already own.
+  <img src="docs/images/brrplayer-visual-concept.webp" alt="Original concept art for brrPlayer: luminous blue film frames and a translucent control floating above a dark cinematic surface" width="100%">
 </p>
+
+<p align="center"><strong>Your films. Your space.</strong><br>A private, local-first Android movie and television library with an integrated player.</p>
 
 <p align="center">
   <a href="https://github.com/Batmancpu/Player/actions/workflows/ci.yml"><img alt="Android CI" src="https://github.com/Batmancpu/Player/actions/workflows/ci.yml/badge.svg?branch=main"></a>
-  <img alt="Android" src="https://img.shields.io/badge/Android-29%2B-3DDC84?logo=android&logoColor=white">
-  <img alt="Privacy-first" src="https://img.shields.io/badge/design-local%20first-77BDFB">
+  <img alt="Android 10 and newer" src="https://img.shields.io/badge/Android-10%2B-3DDC84?logo=android&logoColor=white">
+  <img alt="Local first" src="https://img.shields.io/badge/library-local--first-3978FF">
 </p>
 
-<p align="center">
-  <img src="docs/images/player-visual-concept.webp" alt="Original visual-direction concept showing a cinematic local film library and separate video player controls on two generic phones" width="100%">
-</p>
+<p align="center"><sub>The banner is original generated concept art, not an app screenshot. It is a visual direction, not a claim that every illustrated finish is already implemented.</sub></p>
 
-<p align="center"><sub>Original concept artwork for Player. It illustrates the visual direction and is not an in-app screenshot or a claim that every shown detail is implemented.</sub></p>
+## A considered home for your collection
 
-## What Player is
+brrPlayer turns one folder you select into a searchable movie and TV library. Titles, posters and playback stay attached to the files you already have. Browse offline, then play a local video without sending it to a server.
 
-Player turns **one folder you choose** into a searchable movie and TV library, then plays those files locally. Its goal is a calm, cinematic catalogue with restrained glass controls, while keeping your media and library data on your device.
+- **One folder, by choice.** Android’s Storage Access Framework gives read-only access to the selected folder and its descendants. There is no all-files permission.
+- **A library that works offline.** Local video names, episode details and the indexed catalogue are stored on device. Optional metadata can enrich the presentation without becoming a requirement for browsing or playback.
+- **A player built into the library.** Media3 plays local documents, offers audio and subtitle track selection, and keeps sidecar captions independent from video zoom.
+- **A distinct glass direction.** The intended interface pairs cinematic media shelves with restrained, interactive Liquid Glass controls. The music app is consulted only for its glass engine and dock-collapse motion; its music interface is not being reused.
 
-- **One selected folder.** Android’s Storage Access Framework grants read access to that folder and its descendants. Player does not request all-files access.
-- **Offline library.** Filenames are organized into movies and episodes; the indexed library and confirmed details are stored locally so the collection remains useful offline.
-- **Local playback.** Media3 plays the selected document directly. Device and codec support determines which formats can play. Sidecar subtitles are kept separate from the zoomable video frame.
-- **Optional online metadata.** TMDB matching is user-controlled and manual. When enabled, a search sends only a normalized title, year and media type; no path, folder listing, SAF URI, video or subtitle content is sent.
+## Privacy is part of the design
 
-<p align="center">
-  <img src="docs/images/android15-catalogue-test.webp" alt="Player catalogue with synthetic movie titles on an Android 15 test emulator" width="320">
-  &nbsp;&nbsp;
-  <img src="docs/images/glass-lab-test.webp" alt="Experimental Glass Lab screen captured from the Android 15 test emulator" width="320">
-</p>
-
-<p align="center"><sub>Android 15 CI captures using synthetic test data. The Glass Lab is an experiment, not the finished library design; these images do not represent OPPO handset performance.</sub></p>
-
-## Privacy by design
-
-- Your video and subtitle files are never uploaded, renamed, moved, edited or deleted by Player.
-- Access stays within the single folder tree you selected and is read-only.
-- No Player account, media server, cloud library, ads, analytics or telemetry.
-- App backup is disabled.
-- Optional metadata and artwork use approved TMDB destinations only after you enable metadata features; the local library remains available without a connection.
+- Video and subtitle files are never uploaded, changed, moved or deleted.
+- The library reads only inside the single folder you selected.
+- App backup is disabled; there is no account, cloud library, advertising, telemetry or media server.
+- Optional TMDB requests are limited to normalized media identifiers such as title, year and type. The app’s opt-in and request policy remain explicit; a public app credential is not a secret, and TMDB necessarily receives network metadata such as the request IP.
+- Local library and playback remain useful without metadata access or a network connection.
 
 See [storage and privacy rules](docs/UPSTREAM_AND_PRIVACY.md) and [architecture](docs/ARCHITECTURE.md).
 
-## Current development status
+## Identity migration and release status
 
-The latest signed build is listed on the [Releases page](https://github.com/Batmancpu/Player/releases/latest). Existing signed installs keep the same package and permanent update certificate. These are development checkpoints; the integrated premium app is still in progress.
+The requested identity is **brrPlayer**, package `com.mangoloads.player`. The older signed Player app used `com.batmancpu.player`; Android treats these as separate apps. A brrPlayer release therefore installs alongside the legacy app and cannot automatically inherit its saved folder grant or library database. The existing release signing certificate is preserved.
 
-The user confirmed that v0.1.79 selected a folder, identified four local videos with titles and years, retained the library after an airplane-mode restart, and handled folder switching. Since then, main has gained title shelves, series season grouping, local Media3 playback, validated same-folder sidecar subtitles and a custom Compose transport. This release adds persisted caption-size and vertical-position controls on the separate subtitle viewport, accessible ranges/set-progress, Reset and a compact-screen-safe sheet. CI #250 passed all 55 Android 15 tests, unit/build, Room v1–v4 schema, privacy and permanent-signing checks. The Home feature hero uses cached artwork only, with local Play/Details actions. The user now wants no per-user TMDB setup and requests automatic matching/posters with only normalized title/year/type in application request fields. A publisher-configured app credential is required and still pending; it is extractable from a public APK, so it will never be called a secret. See the privacy handoff for the official licensing/auth limits. Emulator evidence is not Reno10 performance or acceptance. The latest signed release is [Player v0.1.250](https://github.com/Batmancpu/Player/releases/tag/v0.1.250), versionCode 250. Signed APKs are produced once per substantial completed batch, not per small edit.
+The latest published APK belongs to the legacy package: [Player v0.1.250](https://github.com/Batmancpu/Player/releases/tag/v0.1.250). The brrPlayer identity and visual assets are in development; this README does not imply that the new signed package has already been released. New signed APKs will be published once a substantial batch passes automated privacy, identity and signing checks.
 
-**Glass is still being refined.** Haze 2.1.0 powers both the bounded production library navigation dock and a separate visual lab. The Android treatment is original and does not reproduce Apple's proprietary renderer. The lab is an experiment, not a promise of device-level blur or the final tactile finish. See the [engine review](docs/GLASS_ENGINE_REVIEW.md).
+The user reported that v0.1.79 found four local videos, displayed their names and years, retained the library after an airplane-mode restart and switched folders correctly. Later catalogue, Media3 playback and caption work has emulator/CI coverage; it still needs real-device checks on the OPPO Reno10 5G. No FPS, heat or battery target is claimed without measurements on that handset.
 
-## Work plan
+## Project checkpoints
 
-The integrated app is being completed in four visible batches. Development continues between checkpoints; there is no phone-install pause after each batch.
+Work is grouped into substantial checkpoints rather than producing an APK for each small fix:
 
-1. **README and visual identity** — original concept artwork and honest project overview. This batch is complete.
-2. **Library and playback completeness** — folder recovery and scan edge cases, playback controls, subtitle workflows and persistent offline behavior.
-3. **Production experience** — coherent movie/show navigation, polished title details, accessible controls, original restrained Glass and non-Glass fallbacks.
-4. **Release readiness** — automated regression coverage, licensing/privacy review, signed update build, and release checklist. Measure frame time, memory and thermal behavior on the Reno10 when physical device data is available; do not infer those results from CI.
+1. **Identity foundation** — brrPlayer name and package migration, original launcher mark, concept-art README and corrected installation expectations.
+2. **Library and playback** — remaining folder recovery, scan cancellation and bounds, local playback, captions and persistence edge cases.
+3. **Glass and catalogue experience** — use only the inspected music app’s licensed Glass engine and collapse motion; adapt them to an original film and series interface with accessible opaque/reduced-motion fallbacks.
+4. **Release readiness** — regression coverage, licensing/privacy audit, one signed APK at the completed batch boundary, followed by the user’s phone checklist.
+5. **Measured polish** — release-like frame timing, memory, thermal and battery investigation on the actual Reno10; tune only from recorded evidence.
 
-Follow the [six-phase roadmap](docs/ROADMAP.md) for engineering detail. A signed APK will be published to GitHub Releases for Obtainium after the requested build passes the release workflow's test, privacy and permanent-certificate checks. Use only a signed Release APK for installation; CI debug APKs are not for updating the installed app.
+Implementation continues between checkpoints. A phone acceptance report is still needed for final phase acceptance, and it will not be invented from emulator results.
 
 ## Project records
 
@@ -81,10 +71,8 @@ Follow the [six-phase roadmap](docs/ROADMAP.md) for engineering detail. A signed
 
 - [Apple Human Interface Guidelines — Materials](https://developer.apple.com/design/human-interface-guidelines/materials)
 - [Haze Glass documentation](https://chrisbanes.github.io/haze/2.1.0/)
+- [brrMusic](https://github.com/Batmancpu/brrMusic) — Glass engine and dock interaction research only, subject to its license and attribution.
+- [brrrBoard](https://github.com/Batmancpu/brrrBoard) — icon-design inspiration only; no keyboard UI, artwork or code is included.
 - [TMDB API documentation](https://developer.themoviedb.org/docs/getting-started)
 
-Player uses original Android code and generated concept artwork. It does not include Apple fonts, symbols, logos or proprietary assets.
-
-
-
-**Glass Lab note:** The current lab previews a bounded selection dock over generated artwork and has a visible return to the library. Its tabs do not navigate the catalogue. The real library's separate dock is functional and has an effects-off fallback. Further visual tuning and Reno10 profiling remain in progress.
+The launcher mark and banner are original generated assets. No Apple logo, SF Symbols artwork, Apple font or recognizable film poster is bundled.
