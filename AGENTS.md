@@ -600,3 +600,8 @@ When the unfiltered library is open, movie titles and series now appear in separ
 ## 2026-11-22 — Correct absent-node UI assertions
 - CI #251 was still setting up its Android runner when review found that the new per-user-token absence assertions called `awaitNode`, which throws instead of returning null when a node is absent. Switched both assertions to the existing nullable `find` helper. This test-only correction is not yet verified; CI #251 covers the older commit, and the next push triggers a fresh run.
 - Next: inspect CI #251 for independent source/build issues, then validate the correction with the next full Android 15 run. GitHub Actions is reachable again; current main should stay the only branch.
+
+## 2026-11-22 — Fix metadata instrumentation assertion import
+- CI #251 / `44987872798` compiled production sources, then failed Android-test compilation because the new URI privacy assertions in `MetadataLookupControllerAndroidTest` referenced `assertFalse` without importing it. Added the missing JUnit assertion import. No app behavior changed.
+- CI #252 / `44987969417` targets the preceding test-helper correction but will not include this import. A fresh CI run is required for both fixes; run #251 did not reach any instrumentation tests and produced no APK.
+- Next: verify the next main CI through all Android tests/build/schema gates; then inspect any remaining errors before extending catalogue enrichment.

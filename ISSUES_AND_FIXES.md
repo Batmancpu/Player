@@ -656,3 +656,7 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 ## 2026-11-22 — UI absence assertion helper mismatch
 - The new token-field absence assertions incorrectly used `awaitNode`, a helper that throws if a node is missing. Replaced it with nullable `find`. This was caught by source review while CI #251 was still setting up, before the test executed.
 - Next CI run must verify the correction and the whole automatic-metadata batch. No APK is produced at this intermediate test correction.
+
+## 2026-11-22 — CI #251 test compilation import
+- The automatic-metadata source compiled in CI #251, but Android-test compilation failed on two missing `assertFalse` references in `MetadataLookupControllerAndroidTest`; added the JUnit import. No instrumentation tests or release gates ran.
+- Commit `8f35759` corrected a different UI test helper but does not include this import, so CI #252 may repeat the compile failure. Next run is needed before further feature work is considered verified.

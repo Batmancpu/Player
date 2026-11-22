@@ -1582,3 +1582,7 @@ CI #209 / 44958254084 failed Kotlin compilation at `LocalLibraryScreen.kt:601`: 
 ## 2026-11-22 — Fix nullability in token-free settings UI tests
 - Review during CI #251 setup found the UI test asserted absence with `awaitNode`, whose contract is to throw when no match is found. The metadata settings behavior was not at fault; replaced those two checks with nullable `find` calls so the tests actually assert that the per-user token field is absent.
 - CI #251 / `44987872798` is running for the prior commit and does not include this correction. The correction will be verified in the next main push's full Android run; no local Kotlin toolchain is installed.
+
+## 2026-11-22 — Correct metadata test assertion import after CI #251
+- CI #251 / `44987872798` reached test compilation and stopped on two `Unresolved reference: assertFalse` errors in `MetadataLookupControllerAndroidTest`. Added the missing JUnit `assertFalse` import. Production code compiled successfully before this failure.
+- The queued #252 run uses commit `8f35759` and does not include this import; it may repeat the compile failure. The next run from this commit must verify the import and prior test-helper fix, then run Android tests. No APK was produced.

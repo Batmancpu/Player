@@ -717,3 +717,7 @@ CI #235: app compiled; 51/53 Android tests passed. The new Media3 assertion read
 - Added the app-wide credential build path, injected only from a release CI secret and kept out of local storage; the UI no longer asks users for a personal key. Local opt-in remains off by default. An exact unique title/type/year match on an open title detail can save metadata and private artwork; ambiguous choices still require confirmation. Catalogue scan and scrolling remain offline-only.
 - Added match unit cases and Android integration/storage cases. They are not run because this workspace has no Gradle/Android SDK and the GitHub proxy is unreachable. Documentation records this explicitly. v0.1.250 remains the latest published APK; this source is not yet verified/released and no publisher key is configured.
 - Next: CI validation, fixes, bounded opt-in catalogue poster enrichment, full privacy review, then one signed APK when the metadata batch is complete. Do not claim phone acceptance or live metadata before the app credential is configured and tested.
+
+## 2026-11-22 continuation — First automatic metadata CI compile result
+
+- CI #251 compiled the app, then test compilation found a missing JUnit `assertFalse` import in the new controller privacy assertions. Added the import. The earlier UI test correction was also pushed separately; the queued CI #252 does not include this later import. Next run must pass test compilation and the Android 15 suite before more metadata work is merged.
