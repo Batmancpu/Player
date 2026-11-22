@@ -531,3 +531,8 @@ When the unfiltered library is open, movie titles and series now appear in separ
 - A single injected swipe did not reveal the complete poster bounds. The test now scrolls the largest accessible vertical container, captures `catalogue-scrolled.png`, and includes measured bounds in any ratio assertion.
 - `git diff --check`/resource XML validation pending; Android CI #233 will decide both behaviors.
 - Next: commit with records, review #233 reports/captures, and continue app batches without an interim APK.
+
+## 2026-11-22 — Fix DisposableEffect cleanup compilation
+- CI #233 / 44974218075 stopped at `compileDebugKotlin`: `onDispose` is a receiver member of `DisposableEffectScope`, not an importable top-level Compose symbol. Removed the invalid import; listener cleanup remains inside `DisposableEffect`.
+- No Android tests ran. `git diff --check` passes; rerun CI pending.
+- Next: commit this correction and verify reactive picker state, Home scroll capture, full Android suite and privacy/build gates.

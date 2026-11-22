@@ -657,3 +657,5 @@ CI #230 ran 53 Android tests, 48 passed and 5 failed. The Home hero occupied the
 CI #231: 51/53 Android tests passed; only picker label click and dock-clipped poster bounds failed. Current source restores one explicit RadioButton semantics node, including the previously missing `role` extension import and onClick. Poster layout test scrolls Home before measuring. CI #232 pending.
 
 CI #232 compiled and ran 53 tests (51 passed, 2 failed): picker click works but selected state stays stale; poster bounds remained clipped after the shell swipe. Current fix observes Media3 parameter changes into Compose state and scrolls the largest accessibility scroll container, with a new scrolled-home capture. CI #233 pending.
+
+CI #233 stopped before tests: `onDispose` was incorrectly imported as a top-level Compose symbol. Removed the import (the call remains in `DisposableEffect` scope). CI #234 pending.

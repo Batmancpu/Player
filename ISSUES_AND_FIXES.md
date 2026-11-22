@@ -605,3 +605,6 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 ## 2026-11-22 — CI #232 state freshness and vertical Home scroll
 - CI #232: 51/53 Android tests passed. Picker click succeeds, but selected state was stale; track picker now observes Media3's parameter-change callback into Compose state.
 - Poster remains clipped after one test swipe; tests now activate the largest accessible scroll container (vertical catalogue), capture the scrolled view and include bounds in failures. CI #233 pending.
+
+## 2026-11-22 — Remove invalid onDispose import
+- CI #233 failed app compilation because `onDispose` is a `DisposableEffectScope` member, not a top-level import. Removed the import; cleanup call stays in the effect receiver. Validation pending.

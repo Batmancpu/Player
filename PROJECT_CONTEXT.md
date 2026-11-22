@@ -485,3 +485,6 @@ CI #231 ran 53 Android tests: 51 passed, 2 failed. Compact hero fixed prior Home
 
 ## 2026-11-22 — CI #232 follow-up
 CI #232 / 44973573949: 51/53 Android tests pass. Track option click exists but selected semantics are stale; implementation now mirrors `Player.Listener.onTrackSelectionParametersChanged`. Poster ratio remains clipped after a swipe; test now scrolls the largest accessible container, captures the scrolled home and reports measured bounds. Verification pending CI #233.
+
+## 2026-11-22 — CI #233 compile correction
+CI #233 / 44974218075 stopped at app compile: `onDispose` is a `DisposableEffectScope` member, not importable as a top-level symbol. Removed the invalid import; no Android tests ran. CI #234 pending.
