@@ -12,6 +12,8 @@ Room v3 offline metadata storage, encrypted user-managed TMDB settings, official
 
 **Current QA follow-up (2026-11-22):** CI #221 passed the 52-test Android 15 suite and captured Compose transport; its title was visibly cramped at 320px. CI #222 verified Glass Lab titles scroll clear of the dock. CI #223 verified explicit local SRT selection and cue callback; its sole runtime failure was an intermittently undelivered shell touch against the player's video surface. Commit `1c19a08` exposes an accessible control-restoration click and replaces verbose top-row text with original icon buttons to improve title room. CI #224 stopped at Android test compilation because the new accessibility test lacked a class-local `awaitNode` helper; the helper is added and #226 is pending. A README concept image is labeled as illustrative, not a shipped screen. Subtitle offset UI remains deferred because pinned Media3 1.11.1 stable does not provide the new unstable setter in 1.12.0-beta01.
 
+**Current player batch (2026-11-22):** CI #226 passed the 53-test suite, JVM/build, Room v1-v4 schema and privacy checks after the accessible surface control fix. Its capture confirms the player title fits; the test video image remains synthetic black. Next replace the native Android track selector with an accessible Compose sheet for supported audio/subtitle tracks, Automatic restore and Subtitles off. A synthetic test exercises Off/Automatic/local SRT interaction. Source is uncommitted and awaits a new CI run. Delay UI remains deferred pending stable Media3 API.
+
 ---
 
 ## Current implementation status — 2026-11-15

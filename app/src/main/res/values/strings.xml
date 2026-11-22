@@ -96,6 +96,9 @@
     <string name="player_resize_description">Video scaling: %1$s</string>
     <string name="player_audio_tracks">Audio</string>
     <string name="player_subtitle_tracks">Subtitles</string>
+    <string name="player_subtitles_off">Subtitles off</string>
+    <string name="player_tracks_automatic">Automatic</string>
+    <string name="player_tracks_unavailable">No supported tracks are available.</string>
     <string name="player_unavailable">This video could not be played</string>
     <string name="player_error_detail">The file may be unavailable or use a format this device cannot decode.</string>
     <string name="player_opening">Opening local video…</string>

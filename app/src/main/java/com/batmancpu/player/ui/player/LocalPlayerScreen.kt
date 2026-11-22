@@ -53,6 +53,8 @@ internal fun LocalPlayerScreen(
     var error by remember(target.uri) { mutableStateOf(false) }
     var hasAudioTracks by remember(target.uri) { mutableStateOf(false) }
     var hasSubtitleTracks by remember(target.uri) { mutableStateOf(false) }
+    var availableTracks by remember(target.uri) { mutableStateOf(Tracks.EMPTY) }
+    var trackPickerType by remember(target.uri) { mutableIntStateOf(C.TRACK_TYPE_UNKNOWN) }
     var playbackSpeed by remember(target.uri) { mutableFloatStateOf(1f) }
     var controlsVisible by remember(target.uri) { mutableStateOf(true) }
     var chromeInteractionEpoch by remember(target.uri) { mutableIntStateOf(0) }
@@ -113,6 +115,7 @@ internal fun LocalPlayerScreen(
             }
             override fun onTracksChanged(tracks: Tracks) {
                 chromeInteractionEpoch++
+                availableTracks = tracks
                 hasAudioTracks = hasSupportedTrackType(tracks, C.TRACK_TYPE_AUDIO)
                 hasSubtitleTracks = hasSupportedTrackType(tracks, C.TRACK_TYPE_TEXT)
             }
@@ -194,11 +197,11 @@ internal fun LocalPlayerScreen(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (hasAudioTracks) TextButton(onClick = {
                         chromeInteractionEpoch++
-                        createTrackSelectionDialog(context, audioTitle, player, C.TRACK_TYPE_AUDIO).show()
+                        trackPickerType = C.TRACK_TYPE_AUDIO
                     }) { Text(audioTitle, color = Color.White) }
                     if (hasSubtitleTracks) TextButton(onClick = {
                         chromeInteractionEpoch++
-                        createTrackSelectionDialog(context, subtitleTitle, player, C.TRACK_TYPE_TEXT).show()
+                        trackPickerType = C.TRACK_TYPE_TEXT
                     }) { Text(subtitleTitle, color = Color.White) }
                 }
                 Spacer(Modifier.weight(1f))
@@ -234,6 +237,15 @@ internal fun LocalPlayerScreen(
                     Button(onClick = onClose) { Text(stringResource(R.string.player_back)) }
                 }
             }
+        }
+        if (trackPickerType != C.TRACK_TYPE_UNKNOWN) {
+            PlayerTrackSelectionSheet(
+                player = player,
+                tracks = availableTracks,
+                trackType = trackPickerType,
+                onDismiss = { trackPickerType = C.TRACK_TYPE_UNKNOWN },
+                onSelectionApplied = { availableTracks = player.currentTracks },
+            )
         }
     }
 }

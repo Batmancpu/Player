@@ -135,18 +135,59 @@ class LocalPlaybackAndroidTest {
                 assertTrue(player.duration > 0)
                 assertTrue("Synthetic MP4 must expose embedded audio", hasSupportedTrackType(player.currentTracks, C.TRACK_TYPE_AUDIO))
                 assertTrue("Synthetic local SRT sidecar was not decoded", hasSupportedTrackType(player.currentTracks, C.TRACK_TYPE_TEXT))
-                val selector = createTrackSelectionDialog(activity, "Audio", player, C.TRACK_TYPE_AUDIO)
-                selector.show()
-                assertTrue("Media3 audio selector did not open", selector.isShowing)
-                selector.dismiss()
-                val subtitleSelector = createTrackSelectionDialog(activity, "Subtitles", player, C.TRACK_TYPE_TEXT)
-                subtitleSelector.show()
-                assertTrue("Media3 subtitle selector did not open", subtitleSelector.isShowing)
-                subtitleSelector.dismiss()
                 player.pause()
                 player.seekTo(1000)
                 assertEquals(1000L, player.currentPosition)
             }
+
+            val player = checkNotNull(reference.get())
+            val trackSnapshot = AtomicReference(mutableStateOf(androidx.media3.common.Tracks.EMPTY))
+            val selectedTrackType = mutableStateOf(C.TRACK_TYPE_TEXT)
+            val trackListener = object : Player.Listener {
+                override fun onTracksChanged(tracks: androidx.media3.common.Tracks) { trackSnapshot.get().value = tracks }
+            }
+            instrumentation.runOnMainSync {
+                trackSnapshot.set(mutableStateOf(player.currentTracks))
+                player.addListener(trackListener)
+                (activity as PreviewTestActivity).setContent {
+                    PlayerTheme {
+                        PlayerTrackSelectionSheet(
+                            player = player,
+                            tracks = trackSnapshot.get().value,
+                            trackType = selectedTrackType.value,
+                            onDismiss = {},
+                            onSelectionApplied = { trackSnapshot.get().value = player.currentTracks },
+                        )
+                    }
+                }
+            }
+            assertTrue("Custom subtitle picker opens", awaitText("Subtitles", true))
+            val offOption = awaitNode { it.contentDescription?.toString() == context.getString(com.batmancpu.player.R.string.player_subtitles_off) }
+            assertTrue("Subtitles-off row is accessible", offOption.isClickable)
+            assertTrue("Subtitles-off row activates", offOption.performAction(AccessibilityNodeInfo.ACTION_CLICK))
+            assertTrue("Selecting subtitles off marks the accessible row selected", awaitNode {
+                it.contentDescription?.toString() == context.getString(com.batmancpu.player.R.string.player_subtitles_off) && it.isSelected
+            }.isSelected)
+            val automaticOption = awaitNode { it.contentDescription?.toString() == context.getString(com.batmancpu.player.R.string.player_tracks_automatic) }
+            assertTrue("Automatic track selection is accessible", automaticOption.performAction(AccessibilityNodeInfo.ACTION_CLICK))
+            assertTrue("Automatic selection restores the default track policy", awaitNode {
+                it.contentDescription?.toString() == context.getString(com.batmancpu.player.R.string.player_tracks_automatic) && it.isSelected
+            }.isSelected)
+            val sidecarOption = awaitNode { it.contentDescription?.toString()?.startsWith("Synthetic.en.srt") == true }
+            assertTrue("Selecting the local sidecar is accessible", sidecarOption.performAction(AccessibilityNodeInfo.ACTION_CLICK))
+            assertTrue("Selecting a supported sidecar marks its row selected", awaitNode {
+                it.contentDescription?.toString()?.startsWith("Synthetic.en.srt") == true && it.isSelected
+            }.isSelected)
+            instrumentation.runOnMainSync { selectedTrackType.value = C.TRACK_TYPE_AUDIO }
+            assertTrue("Audio picker replaces the subtitle picker", awaitText("Audio", true))
+            val audioOption = awaitNode {
+                it.isCheckable && it.contentDescription?.toString() != context.getString(com.batmancpu.player.R.string.player_tracks_automatic)
+            }
+            assertTrue("Supported audio track can be selected", audioOption.performAction(AccessibilityNodeInfo.ACTION_CLICK))
+            assertTrue("Audio selection exposes its selected state", awaitNode {
+                it.isCheckable && it.contentDescription?.toString() != context.getString(com.batmancpu.player.R.string.player_tracks_automatic) && it.isSelected
+            }.isSelected)
+            instrumentation.runOnMainSync { player.removeListener(trackListener) }
         } finally {
             instrumentation.runOnMainSync { reference.get()?.release(); activity.finish() }
             SyntheticSafProvider.playbackFile = null

@@ -555,10 +555,17 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 - **Next:** Recheck Media3 stable release notes before implementing adjustable subtitle delay/reset.
 
 ### R-042 — Player controls were difficult to restore after auto-hide
-- **Status:** Product accessibility fix is committed; automated test helper correction pending CI #226.
+- **Status:** Verified in CI #226.
 - **Evidence:** CI #223's only runtime failure was the overlay test's shell-injected center tap not restoring the header. CI #224 compiled main product sources but stopped compiling Android tests because the new accessibility action check called an `awaitNode` helper not yet defined in that test class. No decoder or playback failure was reported.
 - **Fix under test:** The player surface is an accessible clickable control-restoration target instead of a pointer-only gesture layer. Verbose Back, scaling and Full screen labels are replaced in the narrow top row with original icon buttons and accessible descriptions/state; targets remain at least 48dp. Added a bounded recursive accessibility-node waiter to `LocalPlaybackAndroidTest`.
-- **Next:** Verify surface restoration, resize/fullscreen accessibility tests, title width in player screenshot, and full Android build/privacy gates in #226.
+- **Verification:** CI #226 passed 53/53 Android 15 tests, including accessible surface restoration, resize/fullscreen actions, and full title display in the captured player header. Unit/build/schema/privacy workflow also passed. Screenshot's synthetic black video does not establish a real codec/first-frame result.
+- **Next:** Keep regression coverage while the Compose track picker is integrated; validate on real device in final checklist.
+
+### R-043 — Native track picker did not match the player presentation
+- **Status:** Replaced in source with a custom accessible Compose sheet; CI validation pending.
+- **Evidence:** The player transport was Compose-owned while audio/subtitle selection opened a platform dialog. That left one visually inconsistent surface and the native dialog was only smoke-tested for opening, not selection behavior.
+- **Fix under test:** Add a bounded audio/subtitle selector that lists decoder-supported tracks using labels/languages/channel counts, offers Automatic restore for both types and Subtitles off, announces selected state, and applies Media3 track parameters. The new synthetic playback test selects Off, restores Automatic and selects the generated local SRT by its display label. No network subtitle provider or source-file modification is added.
+- **Next:** Verify APIs compile against pinned Media3 1.11.1 and test real selection, dismissal, accessibility and full CI. Keep subtitle offset UI pending stable support.
 
 ### R-037 — Resolve localized descriptions outside Compose semantics lambdas
 - **Status:** Compile failures corrected; CI #211 confirms app compilation.
