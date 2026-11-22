@@ -106,6 +106,15 @@ class PreviewUiAndroidTest {
     }
     private fun clickTitleCard(value: String) = click(titleCard(value))
 
+    private fun captureSyntheticScreenshot(name: String) {
+        SystemClock.sleep(350)
+        fun shell(command: String) {
+            ParcelFileDescriptor.AutoCloseInputStream(automation.executeShellCommand(command)).use { it.readBytes() }
+        }
+        shell("mkdir -p /sdcard/Download/player-preview-screens")
+        shell("screencap -p /sdcard/Download/player-preview-screens/$name.png")
+    }
+
     private fun hasSelectedSemanticsOnLabelOrParent(value: String): Boolean {
         var selected = false
         fun visit(node: AccessibilityNodeInfo) {
@@ -378,8 +387,9 @@ class PreviewUiAndroidTest {
             val args = Bundle().apply {
                 putFloat(AccessibilityNodeInfo.ACTION_ARGUMENT_PROGRESS_VALUE, 0.075f)
             }
-            assertTrue("Subtitle size slider accepts accessible progress", sizeControl.performAction(AccessibilityNodeInfo.ACTION_SET_PROGRESS, args))
-            assertTrue("Subtitle height slider accepts accessible progress", positionControl.performAction(AccessibilityNodeInfo.ACTION_SET_PROGRESS, args))
+            val setProgressAction = AccessibilityNodeInfo.AccessibilityAction.ACTION_SET_PROGRESS.id
+            assertTrue("Subtitle size slider accepts accessible progress", sizeControl.performAction(setProgressAction, args))
+            assertTrue("Subtitle height slider accepts accessible progress", positionControl.performAction(setProgressAction, args))
             assertEquals(0.075f, committedSize.get(), 0.001f)
             assertEquals(0.075f, committedPosition.get(), 0.001f)
             click(text(context.getString(com.batmancpu.player.R.string.player_caption_reset)))

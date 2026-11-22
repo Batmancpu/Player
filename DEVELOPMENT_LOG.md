@@ -1520,3 +1520,7 @@ CI #209 / 44958254084 failed Kotlin compilation at `LocalLibraryScreen.kt:601`: 
 ## 2026-11-22 — CI #241 caption-sheet compile correction
 - CI #241 / 44980134384 stopped at `compileDebugKotlin` before instrumentation. The pinned Compose Material3 version annotates `ModalBottomSheet` as experimental; the new caption sheet lacked the scoped opt-in. Added `@OptIn(ExperimentalMaterial3Api::class)` to that composable only. No tests ran and no APK was produced.
 - Next: rerun full CI to check the Media3 SubtitleView API calls, accessible sliders/reset, stored preference and all downstream gates. Signed batch APK remains deferred until all issues in the batch are fixed and CI passes.
+
+## 2026-11-22 — CI #242 caption test harness correction
+- CI #242 / 44980533537 passed app compilation, then stopped while compiling `PreviewUiAndroidTest`: the new test called `captureSyntheticScreenshot` without a helper in that class and referenced `AccessibilityNodeInfo.ACTION_SET_PROGRESS` instead of the nested `AccessibilityAction.ACTION_SET_PROGRESS.id`. No instrumentation ran.
+- Added the class-local screenshot collector used by CI's synthetic screen artifact and changed the test to the SDK action constant. Next: run the entire workflow to exercise slider values/reset, preference persistence, Media3 viewport, and all secondary gates. No APK/release/device claim.

@@ -22,6 +22,9 @@
 ## 2026-11-22 — CI #241 caption sheet compilation
 - Caption batch commit `afe04f1` compiled until Material3 flagged `ModalBottomSheet` as experimental. Added a scoped `ExperimentalMaterial3Api` opt-in; no tests ran and no APK was made. Next CI must validate the caption controls and storage, then all batch gates. No signed candidate until that batch is green.
 
+## 2026-11-22 — CI #242 caption test compilation
+- CI #242 / 44980533537 compiled production code, but Android-test compilation found two helper errors: `PreviewUiAndroidTest` had no local screenshot function, and the set-progress action constant is under `AccessibilityAction`. Added the test-local screenshot helper and corrected the constant reference. No instrumentation ran or APK was created. Next: re-run the full batch and fix any actual slider/preferences/runtime failures.
+
 This file is the durable, accumulating record of important user requests, product decisions, implementation history and unresolved actions. It is written for future AI agents to continue work without depending on a lost chat context.
 
 **Format:** decision-focused session summaries, not a verbatim export of every message. Preserve the meaning of user requests and reasons behind decisions. Never include private signing files, passwords, base64 secret values, API keys, tokens or other credentials.
