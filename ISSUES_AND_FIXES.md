@@ -713,3 +713,6 @@ CI #258 (`44991846015`) passed the Android 15 suite (59/59), Python release-chec
 
 ## 2026-11-22 — R-052 CI #270 Glass collapse assertion sampled too early
 CI #270 (`45000255823`) passed 58/59 Android tests; the sole failure measured the floating Home dock bounds before the spring collapse completed. Replaced the immediate assertion with bounded accessibility polling until bounds prove the collapsed state. CI #271 (`45001123629`) passed the full suite and all normal verification checks. No APK in either normal run; next is one signed batch candidate.
+
+## R-053 — Offline Glass batch published
+Resolved the brrMusic integration compiler failures and dock-collapse test timing issue; CI #271 and release run #272 passed. v0.1.272 is signed/published with no Internet permission, permanent certificate and verified APK hash. Remaining: actual Reno10 Glass placement/readability/player behavior; collect user evidence, do not infer it from CI. Continue offline local artwork/sidecar support and release-quality player work.

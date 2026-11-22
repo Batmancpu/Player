@@ -20,7 +20,7 @@
 brrPlayer turns one folder you select into a searchable movie and TV library. Titles, posters and playback stay attached to the files you already have. Browse offline, then play a local video without sending it to a server.
 
 - **One folder, by choice.** Android’s Storage Access Framework gives read-only access to the selected folder and its descendants. There is no all-files permission.
-- **A library that works offline.** Local video names, episode details and the indexed catalogue are stored on device. Optional metadata can enrich the presentation without becoming a requirement for browsing or playback.
+- **Offline by design.** Local video names, parsed episode details and the indexed catalogue stay on device. The release has no Internet permission or provider credential; artwork enrichment must use local files only.
 - **A player built into the library.** Media3 plays local documents, offers audio and subtitle track selection, and keeps sidecar captions independent from video zoom.
 - **A distinct glass direction.** The intended interface pairs cinematic media shelves with restrained, interactive Liquid Glass controls. The music app is consulted only for its glass engine and dock-collapse motion; its music interface is not being reused.
 
@@ -29,8 +29,7 @@ brrPlayer turns one folder you select into a searchable movie and TV library. Ti
 - Video and subtitle files are never uploaded, changed, moved or deleted.
 - The library reads only inside the single folder you selected.
 - App backup is disabled; there is no account, cloud library, advertising, telemetry or media server.
-- Optional TMDB requests are limited to normalized media identifiers such as title, year and type. The app’s opt-in and request policy remain explicit; a public app credential is not a secret, and TMDB necessarily receives network metadata such as the request IP.
-- Local library and playback remain useful without metadata access or a network connection.
+- The release has no network permission, online metadata requests or API key, so it cannot incur provider charges or send titles to a service.
 
 See [storage and privacy rules](docs/UPSTREAM_AND_PRIVACY.md) and [architecture](docs/ARCHITECTURE.md).
 
@@ -38,7 +37,7 @@ See [storage and privacy rules](docs/UPSTREAM_AND_PRIVACY.md) and [architecture]
 
 The requested identity is **brrPlayer**, package `com.mangoloads.player`. The older signed Player app used `com.batmancpu.player`; Android treats these as separate apps. A brrPlayer release therefore installs alongside the legacy app and cannot automatically inherit its saved folder grant or library database. The existing release signing certificate is preserved.
 
-The prior legacy APK is [Player v0.1.250](https://github.com/Batmancpu/Player/releases/tag/v0.1.250). brrPlayer v0.1.262 is the first signed APK for the new package. It installs alongside the old app and requires first-time folder selection. Later brrPlayer versions update this package in place. See [GitHub Releases](https://github.com/Batmancpu/Player/releases/tag/v0.1.262).
+The first signed brrPlayer identity APK was v0.1.262. The current signed build is [brrPlayer v0.1.272](https://github.com/Batmancpu/Player/releases/tag/v0.1.272), with the brrMusic-derived Glass renderer/dock and verified no-network permission boundary. It installs alongside the legacy app and requires first-time folder selection. Later brrPlayer versions update this package in place.
 
 The user reported that v0.1.79 found four local videos, displayed their names and years, retained the library after an airplane-mode restart and switched folders correctly. Later catalogue, Media3 playback and caption work has emulator/CI coverage; it still needs real-device checks on the OPPO Reno10 5G. No FPS, heat or battery target is claimed without measurements on that handset.
 
@@ -48,7 +47,7 @@ Work is grouped into substantial checkpoints rather than producing an APK for ea
 
 1. **Identity foundation** — brrPlayer name and package migration, original launcher mark, concept-art README and corrected installation expectations.
 2. **Library and playback** — remaining folder recovery, scan cancellation and bounds, local playback, captions and persistence edge cases.
-3. **Glass and catalogue experience** — use only the inspected music app’s licensed Glass engine and collapse motion; adapt them to an original film and series interface with accessible opaque/reduced-motion fallbacks.
+3. **Glass and catalogue experience** — use only the inspected music app’s licensed Glass engine and collapse motion; adapt them to an original film and series interface with accessible opaque/reduced-motion fallbacks. v0.1.272 includes the dock; actual OPPO visual acceptance is pending.
 4. **Release readiness** — regression coverage, licensing/privacy audit, one signed APK at the completed batch boundary, followed by the user’s phone checklist.
 5. **Measured polish** — release-like frame timing, memory, thermal and battery investigation on the actual Reno10; tune only from recorded evidence.
 

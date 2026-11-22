@@ -2,7 +2,7 @@ Current offline-preview checklist: [OFFLINE_PREVIEW_TEST.md](OFFLINE_PREVIEW_TES
 
 # brrPlayer — OPPO phone checks
 
-**Target:** OPPO Reno10 5G CPH2531, Android 15. Use a **signed brrPlayer APK from GitHub Releases**, never the CI-only debug artifact. The first published brrPlayer build is [v0.1.262](https://github.com/Batmancpu/Player/releases/tag/v0.1.262), package `com.mangoloads.player`; it is separate from legacy package `com.batmancpu.player`. Install it alongside the old app and select the media folder again. v0.1.262 is the identity/offline preview batch and predates the brrMusic-backed dock now in development; test the later release for that Glass change. Android does not transfer the legacy package's app-private database or persisted SAF grant. Preserve the signing certificate and higher versionCode for future brrPlayer updates. The user reports legacy v0.1.79 correctly recognized four video titles/years, retained the library after airplane-mode restart and switched folders. Newer catalogue/player/Glass/caption behavior still needs OPPO evidence. Phase acceptance and performance remain pending. No original-file deletion is required.
+**Target:** OPPO Reno10 5G CPH2531, Android 15. Use a **signed brrPlayer APK from GitHub Releases**, never the CI-only debug artifact. Current batch [v0.1.272](https://github.com/Batmancpu/Player/releases/tag/v0.1.272), package `com.mangoloads.player`, is separate from legacy `com.batmancpu.player`; install alongside the old app and select the media folder again. Android does not transfer the legacy app's database or persisted SAF grant. v0.1.272 preserves the permanent signer, has versionCode 272, no Internet permission/API credential and includes the brrMusic-backed Glass dock. The user's v0.1.79 report verified four local video titles/years, airplane-mode persistence and folder switching. v0.1.272's OPPO layout, playback and Glass behavior remain unverified. Phase acceptance/performance remain pending. No original-file deletion is required.
 
 ## Preparing a safe test folder
 Use Android's file manager to create a small test folder of media you already own or are permitted to test, including:
@@ -17,6 +17,13 @@ Never share private media paths or file contents in GitHub issues or logs.
 2. Download the one signed brrPlayer APK from the release. Install it without uninstalling legacy Player; Android will show them as separate apps.
 3. Add the GitHub Releases source in Obtainium. Later brrPlayer releases should update in place while package, certificate and versionCode progression remain valid.
 4. Open brrPlayer, choose the local folder using Android's system folder picker and scan. Do not grant all-files access or another provider.
+
+## v0.1.272 Glass and offline checks
+- In airplane mode, open the library and Glass Lab. Confirm neither asks for an online metadata connection or API key.
+- Scroll the library and Glass Lab downward, then upward. The floating dock should collapse and expand; tapping its collapsed tab should restore the full dock.
+- Turn Glass off in library settings. Confirm the dock stays readable and usable. Check its position above the gesture area and try a larger system font.
+- Play a local video, pause/seek, return to the library and reopen to check resume. Force-stop/reopen and confirm the library remains.
+- Android App info should not list Internet as a requested app permission. This build has no online metadata lookup.
 
 ## Core offline-library acceptance
 - Tap **Scan this folder**; confirm nested video names are shown and the unrelated outside file is absent. Subtitle count should include SRT; non-media text files should be ignored.

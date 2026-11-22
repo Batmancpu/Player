@@ -684,3 +684,8 @@ Corrected stale handoff claims that metadata CI was pending/unverified, that loc
 - CI #271 (`45001123629`, commit `0ef027a`) passed: Android 15 instrumentation, Kotlin compilation, Python release-checker tests, JVM unit tests, CI-only debug assembly, Room v1–v4 schema, and the manifest/privacy verification job. No release APK was built because this was a normal source push.
 - This verifies the Glass fixes and absence of Internet permission in merged debug manifest; it is not an OPPO appearance/FPS/battery acceptance.
 - Next action: trigger one release-candidate workflow for the completed Glass/offline batch, inspect signed release certificate, versionCode, APK hash, privacy manifest and publication. Send phone checklist only if the signed GitHub Release exists. Keep user phone acceptance pending.
+
+## 2026-11-22 — v0.1.272 signed offline Glass batch published
+- CI #272 (`45001848034`, commit `8abf4a9`) passed Android 15 integration, unit/build/schema and release checks. The merged production manifest contains no Internet permission, backup remains disabled, the signed APK is package `com.mangoloads.player` versionName `0.1.272`/versionCode `272`, and its certificate matches the permanent SHA-256 `4D:2F:17:89:ED:27:D3:96:13:35:FE:36:45:64:55:BD:9A:31:0B:0D:CD:F4:1E:8C:CC:92:53:98:33:9E:80:BF`.
+- Release: https://github.com/Batmancpu/Player/releases/tag/v0.1.272 ; APK `brrPlayer-release-272.apk`, SHA-256 `575676d2724ab127c6ec4eb1b672eda981568e9f7e6c103c91c165f20420d21c`.
+- Next: continue offline-local-artwork and player polish, then measured performance work where device access permits. User's OPPO visual/functional acceptance and all device frame/thermal/battery evidence remain pending; do not claim FPS or phase completion.

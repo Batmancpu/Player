@@ -254,3 +254,6 @@ Removed app INTERNET permission and Actions secret injection; generated TMDB cre
 
 ### CI #271 — Glass/offline source verified
 CI #271 (`45001123629`, `0ef027a`) passed Android 15 instrumentation and the full non-release checks, including compile, unit/Python tests, Room v1–v4, and merged-manifest no-INTERNET assertion. No APK was produced. Next: single signed candidate at batch boundary; then continue from actual CI issues and preserve the real-device acceptance/performance gate.
+
+### Signed Glass/offline candidate published — 2026-11-22
+v0.1.272 (`com.mangoloads.player`, versionCode 272) is published at https://github.com/Batmancpu/Player/releases/tag/v0.1.272 after CI #272 passed instrumentation, unit/build/schema, no-INTERNET APK manifest, permanent signer and hash checks. The current substantial batch adds the brrMusic-derived Glass dock and enforces the offline/no-provider boundary. Actual CPH2531 appearance/performance is still unverified. Next: local artwork/sidecar enrichment, finish remaining player/accessibility coverage and inspect release-like performance without unsupported FPS claims.
