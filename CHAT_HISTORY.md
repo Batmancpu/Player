@@ -731,3 +731,9 @@ CI #253 compiled app code but had two Android test failures: expected-enabled st
 ## 2026-11-22 — CI #254 compile failure and stale metadata response review
 
 The first visible-catalogue enrichment commit `4fcb20b` pushed to main and triggered CI #254 / 44989496794. It failed before instrumentation because Kotlin reported `currentCoroutineContext()` inside a synchronized critical section. The context is now captured before locking. A manual review also identified a race where automatic results might overwrite a recent user's Remove action. Automatic Room binding now atomically honors the suppression sentinel, while explicit confirmation still overrides it. Added a Room regression and updates an open detail sheet after a shelf match. These corrections are local pending a new full CI run. No new APK/Release.
+
+Additional cancellation review during CI #255 wait found an eligibility edge: immediate card re-entry could arrive before the canceled coroutine cleared its per-title attempt marker. The hide/background path now clears markers synchronously, and the fake controller test deliberately cancels an already-dispatched request then verifies retry on re-entry. This follow-up is local and needs a full CI run after #255.
+
+## 2026-11-22 — CI #255 instrumentation outcome
+
+CI #255 / 44989857527 compiled production and instrumentation code; 56/58 Android 15 tests passed. The synthetic automatic visible-card controller path and transactional remove-suppression behavior passed. Two UI test infrastructure cases failed: Manage's accessibility label appeared a frame before the clickable parent, and the longer shared-key explanation was offscreen. Tests now poll for a fresh clickable node and scroll to both long notices. A separate local cancellation/re-entry regression is also pending the next run. No release APK/Release was generated.

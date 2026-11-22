@@ -88,18 +88,19 @@ internal class MetadataLookupController(
 
     fun catalogueTitleHidden(tree: String, titleKey: String) {
         val key = visibilityKey(tree, titleKey)
-        val job = synchronized(visibleJobs) {
-            visibleTitles.remove(key)
-            visibleJobs.remove(key)
+        val (entry, job) = synchronized(visibleJobs) {
+            visibleTitles.remove(key) to visibleJobs.remove(key)
         }
+        entry?.let { forgetAutomaticAttempt(it.first, it.second.key) }
         job?.cancel()
     }
 
     fun pauseCatalogueEnrichment() {
         catalogueForeground = false
-        val jobs = synchronized(visibleJobs) {
-            visibleJobs.values.toList().also { visibleJobs.clear() }
+        val (entries, jobs) = synchronized(visibleJobs) {
+            visibleTitles.values.toList() to visibleJobs.values.toList().also { visibleJobs.clear() }
         }
+        entries.forEach { (tree, title) -> forgetAutomaticAttempt(tree, title.key) }
         jobs.forEach { it.cancel() }
     }
 
@@ -392,7 +393,6 @@ internal class MetadataLookupController(
                 TmdbResult.InvalidResponse -> publishIssue(ticket, tree, title, MetadataLookupIssue.INVALID_RESPONSE)
             }
         } catch (cancelled: CancellationException) {
-            forgetAutomaticAttempt(tree, title.key)
             throw cancelled
         } catch (_: Exception) {
             publishIssue(ticket, tree, title, MetadataLookupIssue.UNAVAILABLE)

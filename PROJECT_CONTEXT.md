@@ -515,3 +515,9 @@ The current pushed main is `bafec5750195e217f28e405336a148dd83865564`. The uncom
 
 ### Follow-up after visible-catalogue CI #254 — pending verification
 CI #254 / 44989496794 failed app compilation because the visible-job cleanup read the coroutine context inside a synchronized block; the follow-up moves that read outside the lock. Code review also found a race where a late automatic result could overwrite a just-saved user opt-out. Automatic bindings now guard the opt-out sentinel transactionally, and a new Room Android test covers it. An already-open detail sheet is refreshed after the catalogue match arrives. These follow-ups are local/unverified; no APK was produced.
+
+### Follow-up — cancelled-card re-entry (pending verification)
+A fast cancellation/re-entry race could leave an in-process attempt marker until another lifecycle event. Visibility hide/Activity stop now remove the marker before canceling tracked work, and old job completion cannot clear a newer attempt. The fake Android metadata integration test cancels the first request after it starts, re-registers the card and verifies its match/artwork retry. CI #255 predates this local follow-up; no result yet.
+
+### CI #255 update — metadata source compiled, UI checks need a correction
+CI #255 compiled product and androidTest Kotlin, then ran 58 Android 15 tests (56 passed). The new exact-match visible-card path and Room suppression tests passed. Two older UI helper cases failed: the Glass Manage text appeared before its clickable parent, and the longer shared-key notice was not visible without scrolling. Both tests are corrected locally. A later local improvement also requeues hidden-card cancellation safely, with a first-request-cancel/re-entry test. No APK/Release; full JVM/debug/schema/privacy gate did not run. Follow-ups need CI #256.

@@ -11,10 +11,12 @@ import com.batmancpu.player.ui.library.OfflineMetadataCache
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicInteger
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -35,8 +37,12 @@ class MetadataLookupControllerAndroidTest {
         val title = LocalCatalogue.build(listOf(file)).single()
         val settings = MetadataSettingsStore(context, "catalogue_$suffix")
         val calls = AtomicInteger()
+        val firstRequestStarted = CompletableDeferred<Unit>()
         val client = TmdbClient(settings::credentialIfEnabled, TmdbTransport { uri, token ->
-            calls.incrementAndGet()
+            if (calls.incrementAndGet() == 1) {
+                firstRequestStarted.complete(Unit)
+                awaitCancellation()
+            }
             assertEquals("synthetic.read.token", token)
             assertEquals("api.themoviedb.org", uri.host)
             assertFalse(uri.toString().contains(file.displayName))
@@ -67,8 +73,11 @@ class MetadataLookupControllerAndroidTest {
 
             settings.save(token = null, enabled = true)
             controller.catalogueTitleVisible(tree, title)
+            withTimeout(5_000) { firstRequestStarted.await() }
+            controller.catalogueTitleHidden(tree, title.key)
+            controller.catalogueTitleVisible(tree, title)
             withTimeout(10_000) { controller.catalogueRevision.first { it >= 2L } }
-            assertEquals(1, calls.get())
+            assertEquals("Re-entering a cancelled card resumes a single automatic lookup", 2, calls.get())
             assertEquals("Aurora", OfflineMetadataCache.load(context, tree)[file.documentId]?.title)
             assertEquals(2, artworkCalls.get())
             controller.catalogueTitleHidden(tree, title.key)

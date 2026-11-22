@@ -674,3 +674,14 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 - **Race found during review:** title removal persisted an opt-out sentinel but a previously in-flight automatic result could overwrite it at bind time. Automatic detail/catalogue binds now test suppression inside the same Room transaction; manual explicit confirmation remains able to replace suppression. A Room regression assertion and open-sheet state refresh were added.
 - **Verification:** source fix pending CI #255. No APK/Release. Static verification must be rerun for this follow-up.
 - **Next:** validate the fix and the full visible-catalogue test suite in CI; continue the metadata batch only after green.
+
+## 2026-11-22 — R-046 Cancelled lazy-card request could suppress quick re-entry
+- **Root cause:** attempt markers were cleared asynchronously in a cancellation catch, while a newly visible card could register immediately and encounter the still-present marker. It would skip its request until another eligibility event/process restart.
+- **Fix under test:** visibility disposal and Activity-stop synchronously clear eligible attempts before canceling jobs; the old coroutine no longer removes markers after cancellation. Extended fake-transport instrumentation so the first dispatched request is canceled when the card leaves and the same card successfully retries on re-entry.
+- **Verification:** unverified; CI #255 runs the preceding commit. Next fresh full run after this change.
+
+## 2026-11-22 — R-047 CI #255 transient accessibility tests
+- **Evidence:** CI #255 / 44989857527 compiled app/test code and ran 58 Android 15 tests; 56 passed. The Manage node existed but had not yet acquired its clickable ancestor when the test tapped. The expanded credential status was below the current settings viewport. Metadata visible-card matching and transactional explicit-removal protection passed.
+- **Fix under test:** click helper resolves fresh accessibility snapshots for up to 3 seconds until the target is clickable and includes active-window diagnostics; both long status assertions scroll explicitly.
+- **Verification:** pending CI #256; no APK/Release. The separate JVM/debug/schema/privacy job was skipped because instrumentation had failures.
+- **Next:** validate the updated UI helpers together with cancelled card requeue, then continue the metadata batch only after a fully green workflow.

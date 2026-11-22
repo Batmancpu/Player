@@ -615,3 +615,12 @@ When the unfiltered library is open, movie titles and series now appear in separ
 - CI #254 / 44989496794 stopped at `:app:compileDebugKotlin`: `currentCoroutineContext()` was called from inside synchronized cleanup. Moved coroutine-context capture outside the lock. No instrumentation or APK was produced by #254.
 - While reviewing auto/manual races, made automatic Room binding check the persisted explicit-removal sentinel inside the same transaction. This prevents a late auto-search result from silently re-adding metadata after removal; explicit manual confirmation still replaces the sentinel. Added a Room Android regression assertion and ensured a visible-card result refreshes an already-open detail sheet.
 - Status: local only and unverified. Next: run static checks, complete doc/issue records, push correction on `main`, then inspect full CI #255. No Phase/APK/FPS claim.
+
+## 2026-11-22 — Requeue cancelled visible-card lookups (pending)
+- Review found a fast hide/reappear or background/resume race: the new card job could see the prior job's attempt marker before its cancellation handler removed it and then skip the lookup. Removal and Activity-stop paths now clear visible-title attempt markers synchronously before canceling jobs; canceled jobs no longer clear a newer attempt on completion.
+- Extended the synthetic Android test to cancel the first fake request after dispatch, re-expose the card, then verify exactly one retried unique match and cached artwork. These changes are local and unverified; #255 targets the prior commit. Next: full static checks and CI after follow-up push.
+
+## 2026-11-22 — CI #255 results and accessibility-test follow-up (pending)
+- CI #255 / 44989857527 compiled app and instrumentation sources and ran 58 Android 15 tests; 56 passed. Existing failures: Glass Manage click had a transient text-before-clickable accessibility node (`No clickable ancestor`), and the newly expanded shared-credential status needed explicit scrolling. Controller, metadata suppression and Room additions in that run passed. No Release/APK; unit/build/schema job was skipped after Android test failure.
+- Click helper now waits up to 3 seconds for a fresh clickable accessibility node and includes a window snapshot on failure. Both credential status assertions use the bounded scroll helper.
+- Local pending follow-up also synchronously requeues cancellation markers and tests cancel-after-dispatch/re-entry. Next: run static checks, push directly to main, inspect full CI #256 and repair any failures. No handset/FPS claim.

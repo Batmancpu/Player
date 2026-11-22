@@ -224,3 +224,6 @@ The user requested a signed APK checkpoint now and wants implementation to conti
 
 ## 2026-11-21 build correction
 CI #205 / 44955249002 failed before instrumentation at LocalLibraryScreen.kt:517 because the new Glass toggle used Compose `contentDescription` without importing it. The import is corrected; no tests ran on that commit. Await the new full CI before continuing visual tuning.
+
+## 2026-11-22 — Current automatic metadata batch status
+The first visible-card change is pushed on `main` as `4fcb20b`; follow-up compile/suppression fix is `0f1e56d`. CI #254 exposed a Kotlin critical-section compile error, fixed in `0f1e56d`. CI #255 compiled and ran 58 Android 15 tests, 56 passed; the visible auto-match/artwork and transactional explicit-remove guard passed. Two test-helper failures (Manage click target readiness and long shared-key notice viewport) are corrected locally; a cancellation/re-entry race fix and fake test are also local. Next run must pass the full Android 15, JVM/debug, Room/schema and privacy pipeline. No metadata APK/Release yet. A live publisher credential is still absent, so the eventual release cannot fetch TMDB artwork until one repository-level credential is configured. No per-install API-key entry is planned; consent remains explicit and default off.

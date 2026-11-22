@@ -137,9 +137,20 @@ class PreviewUiAndroidTest {
     }
 
     private fun click(node: AccessibilityNodeInfo) {
-        var target: AccessibilityNodeInfo? = node
-        while (target != null && !target.isClickable) target = target.parent
-        assertTrue("No clickable ancestor", target?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true)
+        val label = node.text?.toString()
+        val description = node.contentDescription?.toString()
+        val deadline = SystemClock.uptimeMillis() + 3_000
+        while (SystemClock.uptimeMillis() < deadline) {
+            val fresh = if (label != null || description != null) {
+                find { (label == null || it.text?.toString() == label) &&
+                    (description == null || it.contentDescription?.toString() == description) } ?: node
+            } else node
+            var target: AccessibilityNodeInfo? = fresh
+            while (target != null && !target.isClickable) target = target.parent
+            if (target?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true) return
+            SystemClock.sleep(50)
+        }
+        error("No clickable ancestor for $label / $description; ${activeWindowSummary()}")
     }
 
     private fun clickLastClickableLabel(label: String) {
@@ -699,7 +710,7 @@ class PreviewUiAndroidTest {
                     }
                 }
             }
-            text("Player’s shared TMDB connection is available. It is a public app credential and can be extracted from the APK. Requests start only after you enable metadata.")
+            revealByScrolling("Player’s shared TMDB connection is available. It is a public app credential and can be extracted from the APK. Requests start only after you enable metadata.")
             assertNull("The shared credential is never shown or requested in settings", find { it.text?.toString() == "API Read Access Token" })
             click(text("About and credits"))
             assertEquals(1, opened.get())
