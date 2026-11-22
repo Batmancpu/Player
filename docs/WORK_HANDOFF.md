@@ -49,3 +49,6 @@ CI #263 (`44997836152`) failed at Kotlin compilation due to an invalid stale Gla
 
 ## Metadata provider update — 2026-11-22
 The user will not provide a postal address to obtain TMDB credentials. Remove publisher-key availability as a release prerequisite and do not request address/token again. TMDB currently has no anonymous lookup endpoint. Investigate keyless Wikidata title search and Commons image/license metadata (partial coverage; image may not be a poster) as an explicit opt-in option that transmits only normalized title/year/type. Keep Phase 1 offline and local artwork/NFO available. Must validate provider terms, User-Agent/rate limits, license credits, destinations, bounds and cancellation before production network integration.
+
+## Current metadata decision — 2026-11-22
+Supersedes the keyless-provider proposal: the user says online metadata must not be opted in because results can mislead and could cause fees. Do not implement or call TMDB, Wikidata, Commons or any metadata provider; do not ask for an address/key. Plan a local-only privacy cleanup: remove INTERNET permission, metadata online toggles/actions and transport in a focused tested batch, while keeping local media scanning/playback and local artwork/sidecar options. Until removal is verified, do not trigger online requests or claim the shipped app is fully offline.

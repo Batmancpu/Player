@@ -245,3 +245,9 @@ The signed identity/offline-preview build v0.1.262 passed the release gate and i
 
 ### Provider credential constraint — 2026-11-22
 The user declined supplying an address for TMDB registration. Do not request it again; do not block app release on a shared TMDB credential. TMDB has no anonymous search endpoint. Evaluate a keyless public Wikidata lookup plus Commons imagery (variable coverage, individual file credits, not reliably posters) behind the same explicit opt-in/minimum-title payload, and keep the offline local-artwork path first-class. Provider integration is pending license/endpoint/rate/user-agent and image-attribution validation.
+
+### Superseding metadata scope — local-only, 2026-11-22
+The user rejected online metadata opt-in because remote results may mislead and can carry fees. Supersedes the credential/Wikidata exploration: no remote provider integration or requests. Next privacy task removes INTERNET permission, metadata settings/actions and network transport in a focused change; retain local folder scanning/playback and implement local art/sidecar support. Do not describe the currently released build as network-free until removal passes manifest and CI checks.
+
+### Offline-only privacy hardening implementation — 2026-11-22
+Removed app INTERNET permission and Actions secret injection; generated TMDB credential is hard-coded empty. Android merged-manifest regression and release verifier now reject Internet permission. CI #269 passed Glass source before this change; run the complete suite again for this stricter permission boundary. Next: CI verify, then one signed Glass/offline candidate at the substantial batch boundary. Do not add provider integrations or request credentials.

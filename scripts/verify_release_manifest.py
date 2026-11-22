@@ -16,8 +16,6 @@ assert int(package[2]) == int(os.environ["GITHUB_RUN_NUMBER"]), "Unexpected vers
 permissions = dump("permissions")
 allowed = {
     "com.mangoloads.player.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
-    # Used only by the explicit, consent-gated direct TMDB request flow.
-    "android.permission.INTERNET",
 }
 for line in permissions.splitlines():
     if line.startswith("uses-permission"):
@@ -32,4 +30,5 @@ print("Verified allowBackup representation:", backup[1].strip())
 assert "fullBackupContent" in xml and "dataExtractionRules" in xml, "Explicit legacy/cloud/device-transfer backup rules must be attached"
 print("Verified explicit legacy and modern backup-rule resources are attached.")
 assert "SyntheticSafProvider" not in xml and "com.mangoloads.player.synthetic" not in xml, "Debug provider entered release"
-print("Release manifest verified: stable identity/version, only consent-gated Internet access, no broad storage, backup disabled, no debug provider.")
+assert "android.permission.INTERNET" not in permissions, "Online metadata/network access is not permitted"
+print("Release manifest verified: stable identity/version, no Internet or broad storage, backup disabled, no debug provider.")

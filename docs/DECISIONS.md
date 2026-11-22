@@ -224,3 +224,9 @@ A missing app-level credential is a release-publisher condition, not a user setu
 **Status:** Accepted by explicit user instruction.
 **Decision:** Change the visible product name to brrPlayer and applicationId to `com.mangoloads.player`, keeping the existing long-lived release signing certificate and monotonically increasing CI run-number versionCode. The published `com.batmancpu.player` release remains a separate legacy app; no in-place update, data, Room database or SAF grant transfer is possible. Consult the user's music repository only for the Liquid Glass engine and collapsing dock interaction. Consult the keyboard repository only for original icon-design inspiration; do not copy its artwork/code or any keyboard UI.
 **Reason:** The user requested a complete identity change and explicitly clarified the two source repositories' separate roles.
+
+### D-039 — No online metadata or network capability in brrPlayer (2026-11-22)
+**Status:** Accepted at the user's latest direction; supersedes D-037 and all publisher-key/Wikidata proposals.
+**Decision:** brrPlayer is local-only. Do not send titles to TMDB, Wikidata, Commons, or another remote provider; do not ask for address or credentials; do not inject API keys. Remove Android INTERNET permission from the app and fail the production APK verifier if any network permission is merged. Keep selected-folder scanning/playback and local metadata/artwork. Existing migration-era provider/cache source must not be able to make requests; future removal can reduce dead code without changing this invariant.
+**Reason:** The user says remote listings/details are misleading and could create fees; online metadata must not be opted in.
+**Verification:** offline-only source changes are local and require full Android/manifest CI before release. No actual-device network capture has been performed.

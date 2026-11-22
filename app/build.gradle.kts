@@ -30,14 +30,6 @@ val buildNumber = System.getenv("GITHUB_RUN_NUMBER")
     ?.takeIf { it > 0 }
     ?: 1
 
-// TMDB credentials are public-client values once embedded in an APK. Keep the
-// source and debug builds keyless; release CI may inject the publisher value.
-val tmdbReadAccessToken = System.getenv("PLAYER_TMDB_READ_ACCESS_TOKEN")?.trim().orEmpty()
-if (tmdbReadAccessToken.length > 2_048 ||
-    (tmdbReadAccessToken.isNotEmpty() && !Regex("[A-Za-z0-9._~+/\\-]+=*").matches(tmdbReadAccessToken))) {
-    throw GradleException("PLAYER_TMDB_READ_ACCESS_TOKEN is malformed; value was not logged.")
-}
-
 // Signing credentials exist only in the CI runtime environment.
 val releaseKeystorePath = System.getenv("PLAYER_RELEASE_KEYSTORE_PATH")
 val releaseKeystorePassword = System.getenv("PLAYER_RELEASE_KEYSTORE_PASSWORD")
@@ -62,7 +54,8 @@ android {
         versionCode = buildNumber
         versionName = "0.1.$buildNumber"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "TMDB_READ_ACCESS_TOKEN", "\"$tmdbReadAccessToken\"")
+        // Online metadata is intentionally unavailable; never package provider credentials.
+        buildConfigField("String", "TMDB_READ_ACCESS_TOKEN", "\"\"")
     }
 
     signingConfigs {
