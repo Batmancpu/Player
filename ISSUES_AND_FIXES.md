@@ -555,10 +555,10 @@ CI #205 failed compilation at LocalLibraryScreen.kt:517 because Compose `content
 - **Next:** Recheck Media3 stable release notes before implementing adjustable subtitle delay/reset.
 
 ### R-042 — Player controls were difficult to restore after auto-hide
-- **Status:** Accessible surface activation and compact player header pending CI #224.
-- **Evidence:** CI #223's only failure was the overlay test's shell-injected center tap not restoring the header. CI #221 passed unchanged; no decoder or playback failure was reported.
-- **Fix under test:** Make the full video surface an accessible clickable control-restoration target instead of a pointer-only gesture layer. Replace verbose Back, scaling and Full screen labels in the narrow top row with original icon buttons and accessible descriptions/state; preserve minimum 48dp targets.
-- **Next:** Verify surface restoration, resize/fullscreen accessibility tests, title width in player screenshot, and full Android build/privacy gates in #224.
+- **Status:** Product accessibility fix is committed; automated test helper correction pending CI #226.
+- **Evidence:** CI #223's only runtime failure was the overlay test's shell-injected center tap not restoring the header. CI #224 compiled main product sources but stopped compiling Android tests because the new accessibility action check called an `awaitNode` helper not yet defined in that test class. No decoder or playback failure was reported.
+- **Fix under test:** The player surface is an accessible clickable control-restoration target instead of a pointer-only gesture layer. Verbose Back, scaling and Full screen labels are replaced in the narrow top row with original icon buttons and accessible descriptions/state; targets remain at least 48dp. Added a bounded recursive accessibility-node waiter to `LocalPlaybackAndroidTest`.
+- **Next:** Verify surface restoration, resize/fullscreen accessibility tests, title width in player screenshot, and full Android build/privacy gates in #226.
 
 ### R-037 — Resolve localized descriptions outside Compose semantics lambdas
 - **Status:** Compile failures corrected; CI #211 confirms app compilation.

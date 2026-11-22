@@ -9,7 +9,7 @@
 
 ## Verified repository state
 
-- Latest committed main SHA: `1c19a08e1e9af7f2b6e89640c61a11d8a5dd5911` (`Improve player control accessibility and header`). CI #224 / `44968650641` is running. Its source adds accessible surface activation to restore controls and compact original Back/resize/fullscreen icons with descriptions. Local `git diff --check` and parsing of all Android resource XML pass. CI #223 / `44967664631` had 53 tests with the subtitle cue test passing and only the brittle shell touch failing; secondary build/schema gates were skipped. README concept image now illustrates direction without claiming to be an app screenshot.
+- Latest committed main SHA: `8b3eeca` adds original README concept art and records the player change. CI #224 / `44968650641` stopped before tests at Android test compilation (`awaitNode` unresolved); production source compiled. The helper fix is uncommitted and will trigger #226. #225 runs the same pre-fix source. Local `git diff --check` and parsing of Android resource XML pass. CI #223 / `44967664631` had 53 tests with subtitle cue passing and only the brittle shell touch failing; secondary build/schema gates were skipped. The README concept image illustrates direction and is explicitly not an app screenshot.
 - User reported OPPO v0.1.79 recognized four videos with years, retained the catalogue after airplane-mode restart, and switched folders successfully. That report is not validation of the newer catalogue/player/Glass implementation.
 - Latest release recorded in project history is signed v0.1.174. It is an older progress checkpoint, not the integrated candidate. Current signing identity and package must remain intact.
 
@@ -19,7 +19,7 @@ A Compose-owned transport in `LocalPlayerScreen.kt` replaces generic PlayerView 
 
 ## Exact next actions
 
-1. Inspect CI #224's Android suite and screenshot; verify secondary unit/build/schema/privacy jobs. Subtitle cue and Glass dock-clear tests passed Android jobs #222/#223.
+1. Commit the Android test helper correction with required records; inspect #226's suite/screenshots and verify secondary unit/build/schema/privacy jobs. Subtitle cue and Glass dock-clear tests passed Android jobs #222/#223.
 2. Continue the integrated app backlog in coherent batches: caption selection/visibility and local sidecars, player interaction/accessibility polish, Glass/navigation refinement, Macrobenchmark/Perfetto workflow, then release-size/security/dependency/efficiency review. User wants one signed APK after features and final efficiency review, not an interim APK.
 3. Publish one higher-version signed Release when implementation and automated gates are ready. Provide the concise OPPO checklist then. Real handset acceptance and measured Reno10 FPS/thermal/battery remain pending; CI cannot establish them.
 

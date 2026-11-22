@@ -44,6 +44,23 @@ class LocalPlaybackAndroidTest {
         return automation.rootInActiveWindow?.let(::visit) == true
     }
 
+    private fun awaitNode(predicate: (AccessibilityNodeInfo) -> Boolean): AccessibilityNodeInfo {
+        val deadline = SystemClock.uptimeMillis() + 10_000
+        while (SystemClock.uptimeMillis() < deadline) {
+            fun visit(node: AccessibilityNodeInfo): AccessibilityNodeInfo? {
+                if (predicate(node)) return node
+                for (index in 0 until node.childCount) {
+                    val child = node.getChild(index) ?: continue
+                    visit(child)?.let { return it }
+                }
+                return null
+            }
+            automation.rootInActiveWindow?.let(::visit)?.let { return it }
+            SystemClock.sleep(100)
+        }
+        error("Expected accessibility node was not visible")
+    }
+
     private fun awaitText(value: String, expected: Boolean, timeoutMs: Long = 8_000): Boolean {
         val deadline = SystemClock.uptimeMillis() + timeoutMs
         while (SystemClock.uptimeMillis() < deadline) {
