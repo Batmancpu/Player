@@ -251,3 +251,6 @@ The user rejected online metadata opt-in because remote results may mislead and 
 
 ### Offline-only privacy hardening implementation — 2026-11-22
 Removed app INTERNET permission and Actions secret injection; generated TMDB credential is hard-coded empty. Android merged-manifest regression and release verifier now reject Internet permission. CI #269 passed Glass source before this change; run the complete suite again for this stricter permission boundary. Next: CI verify, then one signed Glass/offline candidate at the substantial batch boundary. Do not add provider integrations or request credentials.
+
+### CI #271 — Glass/offline source verified
+CI #271 (`45001123629`, `0ef027a`) passed Android 15 instrumentation and the full non-release checks, including compile, unit/Python tests, Room v1–v4, and merged-manifest no-INTERNET assertion. No APK was produced. Next: single signed candidate at batch boundary; then continue from actual CI issues and preserve the real-device acceptance/performance gate.

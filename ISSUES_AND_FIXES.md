@@ -710,3 +710,6 @@ CI #258 (`44991846015`) passed the Android 15 suite (59/59), Python release-chec
 - **Change under verification:** Replaced Haze with the pinned brrMusic-derived Backdrop/FloatingTabBar implementation; detached source recording when Glass is off; adapted Home/Movies/Shows/Search and overlay placement; added system reduce-motion observation, attribution/licensing, and a scroll-collapse Android UI regression.
 - **Local evidence:** 17 Python tests pass, 21 main XML files parse, `git diff --check` passes. This execution environment has no Gradle wrapper/executable or Android SDK.
 - **Status:** Kotlin/Compose compilation, Android instrumentation, synthetic screenshots and signed Glass release are pending. There is no OPPO frame-time/thermal/battery or visual acceptance evidence. Fix all CI failures before producing one Glass-batch APK.
+
+## 2026-11-22 — R-052 CI #270 Glass collapse assertion sampled too early
+CI #270 (`45000255823`) passed 58/59 Android tests; the sole failure measured the floating Home dock bounds before the spring collapse completed. Replaced the immediate assertion with bounded accessibility polling until bounds prove the collapsed state. CI #271 (`45001123629`) passed the full suite and all normal verification checks. No APK in either normal run; next is one signed batch candidate.

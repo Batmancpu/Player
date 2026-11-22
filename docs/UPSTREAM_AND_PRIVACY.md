@@ -95,3 +95,5 @@ On 2026-11-22 the user clarified that online metadata must not be opted in becau
 
 ## No-network implementation status — 2026-11-22
 Current source removes `android.permission.INTERNET`, no longer forwards a TMDB Actions secret to release assembly, and emits an empty BuildConfig credential. Android merged-manifest and release APK checkers now fail if Internet permission appears. Legacy provider classes and Room columns remain only to avoid a risky schema/data deletion during this batch and must not be connected to a reachable transport. This source edit is not yet CI verified; do not call the release fully offline or publish until the complete merged-manifest and APK gates pass. No device packet capture has been performed.
+
+CI #271 (`45001123629`, `0ef027a`) passed both jobs, including instrumentation and the Android merged-manifest test asserting no INTERNET permission. This is CI evidence, not a signed APK or an actual device network capture. The release APK verifier still must pass on a candidate.

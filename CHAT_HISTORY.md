@@ -766,3 +766,6 @@ CI #263 failed Kotlin compilation. The first fix removed a stale Glass Lab wrapp
 
 ### CI #270 update — offline permission source builds
 CI #270 compiled the source removing INTERNET permission and release TMDB secret injection, and 58/59 Android 15 tests passed. The only failure was the Glass Lab dock test checking tab bounds before the collapse animation completed. It now waits for the collapsed bounds through the bounded accessibility helper. Offline manifest boundary itself did not fail. No APK; run full CI again.
+
+### CI #271 green and batch release authorization
+The regression update passed CI #271 (`45001123629`, commit `0ef027a`): Android 15 suite, compile, Python/JVM checks, debug build, Room v1–v4 and no-INTERNET merged manifest all passed. No APK was produced by normal CI. Next action is one release-candidate workflow for the completed Music-derived Glass dock plus offline-only boundary. Publish only if the permanent signer, increasing versionCode, manifest, hash and release gates pass. Still awaiting actual OPPO appearance/performance/phone acceptance. No online metadata provider or credential is part of the batch.

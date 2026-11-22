@@ -679,3 +679,8 @@ Corrected stale handoff claims that metadata CI was pending/unverified, that loc
 ## 2026-11-22 — CI #270 dock-collapse assertion timing
 - CI #270 (`45000255823`, commit `180d193`) compiled production/tests and passed 58/59 Android 15 cases plus initial source checks; only `glassLabArtworkCanScrollClearOfFloatingDock` failed because it read the Home tab bounds before the collapsing animation completed. This is a test synchronization failure, not a manifest or network failure.
 - Updated the regression to wait for the Home tab's measured bounds to become smaller than its expanded bounds, using the existing finite accessibility wait helper. Local 17-test Python suite and diff check remain green. Next: rerun Android 15 instrumentation and all release checks; only then request the one signed candidate.
+
+## 2026-11-22 — CI #271 green; one offline Glass candidate requested
+- CI #271 (`45001123629`, commit `0ef027a`) passed: Android 15 instrumentation, Kotlin compilation, Python release-checker tests, JVM unit tests, CI-only debug assembly, Room v1–v4 schema, and the manifest/privacy verification job. No release APK was built because this was a normal source push.
+- This verifies the Glass fixes and absence of Internet permission in merged debug manifest; it is not an OPPO appearance/FPS/battery acceptance.
+- Next action: trigger one release-candidate workflow for the completed Glass/offline batch, inspect signed release certificate, versionCode, APK hash, privacy manifest and publication. Send phone checklist only if the signed GitHub Release exists. Keep user phone acceptance pending.

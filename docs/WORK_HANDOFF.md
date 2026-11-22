@@ -55,3 +55,6 @@ Supersedes the keyless-provider proposal: the user says online metadata must not
 
 ### CI #270 update
 CI #270 (`45000255823`, commit `180d193`) compiled the offline-only permission/credential source and ran all 59 Android tests; 58 passed. One dock-collapse test sampled accessible bounds before its finite animation settled. The regression now waits for collapsed bounds. Next: run full CI against that test fix and check the release manifest/signature gate. No APK yet.
+
+### CI #271 green; release candidate next
+CI #271 (`45001123629`, commit `0ef027a`) passed Android 15 instrumentation, Kotlin compilation, release-checker fixtures, JVM tests, debug assembly, Room schema v1–v4 and manifest/privacy gates. The merged manifest test confirms no Internet permission. Normal source push did not create an installable release APK. Next: trigger a single signed candidate for the Glass/offline batch; verify package `com.mangoloads.player`, increasing versionCode, permanent certificate, APK hash, manifest and actual GitHub publication. User phone acceptance and Reno10 visual/performance results remain pending.
